@@ -2,15 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $guarded = [];
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'icon_class',
+        'color',
+    ];
 
     public function places()
     {
         return $this->hasMany(Place::class);
     }
-    //
 }

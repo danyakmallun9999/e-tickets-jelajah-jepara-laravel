@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('icon')->nullable(); // Class name for icon (e.g., FontAwesome)
-            $table->string('color')->default('#3b82f6'); // Hex color
+            $table->string('icon_class')->nullable();
+            $table->string('color')->default('#2563eb');
             $table->timestamps();
         });
     }
