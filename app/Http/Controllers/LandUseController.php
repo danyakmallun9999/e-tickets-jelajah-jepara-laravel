@@ -54,7 +54,7 @@ class LandUseController extends Controller
         LandUse::create($data);
 
         return redirect()
-            ->route('admin.land_uses.index')
+            ->route('admin.land-uses.index')
             ->with('status', 'Penggunaan lahan berhasil ditambahkan.');
     }
 
@@ -97,7 +97,7 @@ class LandUseController extends Controller
         $landUse->update($data);
 
         return redirect()
-            ->route('admin.land_uses.index')
+            ->route('admin.land-uses.index')
             ->with('status', 'Penggunaan lahan berhasil diperbarui.');
     }
 
@@ -113,7 +113,7 @@ class LandUseController extends Controller
         }
 
         return redirect()
-            ->route('admin.land_uses.index')
+            ->route('admin.land-uses.index')
             ->with('status', 'Penggunaan lahan berhasil dihapus.');
     }
 }
