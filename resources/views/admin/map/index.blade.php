@@ -471,7 +471,7 @@
                         this.map = L.map('interactiveMap').setView([-6.7289, 110.7485], 14);
 
                         // Google Maps Layers
-                        const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                        const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
                             maxZoom: 20,
                             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                             attribution: '&copy; Google Maps'
@@ -489,7 +489,7 @@
                             attribution: '&copy; Google Maps'
                         });
 
-                        const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                        const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
                             maxZoom: 20,
                             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                             attribution: '&copy; Google Maps'

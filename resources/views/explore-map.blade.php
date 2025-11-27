@@ -420,7 +420,8 @@
                 initMap() {
                     this.map = L.map('map', {
                         zoomControl: false,
-                        attributionControl: false
+                        attributionControl: false,
+                        maxZoom: 22
                     }).setView([-6.7289, 110.7485], 14);
 
                     // Custom Zoom Control
@@ -430,19 +431,23 @@
 
                     // Google Maps Layers
                     const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
-                    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
-                    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
                     const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
 
@@ -595,7 +600,7 @@
                 selectPlace(place) {
                     this.selectedFeature = {
                         ...place,
-                        image_url: place.image_path ? '{{ url("/") }}/' + place.image_path : null
+                        image_url: place.image_path ? '{{ asset("") }}/' + place.image_path : null
                     };
                     this.zoomToFeature({
                         latitude: place.latitude,

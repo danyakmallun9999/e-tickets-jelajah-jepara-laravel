@@ -40,7 +40,7 @@ class PlaceController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('places', 'public');
-            $validated['image'] = '/storage/' . $path;
+            $validated['image_path'] = '/storage/' . $path;
         }
 
         \App\Models\Place::create($validated);
@@ -84,7 +84,7 @@ class PlaceController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('places', 'public');
-            $validated['image'] = '/storage/' . $path;
+            $validated['image_path'] = '/storage/' . $path;
         }
 
         $place->update($validated);

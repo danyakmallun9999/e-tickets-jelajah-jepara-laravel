@@ -14,8 +14,11 @@ class WelcomeController extends Controller
     public function index()
     {
         $categories = Category::withCount('places')->get();
+        $totalPlaces = Place::count();
+        $totalCategories = $categories->count();
+        $lastUpdate = Place::latest('updated_at')->first()?->updated_at;
 
-        return view('welcome', compact('categories'));
+        return view('welcome', compact('categories', 'totalPlaces', 'totalCategories', 'lastUpdate'));
     }
 
     public function geoJson(): JsonResponse

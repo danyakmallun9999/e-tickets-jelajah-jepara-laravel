@@ -102,11 +102,11 @@
                         </div>
                         <div class="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3">
                             <div class="rounded-2xl border border-white/20 bg-white/5 p-5">
-                                <p class="text-3xl font-bold text-white">32+</p>
+                                <p class="text-3xl font-bold text-white">{{ $totalPlaces }}+</p>
                                 <p class="mt-2 text-sm text-slate-200">Fasilitas Umum Terdata</p>
                             </div>
                             <div class="rounded-2xl border border-white/20 bg-white/5 p-5">
-                                <p class="text-3xl font-bold text-white">7</p>
+                                <p class="text-3xl font-bold text-white">{{ $totalCategories }}</p>
                                 <p class="mt-2 text-sm text-slate-200">Layer Kategori Prioritas</p>
                             </div>
                             <div class="rounded-2xl border border-white/20 bg-white/5 p-5">
@@ -518,19 +518,23 @@
 
                     // Google Maps Layers
                     const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
-                    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
-                    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
                     const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
-                        maxZoom: 20,
+                        maxNativeZoom: 20,
+                        maxZoom: 22,
                         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                     });
 
