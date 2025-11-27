@@ -42,53 +42,53 @@
 
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-blue-500">
+                <a href="{{ route('admin.places.index') }}" class="block bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-blue-500 hover:shadow-md transition group">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Titik Lokasi</p>
+                            <p class="text-sm text-gray-500 group-hover:text-blue-600 transition">Titik Lokasi</p>
                             <p class="text-3xl font-bold text-gray-900 mt-1">{{ $stats['places_count'] }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition">
                             <i class="fa-solid fa-map-marker-alt text-blue-600 text-xl"></i>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-green-500">
+                <a href="{{ route('admin.boundaries.index') }}" class="block bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-green-500 hover:shadow-md transition group">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Batas Wilayah</p>
+                            <p class="text-sm text-gray-500 group-hover:text-green-600 transition">Batas Wilayah</p>
                             <p class="text-3xl font-bold text-gray-900 mt-1">{{ $stats['boundaries_count'] }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition">
                             <i class="fa-solid fa-map text-green-600 text-xl"></i>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-purple-500">
+                <a href="{{ route('admin.infrastructures.index') }}" class="block bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-purple-500 hover:shadow-md transition group">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Infrastruktur</p>
+                            <p class="text-sm text-gray-500 group-hover:text-purple-600 transition">Infrastruktur</p>
                             <p class="text-3xl font-bold text-gray-900 mt-1">{{ $stats['infrastructures_count'] }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition">
                             <i class="fa-solid fa-road text-purple-600 text-xl"></i>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-yellow-500">
+                <a href="{{ route('admin.land-uses.index') }}" class="block bg-white shadow-sm sm:rounded-2xl p-6 border-l-4 border-yellow-500 hover:shadow-md transition group">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Penggunaan Lahan</p>
+                            <p class="text-sm text-gray-500 group-hover:text-yellow-600 transition">Penggunaan Lahan</p>
                             <p class="text-3xl font-bold text-gray-900 mt-1">{{ $stats['land_uses_count'] }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition">
                             <i class="fa-solid fa-seedling text-yellow-600 text-xl"></i>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Additional Statistics -->
