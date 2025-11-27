@@ -90,11 +90,7 @@
                             <label for="remember_me" class="ml-2 block text-sm text-slate-600">Ingat saya</label>
                         </div>
 
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
-                                Lupa password?
-                            </a>
-                        @endif
+
                     </div>
 
                     <!-- Submit Button -->
