@@ -189,13 +189,13 @@
                         <img src="/images/balaidesa.jpeg" alt="Desa Mayong Lor" class="h-64 w-full object-cover">
                         <div class="space-y-6 p-8">
                             <div class="flex items-center justify-between">
-                                <p class="text-sm font-semibold text-slate-500 uppercase tracking-[0.4em]">Desa Pintar</p>
-                                <span class="text-xs rounded-full bg-slate-900/5 px-3 py-1 font-semibold text-slate-700">Beta v1.3</span>
+                                <p class="text-sm font-semibold text-slate-500 uppercase tracking-[0.4em]">Balai Desa MayongLor</p>
+                                <span class="text-xs rounded-full bg-slate-900/5 px-3 py-1 font-semibold text-slate-700">MAYONG</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between">
                                     <p class="text-sm text-slate-500">Koordinat Referensi</p>
-                                    <p class="text-base font-semibold text-slate-900">-6.7289, 110.7485</p>
+                                    <p class="text-base font-semibold text-slate-900">-6.758392, 110.753496</p>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <p class="text-sm text-slate-500">Kontributor Data</p>
@@ -384,7 +384,7 @@
                 <div class="rounded-[32px] border border-white/10 bg-slate-900/30 p-2 shadow-2xl shadow-blue-900/30">
                     <div class="relative rounded-[28px] overflow-hidden border border-white/10 bg-slate-950">
                         <div id="map" class="w-full h-[640px]"></div>
-                        <div class="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow z-[1000]">
+                        <div class="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow z-[1]">
                             Live Map · Google Maps
                         </div>
                     </div>
