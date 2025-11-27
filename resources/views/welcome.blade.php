@@ -25,6 +25,7 @@
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 999px; }
         .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .custom-marker { display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="antialiased font-sans text-gray-800 bg-slate-950">
@@ -365,7 +366,6 @@
                                     <input type="checkbox" 
                                            :value="category.id" 
                                            x-model="selectedCategories" 
-                                           @change="updateMapMarkers()"
                                            class="h-5 w-5 rounded border-white/30 text-blue-400 focus:ring-blue-300 bg-transparent">
                                     <span class="w-2.5 h-2.5 rounded-full" :style="`background-color: ${category.color}`"></span>
                                     <span class="flex-1" x-text="category.name"></span>
@@ -385,7 +385,7 @@
                     <div class="relative rounded-[28px] overflow-hidden border border-white/10 bg-slate-950">
                         <div id="map" class="w-full h-[640px]"></div>
                         <div class="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow z-[1000]">
-                            Live Map · Leaflet + GeoJSON
+                            Live Map · Google Maps
                         </div>
                     </div>
                 </div>
@@ -498,14 +498,52 @@
                     // Initialize selected categories (all selected by default)
                     this.selectedCategories = this.categories.map(c => c.id);
 
+                    // Watch for changes in selectedCategories
+                    this.$watch('selectedCategories', () => {
+                        this.updateMapMarkers();
+                    });
+
                     // Initialize Map
                     const center = [-6.7289, 110.7485]; 
                     
-                    this.map = L.map('map').setView(center, 14);
+                    this.map = L.map('map', {
+                        zoomControl: false,
+                        attributionControl: false
+                    }).setView(center, 14);
 
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    // Custom Zoom Control
+                    L.control.zoom({
+                        position: 'bottomright'
                     }).addTo(this.map);
+
+                    // Google Maps Layers
+                    const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                        maxZoom: 20,
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                    });
+                    const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                        maxZoom: 20,
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                    });
+                    const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                        maxZoom: 20,
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                    });
+                    const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                        maxZoom: 20,
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                    });
+
+                    googleStreets.addTo(this.map);
+
+                    const baseLayers = {
+                        "Streets": googleStreets,
+                        "Hybrid": googleHybrid,
+                        "Satellite": googleSatellite,
+                        "Terrain": googleTerrain
+                    };
+
+                    L.control.layers(baseLayers, null, { position: 'bottomright' }).addTo(this.map);
 
                     this.fetchAllData();
                 },
@@ -680,13 +718,28 @@
                     const filteredFeatures = this.geoFeatures.filter(feature => {
                         const category = feature.properties && feature.properties.category;
                         const categoryId = category ? category.id : null;
-                        return this.selectedCategories.includes(categoryId);
+                        // Use loose equality to handle potential string/number mismatch from checkboxes
+                        return this.selectedCategories.some(id => id == categoryId);
                     });
 
                     filteredFeatures.forEach(feature => {
                         const [lng, lat] = feature.geometry.coordinates;
-                        const marker = L.marker([lat, lng]);
                         const place = feature.properties;
+                        
+                        const iconHtml = `
+                            <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs" style="background-color: ${place.category ? place.category.color : '#3b82f6'}">
+                                <i class="${place.category && place.category.icon_class ? place.category.icon_class : 'fa-solid fa-map-marker-alt'}"></i>
+                            </div>
+                        `;
+                        
+                        const icon = L.divIcon({
+                            html: iconHtml,
+                            className: 'custom-marker',
+                            iconSize: [32, 32],
+                            iconAnchor: [16, 16]
+                        });
+
+                        const marker = L.marker([lat, lng], { icon: icon });
                         
                         const popupContent = `
                             <div class="overflow-hidden">
