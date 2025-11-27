@@ -18,23 +18,33 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <body class="font-sans antialiased text-gray-900 bg-gray-50" x-data="{ sidebarMinimized: localStorage.getItem('sidebarMinimized') === 'true' }" x-init="$watch('sidebarMinimized', value => localStorage.setItem('sidebarMinimized', value))">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="flex-shrink-0 z-30 transition-all duration-300 ease-in-out" :class="sidebarMinimized ? 'w-20' : 'md:w-64'">
+                @include('layouts.sidebar')
+            </aside>
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col overflow-hidden relative">
+                <!-- Top Header (Optional, mostly for mobile toggle placeholder if needed, or breadcrumbs) -->
+                <!-- For now, we keep it clean as sidebar handles nav -->
+
+                <!-- Page Content -->
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                    @isset($header)
+                        <header class="bg-white shadow-sm sticky top-0 z-20 h-20 flex items-center border-b border-gray-200">
+                            <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                {{ $header }}
+                            </div>
+                        </header>
+                    @endisset
+
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {{ $slot }}
                     </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                </main>
+            </div>
         </div>
         @stack('scripts')
     </body>
