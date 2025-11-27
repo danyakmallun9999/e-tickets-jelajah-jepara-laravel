@@ -18,19 +18,19 @@ class DatabaseSeeder extends Seeder
         // Categories
         $edu = \App\Models\Category::create([
             'name' => 'Pendidikan',
-            'icon' => 'fa-solid fa-graduation-cap',
+            'icon_class' => 'fa-solid fa-graduation-cap',
             'color' => '#3b82f6' // Blue
         ]);
 
         $worship = \App\Models\Category::create([
             'name' => 'Tempat Ibadah',
-            'icon' => 'fa-solid fa-mosque',
+            'icon_class' => 'fa-solid fa-mosque',
             'color' => '#10b981' // Green
         ]);
         
         $gov = \App\Models\Category::create([
             'name' => 'Pemerintahan',
-            'icon' => 'fa-solid fa-building-columns',
+            'icon_class' => 'fa-solid fa-building-columns',
             'color' => '#f59e0b' // Amber
         ]);
 

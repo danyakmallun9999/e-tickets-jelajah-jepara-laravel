@@ -356,9 +356,40 @@
                     initMap() {
                         this.map = L.map('interactiveMap').setView([-6.7289, 110.7485], 14);
 
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '&copy; OpenStreetMap contributors'
+                        // Google Maps Layers
+                        const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                            maxZoom: 20,
+                            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                            attribution: '&copy; Google Maps'
                         }).addTo(this.map);
+
+                        const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                            maxZoom: 20,
+                            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                            attribution: '&copy; Google Maps'
+                        });
+
+                        const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                            maxZoom: 20,
+                            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                            attribution: '&copy; Google Maps'
+                        });
+
+                        const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                            maxZoom: 20,
+                            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                            attribution: '&copy; Google Maps'
+                        });
+
+                        // Base Layers Control
+                        const baseLayers = {
+                            "Google Streets": googleStreets,
+                            "Google Hybrid": googleHybrid,
+                            "Google Satellite": googleSatellite,
+                            "Google Terrain": googleTerrain
+                        };
+
+                        L.control.layers(baseLayers).addTo(this.map);
 
                         this.drawnItems = new L.FeatureGroup();
                         this.map.addLayer(this.drawnItems);
