@@ -184,9 +184,9 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-500 to-cyan-400 blur-lg opacity-30"></div>
-                    <div class="relative rounded-3xl border border-slate-100 bg-white/90 shadow-2xl overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Desa Mayong Lor" class="h-64 w-full object-cover">
+                    <div class="absolute rounded-3xl bg-gradient-to-r from-blue-500 to-cyan-400 blur-lg opacity-30"></div>
+                    <div class="relative rounded-3xl border border-slate-100 bg-white/90  overflow-hidden">
+                        <img src="/images/balaidesa.jpeg" alt="Desa Mayong Lor" class="h-64 w-full object-cover">
                         <div class="space-y-6 p-8">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-semibold text-slate-500 uppercase tracking-[0.4em]">Desa Pintar</p>
@@ -228,7 +228,7 @@
 
             <div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                 @foreach($categories as $category)
-                <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg shadow-slate-200/60 hover:-translate-y-1 transition">
+                <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white  hover:-translate-y-1 transition">
                     <div class="absolute inset-0 bg-gradient-to-br" style="opacity: 0.12; background: linear-gradient(135deg, {{ $category->color }} 0%, #0ea5e9 100%);"></div>
                     <div class="relative p-6">
                         <div class="flex items-center justify-between">
