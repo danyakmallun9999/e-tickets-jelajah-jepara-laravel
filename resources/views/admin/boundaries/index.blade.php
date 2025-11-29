@@ -60,7 +60,7 @@
                                             <a href="{{ route('admin.boundaries.edit', $boundary) }}" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800">
                                                 Edit
                                             </a>
-                                            <form action="{{ route('admin.boundaries.destroy', $boundary) }}" method="POST" onsubmit="return confirm('Hapus batas wilayah ini?');">
+                                            <form action="{{ route('admin.boundaries.destroy', $boundary) }}" method="POST" class="delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800">

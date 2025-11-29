@@ -60,7 +60,7 @@
                                             <a href="{{ route('admin.infrastructures.edit', $infrastructure) }}" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800">
                                                 Edit
                                             </a>
-                                            <form action="{{ route('admin.infrastructures.destroy', $infrastructure) }}" method="POST" onsubmit="return confirm('Hapus infrastruktur ini?');">
+                                            <form action="{{ route('admin.infrastructures.destroy', $infrastructure) }}" method="POST" class="delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800">

@@ -79,7 +79,7 @@
                                             <a href="{{ route('admin.places.edit', $place) }}" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800">
                                                 Edit
                                             </a>
-                                            <form action="{{ route('admin.places.destroy', $place) }}" method="POST" onsubmit="return confirm('Hapus lokasi ini?');">
+                                            <form action="{{ route('admin.places.destroy', $place) }}" method="POST" class="delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800">
