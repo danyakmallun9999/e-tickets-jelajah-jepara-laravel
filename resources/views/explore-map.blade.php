@@ -20,10 +20,9 @@
     <style>
         #map { height: 100vh; width: 100%; z-index: 0; }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -32,8 +31,7 @@
         
         /* Leaflet Customization */
         .leaflet-control-layers {
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95) !important;
             border: 1px solid rgba(0, 0, 0, 0.1) !important;
             color: #1e293b !important;
             border-radius: 12px !important;
@@ -44,8 +42,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
         }
         .leaflet-control-zoom a {
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95) !important;
             color: #1e293b !important;
             border: 1px solid rgba(0, 0, 0, 0.1) !important;
         }
@@ -59,7 +56,6 @@
         }
         .leaflet-popup-content-wrapper {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
             color: #1e293b;
             border-radius: 16px;
             border: 1px solid rgba(0,0,0,0.05);
@@ -72,6 +68,10 @@
             color: #64748b;
         }
         [x-cloak] { display: none !important; }
+        .custom-marker {
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 <body class="antialiased font-sans text-slate-600 bg-slate-50 overflow-hidden">
@@ -430,25 +430,35 @@
                     }).addTo(this.map);
 
                     // Google Maps Layers
-                    const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
+                    // CartoDB Voyager (Clean Streets)
+                    const googleStreets = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                        subdomains: 'abcd',
                         maxNativeZoom: 20,
                         maxZoom: 22,
-                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                        updateWhenIdle: true,
+                        keepBuffer: 2
                     });
                     const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
                         maxNativeZoom: 20,
                         maxZoom: 22,
-                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                        updateWhenIdle: true,
+                        keepBuffer: 2
                     });
                     const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
                         maxNativeZoom: 20,
                         maxZoom: 22,
-                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                        updateWhenIdle: true,
+                        keepBuffer: 2
                     });
                     const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&s=Galileo&apistyle=s.t%3Apoi%7Cp.v%3Aoff%2Cs.t%3Atransit%7Cp.v%3Aoff', {
                         maxNativeZoom: 20,
                         maxZoom: 22,
-                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                        updateWhenIdle: true,
+                        keepBuffer: 2
                     });
 
                     googleStreets.addTo(this.map);
@@ -543,7 +553,7 @@
                         const [lng, lat] = feature.geometry.coordinates;
                         
                         const iconHtml = `
-                            <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs" style="background-color: ${props.category.color}">
+                            <div class="rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs" style="background-color: ${props.category.color}; width: 32px; height: 32px;">
                                 <i class="${props.category.icon_class || 'fa-solid fa-map-marker-alt'}"></i>
                             </div>
                         `;
