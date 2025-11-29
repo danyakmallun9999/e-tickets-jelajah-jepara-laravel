@@ -126,7 +126,7 @@
                 <!-- Chart: Categories -->
                 <div class="bg-white shadow-sm sm:rounded-2xl p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribusi Lokasi per Kategori</h3>
-                    <div class="relative h-64">
+                    <div class="relative h-96">
                         <canvas id="categoriesChart"></canvas>
                     </div>
                 </div>
@@ -303,6 +303,18 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 10,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }

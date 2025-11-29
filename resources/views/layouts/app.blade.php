@@ -17,11 +17,33 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
+        <style>
+            :root { --sidebar-width: 16rem; }
+            .sidebar-minimized { --sidebar-width: 5rem; }
+            .preload * { transition: none !important; }
+            
+            /* Sidebar Toggle Logic */
+            .toggle-maximize { display: none !important; }
+            .toggle-minimize { display: flex !important; }
+            
+            .sidebar-minimized .toggle-maximize { display: flex !important; }
+            .sidebar-minimized .toggle-minimize { display: none !important; }
+        </style>
+        <script>
+            if (localStorage.getItem('sidebarMinimized') === 'true') {
+                document.documentElement.classList.add('sidebar-minimized');
+            }
+        </script>
     </head>
-    <body class="font-sans antialiased text-gray-900 bg-gray-50" x-data="{ sidebarMinimized: localStorage.getItem('sidebarMinimized') === 'true' }" x-init="$watch('sidebarMinimized', value => localStorage.setItem('sidebarMinimized', value))">
+    <body class="font-sans antialiased text-gray-900 bg-gray-50 preload" 
+          x-data="{ sidebarMinimized: localStorage.getItem('sidebarMinimized') === 'true' }" 
+          x-init="$watch('sidebarMinimized', value => {
+              localStorage.setItem('sidebarMinimized', value);
+              document.documentElement.classList.toggle('sidebar-minimized', value);
+          }); window.addEventListener('load', () => document.body.classList.remove('preload'))">
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar -->
-            <aside class="flex-shrink-0 z-30 transition-all duration-300 ease-in-out" :class="sidebarMinimized ? 'w-20' : 'md:w-64'">
+            <aside class="flex-shrink-0 z-30 transition-all duration-300 ease-in-out w-[var(--sidebar-width)]">
                 @include('layouts.sidebar')
             </aside>
 

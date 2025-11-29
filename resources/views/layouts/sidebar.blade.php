@@ -27,8 +27,8 @@
          style="display: none;"></div>
 
     <!-- Sidebar Content -->
-    <div :class="{'translate-x-0': open, '-translate-x-full': !open, 'w-64': !sidebarMinimized, 'w-20': sidebarMinimized}" 
-         class="fixed md:static inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:translate-x-0 flex flex-col h-full">
+    <div :class="{'translate-x-0': open, '-translate-x-full': !open}" 
+         class="fixed md:static inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:translate-x-0 flex flex-col h-full w-64 md:w-full">
         
         <!-- Logo -->
         <div class="flex items-center h-20 border-b border-gray-200 px-4 transition-all duration-300" :class="sidebarMinimized ? 'justify-center' : 'justify-between'">
@@ -40,13 +40,13 @@
             </a>
             
             <!-- Toggle Button (Desktop) -->
-            <button @click="sidebarMinimized = !sidebarMinimized" class="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition focus:outline-none" x-show="!sidebarMinimized">
+            <button @click="sidebarMinimized = !sidebarMinimized" class="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition focus:outline-none toggle-minimize">
                 <i class="fa-solid fa-chevron-left text-xs"></i>
             </button>
         </div>
         
         <!-- Toggle Button (When Minimized) -->
-        <div x-show="sidebarMinimized" class="hidden md:flex justify-center py-2 border-b border-gray-100">
+        <div class="hidden md:flex justify-center py-2 border-b border-gray-100 toggle-maximize">
              <button @click="sidebarMinimized = !sidebarMinimized" class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition focus:outline-none">
                 <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
