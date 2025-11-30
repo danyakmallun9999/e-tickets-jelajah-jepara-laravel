@@ -88,7 +88,7 @@
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
             <img src="/images/balaidesa.jpeg" alt="Desa Mayong Lor" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/95 via-slate-900/60 to-slate-900/90"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/95 via-slate-900/80 to-slate-900/90"></div>
         </div>
 
         <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
