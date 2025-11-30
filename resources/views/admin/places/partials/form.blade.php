@@ -71,19 +71,42 @@
                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
             </div>
 
-            <div>
+            <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 sm:col-span-4">
+                <!-- Photo File Input -->
+                <input type="file" class="hidden" x-ref="photo" name="image"
+                    @change="
+                        photoName = $refs.photo.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            photoPreview = e.target.result;
+                        };
+                        reader.readAsDataURL($refs.photo.files[0]);
+                    " />
+
                 <label class="block text-sm font-medium text-gray-700 mb-2">Foto Lokasi</label>
-                @if ($place->image_path)
-                    <div class="mb-3 relative group">
-                        <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}"
-                            class="w-full h-40 object-cover rounded-lg border">
-                        <div
-                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition rounded-lg">
+
+                <!-- Current Profile Photo -->
+                <div class="mt-2" x-show="! photoPreview">
+                    @if ($place->image_path)
+                        <div class="mb-3 relative group">
+                            <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}"
+                                class="w-full h-40 object-cover rounded-lg border">
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition rounded-lg">
+                            </div>
                         </div>
-                    </div>
-                @endif
-                <div class="flex items-center justify-center w-full">
-                    <label for="dropzone-file"
+                    @endif
+                </div>
+
+                <!-- New Profile Photo Preview -->
+                <div class="mt-2" x-show="photoPreview" style="display: none;">
+                    <span class="block w-full h-40 rounded-lg border bg-cover bg-no-repeat bg-center"
+                        x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
+                    </span>
+                </div>
+
+                <div class="flex items-center justify-center w-full mt-2">
+                    <label @click.prevent="$refs.photo.click()"
                         class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
                             <i class="fa-solid fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
@@ -91,7 +114,6 @@
                                 drag & drop</p>
                             <p class="text-xs text-gray-500">JPG/PNG (MAX. 2MB)</p>
                         </div>
-                        <input id="dropzone-file" type="file" name="image" class="hidden" />
                     </label>
                 </div>
                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
@@ -127,11 +149,4 @@
     </div>
 </form>
 
-<script>
-    // Simple script to show filename on file select
-    document.getElementById('dropzone-file').addEventListener('change', function(e) {
-        if (e.target.files[0]) {
-            // You could update UI here to show selected filename
-        }
-    });
-</script>
+

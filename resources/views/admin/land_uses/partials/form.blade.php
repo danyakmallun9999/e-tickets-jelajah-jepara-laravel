@@ -39,8 +39,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Luas (Hektar)</label>
                 <input x-ref="areaInput" type="number" name="area_hectares"
                     value="{{ old('area_hectares', $landUse->area_hectares) }}" step="0.0001"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    readonly>
+                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 <p class="text-xs text-gray-500 mt-1">Otomatis dihitung dari gambar polygon.</p>
                 <x-input-error :messages="$errors->get('area_hectares')" class="mt-2" />
             </div>

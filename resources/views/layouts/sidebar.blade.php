@@ -32,8 +32,8 @@
         
         <!-- Logo -->
         <div class="flex items-center h-20 border-b border-gray-200 px-4 transition-all duration-300" :class="sidebarMinimized ? 'justify-center' : 'justify-between'">
-            <a href="{{ route('welcome') }}" class="flex items-center gap-2 group">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition flex-shrink-0">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-blue-600 border-blue-600 transition flex-shrink-0">
                     <i class="fa-solid fa-map-location-dot text-lg"></i>
                 </div>
                 <span x-show="!sidebarMinimized" class="font-bold text-xl text-gray-800 tracking-tight whitespace-nowrap transition-opacity duration-300">Mayong<span class="text-blue-600">Lor</span></span>

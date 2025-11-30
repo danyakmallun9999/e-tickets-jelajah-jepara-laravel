@@ -347,56 +347,71 @@
             },
 
             updateGeometryFromLayer(layer) {
-                let geometry;
-                
-                if (layer instanceof L.Marker) {
-                    const latlng = layer.getLatLng();
-                    geometry = {
-                        type: 'Point',
-                        coordinates: [latlng.lng, latlng.lat]
-                    };
-                    this.coordinates = {
-                        lat: Number(latlng.lat).toFixed(6),
-                        lng: Number(latlng.lng).toFixed(6)
-                    };
-                } else if (layer instanceof L.Polygon) {
-                    const latlngs = layer.getLatLngs()[0]; // First ring
-                    const coordinates = latlngs.map(ll => [ll.lng, ll.lat]);
-                    // Close the polygon
-                    coordinates.push(coordinates[0]);
-                    geometry = {
-                        type: 'Polygon',
-                        coordinates: [coordinates]
-                    };
-                } else if (layer instanceof L.Polyline) {
-                    const latlngs = layer.getLatLngs();
-                    const coordinates = latlngs.map(ll => [ll.lng, ll.lat]);
-                    geometry = {
-                        type: 'LineString',
-                        coordinates: coordinates
-                    };
-                }
+                const geojson = layer.toGeoJSON();
+                const geometry = geojson.geometry;
 
                 if (geometry) {
                     this.geometryJson = JSON.stringify(geometry);
                     this.hasGeometry = true;
+                    this.coordinates = {
+                        lat: Number(geojson.properties?.lat || config.center[0]).toFixed(6),
+                        lng: Number(geojson.properties?.lng || config.center[1]).toFixed(6)
+                    };
+
+                    // Update coordinates for Point
+                    if (geometry.type === 'Point') {
+                        this.coordinates = {
+                            lat: Number(geometry.coordinates[1]).toFixed(6),
+                            lng: Number(geometry.coordinates[0]).toFixed(6)
+                        };
+                    }
 
                     // Calculate area if it's a polygon
-                    if (geometry.type === 'Polygon') {
+                    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
                         this.calculateArea(layer);
                     }
                 }
             },
 
             calculateArea(layer) {
+                // Use L.GeometryUtil if available, otherwise approximation
+                // For MultiPolygon, we might need to sum areas of parts
+                // But simpler is to rely on the layer's getLatLngs
+                
+                let areaSqMeters = 0;
+                
                 if (layer instanceof L.Polygon) {
-                    const latlngs = layer.getLatLngs()[0];
-                    const areaSqMeters = L.GeometryUtil.geodesicArea(latlngs);
-                    const areaHectares = (areaSqMeters / 10000).toFixed(4);
+                    const latlngs = layer.getLatLngs();
+                    // Check if it's a MultiPolygon or Polygon with holes
+                    // Leaflet structure:
+                    // Simple Polygon: [latlngs]
+                    // Polygon with holes: [outer, hole1, hole2]
+                    // MultiPolygon: [[outer, hole], [outer]]
                     
-                    // Dispatch event for parent components
-                    this.$dispatch('area-calculated', areaHectares);
+                    // Helper to calculate area of a ring (array of latlngs)
+                    const ringArea = (ring) => L.GeometryUtil.geodesicArea(ring);
+                    
+                    // Recursive helper to handle nested arrays
+                    const processLatLngs = (coords) => {
+                        if (coords.length === 0) return;
+                        
+                        // Check depth
+                        if (coords[0] instanceof L.LatLng) {
+                            // It's a ring
+                            areaSqMeters += ringArea(coords);
+                        } else if (Array.isArray(coords[0])) {
+                            // It's an array of rings or polygons
+                            coords.forEach(child => processLatLngs(child));
+                        }
+                    };
+                    
+                    processLatLngs(latlngs);
                 }
+
+                const areaHectares = (areaSqMeters / 10000).toFixed(4);
+                
+                // Dispatch event for parent components
+                this.$dispatch('area-calculated', areaHectares);
             },
 
             clearDrawing() {
@@ -419,29 +434,66 @@
             },
 
             loadExistingGeometry(geometry) {
-                let layer;
-                
-                if (geometry.type === 'Point') {
-                    const [lng, lat] = geometry.coordinates;
-                    layer = L.marker([lat, lng]);
-                    this.coordinates = {
-                        lat: Number(lat).toFixed(6),
-                        lng: Number(lng).toFixed(6)
-                    };
-                } else if (geometry.type === 'LineString') {
-                    const latlngs = geometry.coordinates.map(coord => [coord[1], coord[0]]);
-                    layer = L.polyline(latlngs, { color: '#3388ff' });
-                } else if (geometry.type === 'Polygon') {
-                    const latlngs = geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
-                    layer = L.polygon(latlngs, { color: '#3388ff', fillOpacity: 0.2 });
-                }
+                // Use L.geoJSON to create the layer correctly for any geometry type
+                const tempLayer = L.geoJSON(geometry, {
+                    style: {
+                        color: '#3388ff',
+                        fillOpacity: 0.2,
+                        weight: 3
+                    },
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng);
+                    }
+                });
 
-                if (layer) {
-                    layer.addTo(this.drawnItems);
-                    this.map.fitBounds(layer.getBounds());
+                const layers = tempLayer.getLayers();
+                if (layers.length > 0) {
+                    const layer = layers[0];
+                    
+                    // If it's a MultiPolygon, L.geoJSON might return a FeatureGroup or a single L.Polygon depending on implementation
+                    // But usually for single geometry it returns one layer.
+                    // If it's a FeatureGroup (e.g. GeometryCollection), we might need to handle differently.
+                    // But for standard Point/Line/Polygon/Multi types, it's usually one layer.
+                    
+                    // However, for MultiPolygon, Leaflet might create a layer that doesn't fully behave like a simple Polygon in Draw
+                    // But let's try adding it.
+                    
+                    // If the layer is a group (e.g. MultiPoint), extract children?
+                    // For now, assume simple geometry or handled by Leaflet.
+                    
+                    // Important: For editing to work, we need to add the layer to drawnItems
+                    // If it's a FeatureGroup, we might need to add its children.
+                    
+                    if (layer instanceof L.LayerGroup) {
+                        layer.eachLayer(l => {
+                            l.addTo(this.drawnItems);
+                        });
+                    } else {
+                        layer.addTo(this.drawnItems);
+                    }
+
+                    this.map.fitBounds(tempLayer.getBounds());
                     this.hasGeometry = true;
-                    // Ensure geometryJson is set when loading existing geometry
                     this.geometryJson = JSON.stringify(geometry);
+                    
+                    // Update coordinates if Point
+                    if (geometry.type === 'Point') {
+                         this.coordinates = {
+                            lat: Number(geometry.coordinates[1]).toFixed(6),
+                            lng: Number(geometry.coordinates[0]).toFixed(6)
+                        };
+                    }
+                    
+                    // Calculate area
+                    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
+                        // For area calculation, we need the layer(s)
+                        // If we added multiple layers (MultiPolygon as Group), we need to sum
+                        if (layer instanceof L.LayerGroup) {
+                            // TODO: Handle area for group
+                        } else {
+                            this.calculateArea(layer);
+                        }
+                    }
                 }
             },
 
@@ -514,7 +566,7 @@
                         event.target.value = ''; // Reset input
                     } catch (error) {
                         console.error('Error parsing GeoJSON:', error);
-                        alert('Gagal membaca file GeoJSON.');
+                        alert('Gagal membaca file GeoJSON: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
