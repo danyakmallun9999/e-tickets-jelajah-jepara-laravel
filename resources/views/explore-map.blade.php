@@ -97,8 +97,19 @@
             <div id="map"></div>
         </div>
 
+        <!-- Mobile Sidebar Toggle (Open) -->
+        <button @click="sidebarOpen = true" 
+                x-show="!sidebarOpen"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="-translate-x-full opacity-0"
+                x-transition:enter-end="translate-x-0 opacity-100"
+                class="absolute top-4 left-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-slate-600 hover:text-blue-600 transition md:hidden">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
         <!-- Floating Sidebar -->
-        <div class="absolute top-0 left-0 h-full w-full md:w-[420px] z-10 p-4 md:p-6 pointer-events-none flex flex-col">
+        <div class="absolute top-0 left-0 h-full w-full md:w-[420px] z-10 p-4 md:p-6 pointer-events-none flex flex-col transition-transform duration-300 ease-in-out"
+             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
             <!-- Header & Search -->
             <div class="glass-panel rounded-3xl p-5 shadow-2xl shadow-slate-200/50 pointer-events-auto flex flex-col max-h-full">
                 
@@ -109,11 +120,15 @@
                             <i class="fa-solid fa-arrow-left"></i>
                         </a>
                         <div>
-                            <h1 class="text-lg font-bold text-slate-800 leading-tight">Peta Desa Mayong Lor</h1>
-                            <p class="text-xs text-slate-500">Eksplorasi Data Spasial</p>
+                            <h1 class="text-lg font-bold text-slate-800 leading-tight">Peta Desa</h1>
+                            <p class="text-xs text-slate-500">Mayong Lor</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
+                        <!-- Mobile Close Button -->
+                        <button @click="sidebarOpen = false" class="p-2 text-slate-400 hover:text-red-500 transition md:hidden" title="Tutup Menu">
+                            <i class="fa-solid fa-times text-lg"></i>
+                        </button>
                         <button @click="resetView()" class="p-2 text-slate-400 hover:text-slate-600 transition" title="Reset View">
                             <i class="fa-solid fa-compress"></i>
                         </button>
@@ -401,6 +416,7 @@
                 selectedCategories: [],
                 
                 // Toggles
+                sidebarOpen: window.innerWidth >= 768,
                 showBoundaries: true,
                 showInfrastructures: true,
                 showLandUses: true,
