@@ -53,6 +53,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     
     // Interactive Map route
     Route::get('/map', [MapController::class, 'index'])->name('map.index');
+
+    // Population routes
+    Route::get('/population', [\App\Http\Controllers\PopulationController::class, 'index'])->name('population.index');
+    Route::get('/population/edit', [\App\Http\Controllers\PopulationController::class, 'edit'])->name('population.edit');
+    Route::put('/population', [\App\Http\Controllers\PopulationController::class, 'update'])->name('population.update');
 });
 
 Route::middleware('auth')->group(function () {

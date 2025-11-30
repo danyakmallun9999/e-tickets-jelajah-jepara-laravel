@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -82,55 +84,57 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
             <img src="/images/balaidesa.jpeg" alt="Desa Mayong Lor" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/80"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/95 via-slate-900/60 to-slate-900/90"></div>
         </div>
 
         <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             
             <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium tracking-wide mb-8 animate-fade-in-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-xs sm:text-sm font-medium tracking-wide mb-6 sm:mb-8 animate-fade-in-up">
                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                 Sistem Informasi Geografis Desa Cerdas
             </div>
 
             <!-- Main Title -->
-            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6 drop-shadow-lg">
-                Jelajahi Potensi <br>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-4 sm:mb-6 drop-shadow-lg">
+                Jelajahi Potensi <br class="hidden sm:block">
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-200">
                     Desa Mayong Lor
                 </span>
             </h1>
 
-            <p class="mt-6 text-xl text-slate-200 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+            <p class="mt-4 sm:mt-6 text-base sm:text-xl text-slate-200 max-w-2xl mx-auto leading-relaxed drop-shadow-md px-2">
                 Platform pemetaan digital terintegrasi untuk transparansi data, pembangunan infrastruktur, dan pelayanan publik yang lebih baik.
             </p>
 
             <!-- Search Bar -->
-            <div class="mt-12 max-w-3xl mx-auto" x-data="{ query: '' }">
+            <div class="mt-8 sm:mt-12 max-w-3xl mx-auto" x-data="{ query: '' }">
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-green-400 to-emerald-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative flex items-center bg-white rounded-full p-2 shadow-2xl">
-                        <div class="flex-shrink-0 pl-4 pr-2 text-slate-400">
-                            <i class="fa-solid fa-search text-lg"></i>
+                    <div class="relative flex flex-col sm:flex-row items-center bg-white rounded-3xl sm:rounded-full p-2 shadow-2xl gap-2 sm:gap-0">
+                        <div class="flex items-center w-full sm:flex-1">
+                            <div class="flex-shrink-0 pl-4 pr-2 text-slate-400">
+                                <i class="fa-solid fa-search text-lg"></i>
+                            </div>
+                            <input type="text" 
+                                   x-model="query"
+                                   @keydown.enter="window.location.href = '{{ route('explore.map') }}?q=' + query"
+                                   class="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 placeholder-slate-400 text-base sm:text-lg h-10 sm:h-12 w-full"
+                                   placeholder="Cari lokasi...">
                         </div>
-                        <input type="text" 
-                               x-model="query"
-                               @keydown.enter="window.location.href = '{{ route('explore.map') }}?q=' + query"
-                               class="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 placeholder-slate-400 text-lg h-12"
-                               placeholder="Cari lokasi, fasilitas, atau alamat...">
                         <button @click="window.location.href = '{{ route('explore.map') }}?q=' + query" 
-                                class="flex-shrink-0 bg-green-600 text-white px-8 py-3 rounded-full font-bold hover:bg-green-700 transition shadow-lg hover:shadow-green-600/30">
+                                class="w-full sm:w-auto flex-shrink-0 bg-green-600 text-white px-6 py-2.5 sm:px-8 sm:py-3 rounded-full font-bold hover:bg-green-700 transition shadow-lg hover:shadow-green-600/30 text-sm sm:text-base">
                             Cari
                         </button>
                     </div>
                 </div>
                 
                 <!-- Quick Tags -->
-                <div class="mt-6 flex flex-wrap justify-center gap-3 text-sm text-white/80">
+                <div class="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 text-xs sm:text-sm text-white/80">
                     <span>Pencarian Populer:</span>
                     <a href="{{ route('explore.map') }}?q=Balai Desa" class="hover:text-white hover:underline decoration-green-400 underline-offset-4 transition">Balai Desa</a>
                     <span class="text-white/30">•</span>
@@ -141,22 +145,22 @@
             </div>
 
             <!-- Glass Stats -->
-            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition cursor-default">
-                    <p class="text-3xl font-bold text-white">{{ $totalPlaces }}+</p>
-                    <p class="text-xs text-green-200 uppercase tracking-wider mt-1">Lokasi</p>
+            <div class="mt-12 sm:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 text-center hover:bg-white/20 transition cursor-default">
+                    <p class="text-2xl sm:text-3xl font-bold text-white">{{ $totalPlaces }}+</p>
+                    <p class="text-[10px] sm:text-xs text-green-200 uppercase tracking-wider mt-1">Lokasi</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition cursor-default">
-                    <p class="text-3xl font-bold text-white">{{ $totalCategories }}</p>
-                    <p class="text-xs text-green-200 uppercase tracking-wider mt-1">Kategori</p>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 text-center hover:bg-white/20 transition cursor-default">
+                    <p class="text-2xl sm:text-3xl font-bold text-white">{{ $totalCategories }}</p>
+                    <p class="text-[10px] sm:text-xs text-green-200 uppercase tracking-wider mt-1">Kategori</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition cursor-default">
-                    <p class="text-3xl font-bold text-white">100%</p>
-                    <p class="text-xs text-green-200 uppercase tracking-wider mt-1">Akurat</p>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 text-center hover:bg-white/20 transition cursor-default">
+                    <p class="text-2xl sm:text-3xl font-bold text-white">100%</p>
+                    <p class="text-[10px] sm:text-xs text-green-200 uppercase tracking-wider mt-1">Akurat</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition cursor-default">
-                    <p class="text-3xl font-bold text-white">24/7</p>
-                    <p class="text-xs text-green-200 uppercase tracking-wider mt-1">Akses</p>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 text-center hover:bg-white/20 transition cursor-default flex flex-col justify-center items-center">
+                    <p class="text-2xl sm:text-3xl font-bold text-white">24/7</p>
+                    <p class="text-[10px] sm:text-xs text-green-200 uppercase tracking-wider mt-1 leading-tight">Akses Data Online</p>
                 </div>
             </div>
         </div>
@@ -164,6 +168,49 @@
         <!-- Scroll Down Indicator -->
         <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
             <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Demography Section -->
+    <section id="demography" class="py-16 bg-white border-b border-slate-100">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <p class="text-green-600 font-bold uppercase tracking-wider text-sm mb-3">Demografi Desa</p>
+                <h2 class="text-3xl font-bold text-slate-900">Data Kependudukan Terkini</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:shadow-lg transition">
+                    <div class="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4">
+                        <i class="fa-solid fa-users text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-slate-900 mb-1">{{ number_format($population->total_population ?? 0) }}</p>
+                    <p class="text-sm text-slate-500 font-medium">Total Penduduk</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:shadow-lg transition">
+                    <div class="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-4">
+                        <i class="fa-solid fa-house-user text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-slate-900 mb-1">{{ number_format($population->total_families ?? 0) }}</p>
+                    <p class="text-sm text-slate-500 font-medium">Kepala Keluarga</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:shadow-lg transition">
+                    <div class="w-12 h-12 mx-auto bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-4">
+                        <i class="fa-solid fa-male text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-slate-900 mb-1">{{ number_format($population->total_male ?? 0) }}</p>
+                    <p class="text-sm text-slate-500 font-medium">Laki-laki</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:shadow-lg transition">
+                    <div class="w-12 h-12 mx-auto bg-pink-100 rounded-full flex items-center justify-center text-pink-600 mb-4">
+                        <i class="fa-solid fa-female text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-slate-900 mb-1">{{ number_format($population->total_female ?? 0) }}</p>
+                    <p class="text-sm text-slate-500 font-medium">Perempuan</p>
+                </div>
+            </div>
+
+            <!-- Charts Removed -->
         </div>
     </section>
 
@@ -176,7 +223,7 @@
                         <img src="/images/balaidesa.jpeg" alt="Profil Desa" class="w-full h-[500px] object-cover">
                     </div>
                     <!-- Experience Badge -->
-                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-[2rem] shadow-xl max-w-xs">
+                    <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-right-6 bg-white p-6 rounded-[2rem] shadow-xl max-w-xs w-[90%] sm:w-auto text-center sm:text-left">
                         <p class="text-4xl font-bold text-green-600 mb-1">24/7</p>
                         <p class="text-slate-600 font-medium leading-tight">Akses data informasi publik secara online.</p>
                     </div>
@@ -432,6 +479,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
 
     <script>
         function mapComponent() {

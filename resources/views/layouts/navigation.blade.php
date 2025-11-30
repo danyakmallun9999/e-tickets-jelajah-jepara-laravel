@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('admin.map.index')" :active="request()->routeIs('admin.map.*')">
                         <i class="fa-solid fa-map mr-1"></i> Peta Interaktif
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.population.index')" :active="request()->routeIs('admin.population.*')">
+                        <i class="fa-solid fa-users mr-1"></i> Kependudukan
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -75,6 +78,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.map.index')" :active="request()->routeIs('admin.map.*')">
                 <i class="fa-solid fa-map mr-1"></i> Peta Interaktif
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.population.index')" :active="request()->routeIs('admin.population.*')">
+                <i class="fa-solid fa-users mr-1"></i> Kependudukan
             </x-responsive-nav-link>
         </div>
 
