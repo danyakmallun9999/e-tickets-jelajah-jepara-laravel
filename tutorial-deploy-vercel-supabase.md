@@ -104,7 +104,19 @@ Pastikan folder build aset **tidak** di-ignore agar tampilan web tidak berantaka
 # /public/build  <-- Pastikan ada tanda pagar (#) atau hapus baris ini
 ```
 
-### 5. Build Aset Frontend
+### 5. Force HTTPS di `AppServiceProvider`
+Vercel terkadang menganggap aplikasi berjalan di HTTP biasa (Mixed Content), menyebabkan CSS tidak termuat. Edit file `app/Providers/AppServiceProvider.php` dan tambahkan kode ini di method `boot()`:
+
+```php
+public function boot(): void
+{
+    if($this->app->environment('production')) {
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+    }
+}
+```
+
+### 6. Build Aset Frontend
 Jalankan perintah ini di terminal lokal Anda sebelum push ke GitHub:
 
 ```bash
@@ -182,6 +194,66 @@ Karena Vercel tidak bisa menjalankan command `php artisan` secara langsung via t
 4.  **Error "No Output Directory named 'dist'"**:
     *   Penyebab: Vercel bingung folder outputnya dimana.
     *   Solusi: Tambahkan `"outputDirectory": "public"` di `vercel.json`.
+
+---
+
+## Bagian 5: Konfigurasi Image Storage (Supabase Storage)
+
+Vercel menggunakan *ephemeral filesystem*, artinya file yang di-upload ke folder `storage/app/public` akan hilang dalam beberapa saat. Kita harus menggunakan layanan eksternal seperti **Supabase Storage**.
+
+### 1. Buat Bucket di Supabase
+1.  Masuk ke Dashboard Supabase > **Storage**.
+2.  Klik **New Bucket**.
+3.  Beri nama `uploads`.
+4.  Pastikan toggle **Public bucket** AKTIF.
+5.  Klik **Save**.
+
+### 2. Install Driver S3
+Jalankan perintah ini di terminal lokal:
+```bash
+composer require league/flysystem-aws-s3-v3 "^3.0"
+```
+
+### 3. Update `config/filesystems.php`
+Tambahkan konfigurasi disk `supabase` di dalam array `disks`:
+
+```php
+'supabase' => [
+    'driver' => 's3',
+    'key' => env('SUPABASE_ACCESS_KEY_ID'),
+    'secret' => env('SUPABASE_SECRET_ACCESS_KEY'),
+    'region' => env('SUPABASE_REGION'),
+    'bucket' => env('SUPABASE_BUCKET'),
+    'url' => env('SUPABASE_URL'),
+    'endpoint' => env('SUPABASE_ENDPOINT'),
+    'use_path_style_endpoint' => true,
+    'throw' => false,
+    'report' => false,
+],
+```
+
+### 4. Tambahkan Environment Variables di Vercel
+Masuk ke Dashboard Vercel > Settings > Environment Variables, dan tambahkan:
+
+| Key | Value | Cara Mendapatkan |
+| :--- | :--- | :--- |
+| `FILESYSTEM_DISK` | `supabase` | - |
+| `SUPABASE_ACCESS_KEY_ID` | `...` | Project Settings > Storage > Access Key |
+| `SUPABASE_SECRET_ACCESS_KEY` | `...` | Project Settings > Storage > Secret Key |
+| `SUPABASE_REGION` | `ap-southeast-1` | Lihat di URL endpoint (misal: `...s3.ap-southeast-1...`) |
+| `SUPABASE_BUCKET` | `uploads` | Nama bucket yang Anda buat |
+| `SUPABASE_URL` | `https://[ref-project].supabase.co/storage/v1/object/public/uploads` | URL publik bucket Anda |
+| `SUPABASE_ENDPOINT` | `https://[ref-project].supabase.co/storage/v1/s3` | Project Settings > Storage > Endpoint |
+
+### 5. Update Kode Upload (Contoh)
+Di Controller Laravel Anda, gunakan disk publik:
+
+```php
+$path = $request->file('image')->store('images', 'public'); 
+// Ubah menjadi:
+$path = $request->file('image')->store('images', 'supabase');
+```
+Atau jika default disk sudah diubah ke `supabase` di env, cukup `store('images')`.
 
 ---
 *Tutorial ini dibuat berdasarkan keberhasilan deployment pada tanggal 18 Desember 2025.*
