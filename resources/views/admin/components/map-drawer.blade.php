@@ -161,11 +161,24 @@
             drawControl: null,
             drawnItems: null,
             drawingMode: null,
-            geometryJson: config.initialGeometry ? JSON.stringify(config.initialGeometry) : '',
+            geometryJson: (function() {
+                if (!config.initialGeometry) return '';
+                // Handle case where initialGeometry is already a JSON string (e.g. from old input)
+                if (typeof config.initialGeometry === 'string') {
+                    try {
+                        // Validate if it is parseable, but keep it as string for the input value
+                        JSON.parse(config.initialGeometry);
+                        return config.initialGeometry;
+                    } catch (e) {
+                         // If not parseable JSON, ignore
+                         return '';
+                    }
+                }
+                return JSON.stringify(config.initialGeometry);
+            })(),
             coordinates: { lat: config.center[0], lng: config.center[1] },
             hasGeometry: false,
             uploadedItems: null,
-            uploadedFeatures: [],
             uploadedFeatures: [],
             currentIndex: 0,
             currentDrawHandler: null, // Track active draw handler
@@ -174,7 +187,19 @@
                 this.$nextTick(() => {
                     this.initMap();
                     if (config.initialGeometry) {
-                        this.loadExistingGeometry(config.initialGeometry);
+                        // Ensure we pass an object to loadExistingGeometry
+                        let geom = config.initialGeometry;
+                        if (typeof geom === 'string') {
+                            try {
+                                geom = JSON.parse(geom);
+                            } catch (e) {
+                                console.error('Failed to parse initialGeometry string:', e);
+                                geom = null;
+                            }
+                        }
+                        if (geom) {
+                            this.loadExistingGeometry(geom);
+                        }
                     }
                 });
             },
