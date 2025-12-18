@@ -3,17 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>GIS Village Landing Page - {{ config('app.name', 'Mayong Lor') }}</title>
+    <title>Sistem Informasi Geografis - {{ config('app.name', 'Desa Mayong Lor') }}</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <!-- Leaflet & Icon -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local assets handled by Vite -->
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -37,6 +30,16 @@
             70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-display antialiased transition-colors duration-200" x-data="mapComponent()">
@@ -50,13 +53,14 @@
                     <div class="flex items-center justify-center size-10 rounded-full bg-primary/20 text-primary-dark dark:text-primary transition-colors group-hover:bg-primary/30">
                         <span class="material-symbols-outlined">terrain</span>
                     </div>
-                    <h2 class="text-xl font-bold leading-tight tracking-tight">Green Valley</h2>
+                    <h2 class="text-xl font-bold leading-tight tracking-tight">Desa Mayong Lor</h2>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#gis-map">GIS Map</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#news">News</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#catalog">Catalog</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Beranda</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#gis-map">Peta GIS</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#profile">Profil</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#potency">Potensi</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#news">Berita</a>
                 </nav>
             </div>
             
@@ -66,7 +70,7 @@
                     <div class="flex w-full h-full items-center rounded-full bg-surface-light dark:bg-surface-dark px-4 transition-colors focus-within:ring-2 focus-within:ring-primary/50">
                         <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">search</span>
                         <input class="w-full bg-transparent border-none text-sm px-3 text-text-light dark:text-text-dark placeholder-gray-500 focus:ring-0" 
-                               placeholder="Search data, places..." type="text"
+                               placeholder="Cari lokasi, data..." type="text"
                                x-model="searchQuery" 
                                @input.debounce.300ms="performSearch()"
                                @keydown.enter="scrollToMap()"/>
@@ -120,22 +124,22 @@
         <div class="relative overflow-hidden rounded-xl bg-cover bg-center h-[500px] lg:h-[600px] group" 
              style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuBUzMVBQRSSUZkMlQwav98rOWGcfb2D7JypX_GsUqDe-67oKmSJ9Gn7scMij-J5m6OKQGyqZgJXZaLCin2htC9Q-tHKWAyelfgjWeouV_THkWoqG2SMGwxzXDfbwk21ZmAA2NHHvMhegC2rNhgBuC5trbeEFzNOf_zQbQ8JmBya5mDbqEcvIE-8_IFKJEREUWnboBZ5fwNj6SKS1Q2oEeY2UBE8jjYrkYANhSmdr3MKOS22lkYaVfTaQOUzrFlHJIs87Ef9k7AqNyDl');">
             <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                <div class="max-w-3xl space-y-6">
+                <div class="max-w-4xl space-y-6">
                     <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider">
-                        Welcome to Green Valley
+                        Selamat Datang di Sistem Informasi Desa
                     </span>
                     <h1 class="text-white text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-sm">
-                        A Community Mapped<br/>for Everyone.
+                        Desa Mayong Lor<br/>Pusat Gerabah & Sejarah
                     </h1>
                     <p class="text-gray-100 text-lg sm:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
-                        Discover our rich heritage, explore land potential, and stay connected through our interactive village information system.
+                        Menjelajahi potensi warisan budaya, ekonomi kreatif, dan transparansi data spasial untuk kemajuan bersama.
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                        <a class="flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-dark text-background-dark text-base font-bold shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5" href="{{ route('explore.map') }}">
-                            Explore GIS Map
+                        <a class="flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-dark text-white text-base font-bold shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5" href="{{ route('explore.map') }}">
+                            Jelajahi Peta GIS
                         </a>
-                        <a href="#news" class="flex items-center justify-center h-12 px-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white text-base font-bold transition-all">
-                            Learn More
+                        <a href="#profile" class="flex items-center justify-center h-12 px-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white text-base font-bold transition-all">
+                            Profil Desa
                         </a>
                     </div>
                 </div>
@@ -154,8 +158,9 @@
                     <span class="material-symbols-outlined">groups</span>
                 </div>
                 <div>
-                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Population</p>
-                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">{{ number_format($population->total_population ?? 1250) }}</p>
+                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Penduduk</p>
+                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">12,476+</p>
+                    <p class="text-xs text-text-light/50">Jiwa (2023)</p>
                 </div>
             </div>
             <!-- Area -->
@@ -164,29 +169,31 @@
                     <span class="material-symbols-outlined">square_foot</span>
                 </div>
                 <div>
-                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Area (ha)</p>
-                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">{{ number_format( ($totalBoundaries ?? 0) * 10 + 100 ) }}</p> 
-                    <!-- Dummy calculation if data not avail -->
+                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Luas Wilayah</p>
+                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">290.2</p>
+                    <p class="text-xs text-text-light/50">Hektar</p>
                 </div>
             </div>
-            <!-- Households -->
+            <!-- Dukuh -->
             <div class="flex flex-col gap-3 rounded-xl p-6 bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-white/5 transition-colors shadow-sm border border-transparent hover:border-primary/20">
                 <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-dark dark:text-primary">
-                    <span class="material-symbols-outlined">home</span>
+                    <span class="material-symbols-outlined">holiday_village</span>
                 </div>
                 <div>
-                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Households</p>
-                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">{{ number_format($population->total_family ?? 320) }}</p>
+                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Dukuh</p>
+                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">4</p>
+                    <p class="text-xs text-text-light/50">Wilayah</p>
                 </div>
             </div>
-            <!-- Facilities (Replaces Founded) -->
+            <!-- Industry -->
             <div class="flex flex-col gap-3 rounded-xl p-6 bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-white/5 transition-colors shadow-sm border border-transparent hover:border-primary/20">
                 <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-dark dark:text-primary">
-                    <span class="material-symbols-outlined">flag</span>
+                    <span class="material-symbols-outlined">palette</span>
                 </div>
                 <div>
-                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Facilities</p>
-                    <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">{{ $totalPlaces ?? 0 }}</p>
+                    <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">Potensi</p>
+                    <p class="text-text-light dark:text-text-dark text-xl font-bold tracking-tight">Sentra Gerabah</p>
+                    <p class="text-xs text-text-light/50">Nasional</p>
                 </div>
             </div>
         </div>
@@ -366,106 +373,303 @@
     </div>
 </div>
 
-<!-- News & Announcements Grid (Dummy Data as requested) -->
-<div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-16 scroll-mt-20" id="news">
+<!-- Profile Section -->
+<div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-16 scroll-mt-20" id="profile">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl md:text-3xl font-bold text-text-light dark:text-text-dark">Village News &amp; Announcements</h2>
-            <a class="text-primary font-bold hover:underline flex items-center gap-1" href="#">
-                View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- News Card 1 -->
-            <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full">
-                <div class="h-48 overflow-hidden relative">
-                    <div class="absolute top-3 left-3 bg-primary text-background-dark text-xs font-bold px-3 py-1 rounded-full z-10">News</div>
-                    <img alt="Community gathering in a park with tents" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwBBQX_RtcqkH1dvzPt8sfLSmNN3INyBtY96t4JKXIl8wN0okQpf7aSfD1NHqyeJT6hLcR_J1yJcYfMqAnCoL3LNmVFjdQzfCAE4ZPLWL0BXxNmZc5jtf7WZG5RG4bqpYnhG7kh05BWLd7gRvGBQr5P46PmxqnYh518XqJ--i2YE7f1O43mYsbMu0yg88QfFGOKCtf95irXxDl46peV-IicnHkUwh1FE8nUS729tCfifqZq5NFNgeKXZvB6keGE8l_lEfG37LCVAiI"/>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold">
+                    <span class="material-symbols-outlined text-lg">map</span>
+                    <span>Profil Wilayah</span>
                 </div>
-                <div class="p-5 flex-1 flex flex-col">
-                    <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
-                        <span class="material-symbols-outlined text-sm">calendar_today</span>
-                        <span>Oct 24, 2023</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark leading-tight">Geografis & Administrasi</h2>
+                <div class="prose prose-lg text-text-light/80 dark:text-text-dark/80">
+                    <p>
+                        Desa Mayong Lor terletak di Kecamatan Mayong, Kabupaten Jepara, Jawa Tengah. Dengan luas wilayah sekitar <strong>290,195 hektar</strong>, desa ini didominasi oleh dataran rendah yang subur.
+                    </p>
+                    <p>
+                        Secara administratif, wilayah desa terbagi menjadi 4 dukuh utama:
+                    </p>
+                    <ul class="grid grid-cols-2 gap-2 not-prose mt-4">
+                        <li class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
+                            <span class="material-symbols-outlined text-primary">location_on</span> Bendowangin
+                        </li>
+                        <li class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
+                            <span class="material-symbols-outlined text-primary">location_on</span> Krajan
+                        </li>
+                        <li class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
+                            <span class="material-symbols-outlined text-primary">location_on</span> Karangpanggung
+                        </li>
+                        <li class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
+                            <span class="material-symbols-outlined text-primary">location_on</span> Karang
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Right Column: Map & Boundaries -->
+            <div class="relative">
+                <!-- Decorative Elements -->
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-surface-dark bg-surface-light dark:bg-surface-dark group">
+                    <!-- Main Map Image -->
+                    <div class="aspect-[4/3] w-full overflow-hidden bg-gray-200 dark:bg-gray-800 relative">
+                        <img src="https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=2070&auto=format&fit=crop" 
+                             alt="Peta Wilayah Desa" 
+                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                     </div>
-                    <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Annual Harvest Festival</h3>
-                    <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Join us this weekend for the preparation of our biggest event of the year.</p>
-                    <div class="mt-auto">
-                        <a class="text-primary font-bold text-sm hover:underline" href="#">Read Story</a>
+
+                    <!-- Floating Info Card -->
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <div class="bg-white/95 dark:bg-surface-dark/95 backdrop-blur-md rounded-xl p-5 shadow-lg border border-white/20">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 bg-primary/10 rounded-lg text-primary">
+                                    <span class="material-symbols-outlined">share_location</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-text-light dark:text-text-dark text-lg leading-none">Batas Wilayah</h4>
+                                    <span class="text-xs text-text-light/60 dark:text-text-dark/60">Tapal Batas Administratif</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="flex items-center justify-between text-sm py-2 border-b border-dashed border-gray-200 dark:border-gray-700">
+                                    <span class="text-text-light/60 dark:text-text-dark/60">Utara</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark">Desa Pelemkerep</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm py-2 border-b border-dashed border-gray-200 dark:border-gray-700">
+                                    <span class="text-text-light/60 dark:text-text-dark/60">Selatan</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark">Desa Mayong Kidul</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm py-2">
+                                    <span class="text-text-light/60 dark:text-text-dark/60">Barat</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark">Desa Tigajuru</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </article>
-            <!-- More cards... -->
-             <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full">
-                <div class="h-48 overflow-hidden relative">
-                    <div class="absolute top-3 left-3 bg-red-400 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Alert</div>
-                    <img alt="Road maintanance" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWLj65QAHHISSdPjIhHxHPJoGYQjZWPbZI-2aSzOjUi3z5Y4UCKUmU12j-hZDouGaPuWiJb9icYzESmeqRulsGb2T1Q7CO67F9Pf-tx9Kzrxp6SnhbrI9tiggzkKt1POy6smWhDuUZBNkVALHRH2Mns42WcpA-a16jckchGyGI5eBVJHSqccDAF_BavOoUpLtfQZcC5Q17PsUs9U4dmh6SMtdF4K8w7qClVnPBsK0ijzoEd-eaZqOEvP2I60J6FAxpuPuvlnOE9YZu"/>
+
+                <!-- Floating Badge -->
+                <div class="absolute top-6 right-6 bg-white dark:bg-surface-dark px-4 py-2 rounded-full shadow-lg border border-surface-light dark:border-white/10 flex items-center gap-2 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-xs font-bold text-text-light dark:text-text-dark">Zona Dataran Rendah</span>
                 </div>
-                <div class="p-5 flex-1 flex flex-col">
-                    <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
-                        <span class="material-symbols-outlined text-sm">campaign</span>
-                        <span>Oct 20, 2023</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Road Maintenance</h3>
-                    <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Schedule maintenance for North Bridge next Tuesday.</p>
-                    <div class="mt-auto">
-                        <a class="text-primary font-bold text-sm hover:underline" href="#">Read details</a>
-                    </div>
-                </div>
-            </article>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Discovery Section (Catalog) -->
-<div class="w-full py-16 scroll-mt-20" id="catalog">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4">Discover Our Village</h2>
-            <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto">Explore local products, investment opportunities, and beautiful destinations.</p>
+<!-- History Section -->
+<div class="relative w-full py-20 bg-surface-dark overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Jepara_Regency_Coat_of_Arms.svg/1200px-Jepara_Regency_Coat_of_Arms.svg.png')] bg-center bg-no-repeat opacity-5 mix-blend-overlay grayscale bg-contain"></div>
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <span class="material-symbols-outlined text-6xl text-white/20 mb-4">history_edu</span>
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Sejarah & Legenda</h2>
+        <div class="space-y-6 text-lg text-gray-300 leading-relaxed">
+            <p>
+                Nama <strong>"Mayong"</strong> erat kaitannya dengan kisah perjalanan <strong>Ratu Kalinyamat</strong>. 
+                Konon, saat membawa jenazah suaminya, Pangeran Kalinyamat, beliau berjalan dalam kondisi sangat lelah dan sedih.
+            </p>
+            <p>
+                Cara berjalannya yang sempoyongan, atau dalam Bahasa Jawa disebut <em>"moyang-mayong"</em>, 
+                kemudian diabadikan menjadi nama daerah ini. Warisan sejarah ini menjadikan Mayong Lor tidak hanya sekadar desa, 
+                tetapi juga bagian dari tapak tilas sejarah besar Jepara.
+            </p>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Featured Tourism -->
-            <div class="relative group rounded-xl overflow-hidden min-h-[400px] lg:h-full bg-surface-dark">
-                <img alt="Scenic waterfall" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYBwSUC5trP61lf-HgAmOkycJEX_hBAvxWSzCTuGJdsyng8DzTUJ6-x3cKZGHucyplyJ3WV32HGW0H7iUPqRYcgaXEsMC0hHQnqQnxobRatGl7-OHGtUjgHi2gGDhbih62GMdUANJJbrYiZy_Ii-Wl5RTdaTXKOG6PsqaYf1jW1FEPQgWOFtCbXW9ViJF_oV_-0I6d5ItvENi9-30HkL_MQnqSyOIcOTJgOycldwLLcVIXs0xP2EHNrPmw1-xYFH7I9cOZUb5TiH6A"/>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-8 w-full">
-                    <div class="flex items-center gap-2 text-primary mb-2">
-                        <span class="material-symbols-outlined">camera_alt</span>
-                        <span class="text-sm font-bold uppercase tracking-wider">Tourism</span>
+    </div>
+</div>
+
+<!-- Potency Section (Economy) -->
+<div class="w-full py-16 scroll-mt-20" id="potency" x-data="{
+    scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }) },
+    scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }) },
+    checkScroll() {
+        // Optional: logic to hide/show buttons based on scroll position could go here
+    }
+}">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+            <div class="max-w-2xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4">Galeri Produk Unggulan</h2>
+                <p class="text-text-light/70 dark:text-text-dark/70">
+                    Koleksi mahakarya pengrajin Desa Mayong Lor yang merefleksikan keindahan dan kearifan lokal.
+                </p>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex gap-2 shrink-0">
+                <button @click="scrollLeft()" class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button @click="scrollRight()" class="size-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Carousel Container -->
+        <div class="relative -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide" x-ref="container">
+                
+                <!-- Gallery Item 1: Kendi Maling -->
+                <div class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
+                    <img src="https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/13/2023/10/25/IMG-20231024-WA0032-1596700063.jpg" alt="Kendi Maling" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <h3 class="text-white text-xl font-bold mb-1">Kendi Maling</h3>
+                        <p class="text-white/80 text-sm font-light">Ikon Kerajinan Mayong Lor</p>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-3">Hidden Falls</h3>
-                    <p class="text-gray-300 mb-6 max-w-md">Experience the breathtaking beauty of our natural waterfall.</p>
-                    <button class="px-6 py-3 rounded-full bg-white text-background-dark font-bold text-sm hover:bg-primary hover:text-white transition-colors">
-                        View Guide
-                    </button>
+                </div>
+
+                <!-- Gallery Item 2: Vas Terakota -->
+                <div class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1624823183488-297ebceb53cc?q=80&w=2070&auto=format&fit=crop" alt="Vas Terakota" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <h3 class="text-white text-xl font-bold mb-1">Vas Terakota</h3>
+                        <p class="text-white/80 text-sm font-light">Dekorasi Interior Estetik</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3: Set Poci -->
+                <div class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
+                    <img src="https://cdn.antaranews.com/cache/1200x800/2020/10/05/gerabah-mayong-jepara.jpg" alt="Set Poci Teh" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <h3 class="text-white text-xl font-bold mb-1">Set Poci Teh</h3>
+                        <p class="text-white/80 text-sm font-light">Tradisi Minum Teh</p>
+                    </div>
+                </div>
+
+                 <!-- Gallery Item 4: Celengan -->
+                <div class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop" alt="Aneka Souvenir" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <h3 class="text-white text-xl font-bold mb-1">Aneka Souvenir</h3>
+                        <p class="text-white/80 text-sm font-light">Oleh-oleh Khas Desa</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Social & Facilities -->
+<div class="w-full bg-background-light dark:bg-background-dark py-16 border-t border-surface-light dark:border-surface-dark">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
+            <!-- Social -->
+            <div class="flex gap-6 items-start">
+                <div class="size-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-3xl">diversity_3</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Kampung KB Mandiri</h3>
+                    <p class="text-text-light/70 dark:text-text-dark/70 leading-relaxed mb-4">
+                        Desa Mayong Lor telah ditetapkan sebagai <strong>Kampung KB Mandiri</strong> oleh BKKBN, menunjukkan komitmen kuat dalam pembangunan keluarga sejahtera dan pengendalian penduduk.
+                    </p>
+                    <div class="h-1.5 w-full bg-surface-light dark:bg-surface-dark rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-500 w-3/4 rounded-full"></div>
+                    </div>
+                    <span class="text-xs text-text-light/50 mt-1 block">Partisipasi Aktif Masyarakat Tinggi</span>
                 </div>
             </div>
-            <div class="flex flex-col gap-8">
-                <!-- Product -->
-                <div class="flex flex-col sm:flex-row gap-6 p-6 rounded-xl bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-white/5 transition-colors border border-transparent hover:border-primary/20">
-                    <div class="w-full sm:w-1/3 aspect-square sm:aspect-auto rounded-lg overflow-hidden bg-gray-200">
-                        <img alt="Baskets" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYBwSUC5trP61lf-HgAmOkycJEX_hBAvxWSzCTuGJdsyng8DzTUJ6-x3cKZGHucyplyJ3WV32HGW0H7iUPqRYcgaXEsMC0hHQnqQnxobRatGl7-OHGtUjgHi2gGDhbih62GMdUANJJbrYiZy_Ii-Wl5RTdaTXKOG6PsqaYf1jW1FEPQgWOFtCbXW9ViJF_oV_-0I6d5ItvENi9-30HkL_MQnqSyOIcOTJgOycldwLLcVIXs0xP2EHNrPmw1-xYFH7I9cOZUb5TiH6A"/>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-center">
-                        <span class="text-xs font-bold text-primary uppercase mb-1">Catalog</span>
-                        <h4 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">Woven Baskets</h4>
-                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4">Handcrafted by local artisans.</p>
-                        <a class="text-sm font-bold underline decoration-primary/50 hover:decoration-primary" href="#">View Product</a>
-                    </div>
+
+            <!-- Education -->
+            <div class="flex gap-6 items-start">
+                <div class="size-14 rounded-2xl bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-3xl">school</span>
                 </div>
-                <!-- Potential -->
-                <div class="flex flex-col sm:flex-row gap-6 p-6 rounded-xl bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-white/5 transition-colors border border-transparent hover:border-primary/20">
-                    <div class="w-full sm:w-1/3 aspect-square sm:aspect-auto rounded-lg overflow-hidden bg-gray-200">
-                         <img alt="Land" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUZkgWrMRK3fKXC-eP1nG5d2MjqgoraRNXin7VB3GbfgWeOBNM8w8QYkoEv4fsTd5NF2F5IgAa2dwZ8YbovxYp1V4P-d5XBDjvb3wne0pgID5Z8oa_-eEfmrCvhGaj5BLbMMhF_quCQtx-MjU0cnB5e4uEizBP3XwpUtz-SMJOjkEMRNpLaO2dAW10u-CdAZ1nUFtkE97jvXffZ1Uvp5NIvouW9DCMGcaZS0MKdJ_Q2y_1oe7QhLjeXRFwDx0hb7cYFXNqXJ4poTPr"/>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-center">
-                        <span class="text-xs font-bold text-primary uppercase mb-1">Potential</span>
-                        <h4 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">Eco-Tourism Land</h4>
-                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4">Prime location for investment.</p>
-                        <a class="text-sm font-bold underline decoration-primary/50 hover:decoration-primary" href="#">View Opportunity</a>
-                    </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Fasilitas Pendidikan</h3>
+                    <p class="text-text-light/70 dark:text-text-dark/70 leading-relaxed mb-4">
+                        Tersedia fasilitas pendidikan lengkap untuk menunjang kualitas SDM, mulai dari tingkat dasar (SD Negeri) hingga menengah kejuruan seperti <strong>SMK Al-Anwar</strong>.
+                    </p>
+                    <ul class="flex gap-4">
+                         <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> SD Negeri
+                         </li>
+                         <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> Madrasah
+                         </li>
+                         <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> SMK
+                         </li>
+                    </ul>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Berita & Pengumuman -->
+<div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-16 scroll-mt-20 border-t border-surface-light dark:border-surface-dark transition-colors duration-200" id="news">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light dark:text-text-dark">Berita & Pengumuman</h2>
+            <a class="text-primary font-bold hover:underline flex items-center gap-1" href="#">
+                Lihat Semua <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- News Card 1 -->
+            <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full z-10">Agenda</div>
+                    <img alt="Kegiatan Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwBBQX_RtcqkH1dvzPt8sfLSmNN3INyBtY96t4JKXIl8wN0okQpf7aSfD1NHqyeJT6hLcR_J1yJcYfMqAnCoL3LNmVFjdQzfCAE4ZPLWL0BXxNmZc5jtf7WZG5RG4bqpYnhG7kh05BWLd7gRvGBQr5P46PmxqnYh518XqJ--i2YE7f1O43mYsbMu0yg88QfFGOKCtf95irXxDl46peV-IicnHkUwh1FE8nUS729tCfifqZq5NFNgeKXZvB6keGE8l_lEfG37LCVAiI"/>
+                </div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
+                        <span class="material-symbols-outlined text-sm">calendar_today</span>
+                        <span>24 Okt 2025</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Musyawarah Desa</h3>
+                    <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Pembahasan rencana pembangunan infrastruktur tahun anggaran 2026.</p>
+                    <div class="mt-auto">
+                        <a class="text-primary font-bold text-sm hover:underline" href="#">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </article>
+            <!-- More cards... -->
+             <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Penting</div>
+                    <img alt="Perbaikan Jalan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWLj65QAHHISSdPjIhHxHPJoGYQjZWPbZI-2aSzOjUi3z5Y4UCKUmU12j-hZDouGaPuWiJb9icYzESmeqRulsGb2T1Q7CO67F9Pf-tx9Kzrxp6SnhbrI9tiggzkKt1POy6smWhDuUZBNkVALHRH2Mns42WcpA-a16jckchGyGI5eBVJHSqccDAF_BavOoUpLtfQZcC5Q17PsUs9U4dmh6SMtdF4K8w7qClVnPBsK0ijzoEd-eaZqOEvP2I60J6FAxpuPuvlnOE9YZu"/>
+                </div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
+                        <span class="material-symbols-outlined text-sm">campaign</span>
+                        <span>20 Okt 2025</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Perbaikan Jalan Poros</h3>
+                    <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Akan dilakukan pengaspalan ulang di jalan utama dukuh Krajan mulai minggu depan.</p>
+                    <div class="mt-auto">
+                        <a class="text-primary font-bold text-sm hover:underline" href="#">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </article>
+            <!-- Card 3 -->
+             <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Prestasi</div>
+                    <img alt="Lomba Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"/>
+                </div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
+                        <span class="material-symbols-outlined text-sm">emoji_events</span>
+                        <span>15 Okt 2025</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Juara 1 Lomba Kebersihan</h3>
+                    <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Desa Mayong Lor meraih penghargaan desa terbersih se-Kecamatan Mayong.</p>
+                    <div class="mt-auto">
+                        <a class="text-primary font-bold text-sm hover:underline" href="#">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 </div>
@@ -475,27 +679,27 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div class="space-y-4">
-                <h2 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">terrain</span> Green Valley</h2>
-                <p class="text-text-light/60 text-sm">Empowering our village through transparent data and shared resources.</p>
+                <h2 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">terrain</span> Desa Mayong Lor</h2>
+                <p class="text-text-light/60 text-sm">Memberdayakan desa melalui transparansi data dan gotong royong masyarakat.</p>
             </div>
             <!-- Quick Links -->
             <div>
-                 <h3 class="font-bold mb-4">Quick Links</h3>
+                 <h3 class="font-bold mb-4">Tautan Cepat</h3>
                  <ul class="space-y-2 text-sm text-text-light/70">
-                    <li><a href="#" class="hover:text-primary">About Us</a></li>
-                    <li><a href="#" class="hover:text-primary">Public Services</a></li>
+                    <li><a href="#" class="hover:text-primary">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-primary">Layanan Publik</a></li>
+                    <li><a href="{{ route('login') }}" class="hover:text-primary">Login Admin</a></li>
                  </ul>
             </div>
         </div>
         <div class="border-t border-text-light/10 pt-8 text-center text-xs text-text-light/50">
-            &copy; 2025 Green Valley Village Government. All rights reserved.
+            &copy; 2025 Pemerintah Desa Mayong Lor. All rights reserved.
         </div>
     </div>
 </footer>
 
 <!-- JS Logic from Old File -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- JS Logic from Old File -->
 <script>
     function mapComponent() {
         return {
@@ -667,7 +871,7 @@
                     const color = p.category ? p.category.color : '#3b82f6';
                     
                     const iconHtml = `
-                        <div class="w-9 h-9 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-sm custom-marker bg-gradient-to-br from-[${color}] to-slate-600" style="background-color: ${color}">
+                        <div class="w-9 h-9 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-sm custom-marker" style="background: linear-gradient(to bottom right, ${color}, #475569);">
                             <i class="${p.category?.icon_class ?? 'fa-solid fa-map-marker-alt'}"></i>
                         </div>
                     `;

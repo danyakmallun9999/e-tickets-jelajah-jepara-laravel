@@ -51,7 +51,7 @@ Ikuti langkah-langkah berikut untuk menjalankan project di komputer lokal Anda:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/username/landing-page-mayonglor-gis.git
+git clone https://github.com/danyakmallun9999/landing-page-mayonglor-gis.git
 cd landing-page-mayonglor-gis
 ```
 
