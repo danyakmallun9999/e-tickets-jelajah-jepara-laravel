@@ -265,8 +265,12 @@
                     position: 'topright',
                     draw: {
                         polygon: {
-                            allowIntersection: false,
-                            showArea: true
+                            allowIntersection: true,
+                            showArea: true,
+                            drawError: {
+                                color: '#e1e100', // Color the shape will turn when intersects
+                                message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                            },
                         },
                         polyline: {
                             metric: true
