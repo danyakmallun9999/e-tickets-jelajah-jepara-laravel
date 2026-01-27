@@ -36,8 +36,8 @@
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}">Beranda</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}#gis-map">Peta GIS</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}#profile">Profil</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}#potency">Potensi</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}#news">Berita</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors {{ request()->routeIs('places.*') ? 'text-primary font-bold' : '' }}" href="{{ route('places.index') }}">Destinasi</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors {{ request()->routeIs('posts.*') ? 'text-primary font-bold' : '' }}" href="{{ route('posts.index') }}">Berita</a>
                     </nav>
                 </div>
 
@@ -82,10 +82,10 @@
                             GIS</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors p-2"
                             href="{{ route('welcome') }}#profile">Profil</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors p-2"
-                            href="{{ route('welcome') }}#potency">Potensi</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors p-2"
-                            href="{{ route('welcome') }}#news">Berita</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors p-2 {{ request()->routeIs('places.*') ? 'text-primary font-bold' : '' }}"
+                            href="{{ route('places.index') }}">Destinasi</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors p-2 {{ request()->routeIs('posts.*') ? 'text-primary font-bold' : '' }}"
+                            href="{{ route('posts.index') }}">Berita</a>
                     </nav>
 
                     <div class="border-t border-surface-light dark:border-surface-dark pt-4">
