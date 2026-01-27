@@ -90,7 +90,7 @@
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}">Beranda</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="#gis-map">Peta GIS</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="#profile">Profil</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" href="#potency">Potensi</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('places.index') }}">Destinasi</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('posts.index') }}">Berita</a>
                     </nav>
                 </div>
@@ -170,7 +170,7 @@
                         <a class="text-sm font-medium hover:text-primary transition-colors p-2"
                             href="#profile">Profil</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors p-2"
-                            href="#potency">Potensi</a>
+                            href="{{ route('places.index') }}">Destinasi</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors p-2"
                             href="{{ route('posts.index') }}">Berita</a>
                     </nav>
@@ -852,6 +852,9 @@
                     <p class="text-text-light/70 dark:text-text-dark/70 text-lg leading-relaxed">
                         Jelajahi keindahan alam, kekayaan budaya, dan sejarah yang memukau di Bumi Kartini.
                     </p>
+                    <a href="{{ route('places.index') }}" class="inline-flex items-center gap-1 text-primary font-bold mt-4 hover:underline">
+                        Lihat Semua Destinasi <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </a>
                 </div>
                 <!-- Navigation Buttons -->
                 <div class="flex gap-2 shrink-0">

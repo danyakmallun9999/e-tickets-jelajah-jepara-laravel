@@ -208,6 +208,14 @@ class WelcomeController extends Controller
         return view('public.posts.show', compact('post', 'relatedPosts', 'recommendedPlaces'));
     }
 
+    public function places()
+    {
+        $categories = \App\Models\Category::withCount('places')->get();
+        $places = \App\Models\Place::with('category')->latest()->paginate(9);
+
+        return view('public.places.index', compact('places', 'categories'));
+    }
+
     public function showProduct(\App\Models\Product $product)
     {
         return view('public.products.show', compact('product'));

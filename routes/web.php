@@ -21,6 +21,7 @@ Route::get('/land-uses.geojson', [WelcomeController::class, 'landUsesGeoJson'])-
 Route::get('/berita', [WelcomeController::class, 'posts'])->name('posts.index');
 Route::get('/berita/{post:slug}', [WelcomeController::class, 'showPost'])->name('posts.show');
 Route::get('/produk/{product:slug}', [WelcomeController::class, 'showProduct'])->name('products.show');
+Route::get('/destinasi', [WelcomeController::class, 'places'])->name('places.index');
 Route::get('/destinasi/{place:slug}', [WelcomeController::class, 'showPlace'])->name('places.show');
 
 Route::get('/dashboard', function () {
