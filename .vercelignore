@@ -1,7 +1,0 @@
-.env
-/node_modules
-/tests
-/storage/*.key
-/storage/logs
-phpunit.xml
-README.md

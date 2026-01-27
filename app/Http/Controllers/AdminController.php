@@ -172,11 +172,7 @@ class AdminController extends Controller
         $disk = env('FILESYSTEM_DISK', 'public');
         $path = $request->file('image')->store('places', $disk);
 
-        if ($disk === 'supabase') {
-             return Storage::disk('supabase')->url($path);
-        }
-
-        return 'storage/' . $path;
+        return Storage::disk($disk)->url($path);
     }
 
     protected function deleteImage(?string $path): void
@@ -187,18 +183,18 @@ class AdminController extends Controller
 
         $disk = env('FILESYSTEM_DISK', 'public');
 
-        // Handle Supabase URL format
-        if ($disk === 'supabase') {
-            $path = parse_url($path, PHP_URL_PATH);
-             // Remove the bucket prefix if it exists in the path
-             $path = ltrim($path, '/');
-             $path = str_replace('storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/', '', $path);
-        } else {
-             $path = str_replace('storage/', '', $path);
+        // Extract relative path from URL if needed
+        // This is a basic implementation. For a robust solution, consider storing only filenames in DB.
+        $relativePath = str_replace(Storage::disk($disk)->url(''), '', $path);
+        
+        // Fallback for local storage without full URL
+        if ($relativePath === $path && $disk === 'public') {
+             $relativePath = str_replace('/storage/', '', $path);
+             $relativePath = str_replace('storage/', '', $relativePath);
         }
 
-        if (Storage::disk($disk)->exists($path)) {
-            Storage::disk($disk)->delete($path);
+        if (Storage::disk($disk)->exists($relativePath)) {
+            Storage::disk($disk)->delete($relativePath);
         }
     }
 }
