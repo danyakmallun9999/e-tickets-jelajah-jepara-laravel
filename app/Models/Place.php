@@ -4,10 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Place extends Model
 {
     use HasFactory;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($place) {
+            if (empty($place->slug)) {
+                $place->slug = Str::slug($place->name) . '-' . Str::random(5);
+            }
+        });
+
+        static::updating(function ($place) {
+            if (empty($place->slug)) {
+                $place->slug = Str::slug($place->name) . '-' . Str::random(5);
+            }
+        });
+    }
 
     protected $fillable = [
         'category_id',
