@@ -11,65 +11,39 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Pendidikan',
-                'icon_class' => 'fa-solid fa-graduation-cap',
-                'color' => '#3b82f6', // Blue
+                'name' => 'Wisata Alam',
+                'slug' => 'wisata-alam',
+                'icon_class' => 'fa-solid fa-umbrella-beach',
+                'color' => '#0ea5e9', // Ocean Blue
             ],
             [
-                'name' => 'Kesehatan',
-                'icon_class' => 'fa-solid fa-hospital',
-                'color' => '#ef4444', // Red
+                'name' => 'Wisata Budaya & Sejarah',
+                'slug' => 'wisata-budaya',
+                'icon_class' => 'fa-solid fa-monument',
+                'color' => '#8b5a2b', // Wood Brown
             ],
             [
-                'name' => 'Tempat Ibadah',
-                'icon_class' => 'fa-solid fa-mosque',
-                'color' => '#10b981', // Green
-            ],
-            [
-                'name' => 'Pemerintahan',
-                'icon_class' => 'fa-solid fa-building-columns',
-                'color' => '#f59e0b', // Amber
-            ],
-            [
-                'name' => 'Ekonomi & Bisnis',
-                'icon_class' => 'fa-solid fa-store',
-                'color' => '#8b5cf6', // Purple
-            ],
-            [
-                'name' => 'Pariwisata & Budaya',
-                'icon_class' => 'fa-solid fa-camera',
-                'color' => '#ec4899', // Pink
-            ],
-            [
-                'name' => 'Olahraga',
-                'icon_class' => 'fa-solid fa-futbol',
+                'name' => 'Wisata Kuliner',
+                'slug' => 'wisata-kuliner',
+                'icon_class' => 'fa-solid fa-utensils',
                 'color' => '#f97316', // Orange
             ],
             [
-                'name' => 'Keamanan',
-                'icon_class' => 'fa-solid fa-shield-halved',
-                'color' => '#64748b', // Slate
+                'name' => 'Akomodasi',
+                'slug' => 'akomodasi',
+                'icon_class' => 'fa-solid fa-hotel',
+                'color' => '#6366f1', // Indigo
             ],
             [
-                'name' => 'Fasilitas Umum',
-                'icon_class' => 'fa-solid fa-users',
-                'color' => '#06b6d4', // Cyan
-            ],
-            [
-                'name' => 'Pertanian & Peternakan',
-                'icon_class' => 'fa-solid fa-wheat',
-                'color' => '#84cc16', // Lime
+                'name' => 'Ekonomi Kreatif',
+                'slug' => 'ekraf',
+                'icon_class' => 'fa-solid fa-palette',
+                'color' => '#ec4899', // Pink
             ],
         ];
 
         foreach ($categories as $category) {
-            Category::firstOrCreate(
-                ['name' => $category['name']],
-                [
-                    'icon_class' => $category['icon_class'],
-                    'color' => $category['color']
-                ]
-            );
+            Category::create($category);
         }
     }
 }

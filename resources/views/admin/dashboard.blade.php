@@ -59,6 +59,57 @@
                     </div>
                 </a>
 
+                <!-- Categories Card -->
+                <a href="{{ route('admin.categories.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-pink-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+                    <div class="relative flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Kategori</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ \App\Models\Category::count() }}</h3>
+                            <p class="text-xs text-pink-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                                Kelola <i class="fa-solid fa-arrow-right"></i>
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Products Card -->
+                <a href="{{ route('admin.products.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-orange-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+                    <div class="relative flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Produk Ekraf</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ \App\Models\Product::count() }}</h3>
+                            <p class="text-xs text-orange-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                                Kelola <i class="fa-solid fa-arrow-right"></i>
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Posts Card -->
+                <a href="{{ route('admin.posts.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-purple-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+                    <div class="relative flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Berita & Agenda</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ \App\Models\Post::count() }}</h3>
+                            <p class="text-xs text-purple-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                                Kelola <i class="fa-solid fa-arrow-right"></i>
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                    </div>
+                </a>
+
                 <!-- Boundaries Card -->
                 <a href="{{ route('admin.boundaries.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-green-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>

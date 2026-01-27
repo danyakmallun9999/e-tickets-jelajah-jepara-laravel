@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Sistem Informasi Geografis - {{ config('app.name', 'Mayong Lor') }}</title>
+    <title>Portal Wisata - {{ config('app.name', 'Jepara') }}</title>
 
     <!-- Leaflet & Icon -->
     <!-- Local assets handled by Vite -->
@@ -84,7 +84,7 @@
                     <a class="flex items-center gap-3 text-text-light dark:text-text-dark group" href="#">
                         <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" alt="Logo Kabupaten Jepara"
                             class="w-10 h-auto object-contain">
-                        <h2 class="text-xl font-bold leading-tight tracking-tight">Mayong Lor</h2>
+                        <h2 class="text-xl font-bold leading-tight tracking-tight">Pesona Jepara</h2>
                     </a>
                     <nav class="hidden lg:flex items-center gap-8">
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Beranda</a>
@@ -213,16 +213,15 @@
                     <div class="max-w-4xl space-y-6 pointer-events-auto">
                         <span
                             class="hidden md:inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider animate-fade-in-down">
-                            Selamat Datang di Sistem Informasi Desa
+                            Official Tourism Portal
                         </span>
                         <h1
                             class="text-white text-3xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-sm animate-fade-in-up">
-                            Desa Mayong Lor<br />Pusat Gerabah & Sejarah
+                            Jepara<br /> The World Carving Center
                         </h1>
                         <p
                             class="text-gray-100 text-lg sm:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-sm animate-fade-in-up delay-100">
-                            Menjelajahi potensi warisan budaya, ekonomi kreatif, dan transparansi data spasial untuk
-                            kemajuan bersama.
+                            Temukan keindahan pantai tropis, kekayaan sejarah Ratu Kalinyamat, dan mahakarya seni ukir kelas dunia.
                         </p>
                         <div
                             class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up delay-200">
@@ -273,8 +272,8 @@
                         }
                     }]
                 },
-                center: [110.75611, -6.75611], // Mayong Lor (Corrected)
-                zoom: 1.5, // Start from space
+                center: [110.678, -6.589], // Central Jepara Regency coordinates
+                zoom: 9.5, // Zoomed out to view the regency
                 pitch: 0,
                 attributionControl: false,
                 interactive: false // Disable interaction for background effect
@@ -392,7 +391,7 @@
                     <div>
                         <p
                             class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">
-                            Luas Wilayah</p>
+                             Wilayah Administratif</p>
                         <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">
                             {{ number_format($totalArea ?? 0, 1) }}</p>
                         <p class="text-xs text-text-light/50">Hektar</p>
@@ -409,9 +408,9 @@
                     <div>
                         <p
                             class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">
-                            Dukuh</p>
+                            Kecamatan</p>
                         <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">
-                            {{ $totalBoundaries ?? 0 }}</p>
+                            16</p>
                         <p class="text-xs text-text-light/50">Wilayah</p>
                     </div>
                 </div>
@@ -427,7 +426,7 @@
                         <p
                             class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">
                             Potensi</p>
-                        <p class="text-text-light dark:text-text-dark text-xl font-bold tracking-tight">Sentra Gerabah
+                        <p class="text-text-light dark:text-text-dark text-xl font-bold tracking-tight">The World Carving Center
                         </p>
                         <p class="text-xs text-text-light/50">Nasional</p>
                     </div>
@@ -621,13 +620,76 @@
 
                     <!-- Content -->
                     <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-4">
-                        <p class="text-sm text-text-light/80 dark:text-text-dark/80 leading-relaxed"
+                        <p class="text-sm text-text-light/80 dark:text-text-dark/80 leading-relaxed mb-4"
                             x-text="selectedFeature?.description || 'No description available.'"></p>
+
+                        <!-- Tourism Details -->
+                        <div class="space-y-3 border-t border-dashed border-gray-200 dark:border-white/10 pt-4">
+                            <template x-if="selectedFeature?.ticket_price">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-lg mt-0.5">payments</span>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase font-bold">Tiket Masuk</p>
+                                        <p class="text-sm font-medium text-text-light dark:text-text-dark" x-text="selectedFeature.ticket_price"></p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="selectedFeature?.opening_hours">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-lg mt-0.5">schedule</span>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase font-bold">Jam Buka</p>
+                                        <p class="text-sm font-medium text-text-light dark:text-text-dark" x-text="selectedFeature.opening_hours"></p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="selectedFeature?.rating">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-yellow-500 text-lg mt-0.5">star</span>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase font-bold">Rating</p>
+                                        <div class="flex items-center gap-1">
+                                            <p class="text-sm font-medium text-text-light dark:text-text-dark" x-text="selectedFeature.rating + ' / 5.0'"></p>
+                                            <span class="text-xs text-slate-400">(Ulasan Google)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="selectedFeature?.contact_info">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-lg mt-0.5">call</span>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase font-bold">Kontak</p>
+                                        <p class="text-sm font-medium text-text-light dark:text-text-dark" x-text="selectedFeature.contact_info"></p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="selectedFeature?.website">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-primary text-lg mt-0.5">language</span>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase font-bold">Website</p>
+                                        <a :href="selectedFeature.website" target="_blank" class="text-sm font-medium text-blue-600 hover:underline break-all" x-text="selectedFeature.website"></a>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
 
                         <button @click="zoomToFeature(selectedFeature)"
                             class="w-full py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-sm shadow-lg transition flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-sm">location_on</span> View on Map
                         </button>
+
+                        <template x-if="getDirectionsUrl(selectedFeature)">
+                            <a :href="getDirectionsUrl(selectedFeature)" target="_blank"
+                                class="w-full py-2.5 mt-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">directions</span> Petunjuk Arah
+                            </a>
+                        </template>
                     </div>
                 </div>
 
@@ -655,29 +717,29 @@
                         Geografis & Administrasi</h2>
                     <div class="prose prose-lg text-text-light/80 dark:text-text-dark/80">
                         <p>
-                            Desa Mayong Lor terletak di Kecamatan Mayong, Kabupaten Jepara, Jawa Tengah. Dengan luas
-                            wilayah sekitar <strong>290,195 hektar</strong>, desa ini didominasi oleh dataran rendah
-                            yang subur.
+                            Kabupaten Jepara terletak di bagian utara Provinsi Jawa Tengah, dikenal sebagai kota kelahiran
+                            <strong>R.A. Kartini</strong> dan pusat kerajinan ukir kelas dunia. Dengan luas wilayah daratan
+                            sekitar <strong>1.004 km²</strong> dan garis pantai yang panjang, Jepara menawarkan pesona wisata bahari yang memukau, termasuk kepulauan Karimunjawa.
                         </p>
                         <p>
-                            Secara administratif, wilayah desa terbagi menjadi 4 dukuh utama:
+                            Secara administratif, Kabupaten Jepara berbatasan langsung dengan:
                         </p>
                         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 not-prose mt-4">
                             <li
                                 class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
-                                <span class="material-symbols-outlined text-primary">location_on</span> Bendowangin
+                                <span class="material-symbols-outlined text-primary">north</span> Laut Jawa (Utara)
                             </li>
                             <li
                                 class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
-                                <span class="material-symbols-outlined text-primary">location_on</span> Krajan
+                                <span class="material-symbols-outlined text-primary">east</span> Kab. Pati & Kudus (Timur)
                             </li>
                             <li
                                 class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
-                                <span class="material-symbols-outlined text-primary">location_on</span> Karangpanggung
+                                <span class="material-symbols-outlined text-primary">south</span> Kab. Demak (Selatan)
                             </li>
                             <li
                                 class="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-surface-dark shadow-sm border border-surface-light dark:border-white/5">
-                                <span class="material-symbols-outlined text-primary">location_on</span> Karang
+                                <span class="material-symbols-outlined text-primary">west</span> Laut Jawa (Barat)
                             </li>
                         </ul>
                     </div>
@@ -697,7 +759,7 @@
                         <!-- Main Map Image -->
                         <div class="aspect-[4/3] w-full overflow-hidden bg-gray-200 dark:bg-gray-800 relative">
                             <img src="https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=2070&auto=format&fit=crop"
-                                alt="Peta Wilayah Desa"
+                                alt="Peta Wilayah Jepara"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                             </div>
@@ -725,23 +787,14 @@
                                 <div class="grid grid-cols-1 gap-3">
                                     <div
                                         class="flex items-center justify-between text-sm py-2 border-b border-dashed border-gray-200 dark:border-gray-700">
-                                        <span class="text-text-light/60 dark:text-text-dark/60">Utara</span>
+                                        <span class="text-text-light/60 dark:text-text-dark/60">Ibukota</span>
                                         <span
-                                            class="font-bold text-text-light dark:text-text-dark text-right truncate ml-2">Desa
-                                            Pelemkerep</span>
-                                    </div>
-                                    <div
-                                        class="flex items-center justify-between text-sm py-2 border-b border-dashed border-gray-200 dark:border-gray-700">
-                                        <span class="text-text-light/60 dark:text-text-dark/60">Selatan</span>
-                                        <span
-                                            class="font-bold text-text-light dark:text-text-dark text-right truncate ml-2">Desa
-                                            Mayong Kidul</span>
+                                            class="font-bold text-text-light dark:text-text-dark text-right truncate ml-2">Kecamatan Jepara</span>
                                     </div>
                                     <div class="flex items-center justify-between text-sm py-2">
-                                        <span class="text-text-light/60 dark:text-text-dark/60">Barat</span>
+                                        <span class="text-text-light/60 dark:text-text-dark/60">Provinsi</span>
                                         <span
-                                            class="font-bold text-text-light dark:text-text-dark text-right truncate ml-2">Desa
-                                            Tigajuru</span>
+                                            class="font-bold text-text-light dark:text-text-dark text-right truncate ml-2">Jawa Tengah</span>
                                     </div>
                                 </div>
                             </div>
@@ -752,10 +805,9 @@
                     <div
                         class="absolute top-3 right-3 md:top-6 md:right-6 bg-white/90 dark:bg-surface-dark/90 backdrop-blur-sm px-3 py-1 md:px-4 md:py-2 rounded-full shadow-lg border border-surface-light dark:border-white/10 flex items-center gap-2 transform translate-x-0 translate-y-0 hover:scale-105 transition-all z-20 max-w-[calc(100%-2rem)]">
                         <span
-                            class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+                            class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-500 animate-pulse shrink-0"></span>
                         <span
-                            class="text-[10px] md:text-xs font-bold text-text-light dark:text-text-dark truncate">Zona
-                            Dataran Rendah</span>
+                            class="text-[10px] md:text-xs font-bold text-text-light dark:text-text-dark truncate">Wisata Bahari & Budaya</span>
                     </div>
                 </div>
             </div>
@@ -772,16 +824,12 @@
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Sejarah & Legenda</h2>
             <div class="space-y-6 text-lg text-gray-300 leading-relaxed">
                 <p>
-                    Nama <strong>"Mayong"</strong> erat kaitannya dengan kisah perjalanan <strong>Ratu
-                        Kalinyamat</strong>.
-                    Konon, saat membawa jenazah suaminya, Pangeran Kalinyamat, beliau berjalan dalam kondisi sangat
-                    lelah dan sedih.
+                    Jepara memiliki sejarah panjang yang gemilang, dikenal sebagai <strong>Bumi Kartini</strong>.
+                    Di sinilah pahlawan emansipasi wanita, R.A. Kartini, lahir dan memperjuangkan hak-hak perempuan.
                 </p>
                 <p>
-                    Cara berjalannya yang sempoyongan, atau dalam Bahasa Jawa disebut <em>"moyang-mayong"</em>,
-                    kemudian diabadikan menjadi nama daerah ini. Warisan sejarah ini menjadikan Mayong Lor tidak hanya
-                    sekadar desa,
-                    tetapi juga bagian dari tapak tilas sejarah besar Jepara.
+                    Selain itu, Jepara juga mewarisi semangat juang <strong>Ratu Kalinyamat</strong>, penguasa maritim
+                    yang disegani di Nusantara. Kekayaan sejarah dan budaya ini menjadikan Jepara destinasi wisata yang penuh makna dan inspirasi.
                 </p>
             </div>
         </div>
@@ -798,10 +846,11 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl">
-                    <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4">Galeri Produk
-                        Unggulan</h2>
-                    <p class="text-text-light/70 dark:text-text-dark/70">
-                        Koleksi mahakarya pengrajin Desa Mayong Lor yang merefleksikan keindahan dan kearifan lokal.
+                    <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4">
+                        Wisata Unggulan Jepara
+                    </h2>
+                    <p class="text-text-light/70 dark:text-text-dark/70 text-lg leading-relaxed">
+                        Jelajahi keindahan alam, kekayaan budaya, dan sejarah yang memukau di Bumi Kartini.
                     </p>
                 </div>
                 <!-- Navigation Buttons -->
@@ -820,70 +869,54 @@
             <!-- Carousel Container -->
             <div class="relative w-full">
                 <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide" x-ref="container">
+                    
+                    @foreach($places as $place)
+                    <!-- Gallery Item -->
+                    <a href="{{ route('places.show', $place) }}" class="block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5">
+                        <!-- Image -->
+                        <div class="absolute inset-0 bg-gray-200">
+                            @if($place->image_path)
+                                <img src="{{ $place->image_path }}" alt="{{ $place->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                    <span class="material-symbols-outlined text-4xl">image</span>
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        </div>
 
-                    <!-- Gallery Item 1: Kendi Maling -->
-                    <div
-                        class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop"
-                            alt="Aneka Souvenir"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity">
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-sm">
+                                {{ $place->category->name ?? 'Wisata' }}
+                            </span>
                         </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                            <h3 class="text-white text-xl font-bold mb-1">Kendi Maling</h3>
-                            <p class="text-white/80 text-sm font-light">Ikon Kerajinan Mayong Lor</p>
-                        </div>
-                    </div>
 
-                    <!-- Gallery Item 2: Vas Terakota -->
-                    <div
-                        class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop"
-                            alt="Aneka Souvenir"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity">
+                        <!-- Content -->
+                        <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-white mb-2 leading-tight drop-shadow-sm">{{ $place->name }}</h3>
+                            <p class="text-white/80 text-sm line-clamp-2 mb-4 leading-relaxed">
+                                {{ Str::limit($place->description, 80) }}
+                            </p>
+                            
+                            <div class="flex items-center justify-between border-t border-white/20 pt-4">
+                                <div class="flex items-center gap-2 text-white/90">
+                                    <span class="material-symbols-outlined text-sm text-yellow-400">star</span>
+                                    <span class="text-sm font-bold">{{ $place->rating }}</span>
+                                </div>
+                                <span class="text-white/90 text-sm font-medium">
+                                    {{ $place->ticket_price == 'Gratis' ? 'Gratis' : $place->ticket_price }}
+                                </span>
+                            </div>
                         </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                            <h3 class="text-white text-xl font-bold mb-1">Vas Terakota</h3>
-                            <p class="text-white/80 text-sm font-light">Dekorasi Interior Estetik</p>
-                        </div>
-                    </div>
+                    </a>
+                    @endforeach
 
-                    <!-- Gallery Item 3: Set Poci -->
-                    <div
-                        class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop"
-                            alt="Aneka Souvenir"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity">
+                    @if($places->isEmpty())
+                        <div class="w-full text-center py-10 text-gray-500">
+                            Belum ada destinasi wisata yang ditampilkan.
                         </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                            <h3 class="text-white text-xl font-bold mb-1">Set Poci Teh</h3>
-                            <p class="text-white/80 text-sm font-light">Tradisi Minum Teh</p>
-                        </div>
-                    </div>
-
-                    <!-- Gallery Item 4: Celengan -->
-                    <div
-                        class="min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop"
-                            alt="Aneka Souvenir"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity">
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                            <h3 class="text-white text-xl font-bold mb-1">Aneka Souvenir</h3>
-                            <p class="text-white/80 text-sm font-light">Oleh-oleh Khas Desa</p>
-                        </div>
-                    </div>
+                    @endif
 
                 </div>
             </div>
@@ -899,42 +932,40 @@
                 <div class="flex gap-6 items-start">
                     <div
                         class="size-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-3xl">diversity_3</span>
+                        <span class="material-symbols-outlined text-3xl">travel_explore</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Kampung KB Mandiri</h3>
+                        <h3 class="text-xl font-bold mb-2">Desa Wisata Unggulan</h3>
                         <p class="text-text-light/70 dark:text-text-dark/70 leading-relaxed mb-4">
-                            Desa Mayong Lor telah ditetapkan sebagai <strong>Kampung KB Mandiri</strong> oleh BKKBN,
-                            menunjukkan komitmen kuat dalam pembangunan keluarga sejahtera dan pengendalian penduduk.
+                            Jepara memiliki puluhan <strong>Desa Wisata</strong> yang menawarkan pengalaman otentik, mulai dari wisata budaya, alam, hingga kerajinan tangan yang mendunia.
                         </p>
                         <div class="h-1.5 w-full bg-surface-light dark:bg-surface-dark rounded-full overflow-hidden">
                             <div class="h-full bg-blue-500 w-3/4 rounded-full"></div>
                         </div>
-                        <span class="text-xs text-text-light/50 mt-1 block">Partisipasi Aktif Masyarakat Tinggi</span>
+                        <span class="text-xs text-text-light/50 mt-1 block">Potensi Wisata Terus Berkembang</span>
                     </div>
                 </div>
 
-                <!-- Education -->
+                <!-- Education/Facilities -->
                 <div class="flex gap-6 items-start">
                     <div
                         class="size-14 rounded-2xl bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-3xl">school</span>
+                        <span class="material-symbols-outlined text-3xl">hotel</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Fasilitas Pendidikan</h3>
+                        <h3 class="text-xl font-bold mb-2">Akomodasi & Fasilitas</h3>
                         <p class="text-text-light/70 dark:text-text-dark/70 leading-relaxed mb-4">
-                            Tersedia fasilitas pendidikan lengkap untuk menunjang kualitas SDM, mulai dari tingkat dasar
-                            (SD Negeri) hingga menengah kejuruan seperti <strong>SMK Al-Anwar</strong>.
+                            Tersedia berbagai pilihan akomodasi mulai dari hotel berbintang, resort tepi pantai, hingga homestay nyaman untuk menunjang pengalaman liburan Anda di Jepara.
                         </p>
                         <ul class="flex gap-4">
                             <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span> SD Negeri
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span> Hotel
                             </li>
                             <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span> Madrasah
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span> Resort
                             </li>
                             <li class="flex items-center gap-1 text-sm font-bold text-text-light dark:text-text-dark">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span> SMK
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span> Homestay
                             </li>
                         </ul>
                     </div>
@@ -955,84 +986,41 @@
                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- News Card 1 -->
-                <article
-                    class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
+                
+                @foreach($posts as $post)
+                <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
                     <div class="h-48 overflow-hidden relative">
-                        <div
-                            class="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                            Agenda</div>
-                        <img alt="Kegiatan Desa"
+                        <div class="absolute top-3 left-3 {{ $post->type == 'event' ? 'bg-purple-600' : 'bg-blue-600' }} text-white text-xs font-bold px-3 py-1 rounded-full z-10 uppercase">
+                            {{ $post->type == 'event' ? 'Agenda' : 'Berita' }}
+                        </div>
+                        <img alt="{{ $post->title }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwBBQX_RtcqkH1dvzPt8sfLSmNN3INyBtY96t4JKXIl8wN0okQpf7aSfD1NHqyeJT6hLcR_J1yJcYfMqAnCoL3LNmVFjdQzfCAE4ZPLWL0BXxNmZc5jtf7WZG5RG4bqpYnhG7kh05BWLd7gRvGBQr5P46PmxqnYh518XqJ--i2YE7f1O43mYsbMu0yg88QfFGOKCtf95irXxDl46peV-IicnHkUwh1FE8nUS729tCfifqZq5NFNgeKXZvB6keGE8l_lEfG37LCVAiI" />
+                            src="{{ $post->image_path }}" />
                     </div>
                     <div class="p-5 flex-1 flex flex-col">
                         <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
                             <span class="material-symbols-outlined text-sm">calendar_today</span>
-                            <span>24 Okt 2025</span>
+                            <span>{{ $post->published_at ? $post->published_at->format('d M Y') : '-' }}</span>
                         </div>
-                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Musyawarah
-                            Desa</h3>
-                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Pembahasan
-                            rencana pembangunan infrastruktur tahun anggaran 2026.</p>
+                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight line-clamp-2">
+                            {{ $post->title }}
+                        </h3>
+                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">
+                            {{ Str::limit(strip_tags($post->content), 100) }}
+                        </p>
                         <div class="mt-auto">
-                            <a class="text-primary font-bold text-sm hover:underline" href="#">Baca
-                                Selengkapnya</a>
+                            <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}">Baca Selengkapnya</a>
                         </div>
                     </div>
                 </article>
-                <!-- More cards... -->
-                <article
-                    class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
-                    <div class="h-48 overflow-hidden relative">
-                        <div
-                            class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                            Penting</div>
-                        <img alt="Perbaikan Jalan"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWLj65QAHHISSdPjIhHxHPJoGYQjZWPbZI-2aSzOjUi3z5Y4UCKUmU12j-hZDouGaPuWiJb9icYzESmeqRulsGb2T1Q7CO67F9Pf-tx9Kzrxp6SnhbrI9tiggzkKt1POy6smWhDuUZBNkVALHRH2Mns42WcpA-a16jckchGyGI5eBVJHSqccDAF_BavOoUpLtfQZcC5Q17PsUs9U4dmh6SMtdF4K8w7qClVnPBsK0ijzoEd-eaZqOEvP2I60J6FAxpuPuvlnOE9YZu" />
+                @endforeach
+                
+                @if($posts->isEmpty())
+                    <div class="col-span-full text-center py-10 text-gray-500">
+                        Belum ada berita atau agenda terbaru.
                     </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
-                            <span class="material-symbols-outlined text-sm">campaign</span>
-                            <span>20 Okt 2025</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Perbaikan
-                            Jalan Poros</h3>
-                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Akan dilakukan
-                            pengaspalan ulang di jalan utama dukuh Krajan mulai minggu depan.</p>
-                        <div class="mt-auto">
-                            <a class="text-primary font-bold text-sm hover:underline" href="#">Baca
-                                Selengkapnya</a>
-                        </div>
-                    </div>
-                </article>
-                <!-- Card 3 -->
-                <article
-                    class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
-                    <div class="h-48 overflow-hidden relative">
-                        <div
-                            class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                            Prestasi</div>
-                        <img alt="Lomba Desa"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" />
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <div class="flex items-center gap-2 text-xs text-text-light/50 dark:text-text-dark/50 mb-2">
-                            <span class="material-symbols-outlined text-sm">emoji_events</span>
-                            <span>15 Okt 2025</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight">Juara 1
-                            Lomba Kebersihan</h3>
-                        <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">Desa Mayong Lor
-                            meraih penghargaan desa terbersih se-Kecamatan Mayong.</p>
-                        <div class="mt-auto">
-                            <a class="text-primary font-bold text-sm hover:underline" href="#">Baca
-                                Selengkapnya</a>
-                        </div>
-                    </div>
-                </article>
+                @endif
+
             </div>
         </div>
     </div>
@@ -1044,9 +1032,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 <div class="space-y-4">
                     <h2 class="text-lg font-bold flex items-center gap-2"><span
-                            class="material-symbols-outlined text-primary">terrain</span> Desa Mayong Lor</h2>
-                    <p class="text-text-light/60 text-sm">Memberdayakan desa melalui transparansi data dan gotong
-                        royong masyarakat.</p>
+                            class="material-symbols-outlined text-primary">terrain</span> Dinas Pariwisata Jepara</h2>
+                    <p class="text-text-light/60 text-sm">Portal resmi informasi pariwisata, budaya, dan ekonomi kreatif Kabupaten Jepara.</p>
                 </div>
                 <!-- Quick Links -->
                 <div>
@@ -1059,7 +1046,7 @@
                 </div>
             </div>
             <div class="border-t border-text-light/10 pt-8 text-center text-xs text-text-light/50">
-                &copy; 2025 Pemerintah Desa Mayong Lor. All rights reserved.
+                &copy; 2025 Dinas Pariwisata dan Kebudayaan Kabupaten Jepara. All rights reserved.
             </div>
         </div>
     </footer>
@@ -1379,6 +1366,25 @@
                             alert('Gagal mengambil lokasi.');
                         }
                     );
+                },
+
+                getDirectionsUrl(feature) {
+                    let lat, lng;
+                    if (feature.latitude && feature.longitude) {
+                        lat = feature.latitude;
+                        lng = feature.longitude;
+                    } else if (feature.coords) {
+                        lat = feature.coords[0];
+                        lng = feature.coords[1];
+                    } else if (feature.geometry && feature.geometry.type === 'Point') {
+                        lng = feature.geometry.coordinates[0];
+                        lat = feature.geometry.coordinates[1];
+                    }
+                    
+                    if (lat && lng) {
+                        return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+                    }
+                    return null;
                 }
             };
         }

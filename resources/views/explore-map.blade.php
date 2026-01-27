@@ -36,7 +36,7 @@
         
         <!-- Mobile Header / Toggle -->
         <div class="lg:hidden p-4 bg-white dark:bg-surface-dark border-b border-surface-light flex items-center justify-between z-30">
-            <a href="{{ route('welcome') }}" class="text-xl font-bold font-display hover:text-primary transition-colors">Mayong Lor GIS</a>
+            <a href="{{ route('welcome') }}" class="text-xl font-bold font-display hover:text-primary transition-colors">Pesona Jepara</a>
             <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg bg-surface-light text-text-light">
                 <span class="material-symbols-outlined">menu</span>
             </button>
@@ -53,7 +53,7 @@
                          <a href="{{ route('welcome') }}" class="flex items-center justify-center w-8 h-8 rounded-full bg-surface-light hover:bg-primary hover:text-white transition group" title="Kembali ke Beranda">
                             <span class="material-symbols-outlined text-sm group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
                          </a>
-                        <h1 class="text-3xl font-bold leading-tight tracking-tight font-display bg-gradient-to-r from-text-light to-text-light/70 dark:from-text-dark dark:to-text-dark/70 bg-clip-text text-transparent">Desa Mayong Lor</h1>
+                        <h1 class="text-3xl font-bold leading-tight tracking-tight font-display bg-gradient-to-r from-text-light to-text-light/70 dark:from-text-dark dark:to-text-dark/70 bg-clip-text text-transparent">Kabupaten Jepara</h1>
                     </div>
                 </div>
             </div>

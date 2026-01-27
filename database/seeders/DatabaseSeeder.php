@@ -17,43 +17,56 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminUserSeeder::class);
         $this->call(CategorySeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(PostSeeder::class);
+        $this->call(PopulationSeeder::class);
+        $this->call(BoundarySeeder::class);
 
         // Fetch Categories
-        $edu = \App\Models\Category::where('name', 'Pendidikan')->first();
-        $worship = \App\Models\Category::where('name', 'Tempat Ibadah')->first();
-        $gov = \App\Models\Category::where('name', 'Pemerintahan')->first();
+        $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();
+        $culture = \App\Models\Category::where('slug', 'wisata-budaya')->first();
+        $culinary = \App\Models\Category::where('slug', 'wisata-kuliner')->first();
 
         // Places
-        if ($edu) {
+        if ($nature) {
             \App\Models\Place::create([
-                'category_id' => $edu->id,
-                'name' => 'SD Negeri 1 Mayong Lor',
-                'description' => 'Sekolah Dasar Negeri unggulan di desa Mayong Lor.',
-                'latitude' => -6.7289,
-                'longitude' => 110.7485,
-                'image_path' => 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80'
+                'category_id' => $nature->id,
+                'name' => 'Pantai Bandengan',
+                'description' => 'Pantai pasir putih eksotis dengan air jernih, populer untuk water sports dan sunset.',
+                'image_path' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+                'latitude' => -6.5539,
+                'longitude' => 110.6481,
+                'ticket_price' => 'Rp 10.000',
+                'opening_hours' => '07:00 - 18:00',
+                'rating' => 4.7
             ]);
         }
 
-        if ($worship) {
+        if ($culture) {
             \App\Models\Place::create([
-                'category_id' => $worship->id,
-                'name' => 'Masjid Jami Al-Hikmah',
-                'description' => 'Masjid besar pusat kegiatan keagamaan warga.',
-                'latitude' => -6.7300,
-                'longitude' => 110.7500,
-                'image_path' => 'https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=800&q=80'
+                'category_id' => $culture->id,
+                'name' => 'Museum R.A. Kartini',
+                'description' => 'Museum yang menyimpan peninggalan R.A. Kartini dan benda-benda warisan budaya Jepara.',
+                'image_path' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Museum_RA_Kartini.jpg/1280px-Museum_RA_Kartini.jpg',
+                'latitude' => -6.5898,
+                'longitude' => 110.6682,
+                'ticket_price' => 'Rp 5.000',
+                'opening_hours' => '08:00 - 16:00',
+                'rating' => 4.5
             ]);
         }
         
-        if ($gov) {
+        if ($culinary) {
             \App\Models\Place::create([
-                'category_id' => $gov->id,
-                'name' => 'Balai Desa Mayong Lor',
-                'description' => 'Pusat pelayanan administrasi desa.',
-                'latitude' => -6.7280,
-                'longitude' => 110.7480,
-                'image_path' => 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80'
+                'category_id' => $culinary->id,
+                'name' => 'SCJ (Shopping Center Jepara)',
+                'description' => 'Pusat kuliner malam yang menyajikan berbagai makanan khas Jepara seperti Pindang Serani dan Adon-adon Coro.',
+                'image_path' => 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+                'latitude' => -6.5925,
+                'longitude' => 110.6690,
+                'ticket_price' => 'Gratis',
+                'opening_hours' => '17:00 - 23:00',
+                'rating' => 4.6
             ]);
         }
     }

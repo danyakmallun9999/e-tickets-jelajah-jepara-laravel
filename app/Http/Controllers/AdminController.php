@@ -81,9 +81,26 @@ class AdminController extends Controller
             $data['image_path'] = $this->storeImage($request);
         }
 
+        // Remove gallery_images from data before creating Place
+        $galleryImages = $request->file('gallery_images');
+        unset($data['gallery_images']);
+
         unset($data['image']);
 
         $place = Place::create($data);
+
+        if ($galleryImages) {
+            foreach ($galleryImages as $image) {
+                // Manually store each gallery image using a similar logic to storeImage but adapted for generic file
+                $disk = env('FILESYSTEM_DISK', 'public');
+                $path = $image->store('place_gallery', $disk);
+                $url = Storage::disk($disk)->url($path);
+                
+                $place->images()->create([
+                    'image_path' => $url
+                ]);
+            }
+        }
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -124,6 +141,20 @@ class AdminController extends Controller
 
         unset($data['image']);
 
+        // Handle Gallery Images for Update (Add new ones)
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $image) {
+                $disk = env('FILESYSTEM_DISK', 'public');
+                $path = $image->store('place_gallery', $disk);
+                $url = Storage::disk($disk)->url($path);
+                
+                $place->images()->create([
+                    'image_path' => $url
+                ]);
+            }
+        }
+        unset($data['gallery_images']);
+
         $place->update($data);
 
         return redirect()
@@ -155,7 +186,13 @@ class AdminController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'max:2048'],
-            'geometry' => ['nullable', 'string'], // For drawing component
+            'geometry' => ['nullable', 'string'],
+            'ticket_price' => ['nullable', 'string', 'max:255'],
+            'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
+            'opening_hours' => ['nullable', 'string', 'max:255'],
+            'contact_info' => ['nullable', 'string', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+            'gallery_images.*' => ['nullable', 'image', 'max:2048'],
         ];
 
         // Latitude/longitude required only if geometry not provided

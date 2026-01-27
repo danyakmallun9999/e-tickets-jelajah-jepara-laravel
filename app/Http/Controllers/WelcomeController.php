@@ -22,6 +22,8 @@ class WelcomeController extends Controller
         $totalLandUses = LandUse::count();
         $lastUpdate = Place::latest('updated_at')->first()?->updated_at;
         $population = \App\Models\Population::first();
+        $places = \App\Models\Place::with('category')->latest()->take(6)->get();
+        $posts = \App\Models\Post::where('is_published', true)->latest('published_at')->take(3)->get();
 
         return view('welcome', compact(
             'categories', 
@@ -32,7 +34,9 @@ class WelcomeController extends Controller
             'totalInfrastructures', 
             'totalLandUses', 
             'lastUpdate', 
-            'population'
+            'population',
+            'places',
+            'posts'
         ));
     }
 
@@ -48,6 +52,11 @@ class WelcomeController extends Controller
                         'name' => $place->name,
                         'description' => $place->description,
                         'image_url' => $place->image_path ? asset($place->image_path) : null,
+                        'ticket_price' => $place->ticket_price,
+                        'opening_hours' => $place->opening_hours,
+                        'contact_info' => $place->contact_info,
+                        'rating' => $place->rating,
+                        'website' => $place->website,
                         'category' => [
                             'id' => $place->category?->id,
                             'name' => $place->category?->name,
@@ -164,5 +173,23 @@ class WelcomeController extends Controller
             'totalInfrastructures', 
             'totalLandUses'
         ));
+    }
+
+    public function showPost(\App\Models\Post $post)
+    {
+        if (!$post->is_published) {
+            abort(404);
+        }
+        return view('public.posts.show', compact('post'));
+    }
+
+    public function showProduct(\App\Models\Product $product)
+    {
+        return view('public.products.show', compact('product'));
+    }
+
+    public function showPlace(\App\Models\Place $place)
+    {
+        return view('public.places.show', compact('place'));
     }
 }

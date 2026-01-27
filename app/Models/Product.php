@@ -5,19 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
         'slug',
-        'icon_class',
-        'color',
+        'description',
+        'price',
+        'image_path',
+        'seller_name',
+        'seller_contact',
     ];
-
-    public function places()
-    {
-        return $this->hasMany(Place::class);
-    }
 }

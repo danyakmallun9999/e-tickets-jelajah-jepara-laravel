@@ -18,6 +18,10 @@ Route::get('/boundaries.geojson', [WelcomeController::class, 'boundariesGeoJson'
 Route::get('/infrastructures.geojson', [WelcomeController::class, 'infrastructuresGeoJson'])->name('infrastructures.geojson');
 Route::get('/land-uses.geojson', [WelcomeController::class, 'landUsesGeoJson'])->name('land_uses.geojson');
 
+Route::get('/berita/{post:slug}', [WelcomeController::class, 'showPost'])->name('posts.show');
+Route::get('/produk/{product:slug}', [WelcomeController::class, 'showProduct'])->name('products.show');
+Route::get('/destinasi/{place:slug}', [WelcomeController::class, 'showPlace'])->name('places.show');
+
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -58,6 +62,15 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/population', [\App\Http\Controllers\PopulationController::class, 'index'])->name('population.index');
     Route::get('/population/edit', [\App\Http\Controllers\PopulationController::class, 'edit'])->name('population.edit');
     Route::put('/population', [\App\Http\Controllers\PopulationController::class, 'update'])->name('population.update');
+
+    // Categories routes
+    Route::resource('categories', \App\Http\Controllers\CategoryController::class);
+    
+    // Product routes
+    Route::resource('products', \App\Http\Controllers\ProductController::class);
+
+    // Post routes
+    Route::resource('posts', \App\Http\Controllers\PostController::class);
 });
 
 Route::middleware('auth')->group(function () {

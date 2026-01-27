@@ -13,14 +13,15 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: "#D0BB95",
-                "primary-dark": "#bfa373",
-                "background-light": "#f7f7f6",
-                "background-dark": "#1d1a15",
-                "text-light": "#171511",
-                "text-dark": "#ecebe9",
-                "surface-light": "#f0eeea",
-                "surface-dark": "#2a2721"
+                primary: "#0ea5e9", // Ocean Blue
+                "primary-dark": "#0284c7",
+                "accent": "#8b5a2b", // Wood Brown
+                "background-light": "#f8fafc", // Slate 50
+                "background-dark": "#0f172a", // Slate 900
+                "text-light": "#334155", // Slate 700
+                "text-dark": "#f1f5f9", // Slate 100
+                "surface-light": "#e2e8f0", // Slate 200
+                "surface-dark": "#1e293b" // Slate 800
             },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
