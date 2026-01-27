@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             \App\Models\Place::create([
                 'category_id' => $nature->id,
                 'name' => 'Pantai Bandengan',
+                'slug' => 'pantai-bandengan',
                 'description' => 'Pantai pasir putih eksotis dengan air jernih, populer untuk water sports dan sunset.',
                 'image_path' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
                 'latitude' => -6.5539,
@@ -46,6 +47,7 @@ class DatabaseSeeder extends Seeder
             \App\Models\Place::create([
                 'category_id' => $culture->id,
                 'name' => 'Museum R.A. Kartini',
+                'slug' => 'museum-ra-kartini',
                 'description' => 'Museum yang menyimpan peninggalan R.A. Kartini dan benda-benda warisan budaya Jepara.',
                 'image_path' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Museum_RA_Kartini.jpg/1280px-Museum_RA_Kartini.jpg',
                 'latitude' => -6.5898,
@@ -60,6 +62,7 @@ class DatabaseSeeder extends Seeder
             \App\Models\Place::create([
                 'category_id' => $culinary->id,
                 'name' => 'SCJ (Shopping Center Jepara)',
+                'slug' => 'scj-jepara',
                 'description' => 'Pusat kuliner malam yang menyajikan berbagai makanan khas Jepara seperti Pindang Serani dan Adon-adon Coro.',
                 'image_path' => 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
                 'latitude' => -6.5925,

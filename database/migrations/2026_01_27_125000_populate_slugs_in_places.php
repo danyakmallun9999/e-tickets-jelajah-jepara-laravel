@@ -13,18 +13,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $places = Place::whereNull('slug')->orWhere('slug', '')->get();
+        $places = \Illuminate\Support\Facades\DB::table('places')
+            ->whereNull('slug')
+            ->orWhere('slug', '')
+            ->get();
 
         foreach ($places as $place) {
             $slug = Str::slug($place->name);
             
             // Ensure uniqueness
-            $count = Place::where('slug', $slug)->where('id', '!=', $place->id)->count();
+            $count = \Illuminate\Support\Facades\DB::table('places')
+                ->where('slug', $slug)
+                ->where('id', '!=', $place->id)
+                ->count();
+            
             if ($count > 0) {
                 $slug = $slug . '-' . ($count + 1);
             }
 
-            $place->update(['slug' => $slug]);
+            \Illuminate\Support\Facades\DB::table('places')
+                ->where('id', $place->id)
+                ->update(['slug' => $slug]);
         }
     }
 
