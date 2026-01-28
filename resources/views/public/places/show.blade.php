@@ -78,6 +78,17 @@
                         </h3>
                         
                         <div class="space-y-6">
+                            <!-- Address -->
+                            <div class="flex gap-4">
+                                <div class="size-10 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined">location_on</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-text-light/50 font-bold uppercase tracking-wider mb-1">Lokasi</p>
+                                    <p class="text-text-light dark:text-text-dark font-medium">{{ $place->address ?? 'Jepara' }}</p>
+                                </div>
+                            </div>
+
                             <!-- Opening Hours -->
                             <div class="flex gap-4">
                                 <div class="size-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center shrink-0">
@@ -111,6 +122,19 @@
                                 </div>
                             </div>
 
+                             <!-- Notes -->
+                            @if($place->notes)
+                            <div class="flex gap-4">
+                                <div class="size-10 rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined">lightbulb</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-text-light/50 font-bold uppercase tracking-wider mb-1">Catatan</p>
+                                    <p class="text-text-light dark:text-text-dark font-medium text-sm">{{ $place->notes }}</p>
+                                </div>
+                            </div>
+                            @endif
+
                             <!-- Action Button -->
                             @if($place->website)
                             <a href="{{ $place->website }}" target="_blank" class="block w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-center font-bold transition-colors shadow-lg shadow-primary/20">
@@ -118,7 +142,7 @@
                             </a>
                             @endif
                             
-                            <a href="https://www.google.com/maps/dir/?api=1&destination={{ $place->latitude }},{{ $place->longitude }}" target="_blank" class="block w-full py-3 px-4 rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-white text-center font-bold transition-colors">
+                            <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" class="block w-full py-3 px-4 rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-white text-center font-bold transition-colors">
                                 Petunjuk Arah
                             </a>
                         </div>

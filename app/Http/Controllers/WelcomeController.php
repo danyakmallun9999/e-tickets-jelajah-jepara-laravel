@@ -63,6 +63,9 @@ class WelcomeController extends Controller
                             'color' => $place->category?->color,
                             'icon_class' => $place->category?->icon_class,
                         ],
+                        'address' => $place->address,
+                        'google_maps_link' => $place->google_maps_link,
+                        'notes' => $place->notes,
                     ],
                     'geometry' => [
                         'type' => 'Point',
