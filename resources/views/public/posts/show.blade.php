@@ -64,9 +64,7 @@
                 <!-- Main Content (Left) -->
                 <div class="lg:col-span-8">
                     <!-- Intro Blockquote -->
-                    <blockquote class="text-xl md:text-2xl font-serif italic leading-relaxed text-gray-700 dark:text-gray-300 border-l-4 border-primary pl-6 mb-10">
-                        "{{ Str::limit(strip_tags($post->content), 150) }}"
-                    </blockquote>
+
 
                     <!-- Article Body -->
                     <article class="tinymce-content text-gray-700 dark:text-gray-300">
