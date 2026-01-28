@@ -644,11 +644,34 @@
 
     <!-- Potency Section (Economy) -->
     <div class="w-full py-10 lg:py-16 scroll-mt-20" id="potency" x-data="{
-        scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }) },
-            scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }) },
-            checkScroll() {
-                // Optional: logic to hide/show buttons based on scroll position could go here
-            }
+        currentIndex: 0,
+        totalItems: {{ $places->count() }},
+        scrollLeft() { 
+            $refs.container.scrollBy({ left: -300, behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
+        },
+        scrollRight() { 
+            $refs.container.scrollBy({ left: 300, behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
+        },
+        scrollToIndex(index) {
+            const container = $refs.container;
+            const itemWidth = container.children[0]?.offsetWidth || 0;
+            const gap = 24; // gap-6 = 24px
+            container.scrollTo({ left: index * (itemWidth + gap), behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
+        },
+        updateCurrentIndex() {
+            const container = $refs.container;
+            if (!container || !container.children.length) return;
+            const scrollLeft = container.scrollLeft;
+            const itemWidth = container.children[0].offsetWidth;
+            const gap = 24;
+            this.currentIndex = Math.round(scrollLeft / (itemWidth + gap));
+        },
+        init() {
+            this.$refs.container?.addEventListener('scroll', () => this.updateCurrentIndex());
+        }
     }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
@@ -734,21 +757,49 @@
                     @endif
 
                 </div>
+                
+                <!-- Dots Indicator -->
+                @if($places->count() > 0)
+                <div class="flex justify-center gap-2 mt-6">
+                    @foreach($places as $index => $place)
+                    <button 
+                        @click="scrollToIndex({{ $index }})"
+                        :class="currentIndex === {{ $index }} ? 'w-8 bg-primary' : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-primary/50'"
+                        class="h-2 rounded-full transition-all duration-300"
+                        aria-label="Go to slide {{ $index + 1 }}">
+                    </button>
+                    @endforeach
+                </div>
+                @endif
             </div>
         </div>
     </div>
 
     <!-- Makanan Khas Jepara -->
     <div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-10 lg:py-16 border-t border-surface-light dark:border-surface-dark" x-data="{
+        currentIndex: 0,
+        totalItems: 9,
         scrollLeft() { 
             const c = $refs.foodContainer;
             const w = c.children[0].clientWidth; // lebar 1 item
             c.scrollBy({ left: -w, behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
         },
         scrollRight() { 
             const c = $refs.foodContainer;
             const w = c.children[0].clientWidth;
             c.scrollBy({ left: w, behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
+        },
+        scrollToIndex(index) {
+            const container = $refs.foodContainer;
+            if (!container || !container.children.length) return;
+            const originals = 9; // total original items
+            const targetIndex = originals + index; // Skip clones di awal
+            const itemWidth = container.children[0].offsetWidth;
+            const gap = 32; // gap-8 lg
+            container.scrollTo({ left: targetIndex * (itemWidth + gap) - (container.clientWidth - itemWidth) / 2, behavior: 'smooth' });
+            setTimeout(() => this.updateCurrentIndex(), 300);
         },
         updateActive() {
             const container = $refs.foodContainer;
@@ -767,6 +818,17 @@
                     child.setAttribute('data-snapped', 'false');
                 }
             });
+        },
+        updateCurrentIndex() {
+            const container = $refs.foodContainer;
+            if (!container || !container.children.length) return;
+            const originals = 9;
+            const scrollLeft = container.scrollLeft;
+            const itemWidth = container.children[0].offsetWidth;
+            const gap = 32;
+            const rawIndex = Math.round(scrollLeft / (itemWidth + gap));
+            // Map back to original indices (0-8)
+            this.currentIndex = ((rawIndex - originals) % originals + originals) % originals;
         },
         init() {
             const container = $refs.foodContainer;
@@ -807,6 +869,7 @@
                 // Infinite Loop Listener
                 container.addEventListener('scroll', () => {
                     this.updateActive();
+                    this.updateCurrentIndex();
                     
                     const oneSetWidth = (originals.length * (container.children[0].clientWidth + 32)); // Estimasi rough width
                     // Atau lebih akurat: startItem.offsetLeft
@@ -986,6 +1049,18 @@
                         </div>
                     </div>
 
+                </div>
+                
+                <!-- Dots Indicator -->
+                <div class="flex justify-center gap-2 mt-8">
+                    <template x-for="i in 9" :key="i">
+                        <button 
+                            @click="scrollToIndex(i - 1)"
+                            :class="currentIndex === (i - 1) ? 'w-8 bg-primary' : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-primary/50'"
+                            class="h-2 rounded-full transition-all duration-300"
+                            :aria-label="'Go to slide ' + i">
+                        </button>
+                    </template>
                 </div>
             </div>
         </div>
