@@ -6,7 +6,7 @@
             places: {{ Js::from($places) }},
             get filteredPlaces() {
                 if (this.activeCategory === 'Semua') return this.places;
-                return this.places.filter(place => place.category.name === this.activeCategory);
+                return this.places.filter(place => place.category && place.category.name === this.activeCategory);
             }
         }">
             
@@ -56,7 +56,7 @@
 
                         <!-- Category Badge -->
                         <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-sm" x-text="place.category ? place.category.name : 'Wisata'">
+                            <span class="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-sm" x-text="(place.category && place.category.name) ? place.category.name : 'Wisata'">
                             </span>
                         </div>
 
