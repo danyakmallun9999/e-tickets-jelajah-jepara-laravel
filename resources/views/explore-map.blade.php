@@ -89,40 +89,6 @@
             <div class="px-6 py-4 border-b border-dashed border-stone-200 dark:border-stone-800">
                 <div class="space-y-3">
                     
-                    <!-- Map Layers Dropdown -->
-                    <div x-data="{ expanded: false }" class="border border-stone-200 dark:border-stone-700 rounded-xl bg-white dark:bg-[#2c2923] overflow-hidden">
-                        <button @click="expanded = !expanded" class="w-full flex items-center justify-between p-3 bg-stone-50 dark:bg-white/5 hover:bg-stone-100 dark:hover:bg-white/10 transition-colors">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-stone-500 text-lg">layers</span>
-                                <span class="text-xs font-bold uppercase tracking-wider text-text-light dark:text-text-dark font-display">Layer Peta</span>
-                                <span x-show="[showBoundaries, showInfrastructures, showLandUses].filter(Boolean).length > 0" 
-                                      class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-[#171511] font-bold" 
-                                      x-text="[showBoundaries, showInfrastructures, showLandUses].filter(Boolean).length"></span>
-                            </div>
-                            <span class="material-symbols-outlined text-stone-400 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''">keyboard_arrow_down</span>
-                        </button>
-                        <div x-show="expanded" x-collapse class="p-3 border-t border-stone-100 dark:border-stone-700 bg-white dark:bg-[#2c2923]">
-                            <div class="flex gap-2 flex-wrap">
-                                <button @click="showBoundaries = !showBoundaries; updateLayers()" 
-                                        :class="showBoundaries ? 'bg-emerald-50 text-emerald-700 border-emerald-500 ring-1 ring-emerald-500' : 'bg-white dark:bg-[#322f29] text-text-light dark:text-text-dark hover:bg-stone-50 border-stone-200 dark:border-stone-700'"
-                                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 flex-1 justify-center">
-                                    <span>Wilayah</span>
-                                </button>
-                                <button @click="showInfrastructures = !showInfrastructures; updateLayers()" 
-                                        :class="showInfrastructures ? 'bg-blue-50 text-blue-700 border-blue-500 ring-1 ring-blue-500' : 'bg-white dark:bg-[#322f29] text-text-light dark:text-text-dark hover:bg-stone-50 border-stone-200 dark:border-stone-700'"
-                                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 flex-1 justify-center">
-                                    <span class="material-symbols-outlined text-[18px]" :class="showInfrastructures ? 'text-blue-600' : 'text-stone-400'">alt_route</span>
-                                    <span>Infrastra</span>
-                                </button>
-                                <button @click="showLandUses = !showLandUses; updateLayers()" 
-                                        :class="showLandUses ? 'bg-orange-50 text-orange-700 border-orange-500 ring-1 ring-orange-500' : 'bg-white dark:bg-[#322f29] text-text-light dark:text-text-dark hover:bg-stone-50 border-stone-200 dark:border-stone-700'"
-                                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 flex-1 justify-center">
-                                    <span class="material-symbols-outlined text-[18px]" :class="showLandUses ? 'text-orange-600' : 'text-stone-400'">landscape</span>
-                                    <span>Lahan</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Categories Dropdown -->
                     <div x-data="{ expanded: true }" class="border border-stone-200 dark:border-stone-700 rounded-xl bg-white dark:bg-[#2c2923] overflow-hidden">

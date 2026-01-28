@@ -120,6 +120,7 @@
                         
                         <div class="space-y-4">
                             @foreach($recommendedPlaces as $place)
+                            @if(!$place->slug) @continue @endif
                             <div class="relative group rounded-xl overflow-hidden aspect-[16/9] shadow-md">
                                 <img src="{{ $place->image_path }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>

@@ -646,6 +646,7 @@
     <div class="w-full py-10 lg:py-16 scroll-mt-20" id="potency" x-data="{
         currentIndex: 0,
         totalItems: {{ $places->count() }},
+        autoplay: null,
         scrollLeft() { 
             $refs.container.scrollBy({ left: -300, behavior: 'smooth' });
             setTimeout(() => this.updateCurrentIndex(), 300);
@@ -669,10 +670,27 @@
             const gap = 24;
             this.currentIndex = Math.round(scrollLeft / (itemWidth + gap));
         },
+        startAutoplay() {
+            this.stopAutoplay();
+            this.autoplay = setInterval(() => {
+                if (this.currentIndex >= this.totalItems - 1) {
+                    this.scrollToIndex(0);
+                } else {
+                    this.scrollRight();
+                }
+            }, 3000);
+        },
+        stopAutoplay() {
+            if (this.autoplay) {
+                clearInterval(this.autoplay);
+                this.autoplay = null;
+            }
+        },
         init() {
             this.$refs.container?.addEventListener('scroll', () => this.updateCurrentIndex());
+            this.startAutoplay();
         }
-    }">
+    }" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl">
@@ -709,6 +727,7 @@
                 <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide" x-ref="container">
                     
                     @foreach($places as $place)
+                    @if(!$place->slug) @continue @endif
                     <!-- Gallery Item -->
                     <a href="{{ route('places.show', $place) }}" class="block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5">
                         <!-- Image -->
@@ -776,9 +795,11 @@
     </div>
 
     <!-- Makanan Khas Jepara -->
+    <!-- Makanan Khas Jepara -->
     <div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-10 lg:py-16 border-t border-surface-light dark:border-surface-dark" x-data="{
         currentIndex: 0,
         totalItems: 9,
+        autoplay: null,
         scrollLeft() { 
             const c = $refs.foodContainer;
             const w = c.children[0].clientWidth; // lebar 1 item
@@ -829,6 +850,18 @@
             const rawIndex = Math.round(scrollLeft / (itemWidth + gap));
             // Map back to original indices (0-8)
             this.currentIndex = ((rawIndex - originals) % originals + originals) % originals;
+        },
+        startAutoplay() {
+            this.stopAutoplay();
+            this.autoplay = setInterval(() => {
+                this.scrollRight();
+            }, 3000);
+        },
+        stopAutoplay() {
+            if (this.autoplay) {
+                clearInterval(this.autoplay);
+                this.autoplay = null;
+            }
         },
         init() {
             const container = $refs.foodContainer;
@@ -895,9 +928,11 @@
                         container.scrollLeft = setB_Start;
                     }
                 });
+                
+                this.startAutoplay();
             });
         }
-    }">
+    }" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl">
