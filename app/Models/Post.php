@@ -17,6 +17,8 @@ class Post extends Model
         'type',
         'published_at',
         'is_published',
+        'author',
+        'image_credit',
     ];
 
     protected $casts = [

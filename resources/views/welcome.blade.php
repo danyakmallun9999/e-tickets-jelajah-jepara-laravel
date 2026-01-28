@@ -88,7 +88,7 @@
                     </a>
                     <nav class="hidden lg:flex items-center gap-8">
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('welcome') }}">Beranda</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" href="#gis-map">Peta GIS</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('explore.map') }}">Peta GIS</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="#profile">Profil</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('places.index') }}">Destinasi</a>
                         <a class="text-sm font-medium hover:text-primary transition-colors" href="{{ route('posts.index') }}">Berita</a>

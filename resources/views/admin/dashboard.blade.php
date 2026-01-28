@@ -26,7 +26,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Tambah Lokasi
+                    Tambah Destinasi
                 </a>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-blue-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
                     <div class="relative flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-slate-500">Titik Lokasi</p>
+                            <p class="text-sm font-medium text-slate-500">Destinasi Wisata</p>
                             <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ $stats['places_count'] }}</h3>
                             <p class="text-xs text-blue-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
                                 Lihat Data <i class="fa-solid fa-arrow-right"></i>
@@ -196,7 +196,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Chart: Categories -->
                 <div class="bg-white shadow-sm sm:rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribusi Lokasi per Kategori</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribusi Destinasi per Kategori</h3>
                     <div class="relative h-96">
                         <canvas id="categoriesChart"></canvas>
                     </div>
@@ -224,7 +224,7 @@
                 <!-- Recent Places -->
                 <div class="bg-white shadow-sm sm:rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Lokasi Terbaru</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">Destinasi Terbaru</h3>
                         <a href="{{ route('admin.places.index') }}" class="text-sm text-blue-600 hover:text-blue-800">Lihat Semua</a>
                     </div>
                     <div class="space-y-3">
@@ -244,7 +244,7 @@
                             <span class="text-xs text-gray-400">{{ $place->created_at->diffForHumans() }}</span>
                         </div>
                         @empty
-                        <p class="text-sm text-gray-500 text-center py-4">Belum ada lokasi</p>
+                        <p class="text-sm text-gray-500 text-center py-4">Belum ada destinasi</p>
                         @endforelse
                     </div>
                 </div>
@@ -283,8 +283,8 @@
             <!-- Places Table -->
             <div class="bg-white shadow-sm sm:rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Daftar Lokasi</h3>
-                    <p class="text-sm text-gray-500">Total: {{ $places->total() }} lokasi</p>
+                    <h3 class="text-lg font-semibold text-gray-900">Daftar Destinasi Wisata</h3>
+                    <p class="text-sm text-gray-500">Total: {{ $places->total() }} destinasi</p>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -342,7 +342,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                        Belum ada data lokasi.
+                                        Belum ada data destinasi.
                                     </td>
                                 </tr>
                             @endforelse
@@ -548,7 +548,7 @@
                         if (feature.properties && feature.properties.name) {
                             layer.bindPopup(`
                                 <div class="font-semibold">${feature.properties.name}</div>
-                                <div class="text-xs text-gray-500">${feature.properties.category?.name || 'Lokasi'}</div>
+                                <div class="text-xs text-gray-500">${feature.properties.category?.name || 'Destinasi'}</div>
                             `);
                         }
                     }
@@ -597,7 +597,7 @@
                     "Batas Wilayah": boundariesLayer,
                     "Infrastruktur": infrastructuresLayer,
                     "Penggunaan Lahan": landUsesLayer,
-                    "Lokasi": placesLayer
+                    "Destinasi Wisata": placesLayer
                 };
                 L.control.layers(baseLayers, overlays).addTo(miniMap);
             }

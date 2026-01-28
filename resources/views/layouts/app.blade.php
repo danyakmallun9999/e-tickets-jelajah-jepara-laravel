@@ -13,6 +13,9 @@
         
         <!-- FontAwesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- TinyMCE (Official Cloud) -->
+        <script src="https://cdn.tiny.cloud/1/4s9z14hu3s0t79sgv5en1l6dwen6jrdx5tkux16vps4qejt9/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

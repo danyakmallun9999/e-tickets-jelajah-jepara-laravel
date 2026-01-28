@@ -25,9 +25,9 @@
                             <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" class="w-6 h-6 object-contain" alt="Admin">
                         </div>
                         <div class="text-left">
-                            <p class="text-sm font-bold text-gray-900 dark:text-white">Dinas Pariwisata Jepara</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $post->author ?? 'Dinas Pariwisata Jepara' }}</p>
                             <p class="text-xs text-gray-500">
-                                Published {{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }} • 5 min read
+                                Published {{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }} • {{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min read
                             </p>
                         </div>
                     </div>
@@ -53,9 +53,11 @@
                 <img src="{{ $post->image_path }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                 <!-- Image Credit -->
+                @if($post->image_credit)
                 <div class="absolute bottom-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-[10px] text-white/80">
-                    Photo: Dinas Pariwisata
+                    Photo: {{ $post->image_credit }}
                 </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -67,11 +69,8 @@
                     </blockquote>
 
                     <!-- Article Body -->
-                    <article class="prose prose-lg prose-slate dark:prose-invert max-w-none 
-                        prose-headings:font-serif prose-headings:font-bold 
-                        prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-loose
-                        prose-img:rounded-xl prose-img:shadow-lg">
-                        {!! nl2br(e($post->content)) !!}
+                    <article class="tinymce-content text-gray-700 dark:text-gray-300">
+                        {!! $post->content !!}
                     </article>
 
                     <!-- Tags -->

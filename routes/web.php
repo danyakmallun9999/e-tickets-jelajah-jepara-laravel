@@ -72,6 +72,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('products', \App\Http\Controllers\ProductController::class);
 
     // Post routes
+    Route::post('/posts/upload-image', [\App\Http\Controllers\PostController::class, 'uploadImage'])->name('posts.uploadImage');
     Route::resource('posts', \App\Http\Controllers\PostController::class);
 });
 

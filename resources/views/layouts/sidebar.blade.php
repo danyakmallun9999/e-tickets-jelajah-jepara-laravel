@@ -36,7 +36,7 @@
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-blue-600 border-blue-600 transition flex-shrink-0">
                     <i class="fa-solid fa-map-location-dot text-lg"></i>
                 </div>
-                <span x-show="!sidebarMinimized" class="font-bold text-xl text-gray-800 tracking-tight whitespace-nowrap transition-opacity duration-300">Mayong<span class="text-blue-600">Lor</span></span>
+                <span x-show="!sidebarMinimized" class="font-bold text-xl text-gray-800 tracking-tight whitespace-nowrap transition-opacity duration-300">Dinas<span class="text-blue-600">Pariwisata</span></span>
             </a>
             
             <!-- Toggle Button (Desktop) -->
@@ -80,19 +80,55 @@
                 </div>
             </a>
 
-            <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Manajemen Data</p>
+            <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Manajemen Pariwisata</p>
             <div x-show="sidebarMinimized" class="border-t border-gray-100 my-2"></div>
 
             <a href="{{ route('admin.places.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.places.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
                :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-map-marker-alt w-5 text-center {{ request()->routeIs('admin.places.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Titik Lokasi</span>
+                <i class="fa-solid fa-map-location-dot w-5 text-center {{ request()->routeIs('admin.places.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
+                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Destinasi Wisata</span>
                  <!-- Tooltip -->
                 <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Titik Lokasi
+                    Destinasi Wisata
                 </div>
             </a>
+
+            <a href="{{ route('admin.products.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.products.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
+               :class="sidebarMinimized ? 'justify-center' : ''">
+                <i class="fa-solid fa-store w-5 text-center {{ request()->routeIs('admin.products.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
+                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Produk Ekraf</span>
+                 <!-- Tooltip -->
+                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
+                    Produk Ekraf
+                </div>
+            </a>
+
+            <a href="{{ route('admin.posts.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.posts.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
+               :class="sidebarMinimized ? 'justify-center' : ''">
+                <i class="fa-solid fa-newspaper w-5 text-center {{ request()->routeIs('admin.posts.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
+                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Berita & Agenda</span>
+                 <!-- Tooltip -->
+                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
+                    Berita & Agenda
+                </div>
+            </a>
+
+            <a href="{{ route('admin.categories.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.categories.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
+               :class="sidebarMinimized ? 'justify-center' : ''">
+                <i class="fa-solid fa-tags w-5 text-center {{ request()->routeIs('admin.categories.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
+                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Kategori</span>
+                 <!-- Tooltip -->
+                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
+                    Kategori
+                </div>
+            </a>
+
+            <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Data Wilayah</p>
+            <div x-show="sidebarMinimized" class="border-t border-gray-100 my-2"></div>
 
             <a href="{{ route('admin.boundaries.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.boundaries.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"

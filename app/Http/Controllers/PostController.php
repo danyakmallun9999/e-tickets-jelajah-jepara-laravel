@@ -37,6 +37,8 @@ class PostController extends Controller
             'type' => 'required|in:news,event',
             'image' => 'nullable|image|max:2048',
             'published_at' => 'nullable|date',
+            'author' => 'nullable|string|max:255',
+            'image_credit' => 'nullable|string|max:255',
         ]);
 
         $validated['slug'] = Str::slug($validated['title']) . '-' . time();
@@ -83,6 +85,8 @@ class PostController extends Controller
             'type' => 'required|in:news,event',
             'image' => 'nullable|image|max:2048',
             'published_at' => 'nullable|date',
+            'author' => 'nullable|string|max:255',
+            'image_credit' => 'nullable|string|max:255',
         ]);
 
         if ($post->title !== $validated['title']) {
@@ -110,8 +114,24 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->image_path) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $post->image_path));
+        }
+        
         $post->delete();
-        return redirect()->route('admin.posts.index')
-            ->with('status', 'Berita/Event berhasil dihapus.');
+        return redirect()->route('admin.posts.index')->with('status', 'Post successfully deleted!');
+    }
+
+    /**
+     * Handle TinyMCE Image Upload
+     */
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('uploads/content', 'public');
+            return response()->json(['location' => '/storage/' . $path]);
+        }
+        
+        return response()->json(['error' => 'No file uploaded'], 400);
     }
 }
