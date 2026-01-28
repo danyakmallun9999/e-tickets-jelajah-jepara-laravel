@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
         $this->call(PostSeeder::class);
-        $this->call(PopulationSeeder::class);
         $this->call(BoundarySeeder::class);
+        $this->call(PariwisataSeeder::class);
 
         // Fetch Categories
         $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();
