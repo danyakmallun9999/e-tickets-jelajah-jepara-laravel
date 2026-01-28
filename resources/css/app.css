@@ -81,4 +81,19 @@
         display: table;
         clear: both;
     }
+
+    /* Custom Animations */
+    @keyframes slide-x {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .animate-slide-x {
+        animation: slide-x 2s infinite linear;
+    }
 }

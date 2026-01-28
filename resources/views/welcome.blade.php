@@ -831,23 +831,91 @@
         </div>
     </div>
 
-    <!-- History Section -->
-    <div class="relative w-full py-20 bg-surface-dark overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Jepara_Regency_Coat_of_Arms.svg/1200px-Jepara_Regency_Coat_of_Arms.svg.png')] bg-center bg-no-repeat opacity-5 mix-blend-overlay grayscale bg-contain">
-        </div>
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <span class="material-symbols-outlined text-6xl text-white/20 mb-4">history_edu</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Sejarah & Legenda</h2>
-            <div class="space-y-6 text-lg text-gray-300 leading-relaxed">
-                <p>
-                    Jepara memiliki sejarah panjang yang gemilang, dikenal sebagai <strong>Bumi Kartini</strong>.
-                    Di sinilah pahlawan emansipasi wanita, R.A. Kartini, lahir dan memperjuangkan hak-hak perempuan.
-                </p>
-                <p>
-                    Selain itu, Jepara juga mewarisi semangat juang <strong>Ratu Kalinyamat</strong>, penguasa maritim
-                    yang disegani di Nusantara. Kekayaan sejarah dan budaya ini menjadikan Jepara destinasi wisata yang penuh makna dan inspirasi.
-                </p>
+    <!-- History & Legend Section (Light & Clean Version) -->
+    <div class="relative w-full bg-white dark:bg-gray-900 overflow-hidden py-24" id="history">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent"></div>
+        
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-20" 
+                 x-data="{ shown: false }" 
+                 x-intersect.threshold.0.5="shown = true">
+                <span class="block text-primary font-bold tracking-[0.2em] uppercase text-xs mb-3 opacity-0 translate-y-4 transition-all duration-700"
+                      :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    Warisan Leluhur
+                </span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tight opacity-0 translate-y-4 transition-all duration-700 delay-100"
+                    :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    Sejarah & Legenda
+                </h2>
+                <div class="w-16 h-1 bg-gray-200 dark:bg-gray-700 mx-auto rounded-full overflow-hidden opacity-0 scale-x-0 transition-all duration-700 delay-200"
+                     :class="shown ? 'opacity-100 scale-x-100' : ''">
+                     <div class="w-1/2 h-full bg-primary animate-slide-x"></div>
+                </div>
+            </div>
+
+            <!-- Full Image Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
+                
+                <!-- Kartini Card -->
+                <div class="group relative h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
+                     x-data="{ shown: false }" 
+                     x-intersect.threshold.0.2="shown = true"
+                     :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 transition-all duration-1000'">
+                    
+                    <!-- Full Background Image -->
+                    <img src="{{ asset('images/kartini.jpg') }}" 
+                         alt="R.A. Kartini" 
+                         class="absolute inset-0 w-full h-full object-cover object-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                    
+                    <!-- Gradient Overlay (Subtle) -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
+
+                    <!-- Content Overlay -->
+                    <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full group-hover:w-20 transition-all duration-500"></div>
+                        <h3 class="text-3xl md:text-5xl font-black mb-3 leading-tight tracking-tight">R.A. Kartini</h3>
+                        <p class="text-lg md:text-xl font-serif italic text-white/90 mb-6 font-light">
+                            "Habis Gelap Terbitlah Terang"
+                        </p>
+                        <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
+                            <p class="text-white/80 text-sm md:text-base leading-relaxed max-w-md">
+                                Pahlawan emansipasi yang memperjuangkan hak pendidikan wanita. Sosoknya menginspirasi perubahan besar dari Jepara untuk Indonesia.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kalinyamat Card -->
+                <div class="group relative h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-200"
+                     x-data="{ shown: false }" 
+                     x-intersect.threshold.0.2="shown = true"
+                     :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
+                    
+                    <!-- Full Background Image -->
+                    <img src="{{ asset('images/kalinyamat.jpg') }}" 
+                         alt="Ratu Kalinyamat" 
+                         class="absolute inset-0 w-full h-full object-cover object-center filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
+
+                    <!-- Content Overlay -->
+                    <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full group-hover:w-20 transition-all duration-500"></div>
+                        <h3 class="text-3xl md:text-5xl font-black mb-3 leading-tight tracking-tight">Ratu Kalinyamat</h3>
+                        <p class="text-lg md:text-xl font-serif italic text-white/90 mb-6 font-light">
+                            "Sang Ratu Laut yang Gagah Berani"
+                        </p>
+                        <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
+                            <p class="text-white/80 text-sm md:text-base leading-relaxed max-w-md">
+                                Penguasa maritim Nusantara yang disegani. Membangun Jepara menjadi pusat niaga dan kekuatan laut yang tak tertandingi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

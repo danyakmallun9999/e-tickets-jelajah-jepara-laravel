@@ -5,6 +5,9 @@ import 'leaflet-draw';
 window.maplibregl = maplibregl;
 
 import Alpine from 'alpinejs';
+import intersect from '@alpinejs/intersect';
+
+Alpine.plugin(intersect);
 
 window.Alpine = Alpine;
 
