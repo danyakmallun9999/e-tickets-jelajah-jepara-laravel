@@ -773,8 +773,8 @@
                     <div class="relative z-10 w-full aspect-[4/5] md:aspect-square lg:aspect-[4/5]">
                         <div class="absolute top-0 right-0 w-[85%] h-[90%] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 ease-out transform"
                              :class="hover ? 'scale-[1.02] -translate-y-2' : ''">
-                            <img src="https://images.unsplash.com/photo-1596401057633-565652ca65a0?q=80&w=1964&auto=format&fit=crop" 
-                                 alt="Aerial Jepara" 
+                            <img src="{{ asset('images/geografis.png') }}" 
+                                 alt="Peta Geografis Jepara" 
                                  class="w-full h-full object-cover">
                             <!-- Overlay Gradient -->
                             <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
