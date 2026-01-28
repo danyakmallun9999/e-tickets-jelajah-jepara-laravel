@@ -17,9 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminUserSeeder::class);
         $this->call(CategorySeeder::class);
+        $this->call(PariwisataSeeder::class); // Run early to ensure categories/places exist
         $this->call(ProductSeeder::class);
         $this->call(PostSeeder::class);
         $this->call(BoundarySeeder::class);
+<<<<<<< HEAD
         $this->call(PariwisataSeeder::class);
 
         // Fetch Categories
@@ -72,5 +74,7 @@ class DatabaseSeeder extends Seeder
                 'rating' => 4.6
             ]);
         }
+=======
+>>>>>>> fix-map
     }
 }
