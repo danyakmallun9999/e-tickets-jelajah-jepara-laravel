@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductSeeder::class);
         $this->call(PostSeeder::class);
         $this->call(BoundarySeeder::class);
-        $this->call(PariwisataSeeder::class);
+
 
         // Fetch Categories
         $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();
@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
         $culinary = \App\Models\Category::where('slug', 'wisata-kuliner')->first();
 
         // Places
+        // Manual Places creation commented out in favor of JSON data
+        /*
         if ($nature) {
             \App\Models\Place::create([
                 'category_id' => $nature->id,
@@ -73,5 +75,6 @@ class DatabaseSeeder extends Seeder
                 'rating' => 4.6
             ]);
         }
+        */
     }
 }

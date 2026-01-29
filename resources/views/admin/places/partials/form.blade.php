@@ -110,6 +110,42 @@
                     placeholder="https://example.com">
             </div>
 
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status Kepemilikan</label>
+                    <input type="text" name="ownership_status" value="{{ old('ownership_status', $place->ownership_status) }}"
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Contoh: Pemda, Swasta">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Pengelola</label>
+                    <input type="text" name="manager" value="{{ old('manager', $place->manager) }}"
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Nama pengelola...">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Media Sosial</label>
+                <textarea name="social_media" rows="2"
+                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Info akun sosial media...">{{ old('social_media', $place->social_media) }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Wahana</label>
+                <textarea name="rides" rows="3"
+                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Daftar wahana yang tersedia...">{{ old('rides', $place->rides) }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Fasilitas</label>
+                <textarea name="facilities" rows="3"
+                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Daftar fasilitas yang tersedia...">{{ old('facilities', $place->facilities) }}</textarea>
+            </div>
+
             <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 sm:col-span-4 mt-6">
                 <!-- Photo File Input -->
                 <input type="file" class="hidden" x-ref="photo" name="image"
