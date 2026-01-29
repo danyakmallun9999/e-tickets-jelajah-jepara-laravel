@@ -104,7 +104,7 @@
                             <div class="flex gap-2 flex-wrap">
                                 @foreach($categories as $category)
                                 <button @click="toggleCategory({{ $category->id }})" 
-                                        :class="selectedCategories.includes({{ $category->id }}) ? 'bg-primary text-[#171511] border-primary shadow-sm' : 'bg-white dark:bg-[#322f29] text-text-light dark:text-text-dark hover:bg-stone-50 border-stone-200 dark:border-stone-700'"
+                                        :class="selectedCategories.includes({{ $category->id }}) ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white dark:bg-[#322f29] text-text-light dark:text-text-dark hover:bg-stone-50 border-stone-200 dark:border-stone-700'"
                                         class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 flex-grow justify-center">
                                     <i class="{{ $category->icon_class ?? 'fa-solid fa-map-marker-alt' }} text-sm"></i>
                                     <span>{{ $category->name }}</span>

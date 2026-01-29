@@ -380,7 +380,18 @@
     <div class="w-full bg-background-light dark:bg-background-dark py-8">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8">
-                <!-- Population -->
+                <div class="flex flex-col gap-3 rounded-xl p-4 md:p-6 bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-white/5 transition-colors shadow-sm border border-transparent hover:border-primary/20">
+                    <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-dark dark:text-primary">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div>
+                        <p class="text-text-light/60 dark:text-text-dark/60 text-sm font-medium uppercase tracking-wide">
+                            Jumlah Penduduk</p>
+                        <p class="text-text-light dark:text-text-dark text-3xl font-bold tracking-tight">
+                            1.250.000++</p>
+                        <p class="text-xs text-text-light/50">Jiwa</p>
+                    </div>
+                </div>
 
                 <!-- Area -->
                 <!-- Area -->
