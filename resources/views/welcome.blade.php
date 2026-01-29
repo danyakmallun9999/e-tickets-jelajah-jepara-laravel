@@ -467,7 +467,7 @@
                         </div>
                         <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-6">
                             Posisi Strategis <br>
-                            <span class="font-serif italic font-normal text-gray-500 dark:text-gray-400">di Utara Jawa</span>
+                            <span class="font-serif italic font-normal text-gray-500 dark:text-gray-400">di Utara Pulau Jawa</span>
                         </h2>
                         <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed font-light">
                             Terletak di ujung utara Jawa Tengah, Jepara adalah perpaduan harmonis antara daratan subur dan lautan luas. 
