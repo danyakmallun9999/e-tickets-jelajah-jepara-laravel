@@ -69,16 +69,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.map.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.map.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-map w-5 text-center {{ request()->routeIs('admin.map.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Peta Interaktif</span>
-                 <!-- Tooltip -->
-                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Peta Interaktif
-                </div>
-            </a>
+
 
             <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Manajemen Pariwisata</p>
             <div x-show="sidebarMinimized" class="border-t border-gray-100 my-2"></div>
@@ -94,16 +85,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.products.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.products.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-store w-5 text-center {{ request()->routeIs('admin.products.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Produk Ekraf</span>
-                 <!-- Tooltip -->
-                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Produk Ekraf
-                </div>
-            </a>
+
 
             <a href="{{ route('admin.posts.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.posts.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
@@ -152,38 +134,9 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.infrastructures.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.infrastructures.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-road w-5 text-center {{ request()->routeIs('admin.infrastructures.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Infrastruktur</span>
-                 <!-- Tooltip -->
-                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Infrastruktur
-                </div>
-            </a>
 
-            <a href="{{ route('admin.land-uses.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.land-uses.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-seedling w-5 text-center {{ request()->routeIs('admin.land-uses.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Penggunaan Lahan</span>
-                 <!-- Tooltip -->
-                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Penggunaan Lahan
-                </div>
-            </a>
 
-            <a href="{{ route('admin.population.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.population.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-users w-5 text-center {{ request()->routeIs('admin.population.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Kependudukan</span>
-                 <!-- Tooltip -->
-                <div x-show="sidebarMinimized" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                    Kependudukan
-                </div>
-            </a>
+
             
             <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Laporan & Import</p>
             <div x-show="sidebarMinimized" class="border-t border-gray-100 my-2"></div>

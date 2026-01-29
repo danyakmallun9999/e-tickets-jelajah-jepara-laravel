@@ -281,14 +281,6 @@
                             <span class="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-500/30"></span>
                             <span class="text-xs font-medium text-text-light dark:text-text-dark font-sans">Batas Wilayah</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-500/30"></span>
-                            <span class="text-xs font-medium text-text-light dark:text-text-dark font-sans">Sungai / Air</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-orange-400 ring-2 ring-orange-400/30"></span>
-                            <span class="text-xs font-medium text-text-light dark:text-text-dark font-sans">Pemukiman</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -317,8 +309,7 @@
                 categories: @json($categories),
                 selectedCategories: [],
                 showBoundaries: true,
-                showInfrastructures: true,
-                showLandUses: true,
+
                 allPlaces: [],
                 geoFeatures: [],
                 searchQuery: '',
@@ -326,8 +317,7 @@
                 selectedFeature: null,
                 markers: [],
                 boundariesLayer: null,
-                infrastructuresLayer: null,
-                landUsesLayer: null,
+
                 defaultCenter: [-6.59, 110.68],
                 defaultZoom: 10,
                 userMarker: null,
@@ -353,8 +343,7 @@
                     
                     this.$watch('selectedCategories', () => this.updateMapMarkers());
                     this.$watch('showBoundaries', () => this.loadBoundaries());
-                    this.$watch('showInfrastructures', () => this.loadInfrastructures());
-                    this.$watch('showLandUses', () => this.loadLandUses());
+
                     
                     if (window.innerWidth < 1024) { this.sidebarOpen = false; }
                 },
@@ -388,11 +377,9 @@
                 async fetchAllData() {
                     try {
                         this.loading = true;
-                        const [places, boundaries, infrastructures, landUses] = await Promise.all([
+                        const [places, boundaries] = await Promise.all([
                             fetch('{{ route('places.geojson') }}').then(r => r.json()),
-                            fetch('{{ route('boundaries.geojson') }}').then(r => r.json()),
-                            fetch('{{ route('infrastructures.geojson') }}').then(r => r.json()),
-                            fetch('{{ route('land_uses.geojson') }}').then(r => r.json())
+                            fetch('{{ route('boundaries.geojson') }}').then(r => r.json())
                         ]);
 
                         this.geoFeatures = places.features || [];
@@ -400,12 +387,7 @@
                         
                         // Keep raw features for toggle loading
                         this.boundariesFeatures = boundaries.features || [];
-                        this.infraFeatures = infrastructures.features || [];
-                        this.landFeatures = landUses.features || [];
-
                         this.loadBoundaries();
-                        this.loadInfrastructures();
-                        this.loadLandUses();
                         
                         this.updateMapMarkers();
 
@@ -431,30 +413,7 @@
                     }).addTo(this.map);
                 },
 
-                loadInfrastructures() {
-                    if (this.infrastructuresLayer) this.map.removeLayer(this.infrastructuresLayer);
-                    if (!this.showInfrastructures) return;
-                    this.infrastructuresLayer = L.geoJSON(this.infraFeatures, {
-                        style: f => ({ color: f.properties.type === 'river' ? '#3b82f6' : '#64748b', weight: 3 }),
-                        onEachFeature: (f, l) => {
-                            l.on('click', (e) => { L.DomEvent.stop(e); this.selectFeature({...f.properties, type: 'Infrastruktur'}); });
-                        }
-                    }).addTo(this.map);
-                },
 
-                loadLandUses() {
-                    if (this.landUsesLayer) this.map.removeLayer(this.landUsesLayer);
-                    if (!this.showLandUses) return;
-                    this.landUsesLayer = L.geoJSON(this.landFeatures, {
-                        style: f => {
-                             const colors = { rice_field: '#fbbf24', forest: '#15803d', settlement: '#f97316', plantation: '#84cc16' };
-                             return { color: colors[f.properties.type] || '#94a3b8', weight: 1, fillOpacity: 0.3, fillColor: colors[f.properties.type] };
-                        },
-                        onEachFeature: (f, l) => {
-                            l.on('click', (e) => { L.DomEvent.stop(e); this.selectFeature({...f.properties, type: 'Penggunaan Lahan'}); });
-                        }
-                    }).addTo(this.map);
-                },
 
                 updateMapMarkers() {
                     this.markers.forEach(m => this.map.removeLayer(m));

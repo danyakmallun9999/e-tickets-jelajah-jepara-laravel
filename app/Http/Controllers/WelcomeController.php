@@ -18,10 +18,10 @@ class WelcomeController extends Controller
         $totalCategories = $categories->count();
         $totalBoundaries = Boundary::count(); // Represents Dukuh/Wilayah count
         $totalArea = Boundary::sum('area_hectares');
-        $totalInfrastructures = Infrastructure::count();
-        $totalLandUses = LandUse::count();
+        // $totalInfrastructures = Infrastructure::count();
+        // $totalLandUses = LandUse::count();
         $lastUpdate = Place::latest('updated_at')->first()?->updated_at;
-        $population = \App\Models\Population::first();
+        // $population = \App\Models\Population::first();
         $places = \App\Models\Place::with('category')->latest()->take(6)->get();
         $posts = \App\Models\Post::where('is_published', true)->latest('published_at')->take(3)->get();
 
@@ -31,10 +31,10 @@ class WelcomeController extends Controller
             'totalCategories', 
             'totalBoundaries', 
             'totalArea',
-            'totalInfrastructures', 
-            'totalLandUses', 
+            // 'totalInfrastructures', 
+            // 'totalLandUses', 
             'lastUpdate', 
-            'population',
+            // 'population',
             'places',
             'posts'
         ));
@@ -106,10 +106,10 @@ class WelcomeController extends Controller
         ]);
     }
 
+
     public function infrastructuresGeoJson(): JsonResponse
     {
-        $features = Infrastructure::with('category')
-            ->get()
+        $features = Infrastructure::all()
             ->map(function (Infrastructure $infrastructure) {
                 return [
                     'type' => 'Feature',
@@ -121,11 +121,6 @@ class WelcomeController extends Controller
                         'width_meters' => $infrastructure->width_meters,
                         'condition' => $infrastructure->condition,
                         'description' => $infrastructure->description,
-                        'category' => $infrastructure->category ? [
-                            'id' => $infrastructure->category->id,
-                            'name' => $infrastructure->category->name,
-                            'color' => $infrastructure->category->color,
-                        ] : null,
                     ],
                     'geometry' => $infrastructure->geometry,
                 ];
@@ -160,21 +155,20 @@ class WelcomeController extends Controller
             'features' => $features,
         ]);
     }
-
     public function exploreMap()
     {
         $categories = Category::withCount('places')->get();
         $totalPlaces = Place::count();
         $totalBoundaries = Boundary::count();
-        $totalInfrastructures = Infrastructure::count();
-        $totalLandUses = LandUse::count();
+        // $totalInfrastructures = Infrastructure::count();
+        // $totalLandUses = LandUse::count();
 
         return view('explore-map', compact(
             'categories', 
             'totalPlaces', 
             'totalBoundaries', 
-            'totalInfrastructures', 
-            'totalLandUses'
+            // 'totalInfrastructures', 
+            // 'totalLandUses'
         ));
     }
 

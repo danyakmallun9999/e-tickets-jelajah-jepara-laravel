@@ -17,10 +17,10 @@ class MapController extends Controller
     public function index(): View
     {
         $boundaries = Boundary::select('id', 'name', 'type', 'area_hectares', 'description')->get();
-        $infrastructures = Infrastructure::with('category')
-            ->select('id', 'name', 'type', 'length_meters', 'width_meters', 'condition', 'description', 'category_id')
-            ->get();
-        $landUses = LandUse::select('id', 'name', 'type', 'area_hectares', 'owner', 'description')->get();
+        // $infrastructures = Infrastructure::with('category')
+        //     ->select('id', 'name', 'type', 'length_meters', 'width_meters', 'condition', 'description', 'category_id')
+        //     ->get();
+        // $landUses = LandUse::select('id', 'name', 'type', 'area_hectares', 'owner', 'description')->get();
         $places = Place::with('category')
             ->select('id', 'name', 'description', 'latitude', 'longitude', 'category_id', 'image_path')
             ->get()
@@ -41,13 +41,13 @@ class MapController extends Controller
             });
 
         // Filter roads from infrastructures
-        $roads = $infrastructures->where('type', 'road')->values();
+        // $roads = $infrastructures->where('type', 'road')->values();
 
         return view('admin.map.index', compact(
             'boundaries',
-            'infrastructures',
-            'landUses',
-            'roads',
+            // 'infrastructures',
+            // 'landUses',
+            // 'roads',
             'places'
         ));
     }

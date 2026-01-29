@@ -1,10 +1,6 @@
 @pushOnce('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-@endPushOnce
 
-@pushOnce('scripts')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @endPushOnce
 
@@ -18,10 +14,7 @@
                 </h2>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.map.index') }}" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition">
-                    <i class="fa-solid fa-map"></i>
-                    Peta Interaktif
-                </a>
+
                 <a href="{{ route('admin.places.create') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -76,22 +69,7 @@
                     </div>
                 </a>
 
-                <!-- Products Card -->
-                <a href="{{ route('admin.products.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-orange-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-slate-500">Produk Ekraf</p>
-                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ \App\Models\Product::count() }}</h3>
-                            <p class="text-xs text-orange-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                                Kelola <i class="fa-solid fa-arrow-right"></i>
-                            </p>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
-                            <i class="fa-solid fa-store"></i>
-                        </div>
-                    </div>
-                </a>
+
 
                 <!-- Posts Card -->
                 <a href="{{ route('admin.posts.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
@@ -127,39 +105,7 @@
                     </div>
                 </a>
 
-                <!-- Infrastructures Card -->
-                <a href="{{ route('admin.infrastructures.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-purple-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-slate-500">Infrastruktur</p>
-                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ $stats['infrastructures_count'] }}</h3>
-                            <p class="text-xs text-purple-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                                Lihat Data <i class="fa-solid fa-arrow-right"></i>
-                            </p>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
-                            <i class="fa-solid fa-road"></i>
-                        </div>
-                    </div>
-                </a>
 
-                <!-- Land Uses Card -->
-                <a href="{{ route('admin.land-uses.index') }}" class="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 border border-slate-100">
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-amber-50 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-                    <div class="relative flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-slate-500">Penggunaan Lahan</p>
-                            <h3 class="text-3xl font-bold text-slate-800 mt-1">{{ $stats['land_uses_count'] }}</h3>
-                            <p class="text-xs text-amber-600 font-medium mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                                Lihat Data <i class="fa-solid fa-arrow-right"></i>
-                            </p>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-sm group-hover:shadow-md transition-shadow">
-                            <i class="fa-solid fa-seedling"></i>
-                        </div>
-                    </div>
-                </a>
             </div>
 
             <!-- Additional Statistics -->
@@ -173,23 +119,7 @@
                     <p class="text-xs text-gray-500 mt-1">{{ $stats['boundaries_count'] }} batas wilayah</p>
                 </div>
 
-                <div class="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-sm font-semibold text-gray-700">Total Panjang Infrastruktur</h3>
-                        <i class="fa-solid fa-road text-purple-600 text-xl"></i>
-                    </div>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format(($stats['total_infrastructure_length'] ?? 0) / 1000, 2) }} km</p>
-                    <p class="text-xs text-gray-500 mt-1">{{ $stats['infrastructures_count'] }} infrastruktur</p>
-                </div>
 
-                <div class="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-sm font-semibold text-gray-700">Total Luas Penggunaan Lahan</h3>
-                        <i class="fa-solid fa-seedling text-yellow-600 text-xl"></i>
-                    </div>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['total_land_use_area'] ?? 0, 2) }} ha</p>
-                    <p class="text-xs text-gray-500 mt-1">{{ $stats['land_uses_count'] }} penggunaan lahan</p>
-                </div>
             </div>
 
             <!-- Charts and Mini Map -->
@@ -202,21 +132,7 @@
                     </div>
                 </div>
 
-                <!-- Chart: Infrastructure Types -->
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Jenis Infrastruktur</h3>
-                    <div class="relative h-64">
-                        <canvas id="infrastructureChart"></canvas>
-                    </div>
-                </div>
 
-                <!-- Chart: Land Use Types -->
-                <div class="bg-white shadow-sm sm:rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Jenis Penggunaan Lahan</h3>
-                    <div class="relative h-64">
-                        <canvas id="landUseChart"></canvas>
-                    </div>
-                </div>
             </div>
 
             <!-- Recent Activity -->
@@ -274,11 +190,7 @@
                 </div>
             </div>
 
-            <!-- Mini Map -->
-            <div class="bg-white shadow-sm sm:rounded-2xl p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Peta Overview</h3>
-                <div id="miniMap" class="w-full h-64 rounded-lg border border-gray-200 relative z-0"></div>
-            </div>
+
 
             <!-- Places Table -->
             <div class="bg-white shadow-sm sm:rounded-2xl p-6">
@@ -390,217 +302,9 @@
                 });
             }
 
-            // Infrastructure Chart
-            const infrastructureCtx = document.getElementById('infrastructureChart');
-            if (infrastructureCtx) {
-                new Chart(infrastructureCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: @json($stats['infrastructure_types']->pluck('type')->map(fn($t) => ucfirst($t))->values()),
-                        datasets: [{
-                            label: 'Jumlah',
-                            data: @json($stats['infrastructure_types']->pluck('count')->values()),
-                            backgroundColor: '#8b5cf6',
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
 
-            // Land Use Chart
-            const landUseCtx = document.getElementById('landUseChart');
-            if (landUseCtx) {
-                new Chart(landUseCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: @json($stats['land_use_types']->pluck('type')->map(fn($t) => ucfirst(str_replace('_', ' ', $t)))->values()),
-                        datasets: [{
-                            data: @json($stats['land_use_types']->pluck('count')->values()),
-                            backgroundColor: ['#fbbf24', '#84cc16', '#059669', '#f59e0b', '#10b981'],
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                    }
-                });
-            }
 
-            // Mini Map
-            const miniMapElement = document.getElementById('miniMap');
-            if (miniMapElement) {
-                const miniMap = L.map('miniMap').setView([-6.7289, 110.7485], 13);
-                
-                // Base Layers
-                const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps'
-                }).addTo(miniMap);
 
-                const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps'
-                });
-
-                const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps'
-                });
-
-                const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps'
-                });
-
-                // Layer Groups
-                const boundariesLayer = L.geoJSON(null, {
-                    style: function(feature) {
-                        return {
-                            color: '#10b981', // green-500
-                            weight: 2,
-                            opacity: 1,
-                            fillOpacity: 0.1
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        if (feature.properties && feature.properties.name) {
-                            layer.bindPopup(`
-                                <div class="font-semibold">${feature.properties.name}</div>
-                                <div class="text-xs text-gray-500">${feature.properties.type}</div>
-                            `);
-                        }
-                    }
-                }).addTo(miniMap);
-
-                const infrastructuresLayer = L.geoJSON(null, {
-                    style: function(feature) {
-                        return {
-                            color: '#8b5cf6', // purple-500
-                            weight: 3,
-                            opacity: 0.8
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        if (feature.properties && feature.properties.name) {
-                            layer.bindPopup(`
-                                <div class="font-semibold">${feature.properties.name}</div>
-                                <div class="text-xs text-gray-500">${feature.properties.type}</div>
-                            `);
-                        }
-                    }
-                }).addTo(miniMap);
-
-                const landUsesLayer = L.geoJSON(null, {
-                    style: function(feature) {
-                        return {
-                            color: '#f59e0b', // amber-500
-                            weight: 1,
-                            opacity: 1,
-                            fillOpacity: 0.3
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        if (feature.properties && feature.properties.name) {
-                            layer.bindPopup(`
-                                <div class="font-semibold">${feature.properties.name}</div>
-                                <div class="text-xs text-gray-500">${feature.properties.type}</div>
-                            `);
-                        }
-                    }
-                }).addTo(miniMap);
-
-                const placesLayer = L.geoJSON(null, {
-                    pointToLayer: function(feature, latlng) {
-                        const color = feature.properties.category?.color || '#3b82f6';
-                        const iconClass = feature.properties.category?.icon_class || 'fa-solid fa-map-marker-alt';
-                        
-                        const iconHtml = `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                            <i class="${iconClass}" style="color: white; font-size: 12px;"></i>
-                        </div>`;
-
-                        return L.marker(latlng, {
-                            icon: L.divIcon({
-                                html: iconHtml,
-                                className: 'custom-div-icon',
-                                iconSize: [24, 24],
-                                iconAnchor: [12, 12]
-                            })
-                        });
-                    },
-                    onEachFeature: function(feature, layer) {
-                        if (feature.properties && feature.properties.name) {
-                            layer.bindPopup(`
-                                <div class="font-semibold">${feature.properties.name}</div>
-                                <div class="text-xs text-gray-500">${feature.properties.category?.name || 'Destinasi'}</div>
-                            `);
-                        }
-                    }
-                }).addTo(miniMap);
-
-                // Load Data
-                const fetchData = (url) => fetch(url).then(r => {
-                    if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
-                    return r.json();
-                }).catch(e => {
-                    console.warn(`Failed to fetch ${url}:`, e);
-                    return { type: 'FeatureCollection', features: [] }; // Return empty collection on error
-                });
-
-                Promise.all([
-                    fetchData('{{ route('boundaries.geojson') }}'),
-                    fetchData('{{ route('infrastructures.geojson') }}'),
-                    fetchData('{{ route('land_uses.geojson') }}'),
-                    fetchData('{{ route('places.geojson') }}')
-                ]).then(([boundaries, infrastructures, landUses, places]) => {
-                    if (boundaries.features && boundaries.features.length) boundariesLayer.addData(boundaries);
-                    if (infrastructures.features && infrastructures.features.length) infrastructuresLayer.addData(infrastructures);
-                    if (landUses.features && landUses.features.length) landUsesLayer.addData(landUses);
-                    if (places.features && places.features.length) placesLayer.addData(places);
-
-                    // Fit bounds to all data
-                    const group = new L.FeatureGroup([boundariesLayer, infrastructuresLayer, landUsesLayer, placesLayer]);
-                    if (group.getLayers().length > 0) {
-                        try {
-                            miniMap.fitBounds(group.getBounds(), { padding: [20, 20] });
-                        } catch (e) {
-                            console.log('No bounds to fit');
-                        }
-                    }
-                });
-
-                // Layer Control
-                const baseLayers = {
-                    "Google Streets": googleStreets,
-                    "Google Hybrid": googleHybrid,
-                    "Google Satellite": googleSatellite,
-                    "Google Terrain": googleTerrain
-                };
-
-                const overlays = {
-                    "Batas Wilayah": boundariesLayer,
-                    "Infrastruktur": infrastructuresLayer,
-                    "Penggunaan Lahan": landUsesLayer,
-                    "Destinasi Wisata": placesLayer
-                };
-                L.control.layers(baseLayers, overlays).addTo(miniMap);
-            }
         });
     </script>
 </x-app-layout>

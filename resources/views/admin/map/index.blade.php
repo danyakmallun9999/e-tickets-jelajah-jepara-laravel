@@ -22,27 +22,7 @@
                     >
                         <i class="fa-solid fa-map mr-2"></i> Batas Wilayah
                     </button>
-                    <button 
-                        @click="activeTab = 'infrastructure'"
-                        :class="activeTab === 'infrastructure' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                        class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition"
-                    >
-                        <i class="fa-solid fa-route mr-2"></i> Infrastruktur
-                    </button>
-                    <button 
-                        @click="activeTab = 'landuse'"
-                        :class="activeTab === 'landuse' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                        class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition"
-                    >
-                        <i class="fa-solid fa-seedling mr-2"></i> Penggunaan Lahan
-                    </button>
-                    <button 
-                        @click="activeTab = 'road'"
-                        :class="activeTab === 'road' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                        class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition"
-                    >
-                        <i class="fa-solid fa-road mr-2"></i> Jalan
-                    </button>
+
                     <button 
                         @click="activeTab = 'place'"
                         :class="activeTab === 'place' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
@@ -88,89 +68,7 @@
                                 </div>
                             </div>
 
-                            <!-- Infrastruktur Tab -->
-                            <div x-show="activeTab === 'infrastructure'" x-cloak class="space-y-4">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-900">Infrastruktur</h3>
-                                    <button @click="startAdd('infrastructure')" class="text-sm text-blue-600 hover:text-blue-800 font-semibold">
-                                        <i class="fa-solid fa-plus mr-1"></i> Tambah
-                                    </button>
-                                </div>
-                                <div class="space-y-2">
-                                    <template x-if="infrastructures.length === 0">
-                                        <div class="bg-white p-4 rounded-lg border border-gray-200 text-center text-gray-500 text-sm">
-                                            <i class="fa-solid fa-inbox mb-2 text-2xl"></i>
-                                            <p>Belum ada data infrastruktur</p>
-                                            <button @click="startAdd('infrastructure')" class="text-blue-600 hover:text-blue-800 mt-2 inline-block font-semibold">
-                                                Tambah sekarang
-                                            </button>
-                                        </div>
-                                    </template>
-                                    <template x-for="item in infrastructures" :key="item.id">
-                                        <div class="bg-white p-3 rounded-lg border border-gray-200 hover:border-blue-300 cursor-pointer transition"
-                                             @click="focusOnFeature(item, 'infrastructure')">
-                                            <p class="font-semibold text-sm text-gray-900" x-text="item.name"></p>
-                                            <p class="text-xs text-gray-500 mt-1" x-text="item.type"></p>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
 
-                            <!-- Penggunaan Lahan Tab -->
-                            <div x-show="activeTab === 'landuse'" x-cloak class="space-y-4">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-900">Penggunaan Lahan</h3>
-                                    <button @click="startAdd('landuse')" class="text-sm text-blue-600 hover:text-blue-800 font-semibold">
-                                        <i class="fa-solid fa-plus mr-1"></i> Tambah
-                                    </button>
-                                </div>
-                                <div class="space-y-2">
-                                    <template x-if="landUses.length === 0">
-                                        <div class="bg-white p-4 rounded-lg border border-gray-200 text-center text-gray-500 text-sm">
-                                            <i class="fa-solid fa-inbox mb-2 text-2xl"></i>
-                                            <p>Belum ada data penggunaan lahan</p>
-                                            <button @click="startAdd('landuse')" class="text-blue-600 hover:text-blue-800 mt-2 inline-block font-semibold">
-                                                Tambah sekarang
-                                            </button>
-                                        </div>
-                                    </template>
-                                    <template x-for="item in landUses" :key="item.id">
-                                        <div class="bg-white p-3 rounded-lg border border-gray-200 hover:border-blue-300 cursor-pointer transition"
-                                             @click="focusOnFeature(item, 'landuse')">
-                                            <p class="font-semibold text-sm text-gray-900" x-text="item.name"></p>
-                                            <p class="text-xs text-gray-500 mt-1" x-text="item.type"></p>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
-
-                            <!-- Jalan Tab -->
-                            <div x-show="activeTab === 'road'" x-cloak class="space-y-4">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-900">Jalan</h3>
-                                    <button @click="startAdd('road')" class="text-sm text-blue-600 hover:text-blue-800 font-semibold">
-                                        <i class="fa-solid fa-plus mr-1"></i> Tambah
-                                    </button>
-                                </div>
-                                <div class="space-y-2">
-                                    <template x-if="roads.length === 0">
-                                        <div class="bg-white p-4 rounded-lg border border-gray-200 text-center text-gray-500 text-sm">
-                                            <i class="fa-solid fa-inbox mb-2 text-2xl"></i>
-                                            <p>Belum ada data jalan</p>
-                                            <button @click="startAdd('road')" class="text-blue-600 hover:text-blue-800 mt-2 inline-block font-semibold">
-                                                Tambah sekarang
-                                            </button>
-                                        </div>
-                                    </template>
-                                    <template x-for="item in roads" :key="item.id">
-                                        <div class="bg-white p-3 rounded-lg border border-gray-200 hover:border-blue-300 cursor-pointer transition"
-                                             @click="focusOnFeature(item, 'road')">
-                                            <p class="font-semibold text-sm text-gray-900" x-text="item.name"></p>
-                                            <p class="text-xs text-gray-500 mt-1">Panjang: <span x-text="item.length_meters ? item.length_meters + ' m' : '-'"></span></p>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
 
                             <!-- Titik Lokasi Tab -->
                             <div x-show="activeTab === 'place'" x-cloak class="space-y-4">
@@ -306,14 +204,7 @@
                                         <input type="checkbox" x-model="showBoundaries" @change="toggleLayer('boundaries')" class="rounded">
                                         <span class="text-xs text-gray-700">Batas Wilayah</span>
                                     </label>
-                                    <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" x-model="showInfrastructures" @change="toggleLayer('infrastructures')" class="rounded">
-                                        <span class="text-xs text-gray-700">Infrastruktur</span>
-                                    </label>
-                                    <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" x-model="showLandUses" @change="toggleLayer('landuses')" class="rounded">
-                                        <span class="text-xs text-gray-700">Penggunaan Lahan</span>
-                                    </label>
+
                                     <label class="flex items-center space-x-2 cursor-pointer">
                                         <input type="checkbox" x-model="showPlaces" @change="toggleLayer('places')" class="rounded">
                                         <span class="text-xs text-gray-700">Titik Lokasi</span>
@@ -493,73 +384,7 @@
                         </div>
                     </template>
 
-                    <!-- Infrastructure Fields -->
-                    <template x-if="activeTab === 'infrastructure' || activeTab === 'road'">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Infrastruktur</label>
-                                <select x-model="newFeature.type" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="road">Jalan</option>
-                                    <option value="river">Sungai</option>
-                                    <option value="irrigation">Irigasi</option>
-                                    <option value="electricity">Listrik</option>
-                                </select>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Panjang (m)</label>
-                                    <input type="number" step="0.01" x-model="newFeature.length_meters" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Lebar (m)</label>
-                                    <input type="number" step="0.01" x-model="newFeature.width_meters" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
-                                <select x-model="newFeature.condition" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">Pilih kondisi</option>
-                                    <option value="good">Baik</option>
-                                    <option value="fair">Cukup</option>
-                                    <option value="poor">Buruk</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori (Opsional)</label>
-                                <select x-model="newFeature.category_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">Tidak ada kategori</option>
-                                    <template x-for="category in categories" :key="category.id">
-                                        <option :value="category.id" x-text="category.name"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-                    </template>
 
-                    <!-- Land Use Fields -->
-                    <template x-if="activeTab === 'landuse'">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Penggunaan Lahan</label>
-                                <select x-model="newFeature.type" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="settlement">Permukiman</option>
-                                    <option value="rice_field">Persawahan</option>
-                                    <option value="plantation">Perkebunan</option>
-                                    <option value="forest">Hutan</option>
-                                    <option value="other">Lainnya</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Pemilik</label>
-                                <input type="text" x-model="newFeature.owner" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Nama pemilik lahan">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Luas (Hektar)</label>
-                                <input type="number" step="0.0001" x-model="newFeature.area_hectares" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" readonly>
-                                <p class="text-xs text-gray-500 mt-1">Otomatis dihitung dari gambar.</p>
-                            </div>
-                        </div>
-                    </template>
 
                     <!-- Place Fields -->
                     <template x-if="activeTab === 'place'">
@@ -642,27 +467,19 @@
                     
                     // Data
                     boundaries: @json($boundaries ?? []),
-                    infrastructures: @json($infrastructures ?? []),
-                    landUses: @json($landUses ?? []),
-                    roads: @json($roads ?? []),
+
                     places: @json($places ?? []),
                     
                     // Layers
                     boundariesLayer: null,
-                    infrastructuresLayer: null,
-                    landUsesLayer: null,
-                    placesLayer: null,
-                    
-                    // Layer visibility
-                    showBoundaries: true,
-                    showInfrastructures: true,
-                    showLandUses: true,
+
                     showPlaces: true,
 
                     init() {
                         this.$nextTick(() => {
                             this.initMap();
-                            this.loadAllLayers();
+                            this.loadBoundaries();
+                            this.loadPlaces();
                             this.initKeyboardShortcuts();
                         });
                     },
@@ -761,9 +578,7 @@
                         
                         // Auto-fill type if possible
                         if (this.activeTab === 'boundary') this.newFeature.type = 'village_boundary';
-                        if (this.activeTab === 'infrastructure') this.newFeature.type = 'road';
-                        if (this.activeTab === 'road') this.newFeature.type = 'road';
-                        if (this.activeTab === 'landuse') this.newFeature.type = 'settlement';
+
 
                         // Calculate area if polygon
                         if (layer instanceof L.Polygon) {
@@ -826,10 +641,7 @@
 
                     loadAllLayers() {
                         this.loadBoundaries();
-                        this.loadInfrastructures();
-                        this.loadLandUses();
-                        this.loadPlaces();
-                        this.loadRoads();
+
                     },
 
                     loadBoundaries() {
@@ -861,67 +673,9 @@
                             });
                     },
 
-                    loadInfrastructures() {
-                        if (this.infrastructuresLayer) {
-                            this.map.removeLayer(this.infrastructuresLayer);
-                        }
-                        
-                        fetch('{{ route("infrastructures.geojson") }}')
-                            .then(res => res.json())
-                            .then(data => {
-                                this.infrastructuresLayer = L.geoJSON(data.features || [], {
-                                    style: (feature) => {
-                                        const type = feature.properties.type;
-                                        const color = type === 'river' ? '#3b82f6' : type === 'road' ? '#6b7280' : '#8b5cf6';
-                                        return { color, weight: type === 'road' ? 4 : 3, opacity: 0.8 };
-                                    },
-                                    onEachFeature: (feature, layer) => {
-                                        layer.feature = feature;
-                                        layer.on('click', () => {
-                                            this.selectedFeature = {
-                                                ...feature.properties,
-                                                geometry: feature.geometry,
-                                                editUrl: `/admin/infrastructures/${feature.properties.id}/edit`
-                                            };
-                                        });
-                                    }
-                                });
-                                if (this.showInfrastructures) {
-                                    this.infrastructuresLayer.addTo(this.map);
-                                }
-                            });
-                    },
 
-                    loadLandUses() {
-                        if (this.landUsesLayer) {
-                            this.map.removeLayer(this.landUsesLayer);
-                        }
-                        
-                        fetch('{{ route("land_uses.geojson") }}')
-                            .then(res => res.json())
-                            .then(data => {
-                                this.landUsesLayer = L.geoJSON(data.features || [], {
-                                    style: (feature) => {
-                                        const type = feature.properties.type;
-                                        const color = type === 'rice_field' ? '#fbbf24' : type === 'plantation' ? '#84cc16' : '#f59e0b';
-                                        return { color, weight: 2, fillColor: color, fillOpacity: 0.3 };
-                                    },
-                                    onEachFeature: (feature, layer) => {
-                                        layer.feature = feature;
-                                        layer.on('click', () => {
-                                            this.selectedFeature = {
-                                                ...feature.properties,
-                                                geometry: feature.geometry,
-                                                editUrl: `/admin/land-uses/${feature.properties.id}/edit`
-                                            };
-                                        });
-                                    }
-                                });
-                                if (this.showLandUses) {
-                                    this.landUsesLayer.addTo(this.map);
-                                }
-                            });
-                    },
+
+
 
                     loadPlaces() {
                         if (this.placesLayer) {
@@ -961,10 +715,7 @@
                             });
                     },
 
-                    loadRoads() {
-                        // Filter roads from infrastructures (already loaded)
-                        this.roads = this.infrastructures.filter(i => i.type === 'road');
-                    },
+
 
                     toggleLayer(type) {
                         switch(type) {
@@ -975,20 +726,7 @@
                                     this.map.removeLayer(this.boundariesLayer);
                                 }
                                 break;
-                            case 'infrastructures':
-                                if (this.showInfrastructures) {
-                                    this.infrastructuresLayer?.addTo(this.map);
-                                } else {
-                                    this.map.removeLayer(this.infrastructuresLayer);
-                                }
-                                break;
-                            case 'landuses':
-                                if (this.showLandUses) {
-                                    this.landUsesLayer?.addTo(this.map);
-                                } else {
-                                    this.map.removeLayer(this.landUsesLayer);
-                                }
-                                break;
+
                             case 'places':
                                 if (this.showPlaces) {
                                     this.placesLayer?.addTo(this.map);
@@ -1066,12 +804,7 @@
                         if (type === 'boundary') {
                             drawType = 'polygon';
                             message = 'Mode menggambar Polygon aktif. Silakan gambar batas wilayah di peta.';
-                        } else if (type === 'infrastructure' || type === 'road') {
-                            drawType = 'line';
-                            message = 'Mode menggambar Garis aktif. Silakan gambar jalur/infrastruktur di peta.';
-                        } else if (type === 'landuse') {
-                            drawType = 'polygon';
-                            message = 'Mode menggambar Polygon aktif. Silakan gambar area penggunaan lahan di peta.';
+
                         } else if (type === 'place') {
                             drawType = 'point';
                             message = 'Mode menggambar Titik aktif. Silakan klik lokasi di peta.';
@@ -1094,8 +827,7 @@
 
                     getFeatureTypeName() {
                         if (this.activeTab === 'boundary') return 'Batas Wilayah';
-                        if (this.activeTab === 'infrastructure') return 'Infrastruktur';
-                        if (this.activeTab === 'landuse') return 'Penggunaan Lahan';
+
                         if (this.activeTab === 'place') return 'Titik Lokasi';
                         return 'Fitur';
                     },
@@ -1130,18 +862,7 @@
                             url = '{{ route("admin.boundaries.store") }}';
                             formData.append('type', this.newFeature.type || 'other');
                             if (this.newFeature.area_hectares) formData.append('area_hectares', this.newFeature.area_hectares);
-                        } else if (this.activeTab === 'infrastructure' || this.activeTab === 'road') {
-                            url = '{{ route("admin.infrastructures.store") }}';
-                            formData.append('type', this.newFeature.type || 'road');
-                            if (this.newFeature.length_meters) formData.append('length_meters', this.newFeature.length_meters);
-                            if (this.newFeature.width_meters) formData.append('width_meters', this.newFeature.width_meters);
-                            if (this.newFeature.condition) formData.append('condition', this.newFeature.condition);
-                            if (this.newFeature.category_id) formData.append('category_id', this.newFeature.category_id);
-                        } else if (this.activeTab === 'landuse') {
-                            url = '{{ route("admin.land-uses.store") }}';
-                            formData.append('type', this.newFeature.type || 'other');
-                            if (this.newFeature.owner) formData.append('owner', this.newFeature.owner);
-                            if (this.newFeature.area_hectares) formData.append('area_hectares', this.newFeature.area_hectares);
+
                         } else if (this.activeTab === 'place') {
                             url = '{{ route("admin.places.store") }}';
                             if (this.newFeature.category_id) formData.append('category_id', this.newFeature.category_id);
@@ -1183,14 +904,6 @@
                             // Update sidebar list
                             if (this.activeTab === 'boundary' && result.boundary) {
                                 this.boundaries.push(result.boundary);
-                            } else if ((this.activeTab === 'infrastructure' || this.activeTab === 'road') && result.infrastructure) {
-                                if (this.activeTab === 'road' && result.infrastructure.type === 'road') {
-                                    this.roads.push(result.infrastructure);
-                                } else {
-                                    this.infrastructures.push(result.infrastructure);
-                                }
-                            } else if (this.activeTab === 'landuse' && result.land_use) {
-                                this.landUses.push(result.land_use);
                             } else if (this.activeTab === 'place' && result.place) {
                                 this.places.push(result.place);
                             }
@@ -1352,8 +1065,7 @@
                         
                         if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
                             createUrl += 'boundaries/create';
-                        } else if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
-                            createUrl += 'infrastructures/create';
+
                         } else if (geometry.type === 'Point') {
                             createUrl += 'places/create';
                         } else {
@@ -1387,8 +1099,7 @@
                         };
                         
                         searchInLayer(this.boundariesLayer);
-                        searchInLayer(this.infrastructuresLayer);
-                        searchInLayer(this.landUsesLayer);
+
                         searchInLayer(this.placesLayer);
                         
                         // If not found and it's a point, create geometry from lat/lng
@@ -1448,11 +1159,7 @@
                         switch(type) {
                             case 'boundary':
                                 return `${baseUrl}boundaries/${item.id}/edit`;
-                            case 'infrastructure':
-                            case 'road':
-                                return `${baseUrl}infrastructures/${item.id}/edit`;
-                            case 'landuse':
-                                return `${baseUrl}land-uses/${item.id}/edit`;
+
                             case 'place':
                                 return `${baseUrl}places/${item.id}/edit`;
                             default:
@@ -1486,12 +1193,7 @@
                                 const id = this.featureToDelete.id;
                                 if (this.activeTab === 'boundary') {
                                     this.boundaries = this.boundaries.filter(item => item.id !== id);
-                                } else if (this.activeTab === 'infrastructure') {
-                                    this.infrastructures = this.infrastructures.filter(item => item.id !== id);
-                                } else if (this.activeTab === 'road') {
-                                    this.roads = this.roads.filter(item => item.id !== id);
-                                } else if (this.activeTab === 'landuse') {
-                                    this.landUses = this.landUses.filter(item => item.id !== id);
+
                                 } else if (this.activeTab === 'place') {
                                     this.places = this.places.filter(item => item.id !== id);
                                 }
@@ -1521,18 +1223,14 @@
                         
                         if (tab === 'boundary') {
                             createUrl += 'boundaries/create';
-                        } else if (tab === 'infrastructure' || tab === 'road') {
-                            createUrl += 'infrastructures/create';
-                        } else if (tab === 'landuse') {
-                            createUrl += 'land-uses/create';
+
                         } else if (tab === 'place') {
                             createUrl += 'places/create';
                         } else {
                             // Default based on geometry type
                             if (geometry.type === 'Polygon') {
                                 createUrl += 'boundaries/create';
-                            } else if (geometry.type === 'LineString') {
-                                createUrl += 'infrastructures/create';
+
                             } else {
                                 createUrl += 'places/create';
                             }
