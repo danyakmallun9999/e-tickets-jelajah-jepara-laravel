@@ -148,7 +148,7 @@
                     </label>
 
                     <!-- Auth Buttons (Desktop) -->
-                    <div class="">
+                    <div class="hidden">
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}"

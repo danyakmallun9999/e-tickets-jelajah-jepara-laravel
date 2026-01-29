@@ -47,7 +47,7 @@
 
                 <div class="flex flex-1 items-center justify-end gap-4">
                     <!-- Auth Buttons (Desktop) -->
-                    <div class="">
+                    <div class="hidden">
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}" class="flex items-center justify-center rounded-full h-10 px-6 bg-primary hover:bg-primary-dark text-white dark:text-gray-900 text-sm font-bold transition-all shadow-sm hover:shadow-md active:scale-95">
