@@ -1156,19 +1156,21 @@
     <footer class="bg-gray-900/50 bg-cover bg-center bg-no-repeat bg-blend-multiply border-t border-white/10 pt-32 pb-8 px-4 md:px-10" style="font-family: 'Poppins', sans-serif; background-image: url('{{ asset('images/footer/image.png') }}');">
         <div class="w-full mx-auto max-w-7xl">
             
-            <!-- Baris 1: DINAS PARIWISATA -->
-            <div class="flex justify-between w-full text-center text-[8vw] font-[900] text-white drop-shadow-lg uppercase tracking-tighter mb-6 leading-[0.8] select-none">
+            <!-- Baris 1: DINAS PARIWISATA DAN KEBUDAYAAN -->
+            <div class="flex justify-between w-full text-center text-[3.8vw] font-[900] text-white drop-shadow-lg uppercase tracking-tighter mb-4 leading-[0.8] select-none">
                 <span>D</span><span>I</span><span>N</span><span>A</span><span>S</span>
                 <span class="invisible text-[1vw]">_</span>
                 <span>P</span><span>A</span><span>R</span><span>I</span><span>W</span><span>I</span><span>S</span><span>A</span><span>T</span><span>A</span>
-            </div>
-
-            <!-- Baris 2: DAN KEBUDAYAAN JEPARA -->
-            <div class="flex justify-between w-full text-center text-[5.5vw] font-[900] text-white drop-shadow-lg uppercase tracking-tighter mb-10 leading-[0.8] select-none">
+                <span class="invisible text-[1vw]">_</span>
                 <span>D</span><span>A</span><span>N</span>
                 <span class="invisible text-[1vw]">_</span>
                 <span>K</span><span>E</span><span>B</span><span>U</span><span>D</span><span>A</span><span>Y</span><span>A</span><span>A</span><span>N</span>
-                <span class="invisible text-[1vw]">_</span>
+            </div>
+
+            <!-- Baris 2: KABUPATEN JEPARA -->
+            <div class="flex justify-between w-full text-center text-[7.5vw] font-[900] text-white drop-shadow-lg uppercase tracking-tighter mb-10 leading-[0.8] select-none">
+                <span>K</span><span>A</span><span>B</span><span>U</span><span>P</span><span>A</span><span>T</span><span>E</span><span>N</span>
+                <span class="invisible inline-block w-[3vw]">_</span>
                 <span class="text-white">J</span><span class="text-white">E</span><span class="text-white">P</span><span class="text-white">A</span><span class="text-white">R</span><span class="text-white">A</span>
             </div>
 
