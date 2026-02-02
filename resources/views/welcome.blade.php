@@ -249,7 +249,7 @@
                             </a>
                             <a href="#profile"
                                 class="hidden sm:flex items-center justify-center h-12 px-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white text-base font-bold transition-all">
-                                Profil Desa
+                                Jepara Kalcer
                             </a>
                         </div>
                     </div>
