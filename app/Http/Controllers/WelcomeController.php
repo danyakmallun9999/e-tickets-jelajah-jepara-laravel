@@ -42,6 +42,55 @@ class WelcomeController extends Controller
         $places = \App\Models\Place::with('category')->latest()->take(6)->get();
         $posts = \App\Models\Post::where('is_published', true)->latest('published_at')->take(3)->get();
 
+        // Specific Cultures Data (Requested by User)
+        $cultures = [
+            [
+                'name' => 'Perang Obor',
+                'location' => 'Tegal Sambi',
+                'description' => 'Tradisi unik perang api menggunakan obor dari pelepah kelapa kering. Dilakukan sebagai bentuk syukur dan tolak bala, mempertemukan keberanian dan keyakinan masyarakat Tegal Sambi.',
+                'image' => 'images/culture/obor.png',
+                'highlight' => 'Senin Pahing, Dzulhijjah'
+            ],
+            [
+                'name' => 'Festival Kupat Lepet',
+                'location' => 'Pantai Kartini',
+                'description' => 'Tradisi gunungan kupat dan lepet yang menyemarakkan perayaan Syawalan. Simbol kebersamaan, saling memaafkan, dan rasa syukur masyarakat pesisir setelah berpuasa.',
+                'image' => 'images/culture/festival-kupat-lepet.png',
+                'highlight' => '8 Syawal (H+7 Lebaran)'
+            ],
+            [
+                'name' => 'Kirab Buka Luwur',
+                'location' => 'Makam Mantingan',
+                'description' => 'Prosesi sakral penggantian kain penutup makam Ratu Kalinyamat dan Sultan Hadlirin. Diwarnai iring-iringan budaya dan doa bersama mengenang jasa leluhur Jepara.',
+                'image' => 'images/culture/kirab-buka-luwur.png',
+                'highlight' => '19 Jumadil Akhir'
+            ],
+            [
+                'name' => 'Festival Jondang Kawak',
+                'location' => 'Desa Kawak',
+                'description' => 'Arak-arakan kotak kayu (jondang) berisi hasil bumi sebagai wujud syukur. Jondang dihias unik dan diarak keliling desa, melambangkan kemakmuran dan kerukunan warga.',
+                'image' => 'images/culture/jondang-kawak.png',
+                'highlight' => 'Kamis Kliwon, Dzulhijjah'
+            ],
+            [
+                'name' => 'Barikan Kubro',
+                'location' => 'Karimunjawa',
+                'description' => 'Ritual tolak bala dan syukur masyarakat Karimunjawa menjelang musim baratan. Ditandai dengan 9 tumpeng raksasa yang diarak ke laut dan alun-alun.',
+                'image' => 'images/culture/barikan-kubro.png',
+                'highlight' => 'Kamis Pon, Suro/Muharram'
+            ],
+            [
+                'name' => 'Pesta Lomban',
+                'location' => 'Laut Jepara',
+                'description' => 'Sedekah laut para nelayan yang telah melegenda. Dimeriahkan dengan larungan kepala kerbau dan perang laut sebagai ungkapan syukur atas rezeki bahari.',
+                'image' => 'images/culture/lomban.png',
+                'highlight' => '8 Syawal (Puncak Syawalan)'
+            ]
+        ];
+        
+        // Convert to object for consistency in view
+        $cultures = json_decode(json_encode($cultures));
+
         return view('welcome', compact(
             'categories', 
             'totalPlaces',
@@ -57,7 +106,8 @@ class WelcomeController extends Controller
             'lastUpdate', 
             // 'population',
             'places',
-            'posts'
+            'posts',
+            'cultures'
         ));
     }
 

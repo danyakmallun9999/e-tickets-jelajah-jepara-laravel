@@ -659,6 +659,84 @@
         </div>
     </div>
 
+    <!-- Culture & Traditions Section (Horizontal Accordion) -->
+    <div class="w-full bg-[#1a1c23] py-20 lg:py-28 overflow-hidden relative" id="culture" x-data="{ active: 0 }">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-16" x-data="{ shown: false }" x-intersect.threshold.0.5="shown = true">
+                <span class="block text-orange-500 font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-0 translate-y-4 transition-all duration-700"
+                      :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    Kekayaan Tradisi
+                </span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
+                    :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-600">Jelajahi</span> Budaya Jepara
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
+                   :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    Ragam festival dan upacara adat yang lestari, menjadi identitas dan kebanggaan masyarakat Bumi Kartini.
+                </p>
+            </div>
+
+            <!-- Horizontal Accordion -->
+            <div class="flex flex-col md:flex-row h-[600px] w-full gap-4">
+                @foreach($cultures as $index => $culture)
+                <div class="relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group shadow-2xl border border-white/5"
+                     :class="active === {{ $index }} ? 'flex-[10] md:flex-[5] opacity-100' : 'flex-[2] md:flex-[1] opacity-70 hover:opacity-100'"
+                     @click="active = {{ $index }}">
+                    
+                    <!-- Background Image (Refactored to img tag for reliability) -->
+                    <img src="{{ asset($culture->image) }}" 
+                         alt="{{ $culture->name }}"
+                         class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000"
+                         :class="active === {{ $index }} ? 'scale-100' : 'scale-110 group-hover:scale-105'">
+                    
+                    <!-- Fallback Background -->
+                    <div class="absolute inset-0 bg-gray-800 -z-10"></div>
+
+                    <!-- Overlay Gradient -->
+                    <div class="absolute inset-0 transition-opacity duration-500"
+                         :class="active === {{ $index }} ? 'bg-gradient-to-t from-black/90 via-black/40 to-transparent' : 'bg-black/60 group-hover:bg-black/40'"></div>
+
+                    <!-- Inactive State Content (Horizontal Text) -->
+                    <div class="absolute inset-0 flex items-end justify-center pb-8 transition-opacity duration-500"
+                         :class="active === {{ $index }} ? 'opacity-0 pointer-events-none' : 'opacity-100'">
+                        <h3 class="text-white font-bold tracking-widest uppercase text-lg md:text-xl drop-shadow-lg text-center px-2">
+                            {{ $culture->name }}
+                        </h3>
+                    </div>
+
+                    <!-- Active State Content -->
+                    <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 transition-all duration-700 transform"
+                         :class="active === {{ $index }} ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'">
+                        
+                        <div class="flex flex-col items-start max-w-2xl">
+                            <span class="inline-block px-3 py-1 rounded-full bg-orange-600/90 text-white text-xs font-bold mb-4 backdrop-blur-sm shadow-lg">
+                                {{ $culture->location }}
+                            </span>
+                            <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-md">
+                                {{ $culture->name }}
+                            </h3>
+                            <p class="text-gray-200 text-lg md:text-xl line-clamp-3 mb-6 leading-relaxed">
+                                {{ $culture->description }}
+                            </p>
+                            <div class="flex items-center gap-4 text-sm font-medium text-orange-300">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">calendar_month</span>
+                                    {{ $culture->highlight }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <!-- Potency Section (Economy) -->
     <div class="w-full py-10 lg:py-16 scroll-mt-20" id="potency" x-data="{
         currentIndex: 0,
