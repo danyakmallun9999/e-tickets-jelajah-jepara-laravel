@@ -548,21 +548,17 @@
         
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Section Header -->
-            <div class="text-center mb-20" 
+            <div class="text-center mb-16" 
                  x-data="{ shown: false }" 
                  x-intersect.threshold.0.5="shown = true">
-                <span class="block text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-0 translate-y-4 transition-all duration-700"
-                      :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    Warisan Leluhur
-                </span>
-                <h2 class="text-5xl md:text-6xl lg:text-7xl font-['Pinyon_Script'] text-gray-900 dark:text-gray-100 mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100 drop-shadow-sm"
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
                     :class="shown ? 'opacity-100 translate-y-0' : ''">
                     Sejarah & Legenda
                 </h2>
-                <div class="w-16 h-1 bg-gray-200 dark:bg-gray-700 mx-auto rounded-full overflow-hidden opacity-0 scale-x-0 transition-all duration-700 delay-200"
-                     :class="shown ? 'opacity-100 scale-x-100' : ''">
-                     <div class="w-1/2 h-full bg-primary animate-slide-x"></div>
-                </div>
+                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
+                   :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    Menelusuri jejak tokoh-tokoh besar yang membentuk karakter dan identitas Jepara sepanjang masa.
+                </p>
             </div>
 
             <!-- Full Image Cards Grid -->
@@ -667,10 +663,6 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header -->
             <div class="text-center mb-16" x-data="{ shown: false }" x-intersect.threshold.0.5="shown = true">
-                <span class="block text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-0 translate-y-4 transition-all duration-700"
-                      :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    Kekayaan Tradisi
-                </span>
                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
                     :class="shown ? 'opacity-100 translate-y-0' : ''">
                     Budaya Jepara
