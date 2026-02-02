@@ -660,22 +660,22 @@
     </div>
 
     <!-- Culture & Traditions Section (Horizontal Accordion) -->
-    <div class="w-full bg-[#1a1c23] py-20 lg:py-28 overflow-hidden relative" id="culture" x-data="{ active: 0 }">
+    <div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-20 lg:py-28 overflow-hidden relative" id="culture" x-data="{ active: 0 }">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header -->
             <div class="text-center mb-16" x-data="{ shown: false }" x-intersect.threshold.0.5="shown = true">
-                <span class="block text-orange-500 font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-0 translate-y-4 transition-all duration-700"
+                <span class="block text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-0 translate-y-4 transition-all duration-700"
                       :class="shown ? 'opacity-100 translate-y-0' : ''">
                     Kekayaan Tradisi
                 </span>
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
                     :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-600">Jelajahi</span> Budaya Jepara
+                    Budaya Jepara
                 </h2>
-                <p class="text-gray-400 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
+                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
                    :class="shown ? 'opacity-100 translate-y-0' : ''">
                     Ragam festival dan upacara adat yang lestari, menjadi identitas dan kebanggaan masyarakat Bumi Kartini.
                 </p>
@@ -714,7 +714,7 @@
                          :class="active === {{ $index }} ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'">
                         
                         <div class="flex flex-col items-start max-w-2xl">
-                            <span class="inline-block px-3 py-1 rounded-full bg-orange-600/90 text-white text-xs font-bold mb-4 backdrop-blur-sm shadow-lg">
+                            <span class="inline-block px-3 py-1 rounded-full bg-primary/90 text-white text-xs font-bold mb-4 backdrop-blur-sm shadow-lg">
                                 {{ $culture->location }}
                             </span>
                             <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-md">
@@ -723,7 +723,7 @@
                             <p class="text-gray-200 text-lg md:text-xl line-clamp-3 mb-6 leading-relaxed">
                                 {{ $culture->description }}
                             </p>
-                            <div class="flex items-center gap-4 text-sm font-medium text-orange-300">
+                            <div class="flex items-center gap-4 text-sm font-medium text-blue-300">
                                 <span class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-lg">calendar_month</span>
                                     {{ $culture->highlight }}
