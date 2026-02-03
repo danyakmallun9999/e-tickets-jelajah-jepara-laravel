@@ -162,7 +162,7 @@
 
 
             
-            <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Laporan & Import</p>
+            <p x-show="!sidebarMinimized" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Laporan</p>
             <div x-show="sidebarMinimized" class="border-t border-gray-100 my-2"></div>
 
              <a href="{{ route('admin.reports.index') }}" 
@@ -177,20 +177,6 @@
                      class="fixed left-[5.5rem] px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
                      style="display: none;">
                     Laporan
-                </div>
-            </a>
-             <a href="{{ route('admin.import.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.import.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="sidebarMinimized ? 'justify-center' : ''">
-                <i class="fa-solid fa-file-import w-5 text-center {{ request()->routeIs('admin.import.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
-                <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">Import Data</span>
-                 <!-- Tooltip -->
-                 <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="sidebarMinimized" 
-                     class="fixed left-[5.5rem] px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Import Data
                 </div>
             </a>
         </div>

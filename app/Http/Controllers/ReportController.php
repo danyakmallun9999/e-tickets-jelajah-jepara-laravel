@@ -19,7 +19,9 @@ class ReportController extends Controller
      */
     public function index(): View
     {
-        return view('admin.reports.index');
+        $categories = \App\Models\Category::orderBy('name')->get();
+
+        return view('admin.reports.index', compact('categories'));
     }
 
     /**
@@ -29,9 +31,13 @@ class ReportController extends Controller
     {
         $request->validate([
             'type' => 'required|in:places,boundaries,infrastructures,land_uses,all',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
 
-        $path = $this->exportService->exportToCsv($request->type);
+        $filters = $request->only(['start_date', 'end_date', 'category_id']);
+        $path = $this->exportService->exportToCsv($request->type, $filters);
 
         return Storage::disk('public')->download($path);
     }

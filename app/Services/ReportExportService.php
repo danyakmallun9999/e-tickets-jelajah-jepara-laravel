@@ -14,12 +14,12 @@ class ReportExportService
     /**
      * Export data to CSV format
      */
-    public function exportToCsv(string $type): string
+    public function exportToCsv(string $type, array $filters = []): string
     {
         $filename = 'report_'.$type.'_'.date('Y-m-d_His').'.csv';
         $path = 'reports/'.$filename;
 
-        $data = $this->getDataForType($type);
+        $data = $this->getDataForType($type, $filters);
         $headers = $this->getHeadersForType($type);
 
         $csvContent = $this->arrayToCsv($headers, $data);
@@ -44,14 +44,14 @@ class ReportExportService
     /**
      * Get data based on type
      */
-    protected function getDataForType(string $type): array
+    protected function getDataForType(string $type, array $filters = []): array
     {
         return match ($type) {
-            'places' => $this->getPlacesData(),
-            'boundaries' => $this->getBoundariesData(),
-            'infrastructures' => $this->getInfrastructuresData(),
-            'land_uses' => $this->getLandUsesData(),
-            'all' => $this->getAllData(),
+            'places' => $this->getPlacesData($filters),
+            'boundaries' => $this->getBoundariesData($filters),
+            'infrastructures' => $this->getInfrastructuresData($filters),
+            'land_uses' => $this->getLandUsesData($filters),
+            'all' => $this->getAllData($filters),
             default => [],
         };
     }
@@ -74,9 +74,23 @@ class ReportExportService
     /**
      * Get places data
      */
-    protected function getPlacesData(): array
+    protected function getPlacesData(array $filters = []): array
     {
-        return Place::with('category')->get()->map(function ($place) {
+        $query = Place::with('category');
+
+        if (! empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        if (! empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (! empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        return $query->get()->map(function ($place) {
             return [
                 $place->id,
                 $place->name,
@@ -91,9 +105,19 @@ class ReportExportService
     /**
      * Get boundaries data
      */
-    protected function getBoundariesData(): array
+    protected function getBoundariesData(array $filters = []): array
     {
-        return Boundary::all()->map(function ($boundary) {
+        $query = Boundary::query();
+
+        if (! empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (! empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        return $query->get()->map(function ($boundary) {
             return [
                 $boundary->id,
                 $boundary->name,
@@ -107,9 +131,23 @@ class ReportExportService
     /**
      * Get infrastructures data
      */
-    protected function getInfrastructuresData(): array
+    protected function getInfrastructuresData(array $filters = []): array
     {
-        return Infrastructure::all()->map(function ($infrastructure) {
+        $query = Infrastructure::query();
+
+        if (! empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        if (! empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (! empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        return $query->get()->map(function ($infrastructure) {
             return [
                 $infrastructure->id,
                 $infrastructure->name,
@@ -125,9 +163,19 @@ class ReportExportService
     /**
      * Get land uses data
      */
-    protected function getLandUsesData(): array
+    protected function getLandUsesData(array $filters = []): array
     {
-        return LandUse::all()->map(function ($landUse) {
+        $query = LandUse::query();
+
+        if (! empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (! empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        return $query->get()->map(function ($landUse) {
             return [
                 $landUse->id,
                 $landUse->name,
@@ -142,23 +190,61 @@ class ReportExportService
     /**
      * Get all data summary
      */
-    protected function getAllData(): array
+    protected function getAllData(array $filters = []): array
     {
         $data = [];
 
-        Place::all()->each(function ($place) use (&$data) {
+        $placesQuery = Place::with('category');
+        if (! empty($filters['category_id'])) {
+            $placesQuery->where('category_id', $filters['category_id']);
+        }
+        if (! empty($filters['start_date'])) {
+            $placesQuery->whereDate('created_at', '>=', $filters['start_date']);
+        }
+        if (! empty($filters['end_date'])) {
+            $placesQuery->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        $placesQuery->get()->each(function ($place) use (&$data) {
             $data[] = ['Titik Lokasi', $place->id, $place->name, $place->category?->name ?? '-'];
         });
 
-        Boundary::all()->each(function ($boundary) use (&$data) {
+        $boundariesQuery = Boundary::query();
+        if (! empty($filters['start_date'])) {
+            $boundariesQuery->whereDate('created_at', '>=', $filters['start_date']);
+        }
+        if (! empty($filters['end_date'])) {
+            $boundariesQuery->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        $boundariesQuery->get()->each(function ($boundary) use (&$data) {
             $data[] = ['Batas Wilayah', $boundary->id, $boundary->name, $boundary->type];
         });
 
-        Infrastructure::all()->each(function ($infrastructure) use (&$data) {
+        $infraQuery = Infrastructure::query();
+        if (! empty($filters['category_id'])) {
+            $infraQuery->where('category_id', $filters['category_id']);
+        }
+        if (! empty($filters['start_date'])) {
+            $infraQuery->whereDate('created_at', '>=', $filters['start_date']);
+        }
+        if (! empty($filters['end_date'])) {
+            $infraQuery->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        $infraQuery->get()->each(function ($infrastructure) use (&$data) {
             $data[] = ['Infrastruktur', $infrastructure->id, $infrastructure->name, $infrastructure->type];
         });
 
-        LandUse::all()->each(function ($landUse) use (&$data) {
+        $landUsesQuery = LandUse::query();
+        if (! empty($filters['start_date'])) {
+            $landUsesQuery->whereDate('created_at', '>=', $filters['start_date']);
+        }
+        if (! empty($filters['end_date'])) {
+            $landUsesQuery->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        $landUsesQuery->get()->each(function ($landUse) use (&$data) {
             $data[] = ['Penggunaan Lahan', $landUse->id, $landUse->name, $landUse->type];
         });
 

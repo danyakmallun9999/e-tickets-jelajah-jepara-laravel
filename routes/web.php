@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BoundaryController;
-use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WelcomeController;
@@ -43,9 +42,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Boundaries routes
     Route::resource('boundaries', BoundaryController::class);
 
-    // Import routes
-    Route::get('/import', [ImportController::class, 'index'])->name('import.index');
-    Route::post('/import', [ImportController::class, 'import'])->name('import.import');
 
     // Reports routes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

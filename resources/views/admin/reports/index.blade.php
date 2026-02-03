@@ -16,15 +16,38 @@
                 <form action="{{ route('admin.reports.export.csv') }}" method="POST" class="space-y-4">
                     @csrf
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Tipe Data</label>
-                        <select name="type" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                            <option value="all">Semua Data</option>
-                            <option value="places">Titik Lokasi</option>
-                            <option value="boundaries">Batas Wilayah</option>
-                            <option value="infrastructures">Infrastruktur</option>
-                            <option value="land_uses">Penggunaan Lahan</option>
-                        </select>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Tipe Data</label>
+                            <select name="type" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                                <option value="all">Semua Data</option>
+                                <option value="places">Titik Lokasi</option>
+                                <option value="boundaries">Batas Wilayah</option>
+                                <option value="infrastructures">Infrastruktur</option>
+                                <option value="land_uses">Penggunaan Lahan</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori (Opsional)</label>
+                            <select name="category_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">Semua Kategori</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">*Hanya berlaku untuk Lokasi & Infrastruktur</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dari Tanggal</label>
+                            <input type="date" name="start_date" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Sampai Tanggal</label>
+                            <input type="date" name="end_date" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
                     </div>
 
                     <button type="submit" class="w-full px-5 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">
