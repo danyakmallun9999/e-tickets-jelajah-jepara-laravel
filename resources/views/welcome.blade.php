@@ -50,19 +50,23 @@
                 <div
                     class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
                     <div class="max-w-4xl space-y-6 pointer-events-auto">
+                        <span
+                            class="hidden md:inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider animate-fade-in-down">
+                            {{ __('Hero.Badge') }}
+                        </span>
                         <h1
                             class="text-white text-3xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-sm animate-fade-in-up">
-                            Blusukan Jepara.<br /> Ukir Cerita Serumu Disini
+                            {!! __('Hero.Title') !!}
                         </h1>
                         <p
                             class="text-gray-100 text-lg sm:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-sm animate-fade-in-up delay-100">
-                            Temukan keindahan pantai tropis, kekayaan sejarah, dan mahakarya seni ukir kelas dunia.
+                            {{ __('Hero.Subtitle') }}
                         </p>
                         <div
                             class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up delay-200">
                             <a class="flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-dark text-white text-base font-bold shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5"
                                 href="{{ route('places.index') }}">
-                                Jelajahi Destinasi
+                                {{ __('Hero.Button') }}
                             </a>
                         </div>
                     </div>
@@ -267,32 +271,31 @@
                          :class="shown ? 'opacity-100 translate-y-0' : ''">
                         
                         <!-- Minimal Label -->
-                        <span class="block text-xs font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">Profil Wilayah</span>
+                        <span class="block text-xs font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">{{ __('Profile.Label') }}</span>
 
                         <!-- Typography -->
                         <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 dark:text-white leading-[1.1]">
-                            Mutiara <br>
-                            <span class="italic text-gray-500 font-light">Semenanjung.</span>
+                            {!! __('Profile.Title') !!}
                         </h2>
 
                         <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-light max-w-md">
-                            Kabupaten Jepara, permata di ujung utara Jawa Tengah. Garis pantai membentang 83 km, menyatukan budaya ukir kelas dunia dengan keindahan alam tropis.
+                            {{ __('Profile.Description') }}
                         </p>
 
                         <!-- Key Highlights (Pillars) -->
                         <div class="pt-8 mt-8 border-t border-gray-100 dark:border-gray-800">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Alam</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Surga <br> Tropis</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Nature.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Nature.Desc') !!}</p>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Sejarah</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Bumi <br> Kartini</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Heritage.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Heritage.Desc') !!}</p>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Seni</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Ukir <br> Dunia</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Arts.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Arts.Desc') !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -325,7 +328,7 @@
                     <!-- Minimal Stats (Absolute, no glassmorphism, just solid) -->
                     <div class="absolute top-8 -right-4 bg-white dark:bg-gray-800 p-6 shadow-xl hidden lg:block">
                         <span class="block text-4xl font-serif text-gray-900 dark:text-white">{{ $countDestinasi }}</span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Destinasi</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">{{ __('Nav.Destinations') }}</span>
                     </div>
 
                 </div>

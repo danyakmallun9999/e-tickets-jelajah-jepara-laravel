@@ -9,19 +9,19 @@
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
                     <a class="text-sm font-medium transition-colors hover:underline underline-offset-4 {{ request()->routeIs('welcome') ? 'text-primary font-bold' : 'text-text-light dark:text-text-dark hover:text-primary' }}" 
-                       href="{{ route('welcome') }}">Beranda</a>
+                       href="{{ route('welcome') }}">{{ __('Nav.Home') }}</a>
                        
                     <a class="text-sm font-medium transition-colors hover:underline underline-offset-4 {{ request()->routeIs('explore.map') ? 'text-primary font-bold' : 'text-text-light dark:text-text-dark hover:text-primary' }}" 
-                       href="{{ route('explore.map') }}">Peta Wisata</a>
+                       href="{{ route('explore.map') }}">{{ __('Nav.Map') }}</a>
                        
                     <a class="text-sm font-medium transition-colors hover:underline underline-offset-4 {{ request()->routeIs('places.*') ? 'text-primary font-bold' : 'text-text-light dark:text-text-dark hover:text-primary' }}" 
-                       href="{{ route('places.index') }}">Destinasi</a>
+                       href="{{ route('places.index') }}">{{ __('Nav.Destinations') }}</a>
                        
                     <a class="text-sm font-medium transition-colors hover:underline underline-offset-4 {{ request()->routeIs('events.public.*') ? 'text-primary font-bold' : 'text-text-light dark:text-text-dark hover:text-primary' }}" 
-                       href="{{ route('events.public.index') }}">Agenda</a>
+                       href="{{ route('events.public.index') }}">{{ __('Nav.Events') }}</a>
                        
                     <a class="text-sm font-medium transition-colors hover:underline underline-offset-4 {{ request()->routeIs('posts.*') ? 'text-primary font-bold' : 'text-text-light dark:text-text-dark hover:text-primary' }}" 
-                       href="{{ route('posts.index') }}">Berita</a>
+                       href="{{ route('posts.index') }}">{{ __('Nav.News') }}</a>
                 </nav>
             </div>
 
@@ -61,6 +61,13 @@
                 </label>
                 @endif
 
+                <!-- Language Switcher (Desktop) -->
+                <div class="hidden lg:flex items-center gap-2 mr-4">
+                    <a href="{{ route('lang.switch', 'id') }}" class="text-xs font-bold transition-colors {{ app()->getLocale() == 'id' ? 'text-primary' : 'text-gray-400 hover:text-gray-600' }}">ID</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('lang.switch', 'en') }}" class="text-xs font-bold transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-gray-400 hover:text-gray-600' }}">EN</a>
+                </div>
+
                 <!-- Auth Buttons (Desktop) -->
                 <div class="hidden">
                     @if (Route::has('login'))
@@ -95,18 +102,24 @@
                 class="absolute top-20 left-0 w-full bg-background-light dark:bg-background-dark border-b border-surface-light dark:border-surface-dark shadow-xl lg:hidden z-50 p-4 flex flex-col gap-4">
 
                 <nav class="flex flex-col gap-4">
+                    <div class="flex items-center gap-4 p-2 border-b border-surface-light dark:border-surface-dark pb-4 mb-2">
+                        <a href="{{ route('lang.switch', 'id') }}" class="text-sm font-bold {{ app()->getLocale() == 'id' ? 'text-primary' : 'text-gray-400' }}">ID</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="{{ route('lang.switch', 'en') }}" class="text-sm font-bold {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-gray-400' }}">EN</a>
+                    </div>
+
                     <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
-                        href="{{ route('welcome') }}">Beranda</a>
+                        href="{{ route('welcome') }}">{{ __('Nav.Home') }}</a>
                     @if(request()->routeIs('welcome'))
-                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="#gis-map">Peta Wisata</a>
-                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="#profile">Profil</a>
+                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="#gis-map">{{ __('Nav.Map') }}</a>
+                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="#profile">{{ __('Profile.Label') }}</a>
                     @else
-                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="{{ route('explore.map') }}">Peta Wisata</a>
+                        <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2" href="{{ route('explore.map') }}">{{ __('Nav.Map') }}</a>
                     @endif
                     <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
-                        href="{{ route('places.index') }}">Destinasi</a>
+                        href="{{ route('places.index') }}">{{ __('Nav.Destinations') }}</a>
                     <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
-                        href="{{ route('posts.index') }}">Berita</a>
+                        href="{{ route('posts.index') }}">{{ __('Nav.News') }}</a>
                 </nav>
 
                 <div class="hidden border-t border-surface-light dark:border-surface-dark pt-4">
