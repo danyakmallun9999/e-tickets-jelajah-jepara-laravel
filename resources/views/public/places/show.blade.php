@@ -1,249 +1,264 @@
 <x-public-layout>
-    <div class="bg-white dark:bg-background-dark min-h-screen">
+    <div class="bg-white dark:bg-slate-950 min-h-screen">
         
-        <!-- Immersive Hero Section -->
-        <div class="relative h-[65vh] md:h-[80vh] w-full overflow-hidden group rounded-b-[2.5rem] md:rounded-b-[4rem] border-b border-slate-200 dark:border-slate-800 z-20">
+        <!-- Hero Section - Minimalist & Clean -->
+        <div class="relative h-[60vh] md:h-[75vh] w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
             @if($place->image_path)
-                <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}" class="w-full h-full object-cover attachment-fixed transform scale-105 group-hover:scale-100 transition-transform duration-[3s] ease-out">
+                <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]">
             @else
-                <div class="w-full h-full bg-slate-900 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-8xl text-slate-800">image</span>
+                <div class="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-slate-400 dark:text-slate-600">image</span>
                 </div>
             @endif
             
-            <!-- Cinematic Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-black/20 opacity-90"></div>
+            <!-- Overlay - Subtle Dark Gradient -->
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
 
-            <!-- Hero Content (Centered) -->
+            <!-- Hero Content -->
             <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
-                <div class="max-w-4xl mx-auto space-y-6 md:space-y-8 animate-fade-in-up mt-10 md:mt-0">
+                <div class="max-w-4xl mx-auto space-y-4 md:space-y-6">
                     
-                    <!-- Badges -->
-                    <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-                        <span class="px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs md:text-sm font-bold tracking-widest uppercase hover:bg-white/20 transition-colors">
+                    <!-- Category & Rating Badges -->
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <span class="px-4 py-1.5 rounded-lg bg-white text-slate-900 text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] border border-slate-200">
                             {{ $place->category->name ?? __('Tourism.Category.Default') }}
                         </span>
                         @if($place->rating)
-                        <div class="flex items-center gap-1.5 bg-yellow-400/20 backdrop-blur-md px-4 py-1.5 md:py-2 rounded-full border border-yellow-400/30 text-yellow-300 text-xs md:text-sm font-bold">
-                            <span class="material-symbols-outlined text-sm md:text-base">star</span>
+                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-yellow-400 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                            <span class="material-symbols-outlined text-xs">star</span>
                             <span>{{ $place->rating }}</span>
                         </div>
                         @endif
                     </div>
                     
                     <!-- Title -->
-                    <h1 class="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight tracking-tight px-4">
+                    <h1 class="font-display text-4xl sm:text-5xl md:text-7xl font-black text-white leading-tight tracking-tight px-4">
                         {{ $place->name }}
                     </h1>
 
                     <!-- Location -->
-                    <div class="flex items-center justify-center gap-2 text-white/80 font-medium text-base md:text-xl">
-                        <span class="material-symbols-outlined text-primary text-xl md:text-2xl">location_on</span>
-                        <span class="border-b border-transparent hover:border-white/50 transition-all cursor-pointer">{{ $place->address ?? 'Jepara, Jawa Tengah' }}</span>
+                    <div class="flex items-center justify-center gap-2 text-slate-200 font-medium text-base md:text-lg">
+                        <span class="material-symbols-outlined text-lg">location_on</span>
+                        <span>{{ $place->address ?? 'Jepara, Jawa Tengah' }}</span>
                     </div>
 
                 </div>
             </div>
             
             <!-- Scroll Indicator -->
-            <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer opacity-70 hover:opacity-100 transition-opacity" @click="document.getElementById('content').scrollIntoView({behavior: 'smooth'})">
-                <span class="material-symbols-outlined text-white text-3xl md:text-4xl">keyboard_arrow_down</span>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer text-slate-300 hover:text-white transition-colors" @click="document.getElementById('content').scrollIntoView({behavior: 'smooth'})">
+                <span class="material-symbols-outlined text-3xl md:text-4xl">keyboard_arrow_down</span>
             </div>
         </div>
 
-        <!-- Main Content Section -->
-        <div id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
+        <!-- Main Content -->
+        <div id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 
                 <!-- Left Column: Content (8 cols) -->
                 <div class="lg:col-span-8 space-y-12">
                     
                     <!-- About Section -->
-                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700">
+                    <section x-data="{ expanded: false, isLong: false }" x-init="isLong = $refs.aboutText.scrollHeight > 250" class="bg-white dark:bg-slate-900 rounded-2xl p-8 md:p-10 border border-slate-200 dark:border-slate-800">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-2xl">description</span>
+                            <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-xl">description</span>
                             </div>
-                            <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white">{{ __('Places.Detail.About') }}</h2>
+                            <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white">{{ __('Places.Detail.About') }}</h2>
                         </div>
-                        <div class="prose prose-lg prose-slate dark:prose-invert max-w-none font-light leading-relaxed">
-                            <p class="whitespace-pre-line">{{ $place->description }}</p>
+                        <div class="relative">
+                            <div x-ref="aboutText" 
+                                 class="prose prose-lg prose-slate dark:prose-invert max-w-none font-normal leading-relaxed text-slate-700 dark:text-slate-300 overflow-hidden transition-all duration-500 ease-in-out"
+                                 :class="expanded ? 'max-h-[5000px]' : 'max-h-[250px]'">
+                                <p class="whitespace-pre-line">{{ $place->description }}</p>
+                            </div>
+                            
+                            <!-- Gradient Fade -->
+                            <div x-show="isLong && !expanded" 
+                                 class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none"
+                                 x-transition:enter="transition opacity duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100">
+                            </div>
                         </div>
-                    </div>
+
+                        <!-- Toggle Button -->
+                        <div x-show="isLong" class="mt-6 flex justify-start">
+                            <button @click="expanded = !expanded" 
+                                    class="group flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <span x-text="expanded ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya'"></span>
+                                <span class="material-symbols-outlined text-lg transition-transform duration-300" :class="expanded ? 'rotate-180' : ''">expand_more</span>
+                            </button>
+                        </div>
+                    </section>
 
                     <!-- Wahana & Fasilitas Grid -->
-                    <!-- Wahana & Fasilitas Grid (Bento Style) -->
                     @if(!empty($place->rides) || !empty($place->facilities))
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
-                        <!-- Wahana / Pricing Card -->
+                        <!-- Wahana Card -->
                         @if(!empty($place->rides) && is_array($place->rides))
-                        <div class="bg-gradient-to-br from-blue-50/50 to-white dark:from-slate-800 dark:to-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group h-full">
+                        <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden h-full">
                             <!-- Header -->
-                            <div class="p-6 border-b border-blue-50 dark:border-slate-700/50 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                            <div class="p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                                     <span class="material-symbols-outlined text-xl">attractions</span>
                                 </div>
                                 <div>
-                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">{{ __('Places.Detail.RidesTitle') }}</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Places.Detail.RidesSubtitle') }}</p>
+                                    <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">{{ __('Places.Detail.RidesTitle') }}</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Places.Detail.RidesSubtitle') }}</p>
                                 </div>
                             </div>
                             
                             <!-- List -->
-                            <div class="p-6 relative">
-                                <ul class="space-y-1">
+                            <div class="p-6 md:p-8">
+                                <ul class="space-y-2">
                                     @foreach($place->rides as $ride)
                                         @if(is_array($ride))
                                             @php
-                                                // Detect Header: Ends with ':' or has no price/contact info
                                                 $isHeader = str_ends_with(trim($ride['name']), ':') || empty($ride['price']);
                                                 $cleanName = str_replace(':', '', $ride['name']);
                                             @endphp
 
                                             @if($isHeader)
-                                                <li class="pt-4 pb-2 first:pt-0">
-                                                    <h4 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                                <li class="pt-3 pb-1 first:pt-0">
+                                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                                                        <span class="w-1 h-1 rounded-full bg-blue-500"></span>
                                                         {{ $cleanName }}
                                                     </h4>
                                                 </li>
                                             @else
-                                                <li class="flex items-start justify-between gap-4 text-sm py-1.5 pl-6 border-l-2 border-slate-100 dark:border-slate-700 ml-0.5 hover:bg-slate-50 dark:hover:bg-white/5 pr-2 rounded-r-lg transition-colors">
-                                                    <span class="font-medium text-slate-600 dark:text-slate-300 leading-snug">{{ $ride['name'] }}</span>
+                                                <li class="flex items-start justify-between gap-4 text-sm py-2 px-3 ml-2 border-l-2 border-blue-200 dark:border-blue-900/30 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-r transition-colors">
+                                                    <span class="font-medium leading-snug">{{ $ride['name'] }}</span>
                                                     @if(!empty($ride['price']))
                                                         <span class="shrink-0 font-bold text-blue-600 dark:text-blue-400 text-xs">{{ $ride['price'] }}</span>
                                                     @endif
                                                 </li>
                                             @endif
                                         @else
-                                            {{-- Fallback --}}
-                                            <li class="text-sm text-slate-600 dark:text-slate-400 py-1">{{ $ride }}</li>
+                                            <li class="text-sm text-slate-600 dark:text-slate-400 py-1.5">{{ $ride }}</li>
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
-                        </div>
+                        </section>
                         @endif
 
                         <!-- Fasilitas Card -->
                         @if(!empty($place->facilities) && is_array($place->facilities))
-                        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden h-full">
-                             <!-- Header -->
-                             <div class="p-6 border-b border-slate-50 dark:border-slate-700/50 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden h-full">
+                            <!-- Header -->
+                            <div class="p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
                                     <span class="material-symbols-outlined text-xl">pool</span>
                                 </div>
                                 <div>
-                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">{{ __('Places.Detail.FacilitiesTitle') }}</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Places.Detail.FacilitiesSubtitle') }}</p>
+                                    <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">{{ __('Places.Detail.FacilitiesTitle') }}</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Places.Detail.FacilitiesSubtitle') }}</p>
                                 </div>
                             </div>
 
-                            <!-- Chips/Badges -->
-                            <div class="p-6">
-                                <div class="flex flex-wrap gap-2">
+                            <!-- Facilities List -->
+                            <div class="p-6 md:p-8">
+                                <div class="flex flex-wrap gap-2.5">
                                     @foreach($place->facilities as $facility)
-                                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
-                                            <span class="material-symbols-outlined text-sm">check</span>
+                                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
+                                            <span class="material-symbols-outlined text-sm">check_circle</span>
                                             <span>{{ $facility }}</span>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
-                        </div>
+                        </section>
                         @endif
                         
                     </div>
                     @endif
 
-
                 </div>
 
                 <!-- Right Column: Sidebar (4 cols) -->
                 <div class="lg:col-span-4 space-y-8">
-                    <!-- Sticky Sidebar -->
-                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700 sticky top-24">
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4">
-                            <span class="material-symbols-outlined text-primary">info</span> {{ __('Places.Detail.Sidebar.Title') }}
+                    
+                    <!-- Info Sidebar - Sticky -->
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 sticky top-24 space-y-6">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">info</span>
+                            {{ __('Places.Detail.Sidebar.Title') }}
                         </h3>
 
-                        <div class="space-y-6">
-                            <!-- Ticket Price -->
-                            <div class="group">
-                                <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-base">confirmation_number</span>
-                                    {{ __('Places.Detail.Sidebar.Ticket') }}
-                                </div>
-                                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700 group-hover:border-primary/30 transition-colors">
-                                    <p class="text-slate-700 dark:text-slate-200 font-medium text-sm whitespace-pre-line leading-relaxed">
-                                        {{ $place->ticket_price ?? __('Places.Detail.Sidebar.ContactLabel') }}
-                                    </p>
-                                </div>
+                        <!-- Ticket Price -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-base">confirmation_number</span>
+                                {{ __('Places.Detail.Sidebar.Ticket') }}
                             </div>
-
-                            <!-- Opening Hours -->
-                            <div class="group">
-                                <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-base">schedule</span>
-                                    {{ __('Places.Detail.Sidebar.Hours') }}
-                                </div>
-                                <p class="text-slate-800 dark:text-white font-semibold pl-1">
-                                    {{ $place->opening_hours ?? __('Places.Detail.Sidebar.EveryDay') }}
-                                </p>
-                            </div>
-
-                            <!-- Contact info -->
-                            @if($place->contact_info)
-                            <div class="group">
-                                <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-base">call</span>
-                                    {{ __('Places.Detail.Sidebar.Contact') }}
-                                </div>
-                                <p class="text-slate-800 dark:text-white font-semibold pl-1">
-                                    {{ $place->contact_info }}
-                                </p>
-                            </div>
-                            @endif
-
-                             <!-- Manager/Ownership -->
-                            @if($place->manager || $place->ownership_status)
-                            <div class="group">
-                                <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-base">badge</span>
-                                    {{ __('Places.Detail.Sidebar.Manager') }}
-                                </div>
-                                <div class="pl-1">
-                                    <p class="text-slate-800 dark:text-white font-semibold">{{ $place->manager ?? '-' }}</p>
-                                    @if($place->ownership_status)
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $place->ownership_status }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif
-
-                            <!-- Social Media -->
-                            @if($place->social_media)
-                            <div class="group">
-                                <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    <span class="material-symbols-outlined text-base">share</span>
-                                    {{ __('Places.Detail.Sidebar.Social') }}
-                                </div>
-                                <p class="text-slate-700 dark:text-slate-300 text-sm whitespace-pre-line pl-1">{{ $place->social_media }}</p>
-                            </div>
-                            @endif
+                            <p class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium text-sm whitespace-pre-line leading-relaxed">
+                                {{ $place->ticket_price ?? __('Places.Detail.Sidebar.ContactLabel') }}
+                            </p>
                         </div>
 
+                        <!-- Opening Hours -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-base">schedule</span>
+                                {{ __('Places.Detail.Sidebar.Hours') }}
+                            </div>
+                            <p class="text-slate-900 dark:text-white font-semibold">
+                                {{ $place->opening_hours ?? __('Places.Detail.Sidebar.EveryDay') }}
+                            </p>
+                        </div>
+
+                        <!-- Contact Info -->
+                        @if($place->contact_info)
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-base">call</span>
+                                {{ __('Places.Detail.Sidebar.Contact') }}
+                            </div>
+                            <p class="text-slate-900 dark:text-white font-semibold">
+                                {{ $place->contact_info }}
+                            </p>
+                        </div>
+                        @endif
+
+                        <!-- Manager/Ownership -->
+                        @if($place->manager || $place->ownership_status)
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-base">badge</span>
+                                {{ __('Places.Detail.Sidebar.Manager') }}
+                            </div>
+                            <div>
+                                <p class="text-slate-900 dark:text-white font-semibold text-sm">{{ $place->manager ?? '-' }}</p>
+                                @if($place->ownership_status)
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $place->ownership_status }}</p>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Social Media -->
+                        @if($place->social_media)
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-base">share</span>
+                                {{ __('Places.Detail.Sidebar.Social') }}
+                            </div>
+                            <p class="text-slate-700 dark:text-slate-300 text-sm whitespace-pre-line">{{ $place->social_media }}</p>
+                        </div>
+                        @endif
+
                         <!-- Action Buttons -->
-                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700 space-y-3">
-                             <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" 
-                               class="flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold transform hover:-translate-y-0.5 transition-all">
+                        <div class="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                            <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" 
+                               class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors">
                                 <img src="https://www.google.com/images/branding/product/2x/maps_96in128dp.png" alt="Google Maps" class="w-5 h-5 object-contain brightness-0 invert">
                                 <span>{{ __('Places.Detail.Sidebar.Directions') }}</span>
                             </a>
                             
                             @if($place->website)
-                            <a href="{{ $place->website }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition-all">
+                            <a href="{{ $place->website }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold transition-colors">
                                 <span class="material-symbols-outlined">language</span>
                                 <span>{{ __('Places.Detail.Sidebar.Website') }}</span>
                             </a>
@@ -251,7 +266,7 @@
                         </div>
                     </div>
 
-                    <!-- Gallery Section with Lightbox (Relocated to Sidebar) -->
+                    <!-- Gallery Section -->
                     @if($place->images->count() > 0 || $place->image_path)
                     <div x-data="{ 
                         lightboxOpen: false, 
@@ -277,35 +292,32 @@
                             this.activeImage = img;
                             this.lightboxOpen = true;
                         }
-                    }" class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700">
+                    }" class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
                         <div class="flex items-center gap-3 mb-6">
-                             <div class="h-1 w-8 bg-primary rounded-full"></div>
-                             <h2 class="text-xl font-display font-bold text-slate-800 dark:text-white">{{ __('Places.Detail.Gallery') }}</h2>
+                            <h2 class="text-xl font-display font-bold text-slate-900 dark:text-white">{{ __('Places.Detail.Gallery') }}</h2>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-3 auto-rows-[120px]">
                             @if($place->image_path)
-                            <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 group cursor-pointer relative" @click="openLightbox('{{ asset($place->image_path) }}')">
-                                <img src="{{ asset($place->image_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
+                            <div class="col-span-2 row-span-2 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer group" @click="openLightbox('{{ asset($place->image_path) }}')">
+                                <img src="{{ asset($place->image_path) }}" class="w-full h-full object-cover group-hover:brightness-90 transition-all duration-500">
                             </div>
                             @endif
                             
                             @foreach($place->images as $image)
-                            <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 group cursor-pointer relative" @click="openLightbox('{{ asset($image->image_path) }}')">
-                                <img src="{{ asset($image->image_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
+                            <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer group" @click="openLightbox('{{ asset($image->image_path) }}')">
+                                <img src="{{ asset($image->image_path) }}" class="w-full h-full object-cover group-hover:brightness-90 transition-all duration-500">
                             </div>
                             @endforeach
                         </div>
 
-                        <!-- Lightbox Modal (Teleported to Body) -->
+                        <!-- Lightbox Modal -->
                         <template x-teleport="body">
                             <template x-if="lightboxOpen">
                                 <div 
                                     x-show="lightboxOpen" 
                                     style="display: none;"
-                                    class="fixed inset-0 z-[10001] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
+                                    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4"
                                     x-transition:enter="transition ease-out duration-300"
                                     x-transition:enter-start="opacity-0"
                                     x-transition:enter-end="opacity-100"
@@ -318,42 +330,42 @@
                                     @click="lightboxOpen = false"
                                 >
                                     <!-- Close Button -->
-                                    <button @click.stop="lightboxOpen = false" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[10002] p-2 hover:bg-white/10 rounded-full">
+                                    <button @click.stop="lightboxOpen = false" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-[10000] p-2 hover:bg-white/10 rounded-lg">
                                         <span class="material-symbols-outlined text-3xl">close</span>
                                     </button>
                                     
                                     <!-- Prev Button -->
-                                    <button @click.stop="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-[10002] p-4 hover:bg-white/10 rounded-full transition-all hidden md:block">
+                                    <button @click.stop="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white z-[10000] p-3 hover:bg-white/10 rounded-lg transition-colors hidden md:block">
                                         <span class="material-symbols-outlined text-4xl">chevron_left</span>
                                     </button>
                                     
                                     <!-- Next Button -->
-                                    <button @click.stop="next()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-[10002] p-4 hover:bg-white/10 rounded-full transition-all hidden md:block">
+                                    <button @click.stop="next()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white z-[10000] p-3 hover:bg-white/10 rounded-lg transition-colors hidden md:block">
                                         <span class="material-symbols-outlined text-4xl">chevron_right</span>
                                     </button>
 
-                                    <!-- Content Wrapper (Allow propagation to backdrop) -->
+                                    <!-- Content Wrapper -->
                                     <div class="relative flex flex-col items-center justify-center max-h-screen w-full select-none">
                                          
                                          <!-- Image Counter -->
-                                         <div class="absolute -top-12 left-1/2 -translate-x-1/2 text-white/80 font-medium text-sm tracking-widest bg-black/50 px-4 py-1 rounded-full backdrop-blur-sm" @click.stop>
+                                         <div class="absolute -top-14 left-1/2 -translate-x-1/2 text-white/70 font-medium text-sm bg-black/40 px-3 py-1.5 rounded-lg" @click.stop>
                                             <span x-text="activeIndex + 1"></span> / <span x-text="images.length"></span>
                                          </div>
 
                                          <!-- Image -->
                                          <img 
                                             :src="activeImage" 
-                                            class="max-h-[80vh] max-w-full rounded-lg border border-white/10 object-contain transition-all duration-300"
+                                            class="max-h-[80vh] max-w-full rounded-lg object-contain transition-all duration-300"
                                             x-transition:enter="transition ease-out duration-300"
-                                            x-transition:enter-start="opacity-50 scale-95"
-                                            x-transition:enter-end="opacity-100 scale-100"
+                                            x-transition:enter-start="opacity-50"
+                                            x-transition:enter-end="opacity-100"
                                             @click.stop
                                          >
                                          
                                          <!-- Gallery Navigation -->
-                                         <div class="mt-6 flex gap-2 overflow-x-auto max-w-[90vw] p-2 scrollbar-hide" @click.stop>
+                                         <div class="mt-8 flex gap-2 overflow-x-auto max-w-[90vw] p-2" @click.stop>
                                              <template x-for="(img, index) in images">
-                                                 <button @click="activeImage = img" class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 relative group" :class="activeImage === img ? 'border-primary opacity-100 scale-105' : 'border-transparent opacity-50 hover:opacity-80'">
+                                                 <button @click="activeImage = img" class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0" :class="activeImage === img ? 'border-white opacity-100' : 'border-white/30 opacity-40 hover:opacity-60'">
                                                      <img :src="img" class="w-full h-full object-cover">
                                                  </button>
                                              </template>
@@ -364,6 +376,8 @@
                         </template>
                     </div>
                     @endif
+                    
+                </div>
             </div>
         </div>
     </div>
