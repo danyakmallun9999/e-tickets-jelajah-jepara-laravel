@@ -14,6 +14,7 @@ class EventController extends Controller
     {
         // Fetch all published events ordered by start date
         $events = Event::where('is_published', true)
+            ->whereYear('start_date', 2026)
             ->orderBy('start_date', 'asc')
             ->get();
 

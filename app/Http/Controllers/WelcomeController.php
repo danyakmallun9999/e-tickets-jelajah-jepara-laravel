@@ -52,7 +52,7 @@ class WelcomeController extends Controller
         $countKuliner = $categories->first(fn ($c) => Str::contains($c->name, 'Kuliner', true))?->places_count ?? 0;
 
         // Event Count
-        $countEvent = Event::count();
+        $countEvent = Event::whereYear('start_date', 2026)->count();
 
         // Desa Wisata / Wilayah
         $countDesa = Boundary::count();
