@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="light scroll-smooth overflow-x-hidden" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Portal Wisata - {{ config('app.name', 'Dinas Pariwisata dan Kebudayaan Jepara') }}</title>
+    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
+
+    {{-- Leaflet & Icon --}}
+    {{-- Local assets handled by Vite --}}
+
+    {{-- Fonts & Icons --}}
+
+    {{-- Scripts & Styles --}}
+    @vite(['resources/css/app.css', 'resources/css/pages/welcome.css', 'resources/js/pages/welcome.js', 'resources/js/app.js'])
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-display antialiased transition-colors duration-200 overflow-x-hidden pt-20"
+    x-data="mapComponent({
+        routes: {
+            places: '{{ route('places.geojson') }}',
+            boundaries: '{{ route('boundaries.geojson') }}',
+            infrastructures: '{{ route('infrastructures.geojson') }}',
+            landUses: '{{ route('land_uses.geojson') }}',
+            search: '/search/places'
+        },
+        categories: {{ Js::from($categories) }}
+    })">
+
+    {{-- Top Navigation --}}
+    @include('layouts.partials.navbar')
+
+    {{-- Hero Section --}}
+    @include('public.home.sections.hero')
+
+    {{-- Stats Section --}}
+    @include('public.home.sections.stats')
+
+    {{-- Profile Section --}}
+    @include('public.home.sections.profile')
+
+    {{-- History & Legends Section --}}
+    @include('public.home.sections.history-legends')
+
+    {{-- Culture Section --}}
+    @include('public.home.sections.culture')
+
+    {{-- Tourism Carousel Section --}}
+    @include('public.home.sections.tourism-carousel')
+
+    {{-- Culinary Carousel Section --}}
+    @include('public.home.sections.culinary-carousel')
+
+    {{-- News Section --}}
+    @include('public.home.sections.news')
+
+    {{-- Footer --}}
+    @include('layouts.partials.footer')
+
+</body>
+
+</html>

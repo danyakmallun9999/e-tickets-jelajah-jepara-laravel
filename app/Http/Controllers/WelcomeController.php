@@ -69,7 +69,7 @@ class WelcomeController extends Controller
         $cultures = $this->staticDataService->getCultures();
         $culinaries = $this->staticDataService->getCulinaries();
 
-        return view('public.welcome', compact(
+        return view('public.home.welcome', compact(
             'categories',
             'totalPlaces',
             'countDestinasi',
