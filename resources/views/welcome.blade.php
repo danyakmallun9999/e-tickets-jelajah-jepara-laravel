@@ -35,7 +35,7 @@
     @include('layouts.partials.navbar')
 
     <div class="relative w-full">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12 pt-4 pb-12">
             <div
                 class="relative overflow-hidden rounded-xl h-[500px] lg:h-[600px] group bg-gray-900 border border-white/10 shadow-2xl">
                 <!-- 3D Map Container -->
