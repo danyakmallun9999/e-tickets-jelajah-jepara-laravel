@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jelajahi Destinasi</title>
+    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
     
     
     <!-- Local assets handled by Vite -->

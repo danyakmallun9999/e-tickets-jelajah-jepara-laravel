@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
 
         <!-- Fonts -->
 
