@@ -42,11 +42,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Boundaries routes
     Route::resource('boundaries', BoundaryController::class);
 
-
     // Reports routes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
-    Route::get('/reports/export/html', [ReportController::class, 'exportHtml'])->name('reports.export.html');
+    Route::match(['get', 'post'], '/reports/export/html', [ReportController::class, 'exportHtml'])->name('reports.export.html');
 
     // Categories routes
     Route::resource('categories', \App\Http\Controllers\CategoryController::class);

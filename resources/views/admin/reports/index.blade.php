@@ -50,19 +50,15 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full px-5 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">
-                        Download CSV
-                    </button>
+                    <div class="flex gap-4">
+                        <button type="submit" class="flex-1 px-5 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 text-center">
+                            Download CSV
+                        </button>
+                        <button type="submit" formaction="{{ route('admin.reports.export.html') }}" formtarget="_blank" class="flex-1 px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 text-center">
+                            Buka Laporan HTML
+                        </button>
+                    </div>
                 </form>
-            </div>
-
-            <div class="bg-white shadow-sm sm:rounded-2xl p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Export Laporan HTML (untuk PDF)</h3>
-                <p class="text-sm text-gray-600 mb-4">Generate laporan lengkap dengan statistik untuk dicetak sebagai PDF.</p>
-                
-                <a href="{{ route('admin.reports.export.html') }}" target="_blank" class="block w-full px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 text-center">
-                    Buka Laporan HTML
-                </a>
             </div>
         </div>
     </div>

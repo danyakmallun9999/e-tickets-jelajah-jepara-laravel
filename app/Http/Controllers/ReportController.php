@@ -45,9 +45,22 @@ class ReportController extends Controller
     /**
      * Export HTML report (for PDF printing)
      */
-    public function exportHtml(): Response
+    /**
+     * Export HTML report (for PDF printing)
+     */
+    public function exportHtml(Request $request): Response
     {
-        $html = $this->exportService->generateHtmlReport();
+        $request->validate([
+            'type' => 'nullable|in:places,boundaries,infrastructures,land_uses,all',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'category_id' => 'nullable|exists:categories,id',
+        ]);
+
+        $filters = $request->only(['start_date', 'end_date', 'category_id']);
+        $type = $request->input('type', 'all');
+
+        $html = $this->exportService->generateHtmlReport($type, $filters);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',

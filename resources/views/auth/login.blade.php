@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Admin - Sistem Informasi Geografis Desa Mayong Lor</title>
+    <title>Login Admin - Sistem Informasi Geografis Dinas Pariwisata</title>
     
     <!-- Fonts -->
 

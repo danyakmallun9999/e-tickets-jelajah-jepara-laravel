@@ -32,11 +32,44 @@ class ReportExportService
     /**
      * Generate HTML report for PDF
      */
-    public function generateHtmlReport(): string
+    /**
+     * Generate HTML report for PDF
+     */
+    public function generateHtmlReport(string $type = 'all', array $filters = []): string
     {
-        $stats = $this->getStatistics();
+        $data = $this->getDataForType($type, $filters);
+        $headers = $this->getHeadersForType($type);
+        $stats = $this->getStatistics(); // Keep stats for summary if needed, or remove. Let's keep for header.
 
-        $html = view('admin.reports.html', compact('stats'))->render();
+        // Enhance data with keys if needed, but array is fine for simple table.
+        // Actually, let's pass clear context to view.
+
+        $viewData = [
+            'type' => $type,
+            'filters' => $filters,
+            'headers' => $headers,
+            'data' => $data,
+            'date' => date('d F Y'),
+            'stats' => $stats,
+        ];
+
+        // Pass filter description for display
+        $filterDesc = [];
+        if (! empty($filters['start_date'])) {
+            $filterDesc[] = 'Dari: '.$filters['start_date'];
+        }
+        if (! empty($filters['end_date'])) {
+            $filterDesc[] = 'Sampai: '.$filters['end_date'];
+        }
+        if (! empty($filters['category_id'])) {
+            $cat = Category::find($filters['category_id']);
+            if ($cat) {
+                $filterDesc[] = 'Kategori: '.$cat->name;
+            }
+        }
+        $viewData['filterDesc'] = implode(', ', $filterDesc);
+
+        $html = view('admin.reports.html', $viewData)->render();
 
         return $html;
     }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan SIG Desa Mayong Lor</title>
+    <title>Laporan SIG Dinas Pariwisata Jepara</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,97 +81,63 @@
 <body>
     <div class="header">
         <h1>Sistem Informasi Geografis</h1>
-        <h2>Desa Mayong Lor</h2>
-        <p>Laporan Data Spasial</p>
-        <p>Tanggal: {{ date('d F Y') }}</p>
+        <h2>Dinas Pariwisata dan Kebudayaan Kabupaten Jepara</h2>
+        <p>Laporan Data Spasial: {{ ucwords(str_replace('_', ' ', $type)) }}</p>
+        <p>Tanggal: {{ $date }}</p>
+        @if(!empty($filterDesc))
+            <p style="font-size: 14px; color: #666;">Filter: {{ $filterDesc }}</p>
+        @endif
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>{{ $stats['places_count'] }}</h3>
-            <p>Titik Lokasi</p>
+    @if($type === 'all')
+        <!-- Summary Stats for 'All' view -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ $stats['places_count'] }}</h3>
+                <p>Titik Lokasi</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ $stats['boundaries_count'] }}</h3>
+                <p>Batas Wilayah</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ $stats['infrastructures_count'] }}</h3>
+                <p>Infrastruktur</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ $stats['land_uses_count'] }}</h3>
+                <p>Penggunaan Lahan</p>
+            </div>
         </div>
-        <div class="stat-card">
-            <h3>{{ $stats['boundaries_count'] }}</h3>
-            <p>Batas Wilayah</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ $stats['infrastructures_count'] }}</h3>
-            <p>Infrastruktur</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ $stats['land_uses_count'] }}</h3>
-            <p>Penggunaan Lahan</p>
-        </div>
-    </div>
-
-    <h2>Statistik per Kategori Lokasi</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>Jumlah Lokasi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($stats['categories'] as $category)
-                <tr>
-                    <td>{{ $category->name }}</td>
-                    <td>{{ $category->places_count }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <h2>Statistik Infrastruktur per Tipe</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Tipe</th>
-                <th>Jumlah</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($stats['infrastructure_types'] as $infra)
-                <tr>
-                    <td>{{ ucfirst($infra->type) }}</td>
-                    <td>{{ $infra->count }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    @if($stats['total_infrastructure_length'])
-        <p><strong>Total Panjang Infrastruktur:</strong> {{ number_format($stats['total_infrastructure_length'], 2) }} meter</p>
     @endif
 
-    <h2>Statistik Penggunaan Lahan</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Tipe</th>
-                <th>Jumlah</th>
-                <th>Total Luas (ha)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($stats['land_use_types'] as $landUse)
+    @if(count($data) > 0)
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ ucfirst(str_replace('_', ' ', $landUse->type)) }}</td>
-                    <td>{{ $landUse->count }}</td>
-                    <td>{{ number_format($landUse->total_area ?? 0, 2) }}</td>
+                    @foreach($headers as $header)
+                        <th>{{ $header }}</th>
+                    @endforeach
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    @if($stats['total_land_area'])
-        <p><strong>Total Luas Lahan:</strong> {{ number_format($stats['total_land_area'], 2) }} hektar</p>
+            </thead>
+            <tbody>
+                @foreach($data as $row)
+                    <tr>
+                        @foreach($row as $cell)
+                            <td>{{ $cell }}</td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <p>Total Data: {{ count($data) }}</p>
+    @else
+        <p style="text-align: center; margin-top: 50px; color: #666;">Tidak ada data yang ditemukan untuk kriteria ini.</p>
     @endif
 
     <div class="footer">
-        <p>Dibuat oleh Sistem Informasi Geografis Desa Mayong Lor</p>
-        <p>© {{ date('Y') }} Pemerintah Desa Mayong Lor</p>
+        <p>Dibuat oleh Sistem Informasi Geografis Dinas Pariwisata</p>
+        <p>© {{ date('Y') }} Dinas Pariwisata dan Kebudayaan Kabupaten Jepara</p>
     </div>
 
     <div class="no-print" style="margin-top: 20px; text-align: center;">

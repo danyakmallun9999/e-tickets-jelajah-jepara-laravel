@@ -203,7 +203,7 @@
                 <!-- Footer -->
                 <div class="mt-4 pt-6 border-t border-[#e5e7eb] dark:border-[#3a3630]">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs text-text-light/40 dark:text-text-dark/40 font-sans">© 2025 Mayong Lor GIS</span>
+                        <span class="text-xs text-text-light/40 dark:text-text-dark/40 font-sans">© 2025 SIG Dinas Pariwisata</span>
                     </div>
                 </div>
             </div>
