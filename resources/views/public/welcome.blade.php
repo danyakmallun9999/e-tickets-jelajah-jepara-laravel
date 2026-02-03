@@ -358,7 +358,7 @@
             <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide">
                 
                 <!-- Shima Card (Kalingga - Oldest) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
+                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
                      x-data="{ shown: false }" 
                      x-intersect.threshold.0.2="shown = true"
                      :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 transition-all duration-1000'">
@@ -366,7 +366,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/shima.jpg') }}" 
                          alt="Ratu Shima" 
-                         class="absolute inset-0 w-full h-full object-cover object-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute inset-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
@@ -387,7 +387,7 @@
                 </div>
 
                 <!-- Kalinyamat Card (16th Century) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-200"
+                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-200"
                      x-data="{ shown: false }" 
                      x-intersect.threshold.0.2="shown = true"
                      :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
@@ -395,7 +395,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/kalinyamat.jpg') }}" 
                          alt="Ratu Kalinyamat" 
-                         class="absolute inset-0 w-full h-full object-cover object-center filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute inset-0 w-full h-full object-cover object-center origin-center filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
@@ -416,7 +416,7 @@
                 </div>
 
                 <!-- Kartini Card (19th Century - Youngest) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-400"
+                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-400"
                      x-data="{ shown: false }" 
                      x-intersect.threshold.0.2="shown = true"
                      :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
@@ -424,7 +424,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/kartini.jpg') }}" 
                          alt="R.A. Kartini" 
-                         class="absolute inset-0 w-full h-full object-cover object-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute inset-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
                     
                     <!-- Gradient Overlay (Subtle) -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
@@ -614,14 +614,16 @@
                     </a>
                     
                     <!-- Navigation Buttons -->
-                    <button @click="scrollLeft()"
-                        class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <button @click="scrollRight()"
-                        class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
+                    <div class="hidden md:flex gap-2">
+                        <button @click="scrollLeft()"
+                            class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button @click="scrollRight()"
+                            class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -874,7 +876,7 @@
                 </div>
                 
                 <!-- Navigation Buttons -->
-                <div class="flex gap-2 shrink-0">
+                <div class="hidden md:flex gap-2 shrink-0">
                     <button @click="scrollLeft()"
                         class="size-10 rounded-full border border-surface-light dark:border-white/10 flex items-center justify-center hover:bg-surface-light dark:hover:bg-white/5 text-text-light dark:text-text-dark transition-colors">
                         <span class="material-symbols-outlined">chevron_left</span>

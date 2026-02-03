@@ -1,6 +1,6 @@
 <div class="fixed top-0 left-0 right-0 z-[10000] w-full border-b border-surface-light dark:border-surface-dark bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md">
     <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
-        <header class="flex h-20 items-center justify-between gap-8" x-data="{ mobileMenuOpen: false }">
+        <header class="flex h-20 items-center justify-between gap-8" x-data="{ mobileMenuOpen: false, menuUsed: false }">
             <div class="flex items-center gap-8">
                 <a class="flex items-center gap-3 text-text-light dark:text-text-dark group" href="{{ route('welcome') }}">
                     <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" alt="Logo Kabupaten Jepara"
@@ -87,9 +87,9 @@
 
                 <!-- Mobile Menu Button -->
                 <!-- Mobile Menu Button (Fusion Animation) -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                <button @click="mobileMenuOpen = !mobileMenuOpen; menuUsed = true"
                     class="lg:hidden p-2 group relative z-50 text-text-light dark:text-text-dark"
-                    :class="mobileMenuOpen ? 'menu-open' : 'menu-closed'">
+                    :class="{ 'menu-open': mobileMenuOpen, 'menu-closed': !mobileMenuOpen && menuUsed }">
                     
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
                         <path d="M4 6h16" class="fusion-line fusion-line-1" />
@@ -125,6 +125,8 @@
                     @endif
                     <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
                         href="{{ route('places.index') }}">{{ __('Nav.Destinations') }}</a>
+                    <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
+                        href="{{ route('events.public.index') }}">{{ __('Nav.Events') }}</a>
                     <a class="text-sm font-medium hover:text-primary hover:underline underline-offset-4 transition-colors p-2"
                         href="{{ route('posts.index') }}">{{ __('Nav.News') }}</a>
                 </nav>

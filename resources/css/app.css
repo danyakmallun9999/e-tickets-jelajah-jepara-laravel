@@ -163,3 +163,8 @@
         /* Firefox */
     }
 }
+
+/* Prevent Alpine.js "flicker" */
+[x-cloak] {
+    display: none !important;
+}
