@@ -33,6 +33,7 @@ class Place extends Model
         'address',
         'slug',
         'description',
+        'description_en',
         'image_path',
         'latitude',
         'longitude',
@@ -48,6 +49,14 @@ class Place extends Model
         'facilities',
         'social_media',
     ];
+
+    public function getDescriptionAttribute($value)
+    {
+        if (app()->getLocale() === 'en' && !empty($this->attributes['description_en'])) {
+            return $this->attributes['description_en'];
+        }
+        return $value;
+    }
 
     public function category()
     {

@@ -79,5 +79,10 @@
     "Profile.Boundaries.North": "Utara",
     "Profile.Boundaries.East": "Timur",
     "Profile.Boundaries.South": "Selatan",
-    "Profile.Boundaries.West": "Barat"
+    "Profile.Boundaries.West": "Barat",
+    "Stats.Destinations": "Destinasi",
+    "Stats.Culinary": "Kuliner",
+    "Stats.Events": "Event",
+    "Stats.Villages": "Desa Wisata",
+    "Nav.SearchPlaceholder": "Cari lokasi, data..."
 }

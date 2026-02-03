@@ -11,10 +11,19 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'name_en',
         'slug',
         'icon_class',
         'color',
     ];
+
+    public function getNameAttribute($value)
+    {
+        if (app()->getLocale() === 'en' && !empty($this->attributes['name_en'])) {
+            return $this->attributes['name_en'];
+        }
+        return $value;
+    }
 
     public function places()
     {

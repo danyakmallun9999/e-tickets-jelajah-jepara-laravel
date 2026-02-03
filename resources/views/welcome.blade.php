@@ -208,7 +208,7 @@
                         <p class="text-text-light dark:text-text-dark text-xl md:text-2xl font-bold tracking-tight leading-none mb-1">
                             {{ $countDestinasi }}+</p>
                         <p class="text-[10px] md:text-xs text-text-light/60 dark:text-text-dark/60 font-medium uppercase tracking-wider">
-                            Destinasi</p>
+                            {{ __('Stats.Destinations') }}</p>
                     </div>
                 </div>
 
@@ -221,7 +221,7 @@
                         <p class="text-text-light dark:text-text-dark text-xl md:text-2xl font-bold tracking-tight leading-none mb-1">
                             {{ $countKuliner }}+</p>
                         <p class="text-[10px] md:text-xs text-text-light/60 dark:text-text-dark/60 font-medium uppercase tracking-wider">
-                             Kuliner</p>
+                             {{ __('Stats.Culinary') }}</p>
                     </div>
                 </div>
 
@@ -234,7 +234,7 @@
                         <p class="text-text-light dark:text-text-dark text-xl md:text-2xl font-bold tracking-tight leading-none mb-1">
                             {{ $countEvent }}</p>
                         <p class="text-[10px] md:text-xs text-text-light/60 dark:text-text-dark/60 font-medium uppercase tracking-wider">
-                            Event</p>
+                            {{ __('Stats.Events') }}</p>
                     </div>
                 </div>
 
@@ -247,7 +247,7 @@
                         <p class="text-text-light dark:text-text-dark text-xl md:text-2xl font-bold tracking-tight leading-none mb-1">
                             {{ $countDesa }}</p>
                         <p class="text-[10px] md:text-xs text-text-light/60 dark:text-text-dark/60 font-medium uppercase tracking-wider">
-                            Desa Wisata</p>
+                            {{ __('Stats.Villages') }}</p>
                     </div>
                 </div>
             </div>

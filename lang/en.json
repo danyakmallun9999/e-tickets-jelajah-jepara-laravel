@@ -79,5 +79,10 @@
     "Profile.Boundaries.North": "North",
     "Profile.Boundaries.East": "East",
     "Profile.Boundaries.South": "South",
-    "Profile.Boundaries.West": "West"
+    "Profile.Boundaries.West": "West",
+    "Stats.Destinations": "Destinations",
+    "Stats.Culinary": "Culinary",
+    "Stats.Events": "Events",
+    "Stats.Villages": "Tourism Villages",
+    "Nav.SearchPlaceholder": "Search location, data..."
 }

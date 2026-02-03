@@ -34,7 +34,7 @@
                         <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">search</span>
                         <input
                             class="w-full bg-transparent border-none text-sm px-3 text-text-light dark:text-text-dark placeholder-gray-500 focus:ring-0"
-                            placeholder="Cari lokasi, data..." type="text" x-model="searchQuery"
+                            placeholder="{{ __('Nav.SearchPlaceholder') }}" type="text" x-model="searchQuery"
                             @input.debounce.50ms="performSearch()" @keydown.enter="scrollToMap()" />
                     </div>
 
