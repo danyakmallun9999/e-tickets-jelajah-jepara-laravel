@@ -160,13 +160,13 @@
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/5 flex-shrink-0 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                             <i class="fa-solid fa-location-dot text-primary text-xs md:text-base"></i>
                         </div>
-                        <span class="text-white/60 text-[11px] md:text-sm leading-tight group-hover:text-white/80 transition-colors font-medium">Jl. Kartini No.1, Panggang I, Jepara, Jawa Tengah</span>
+                        <span class="text-white/60 text-[11px] md:text-sm leading-tight group-hover:text-white/80 transition-colors font-medium">Jl. Abdul Rahman Hakim. No. 51, Kauman, Kec. Jepara, Kabupaten Jepara, Jawa Tengah 59417</span>
                     </li>
                     <li class="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 group leading-tight">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/5 flex-shrink-0 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                             <i class="fa-solid fa-phone text-primary text-xs md:text-base"></i>
                         </div>
-                        <span class="text-white/60 text-[11px] md:text-sm group-hover:text-white/80 transition-colors font-medium">(0291) 591148</span>
+                        <span class="text-white/60 text-[11px] md:text-sm group-hover:text-white/80 transition-colors font-medium">(0291) 591219</span>
                     </li>
                     <li class="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 group leading-tight">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/5 flex-shrink-0 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
