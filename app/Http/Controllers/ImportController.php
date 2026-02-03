@@ -13,8 +13,7 @@ class ImportController extends Controller
 {
     public function __construct(
         protected GeoJsonImportService $importService
-    ) {
-    }
+    ) {}
 
     /**
      * Show the import form
@@ -55,7 +54,7 @@ class ImportController extends Controller
                 'type' => $request->type,
                 'records_count' => $result['count'],
                 'status' => $result['success'] ? 'completed' : 'failed',
-                'errors' => !empty($result['errors']) ? json_encode($result['errors']) : null,
+                'errors' => ! empty($result['errors']) ? json_encode($result['errors']) : null,
                 'imported_by' => Auth::id(),
             ]);
 
@@ -66,13 +65,12 @@ class ImportController extends Controller
             } else {
                 return redirect()
                     ->route('admin.import.index')
-                    ->with('error', 'Import gagal. ' . implode(', ', $result['errors']));
+                    ->with('error', 'Import gagal. '.implode(', ', $result['errors']));
             }
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.import.index')
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 }
-

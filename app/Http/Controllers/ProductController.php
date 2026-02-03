@@ -15,6 +15,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()->paginate(10);
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -40,7 +41,7 @@ class ProductController extends Controller
             'seller_contact' => 'nullable|string|max:20',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']) . '-' . time();
+        $validated['slug'] = Str::slug($validated['name']).'-'.time();
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
@@ -85,7 +86,7 @@ class ProductController extends Controller
 
         // Only update slug if name changed
         if ($product->name !== $validated['name']) {
-             $validated['slug'] = Str::slug($validated['name']) . '-' . time();
+            $validated['slug'] = Str::slug($validated['name']).'-'.time();
         }
 
         if ($request->hasFile('image')) {
@@ -93,12 +94,12 @@ class ProductController extends Controller
             if ($product->image_path) {
                 // Parse relative path from URL (simple assumption: /storage/products/filename)
                 $relativePath = str_replace('/storage/', 'public/', $product->image_path);
-                 // Or just assume it was stored in public disk
-                 // Better: store('products', 'public') returns relative path to disk root.
-                 // URL is /storage/...
-                 // We should probably just delete if exists.
-                 // For now, let's keep it simple: just upload new one.
-                 // Ideally: Storage::disk('public')->delete(str_replace('/storage/', '', $product->image_path));
+                // Or just assume it was stored in public disk
+                // Better: store('products', 'public') returns relative path to disk root.
+                // URL is /storage/...
+                // We should probably just delete if exists.
+                // For now, let's keep it simple: just upload new one.
+                // Ideally: Storage::disk('public')->delete(str_replace('/storage/', '', $product->image_path));
             }
 
             $path = $request->file('image')->store('products', 'public');
@@ -117,9 +118,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         if ($product->image_path) {
-             // Storage::disk('public')->delete(...)
+            // Storage::disk('public')->delete(...)
         }
-        
+
         $product->delete();
 
         return redirect()->route('admin.products.index')

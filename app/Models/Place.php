@@ -16,13 +16,13 @@ class Place extends Model
 
         static::creating(function ($place) {
             if (empty($place->slug)) {
-                $place->slug = Str::slug($place->name) . '-' . Str::random(5);
+                $place->slug = Str::slug($place->name).'-'.Str::random(5);
             }
         });
 
         static::updating(function ($place) {
             if (empty($place->slug)) {
-                $place->slug = Str::slug($place->name) . '-' . Str::random(5);
+                $place->slug = Str::slug($place->name).'-'.Str::random(5);
             }
         });
     }

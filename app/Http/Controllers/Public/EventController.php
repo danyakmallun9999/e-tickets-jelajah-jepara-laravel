@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
@@ -16,8 +14,8 @@ class EventController extends Controller
     {
         // Fetch all published events ordered by start date
         $events = Event::where('is_published', true)
-                       ->orderBy('start_date', 'asc')
-                       ->get();
+            ->orderBy('start_date', 'asc')
+            ->get();
 
         // Group events by Month and Year (e.g., "January 2026")
         $groupedEvents = $events->groupBy(function ($event) {
@@ -33,7 +31,7 @@ class EventController extends Controller
     public function show(Event $event)
     {
         // Ensure event is published
-        if (!$event->is_published) {
+        if (! $event->is_published) {
             abort(404);
         }
 

@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-use App\Models\Place;
 use Illuminate\Support\Str;
 
 return new class extends Migration
@@ -20,15 +17,15 @@ return new class extends Migration
 
         foreach ($places as $place) {
             $slug = Str::slug($place->name);
-            
+
             // Ensure uniqueness
             $count = \Illuminate\Support\Facades\DB::table('places')
                 ->where('slug', $slug)
                 ->where('id', '!=', $place->id)
                 ->count();
-            
+
             if ($count > 0) {
-                $slug = $slug . '-' . ($count + 1);
+                $slug = $slug.'-'.($count + 1);
             }
 
             \Illuminate\Support\Facades\DB::table('places')

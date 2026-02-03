@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Place;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 class UpdateSlugsSeeder extends Seeder
@@ -12,7 +12,7 @@ class UpdateSlugsSeeder extends Seeder
     {
         $places = Place::all();
         foreach ($places as $place) {
-            $place->update(['slug' => Str::slug($place->name) . '-' . strtolower(Str::random(5))]);
+            $place->update(['slug' => Str::slug($place->name).'-'.strtolower(Str::random(5))]);
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
 use App\Models\Category;
 use App\Models\Place;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class TourismDataSeeder extends Seeder
@@ -16,17 +16,19 @@ class TourismDataSeeder extends Seeder
     public function run(): void
     {
         $jsonPath = public_path('data_pariwisata.json');
-        
-        if (!File::exists($jsonPath)) {
-            $this->command->error("File public/data_pariwisata.json not found!");
+
+        if (! File::exists($jsonPath)) {
+            $this->command->error('File public/data_pariwisata.json not found!');
+
             return;
         }
 
         $json = File::get($jsonPath);
         $data = json_decode($json, true);
 
-        if (!isset($data['data_pariwisata'])) {
-            $this->command->error("Invalid JSON format");
+        if (! isset($data['data_pariwisata'])) {
+            $this->command->error('Invalid JSON format');
+
             return;
         }
 
@@ -52,10 +54,10 @@ class TourismDataSeeder extends Seeder
             // 2. Create Place
             // Generate basic slug
             $slug = Str::slug($item['nama_wisata']);
-            
+
             // Check for duplicate slug, append random if exists (simple check)
             if (Place::where('slug', $slug)->exists()) {
-                $slug = $slug . '-' . uniqid();
+                $slug = $slug.'-'.uniqid();
             }
 
             // Parse Link if reasonable, but defaulting to Jepara Center
@@ -80,7 +82,7 @@ class TourismDataSeeder extends Seeder
                 ]
             );
 
-            $this->command->info("Imported: " . $item['nama_wisata']);
+            $this->command->info('Imported: '.$item['nama_wisata']);
         }
     }
 }

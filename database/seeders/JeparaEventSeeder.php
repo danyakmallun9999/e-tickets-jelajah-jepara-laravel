@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
-use App\Models\Event;
 
 class JeparaEventSeeder extends Seeder
 {
@@ -16,22 +16,24 @@ class JeparaEventSeeder extends Seeder
     public function run(): void
     {
         $jsonPath = public_path('data_event_jepara.json');
-        
-        if (!File::exists($jsonPath)) {
+
+        if (! File::exists($jsonPath)) {
             $this->command->error("File not found at: $jsonPath");
+
             return;
         }
 
         $json = File::get($jsonPath);
         $data = json_decode($json, true);
 
-        if (!isset($data['data_event'])) {
+        if (! isset($data['data_event'])) {
             $this->command->error("Invalid JSON structure: key 'data_event' missing.");
+
             return;
         }
 
         $this->command->info('Seeding events from JSON...');
-        
+
         $count = 0;
         foreach ($data['data_event'] as $item) {
             $title = $item['nama_event'];
@@ -42,15 +44,16 @@ class JeparaEventSeeder extends Seeder
             // Parse Date
             $startDate = $this->parseDate($rawDate, $monthName);
 
-            if (!$startDate) {
+            if (! $startDate) {
                 $this->command->warn("Could not parse date for event: $title ($rawDate). Skipping.");
+
                 continue;
             }
 
             Event::create([
                 'title' => $title,
-                'slug' => Str::slug($title) . '-' . Str::random(5),
-                'description' => $title . ' yang akan dilaksanakan di ' . $location . '.',
+                'slug' => Str::slug($title).'-'.Str::random(5),
+                'description' => $title.' yang akan dilaksanakan di '.$location.'.',
                 'location' => $location,
                 'start_date' => $startDate,
                 'end_date' => $startDate, // Assuming 1 day event by default
@@ -75,9 +78,9 @@ class JeparaEventSeeder extends Seeder
             'Januari' => 'January', 'Februari' => 'February', 'Maret' => 'March',
             'April' => 'April', 'Mei' => 'May', 'Juni' => 'June',
             'Juli' => 'July', 'Agustus' => 'August', 'September' => 'September',
-            'Oktober' => 'October', 'November' => 'November', 'Desember' => 'December'
+            'Oktober' => 'October', 'November' => 'November', 'Desember' => 'December',
         ];
-        
+
         $bulanInggris = $monthMap[$monthName] ?? $monthName;
 
         try {
@@ -89,7 +92,7 @@ class JeparaEventSeeder extends Seeder
 
             // Case: "1-Feb-26" -> j-M-y
             if (preg_match('/^\d{1,2}-[A-Za-z]+-\d{2}$/', $cleanDate)) {
-                 return Carbon::parse($cleanDate);
+                return Carbon::parse($cleanDate);
             }
 
             // Case: "5/28/2026" (m/d/Y) or "10/1/2026"
@@ -98,16 +101,16 @@ class JeparaEventSeeder extends Seeder
                 // matches[1] = part 1, matches[2] = part 2
                 // We need to know which is month.
                 // Comparison with $monthName
-                
-                $p1 = (int)$matches[1];
-                $p2 = (int)$matches[2];
-                $y = (int)$matches[3];
+
+                $p1 = (int) $matches[1];
+                $p2 = (int) $matches[2];
+                $y = (int) $matches[3];
 
                 // Rough Map of month name to index
                 $monthIndexMap = [
                     'Januari' => 1, 'Februari' => 2, 'Maret' => 3, 'April' => 4,
                     'Mei' => 5, 'Juni' => 6, 'Juli' => 7, 'Agustus' => 8,
-                    'September' => 9, 'Oktober' => 10, 'November' => 11, 'Desember' => 12
+                    'September' => 9, 'Oktober' => 10, 'November' => 11, 'Desember' => 12,
                 ];
                 $expectedMonth = $monthIndexMap[$monthName] ?? 0;
 
@@ -118,30 +121,35 @@ class JeparaEventSeeder extends Seeder
                     // It's d/m/Y
                     return Carbon::createFromDate($y, $p2, $p1);
                 }
-                
+
                 // Fallback: guess
-                if ($p1 > 12) return Carbon::createFromDate($y, $p2, $p1); // p1 must be day
-                if ($p2 > 12) return Carbon::createFromDate($y, $p1, $p2); // p2 must be day
-                
+                if ($p1 > 12) {
+                    return Carbon::createFromDate($y, $p2, $p1);
+                } // p1 must be day
+                if ($p2 > 12) {
+                    return Carbon::createFromDate($y, $p1, $p2);
+                } // p2 must be day
+
                 // Default to m/d/Y as seen in 5/28/2026
-                 return Carbon::createFromDate($y, $p1, $p2);
+                return Carbon::createFromDate($y, $p1, $p2);
             }
 
-             // Case: "Apr-26" -> M-y
+            // Case: "Apr-26" -> M-y
             if (preg_match('/^[A-Za-z]+-\d{2}$/', $cleanDate)) {
-                 // Prepend 1-
-                 return Carbon::parse("1-$cleanDate");
+                // Prepend 1-
+                return Carbon::parse("1-$cleanDate");
             }
-            
+
             // Case: "18 Juni 2025" or "10 Juli 2026" - Indonesian format
             // Replace Month Name with English
             $englishDateStr = strtr($cleanDate, $monthMap);
+
             return Carbon::parse($englishDateStr);
 
         } catch (\Exception $e) {
             return null;
         }
-        
+
         return null;
     }
 }

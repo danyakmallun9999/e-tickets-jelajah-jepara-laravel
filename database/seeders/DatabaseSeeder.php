@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BoundarySeeder::class);
         $this->call(DestinasiImageSeeder::class);
         $this->call(JeparaEventSeeder::class);
-
 
         // Fetch Categories
         $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();
@@ -62,7 +60,7 @@ class DatabaseSeeder extends Seeder
                 'rating' => 4.5
             ]);
         }
-        
+
         if ($culinary) {
             \App\Models\Place::create([
                 'category_id' => $culinary->id,

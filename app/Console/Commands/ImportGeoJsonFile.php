@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Services\GeoJsonImportService;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Import;
 use App\Models\User;
+use App\Services\GeoJsonImportService;
+use Illuminate\Console\Command;
 
 class ImportGeoJsonFile extends Command
 {
@@ -33,13 +32,15 @@ class ImportGeoJsonFile extends Command
         $type = $this->argument('type');
         $userId = $this->option('user');
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             $this->error("File tidak ditemukan: {$filePath}");
+
             return Command::FAILURE;
         }
 
-        if (!in_array($type, ['boundary', 'infrastructure', 'land_use'])) {
-            $this->error("Tipe tidak valid. Gunakan: boundary, infrastructure, atau land_use");
+        if (! in_array($type, ['boundary', 'infrastructure', 'land_use'])) {
+            $this->error('Tipe tidak valid. Gunakan: boundary, infrastructure, atau land_use');
+
             return Command::FAILURE;
         }
 
@@ -48,7 +49,8 @@ class ImportGeoJsonFile extends Command
         $geoJsonData = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error("File tidak valid. Error: " . json_last_error_msg());
+            $this->error('File tidak valid. Error: '.json_last_error_msg());
+
             return Command::FAILURE;
         }
 
@@ -63,25 +65,27 @@ class ImportGeoJsonFile extends Command
                 'type' => $type,
                 'records_count' => $result['count'],
                 'status' => $result['success'] ? 'completed' : 'failed',
-                'errors' => !empty($result['errors']) ? json_encode($result['errors']) : null,
+                'errors' => ! empty($result['errors']) ? json_encode($result['errors']) : null,
                 'imported_by' => $userId,
             ]);
         }
 
         if ($result['success']) {
             $this->info("✓ Berhasil mengimpor {$result['count']} data");
-            if (!empty($result['errors'])) {
-                $this->warn("Peringatan: " . count($result['errors']) . " error ditemukan");
+            if (! empty($result['errors'])) {
+                $this->warn('Peringatan: '.count($result['errors']).' error ditemukan');
                 foreach ($result['errors'] as $error) {
                     $this->line("  - {$error}");
                 }
             }
+
             return Command::SUCCESS;
         } else {
-            $this->error("Import gagal!");
+            $this->error('Import gagal!');
             foreach ($result['errors'] as $error) {
                 $this->error("  - {$error}");
             }
+
             return Command::FAILURE;
         }
     }

@@ -16,8 +16,8 @@ class ReportExportService
      */
     public function exportToCsv(string $type): string
     {
-        $filename = 'report_' . $type . '_' . date('Y-m-d_His') . '.csv';
-        $path = 'reports/' . $filename;
+        $filename = 'report_'.$type.'_'.date('Y-m-d_His').'.csv';
+        $path = 'reports/'.$filename;
 
         $data = $this->getDataForType($type);
         $headers = $this->getHeadersForType($type);
@@ -212,4 +212,3 @@ class ReportExportService
         ];
     }
 }
-

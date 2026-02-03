@@ -13,8 +13,7 @@ class GeoJsonImportService
     /**
      * Import GeoJSON data into the appropriate model
      *
-     * @param array $geoJsonData
-     * @param string $type (boundary, infrastructure, land_use)
+     * @param  string  $type  (boundary, infrastructure, land_use)
      * @return array ['success' => bool, 'count' => int, 'errors' => array]
      */
     public function import(array $geoJsonData, string $type): array
@@ -22,7 +21,7 @@ class GeoJsonImportService
         $errors = [];
         $count = 0;
 
-        if (!isset($geoJsonData['type']) || $geoJsonData['type'] !== 'FeatureCollection') {
+        if (! isset($geoJsonData['type']) || $geoJsonData['type'] !== 'FeatureCollection') {
             return [
                 'success' => false,
                 'count' => 0,
@@ -30,7 +29,7 @@ class GeoJsonImportService
             ];
         }
 
-        if (!isset($geoJsonData['features']) || !is_array($geoJsonData['features'])) {
+        if (! isset($geoJsonData['features']) || ! is_array($geoJsonData['features'])) {
             return [
                 'success' => false,
                 'count' => 0,
@@ -44,10 +43,10 @@ class GeoJsonImportService
                 if ($result['success']) {
                     $count++;
                 } else {
-                    $errors[] = "Feature #{$index}: " . ($result['error'] ?? 'Unknown error');
+                    $errors[] = "Feature #{$index}: ".($result['error'] ?? 'Unknown error');
                 }
             } catch (\Exception $e) {
-                $errors[] = "Feature #{$index}: " . $e->getMessage();
+                $errors[] = "Feature #{$index}: ".$e->getMessage();
                 Log::error('GeoJSON import error', [
                     'type' => $type,
                     'feature_index' => $index,
@@ -65,14 +64,10 @@ class GeoJsonImportService
 
     /**
      * Import a single feature
-     *
-     * @param array $feature
-     * @param string $type
-     * @return array
      */
     protected function importFeature(array $feature, string $type): array
     {
-        if (!isset($feature['geometry']) || !isset($feature['properties'])) {
+        if (! isset($feature['geometry']) || ! isset($feature['properties'])) {
             return ['success' => false, 'error' => 'Missing geometry or properties'];
         }
 
@@ -82,16 +77,16 @@ class GeoJsonImportService
         // Validate geometry type based on import type
         $expectedGeometryType = $this->getExpectedGeometryType($type);
         $allowedTypes = [$expectedGeometryType];
-        
+
         // Allow MultiPolygon for boundaries and land_uses
         if (in_array($type, ['boundary', 'land_use'])) {
             $allowedTypes[] = 'MultiPolygon';
         }
-        
-        if (!in_array($geometry['type'], $allowedTypes)) {
+
+        if (! in_array($geometry['type'], $allowedTypes)) {
             return [
                 'success' => false,
-                'error' => "Expected geometry type " . implode(' or ', $allowedTypes) . ", got {$geometry['type']}",
+                'error' => 'Expected geometry type '.implode(' or ', $allowedTypes).", got {$geometry['type']}",
             ];
         }
 
@@ -135,7 +130,7 @@ class GeoJsonImportService
                 'coordinates' => $geometry['coordinates'][0] ?? [],
             ];
         }
-        
+
         $data = [
             'geometry' => $geometry,
         ];
@@ -186,6 +181,7 @@ class GeoJsonImportService
         }
 
         Boundary::create($data);
+
         return ['success' => true];
     }
 
@@ -208,6 +204,7 @@ class GeoJsonImportService
         }
 
         Infrastructure::create($data);
+
         return ['success' => true];
     }
 
@@ -229,6 +226,7 @@ class GeoJsonImportService
         }
 
         LandUse::create($data);
+
         return ['success' => true];
     }
 
@@ -237,7 +235,7 @@ class GeoJsonImportService
      */
     protected function calculatePolygonArea(array $geometry): ?float
     {
-        if ($geometry['type'] !== 'Polygon' || !isset($geometry['coordinates'][0])) {
+        if ($geometry['type'] !== 'Polygon' || ! isset($geometry['coordinates'][0])) {
             return null;
         }
 
@@ -262,7 +260,7 @@ class GeoJsonImportService
      */
     protected function calculateLineLength(array $geometry): ?float
     {
-        if ($geometry['type'] !== 'LineString' || !isset($geometry['coordinates']) || count($geometry['coordinates']) < 2) {
+        if ($geometry['type'] !== 'LineString' || ! isset($geometry['coordinates']) || count($geometry['coordinates']) < 2) {
             return null;
         }
 
@@ -300,4 +298,3 @@ class GeoJsonImportService
         return $earthRadius * $c;
     }
 }
-

@@ -12,8 +12,7 @@ class ReportController extends Controller
 {
     public function __construct(
         protected ReportExportService $exportService
-    ) {
-    }
+    ) {}
 
     /**
      * Show export form
@@ -49,4 +48,3 @@ class ReportController extends Controller
         ]);
     }
 }
-

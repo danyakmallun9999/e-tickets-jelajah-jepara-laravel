@@ -3,8 +3,6 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BoundaryController;
 use App\Http\Controllers\ImportController;
-
-use App\Http\Controllers\MapController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WelcomeController;
@@ -33,7 +31,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    
+
     // Places routes
     Route::get('/places', [AdminController::class, 'placesIndex'])->name('places.index');
     Route::get('/places/create', [AdminController::class, 'create'])->name('places.create');
@@ -41,30 +39,23 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/places/{place}/edit', [AdminController::class, 'edit'])->name('places.edit');
     Route::put('/places/{place}', [AdminController::class, 'update'])->name('places.update');
     Route::delete('/places/{place}', [AdminController::class, 'destroy'])->name('places.destroy');
-    
+
     // Boundaries routes
     Route::resource('boundaries', BoundaryController::class);
-    
 
-    
     // Import routes
     Route::get('/import', [ImportController::class, 'index'])->name('import.index');
     Route::post('/import', [ImportController::class, 'import'])->name('import.import');
-    
+
     // Reports routes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
     Route::get('/reports/export/html', [ReportController::class, 'exportHtml'])->name('reports.export.html');
-    
-
-
-
 
     // Categories routes
     Route::resource('categories', \App\Http\Controllers\CategoryController::class);
-    
-    // Product routes
 
+    // Product routes
 
     // Post routes
     Route::post('/posts/upload-image', [\App\Http\Controllers\PostController::class, 'uploadImage'])->name('posts.uploadImage');

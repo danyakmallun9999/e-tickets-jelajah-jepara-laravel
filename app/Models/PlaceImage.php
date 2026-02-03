@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Place;
 use Illuminate\Database\Eloquent\Model;
 
 class PlaceImage extends Model

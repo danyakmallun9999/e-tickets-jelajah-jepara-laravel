@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
                 'price' => 2500000,
                 'image_path' => 'https://images.unsplash.com/photo-1615800001861-6d7c6b9e9e6e?auto=format&fit=crop&w=800&q=80', // Replace with relevant image if available
                 'seller_name' => 'Jepara Art Furn',
-                'seller_contact' => '081234567890'
+                'seller_contact' => '081234567890',
             ],
             [
                 'name' => 'Kain Tenun Troso Motif Rangrang',
@@ -28,7 +28,7 @@ class ProductSeeder extends Seeder
                 'price' => 150000,
                 'image_path' => 'https://images.unsplash.com/photo-1605218427368-35b88219572b?auto=format&fit=crop&w=800&q=80',
                 'seller_name' => 'Tenun Troso Mandiri',
-                'seller_contact' => '089876543210'
+                'seller_contact' => '089876543210',
             ],
             [
                 'name' => 'Satu Set Kursi Teras Betawi',
@@ -36,7 +36,7 @@ class ProductSeeder extends Seeder
                 'price' => 1200000,
                 'image_path' => 'https://images.unsplash.com/photo-1599388145876-0f81d8564264?auto=format&fit=crop&w=800&q=80',
                 'seller_name' => 'Mebel Jati Abadi',
-                'seller_contact' => '085678901234'
+                'seller_contact' => '085678901234',
             ],
             [
                 'name' => 'Vas Bunga Gerabah Mayong',
@@ -44,7 +44,7 @@ class ProductSeeder extends Seeder
                 'price' => 45000,
                 'image_path' => 'https://images.unsplash.com/photo-1612152605347-8b0596d6e3f9?auto=format&fit=crop&w=800&q=80',
                 'seller_name' => 'Griyo Gerabah',
-                'seller_contact' => '081122334455'
+                'seller_contact' => '081122334455',
             ],
             [
                 'name' => 'Patung Kuda Jengke',
@@ -52,7 +52,7 @@ class ProductSeeder extends Seeder
                 'price' => 850000,
                 'image_path' => 'https://images.unsplash.com/photo-1594916895393-27a3c7c25c27?auto=format&fit=crop&w=800&q=80',
                 'seller_name' => 'Sanggar Seni Ukir',
-                'seller_contact' => '087788990011'
+                'seller_contact' => '087788990011',
             ],
         ];
 

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
@@ -37,13 +37,13 @@ class Event extends Model
 
         static::creating(function ($event) {
             if (empty($event->slug)) {
-                $event->slug = \Illuminate\Support\Str::slug($event->title) . '-' . \Illuminate\Support\Str::random(5);
+                $event->slug = \Illuminate\Support\Str::slug($event->title).'-'.\Illuminate\Support\Str::random(5);
             }
         });
 
         static::updating(function ($event) {
             if (empty($event->slug)) {
-                $event->slug = \Illuminate\Support\Str::slug($event->title) . '-' . \Illuminate\Support\Str::random(5);
+                $event->slug = \Illuminate\Support\Str::slug($event->title).'-'.\Illuminate\Support\Str::random(5);
             }
         });
     }

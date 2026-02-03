@@ -2,54 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Boundary;
+use App\Http\Requests\StorePlaceRequest;
+use App\Http\Requests\UpdatePlaceRequest;
 use App\Models\Category;
-use App\Models\Event;
-use App\Models\Infrastructure;
-use App\Models\LandUse;
 use App\Models\Place;
-use App\Models\Post;
+use App\Services\DashboardService;
+use App\Services\PlaceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    protected $dashboardService;
+
+    protected $placeService;
+
+    public function __construct(
+        DashboardService $dashboardService,
+        PlaceService $placeService
+    ) {
+        $this->dashboardService = $dashboardService;
+        $this->placeService = $placeService;
+    }
+
     public function index(): View
     {
         $places = Place::with('category')->latest()->paginate(10);
-
-        // Statistics
-        $stats = [
-            'places_count' => Place::count(),
-            'boundaries_count' => Boundary::count(),
-            'infrastructures_count' => Infrastructure::count(),
-            'land_uses_count' => LandUse::count(),
-            'categories' => Category::withCount('places')->get(),
-            'infrastructure_types' => Infrastructure::selectRaw('type, COUNT(*) as count, SUM(length_meters) as total_length')
-                ->groupBy('type')
-                ->get(),
-            'land_use_types' => LandUse::selectRaw('type, COUNT(*) as count, SUM(area_hectares) as total_area')
-                ->groupBy('type')
-                ->get(),
-            'boundary_types' => Boundary::selectRaw('type, COUNT(*) as count, SUM(area_hectares) as total_area')
-                ->groupBy('type')
-                ->get(),
-            'total_boundary_area' => Boundary::sum('area_hectares'),
-            'total_land_use_area' => LandUse::sum('area_hectares'),
-            'total_infrastructure_length' => Infrastructure::sum('length_meters'),
-            'recent_places' => Place::with('category')->latest()->take(5)->get(),
-            'recent_boundaries' => Boundary::latest()->take(5)->get(),
-            'recent_infrastructures' => Infrastructure::latest()->take(5)->get(),
-            'recent_land_uses' => LandUse::latest()->take(5)->get(),
-            'posts_count' => Post::count(),
-            'events_count' => Event::count(),
-            'recent_posts' => Post::latest('published_at')->take(5)->get(),
-            'upcoming_events' => Event::where('start_date', '>=', now())->orderBy('start_date')->take(5)->get(),
-        ];
+        $stats = $this->dashboardService->getDashboardStats();
 
         return view('admin.dashboard', compact('places', 'stats'));
     }
@@ -57,6 +38,7 @@ class AdminController extends Controller
     public function placesIndex(): View
     {
         $places = Place::with('category')->latest()->paginate(10);
+
         return view('admin.places.index', compact('places'));
     }
 
@@ -71,19 +53,19 @@ class AdminController extends Controller
         return view('admin.places.create', compact('categories', 'place'));
     }
 
-    public function store(Request $request): RedirectResponse|JsonResponse
+    public function store(StorePlaceRequest $request): RedirectResponse|JsonResponse
     {
-        $data = $this->validatePlace($request);
-        
-        // Parse Rides and Facilities from String to Array
+        $data = $request->validated();
+
+        // Parse Rides and Facilities
         if (isset($data['rides'])) {
-            $data['rides'] = $this->parseRides($data['rides']);
+            $data['rides'] = $this->placeService->parseRides($data['rides']);
         }
         if (isset($data['facilities'])) {
-            $data['facilities'] = $this->parseFacilities($data['facilities']);
+            $data['facilities'] = $this->placeService->parseFacilities($data['facilities']);
         }
 
-        // Handle geometry from drawing component (if provided)
+        // Handle geometry from drawing component
         if ($request->has('geometry') && $request->geometry) {
             $geometry = json_decode($request->geometry, true);
             if (json_last_error() === JSON_ERROR_NONE && isset($geometry['type']) && $geometry['type'] === 'Point') {
@@ -93,37 +75,27 @@ class AdminController extends Controller
         }
 
         // Generate Slug
-        $slug = Str::slug($data['name']);
-        $originalSlug = $slug;
-        $count = 1;
-        while (Place::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
-        }
-        $data['slug'] = $slug;
+        $data['slug'] = $this->placeService->generateSlug($data['name']);
 
-
+        // Handle Main Image
         if ($request->hasFile('image')) {
-            $data['image_path'] = $this->storeImage($request);
+            $data['image_path'] = $this->placeService->uploadImage($request->file('image'), 'places');
         }
 
         // Remove gallery_images from data before creating Place
-        $galleryImages = $request->file('gallery_images');
+        // Note: gallery_images are validated in Request but not needed in Place::create
         unset($data['gallery_images']);
-
-        unset($data['image']);
+        unset($data['image']); // Remove file object
 
         $place = Place::create($data);
 
-        if ($galleryImages) {
-            foreach ($galleryImages as $image) {
-                // Manually store each gallery image using a similar logic to storeImage but adapted for generic file
-                $disk = env('FILESYSTEM_DISK', 'public');
-                $path = $image->store('place_gallery', $disk);
-                $url = Storage::disk($disk)->url($path);
-                
+        // Handle Gallery Images
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $image) {
+                $url = $this->placeService->uploadImage($image, 'place_gallery');
+
                 $place->images()->create([
-                    'image_path' => $url
+                    'image_path' => $url,
                 ]);
             }
         }
@@ -147,19 +119,19 @@ class AdminController extends Controller
         return view('admin.places.edit', compact('categories', 'place'));
     }
 
-    public function update(Request $request, Place $place): RedirectResponse|JsonResponse
+    public function update(UpdatePlaceRequest $request, Place $place): RedirectResponse|JsonResponse
     {
-        $data = $this->validatePlace($request);
+        $data = $request->validated();
 
-        // Parse Rides and Facilities from String to Array
+        // Parse Rides and Facilities
         if (isset($data['rides'])) {
-            $data['rides'] = $this->parseRides($data['rides']);
+            $data['rides'] = $this->placeService->parseRides($data['rides']);
         }
         if (isset($data['facilities'])) {
-            $data['facilities'] = $this->parseFacilities($data['facilities']);
+            $data['facilities'] = $this->placeService->parseFacilities($data['facilities']);
         }
 
-        // Handle geometry from drawing component (if provided)
+        // Handle geometry
         if ($request->has('geometry') && $request->geometry) {
             $geometry = json_decode($request->geometry, true);
             if (json_last_error() === JSON_ERROR_NONE && isset($geometry['type']) && $geometry['type'] === 'Point') {
@@ -169,49 +141,41 @@ class AdminController extends Controller
         }
 
         // Update Slug if name changed or slug is missing
-        if ($request->name !== $place->name || !$place->slug) {
-            $slug = Str::slug($data['name']);
-            $originalSlug = $slug;
-            $count = 1;
-            while (Place::where('slug', $slug)->where('id', '!=', $place->id)->exists()) {
-                $slug = $originalSlug . '-' . $count;
-                $count++;
-            }
-            $data['slug'] = $slug;
+        if ($request->name !== $place->name || ! $place->slug) {
+            $data['slug'] = $this->placeService->generateSlug($data['name'], $place->id);
         }
 
+        // Handle Main Image
         if ($request->hasFile('image')) {
-            $this->deleteImage($place->image_path);
-            $data['image_path'] = $this->storeImage($request);
+            $this->placeService->deleteImage($place->image_path);
+            $data['image_path'] = $this->placeService->uploadImage($request->file('image'), 'places');
         }
 
         unset($data['image']);
-
-        // Handle Gallery Images for Update (Add new ones)
-        if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $image) {
-                $disk = env('FILESYSTEM_DISK', 'public');
-                $path = $image->store('place_gallery', $disk);
-                $url = Storage::disk($disk)->url($path);
-                
-                $place->images()->create([
-                    'image_path' => $url
-                ]);
-            }
-        }
         unset($data['gallery_images']);
 
         $place->update($data);
+
+        // Handle Gallery Images (Add new ones)
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $image) {
+                $url = $this->placeService->uploadImage($image, 'place_gallery');
+
+                $place->images()->create([
+                    'image_path' => $url,
+                ]);
+            }
+        }
 
         return redirect()
             ->route('admin.places.index')
             ->with('status', 'Lokasi berhasil diperbarui.');
     }
 
-    public function destroy(Place $place): RedirectResponse|\Illuminate\Http\JsonResponse
+    public function destroy(Place $place): RedirectResponse|JsonResponse
     {
         if ($place->image_path) {
-            $this->deleteImage($place->image_path);
+            $this->placeService->deleteImage($place->image_path);
         }
 
         $place->delete();
@@ -223,113 +187,5 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.places.index')
             ->with('status', 'Lokasi berhasil dihapus.');
-    }
-
-    protected function validatePlace(Request $request): array
-    {
-        $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'],
-            'geometry' => ['nullable', 'string'],
-            'ticket_price' => ['nullable', 'string', 'max:255'],
-            'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
-            'opening_hours' => ['nullable', 'string', 'max:255'],
-            'contact_info' => ['nullable', 'string', 'max:255'],
-            'website' => ['nullable', 'url', 'max:255'],
-            'google_maps_link' => ['nullable', 'url', 'max:255'],
-            'gallery_images.*' => ['nullable', 'image', 'max:2048'],
-            'rides' => ['nullable', 'string'],
-            'facilities' => ['nullable', 'string'],
-            'ownership_status' => ['nullable', 'string'],
-            'manager' => ['nullable', 'string'],
-            'social_media' => ['nullable', 'string'],
-        ];
-
-        // Latitude/longitude required only if geometry not provided
-        if (!$request->has('geometry') || !$request->geometry) {
-            $rules['latitude'] = ['required', 'numeric', 'between:-90,90'];
-            $rules['longitude'] = ['required', 'numeric', 'between:-180,180'];
-        }
-
-        return $request->validate($rules);
-    }
-
-    protected function storeImage(Request $request): string
-    {
-        $disk = env('FILESYSTEM_DISK', 'public');
-        $path = $request->file('image')->store('places', $disk);
-
-        return Storage::disk($disk)->url($path);
-    }
-
-    protected function deleteImage(?string $path): void
-    {
-        if (!$path) {
-            return;
-        }
-
-        $disk = env('FILESYSTEM_DISK', 'public');
-
-        // Extract relative path from URL if needed
-        // This is a basic implementation. For a robust solution, consider storing only filenames in DB.
-        $relativePath = str_replace(Storage::disk($disk)->url(''), '', $path);
-        
-        // Fallback for local storage without full URL
-        if ($relativePath === $path && $disk === 'public') {
-             $relativePath = str_replace('/storage/', '', $path);
-             $relativePath = str_replace('storage/', '', $relativePath);
-        }
-
-        if (Storage::disk($disk)->exists($relativePath)) {
-            Storage::disk($disk)->delete($relativePath);
-        }
-    }
-
-    protected function parseFacilities(?string $text): array
-    {
-         if (!$text) return [];
-         return array_values(array_filter(array_map('trim', explode("\n", $text))));
-    }
-
-    protected function parseRides(?string $text): array
-    {
-        if (!$text) return [];
-        $lines = explode("\n", $text);
-        $rides = [];
-
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if (empty($line)) continue;
-
-            // Simple parser: "Name - Price"
-            // If no separator, assume just name (or header)
-            $parts = explode('-', $line);
-            
-            if (count($parts) > 1) {
-                // Check if the last part looks like a price (contains Rp or digits)
-                // Actually, let's keep it simple: Last part is price, rest is name.
-                // Or split by first hyphen? Standard "Name - Price" usually has price at end.
-                // Reusing logic from clean_json somewhat, but simplified for manual entry.
-                // User instruction: "Name - Price"
-                
-                $price = trim(array_pop($parts));
-                $name = trim(implode('-', $parts));
-                
-                 $rides[] = [
-                    'name' => $name,
-                    'price' => $price
-                ];
-            } else {
-                // No hyphen, treated as item without price or header
-                $rides[] = [
-                    'name' => $line,
-                    'price' => null
-                ];
-            }
-        }
-        return $rides;
     }
 }

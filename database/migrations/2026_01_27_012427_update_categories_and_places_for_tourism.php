@@ -20,7 +20,7 @@ return new class extends Migration
         });
 
         // Ensure slug exists on categories if it doesn't already (check first)
-        if (!Schema::hasColumn('categories', 'slug')) {
+        if (! Schema::hasColumn('categories', 'slug')) {
             Schema::table('categories', function (Blueprint $table) {
                 $table->string('slug')->unique()->after('name');
             });
@@ -35,12 +35,12 @@ return new class extends Migration
         Schema::table('places', function (Blueprint $table) {
             $table->dropColumn(['ticket_price', 'opening_hours', 'contact_info', 'rating', 'website']);
         });
-        
-        // We might not want to drop slug from categories if it was added manually elsewhere, 
+
+        // We might not want to drop slug from categories if it was added manually elsewhere,
         // but for this migration scope:
         if (Schema::hasColumn('categories', 'slug')) {
             Schema::table('categories', function (Blueprint $table) {
-               // $table->dropColumn('slug'); // Safer to keep it consistent
+                // $table->dropColumn('slug'); // Safer to keep it consistent
             });
         }
     }

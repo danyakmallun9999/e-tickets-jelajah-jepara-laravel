@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Population;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class PopulationController extends Controller
 {
     public function index(): View
     {
         $population = Population::first();
-        
-        if (!$population) {
-            $population = new Population();
+
+        if (! $population) {
+            $population = new Population;
         }
 
         return view('admin.population.index', compact('population'));
@@ -23,9 +23,9 @@ class PopulationController extends Controller
     public function edit(): View
     {
         $population = Population::first();
-        
-        if (!$population) {
-            $population = new Population();
+
+        if (! $population) {
+            $population = new Population;
         }
 
         return view('admin.population.edit', compact('population'));

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Place;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
-use App\Models\Place;
-use App\Models\Category;
 use Illuminate\Support\Str;
 
 class PariwisataSeeder extends Seeder
@@ -17,17 +17,19 @@ class PariwisataSeeder extends Seeder
     {
         // 1. Read JSON File
         $jsonPath = public_path('data_wisata_jepara.json');
-        
-        if (!File::exists($jsonPath)) {
-            $this->command->error("File data_wisata_jepara.json not found in public directory.");
+
+        if (! File::exists($jsonPath)) {
+            $this->command->error('File data_wisata_jepara.json not found in public directory.');
+
             return;
         }
 
         $json = File::get($jsonPath);
         $data = json_decode($json, true);
 
-        if (!isset($data['data_wisata'])) {
+        if (! isset($data['data_wisata'])) {
             $this->command->error("Invalid JSON structure: key 'data_wisata' missing.");
+
             return;
         }
 
@@ -46,7 +48,7 @@ class PariwisataSeeder extends Seeder
                 // We take the first one as the primary category.
                 $categories = explode(',', $item['jenis_wisata']);
                 $primaryCategoryName = trim($categories[0]);
-                
+
                 // Normalizing category name for better display (Title Case)
                 $primaryCategoryName = Str::title(strtolower($primaryCategoryName));
 
@@ -61,7 +63,7 @@ class PariwisataSeeder extends Seeder
 
                 // 3. Prepare Data
                 // Default coordinates for Jepara since JSON only has links
-                $lat = -6.581768; 
+                $lat = -6.581768;
                 $lng = 110.669896;
 
                 // 4. Create or Update Place
@@ -69,7 +71,7 @@ class PariwisataSeeder extends Seeder
                     ['name' => $item['nama_wisata']], // Use name as unique identifier
                     [
                         'category_id' => $category->id,
-                        'slug' => Str::slug($item['nama_wisata']) . '-' . Str::random(5),
+                        'slug' => Str::slug($item['nama_wisata']).'-'.Str::random(5),
                         'description' => $item['deskripsi'] ?? null,
                         'address' => $item['lokasi'] ?? null,
                         'ticket_price' => ($item['harga_tiket'] !== '-' ? $item['harga_tiket'] : null),
@@ -82,13 +84,13 @@ class PariwisataSeeder extends Seeder
                         'rides' => ($item['wahana'] !== '-' ? $item['wahana'] : null),
                         'facilities' => ($item['fasilitas'] !== '-' ? $item['fasilitas'] : null),
                         'social_media' => ($item['media_sosial'] !== '-' ? $item['media_sosial'] : null),
-                        'contact_info' => null // Phone not explicitly in JSON
+                        'contact_info' => null, // Phone not explicitly in JSON
                     ]
                 );
-                
+
                 $count++;
             } catch (\Throwable $e) {
-                $this->command->error("Failed on item: " . ($item['nama_wisata'] ?? 'Unknown'));
+                $this->command->error('Failed on item: '.($item['nama_wisata'] ?? 'Unknown'));
                 $this->command->error($e->getMessage());
             }
         }

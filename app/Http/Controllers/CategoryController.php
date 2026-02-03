@@ -14,6 +14,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::withCount('places')->latest()->paginate(10);
+
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -37,10 +38,10 @@ class CategoryController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
-        
+
         // Handle slug collision just in case (simple append)
         if (Category::where('slug', $validated['slug'])->exists()) {
-             $validated['slug'] .= '-' . time();
+            $validated['slug'] .= '-'.time();
         }
 
         Category::create($validated);
@@ -78,9 +79,9 @@ class CategoryController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
-         // Handle collision if name changed
+        // Handle collision if name changed
         if ($category->name !== $validated['name'] && Category::where('slug', $validated['slug'])->exists()) {
-             $validated['slug'] .= '-' . time();
+            $validated['slug'] .= '-'.time();
         }
 
         $category->update($validated);
@@ -97,7 +98,7 @@ class CategoryController extends Controller
         // Delete related places or restrict?
         // Places cascade? migration said: ->onDelete('cascade')?
         // Let's check. Yes create_places_table had constrained()->cascadeOnDelete().
-        
+
         $category->delete();
 
         return redirect()->route('admin.categories.index')

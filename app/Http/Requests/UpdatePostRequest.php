@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdatePostRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'type' => 'required|in:news,event',
+            'image' => 'nullable|image|max:2048',
+            'published_at' => 'nullable|date',
+            'author' => 'nullable|string|max:255',
+            'image_credit' => 'nullable|string|max:255',
+            'is_published' => 'sometimes|boolean',
+        ];
+    }
+}

@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Add icon_class if it doesn't exist
-        if (!Schema::hasColumn('categories', 'icon_class')) {
+        if (! Schema::hasColumn('categories', 'icon_class')) {
             Schema::table('categories', function (Blueprint $table) {
                 $table->string('icon_class')->nullable()->after('name');
             });
@@ -22,7 +22,7 @@ return new class extends Migration
         // 2. Copy data from icon to icon_class if icon exists
         if (Schema::hasColumn('categories', 'icon')) {
             DB::statement('UPDATE categories SET icon_class = icon');
-            
+
             // 3. Drop icon column
             Schema::table('categories', function (Blueprint $table) {
                 $table->dropColumn('icon');

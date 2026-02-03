@@ -18,7 +18,7 @@ return new class extends Migration
         // Initialize slugs for existing events
         $events = \DB::table('events')->get();
         foreach ($events as $event) {
-            $slug = \Illuminate\Support\Str::slug($event->title) . '-' . \Illuminate\Support\Str::random(5);
+            $slug = \Illuminate\Support\Str::slug($event->title).'-'.\Illuminate\Support\Str::random(5);
             \DB::table('events')->where('id', $event->id)->update(['slug' => $slug]);
         }
 

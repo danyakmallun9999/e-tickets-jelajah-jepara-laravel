@@ -12,7 +12,7 @@ use App\Models\Place;
 
 echo "Checking Place count...\n";
 $count = Place::count();
-echo "Total Places in DB: " . $count . "\n";
+echo 'Total Places in DB: '.$count."\n";
 
 echo "Generating Features...\n";
 $features = Place::with('category')
@@ -28,10 +28,10 @@ $features = Place::with('category')
         ];
     });
 
-echo "Generated Features Count: " . $features->count() . "\n";
+echo 'Generated Features Count: '.$features->count()."\n";
 
 if ($features->isEmpty()) {
     echo "WARNING: No features generated!\n";
 } else {
-    echo "Sample Feature slug: " . $features->first()['properties']['slug'] . "\n";
+    echo 'Sample Feature slug: '.$features->first()['properties']['slug']."\n";
 }
