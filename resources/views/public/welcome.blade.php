@@ -355,7 +355,7 @@
             </div>
 
             <!-- Full Image Cards Grid -->
-            <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide">
+            <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide touch-pan-x">
                 
                 <!-- Shima Card (Kalingga - Oldest) -->
                 <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
@@ -366,7 +366,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/shima.jpg') }}" 
                          alt="Ratu Shima" 
-                         class="absolute inset-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute top-0 left-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
@@ -395,7 +395,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/kalinyamat.jpg') }}" 
                          alt="Ratu Kalinyamat" 
-                         class="absolute inset-0 w-full h-full object-cover object-center origin-center filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute top-0 left-0 w-full h-full object-cover object-center origin-top filter grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
@@ -424,7 +424,7 @@
                     <!-- Full Background Image -->
                     <img src="{{ asset('images/legenda/kartini.jpg') }}" 
                          alt="R.A. Kartini" 
-                         class="absolute inset-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1500ms] ease-out">
+                         class="absolute top-0 left-0 w-full h-full object-cover object-top origin-top filter grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
                     
                     <!-- Gradient Overlay (Subtle) -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
