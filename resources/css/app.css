@@ -69,50 +69,6 @@
         @apply border-l-4 border-gray-300 pl-4 italic my-4 bg-gray-50 py-2 pr-2;
     }
 
-    .menu-ring {
-        @apply absolute inset-0 w-full h-full text-primary/20 dark:text-primary/40 transition-transform duration-700 ease-in-out;
-    }
-
-    /* Luxury Menu Animation */
-    .menu-icon {
-        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
-    }
-
-    .menu-icon-hidden {
-        transform: scale(0) rotate(180deg);
-        opacity: 0;
-    }
-
-    .menu-icon-visible {
-        transform: scale(1) rotate(0deg);
-        opacity: 1;
-    }
-
-    /* Golden Thread Animation */
-    .menu-path {
-        stroke-dasharray: 60; /* Sufficient length for 24px icon paths */
-        transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
-    }
-
-    .menu-path-hidden {
-        stroke-dashoffset: 60;
-        opacity: 0;
-    }
-
-    .menu-path-visible {
-        stroke-dashoffset: 0;
-        opacity: 1;
-    }
-
-    @keyframes spin-slow {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-
-    .animate-spin-slow {
-        animation: spin-slow 12s linear infinite;
-    }
-
     /* Image Alignment */
     .tinymce-content img {
         @apply max-w-full h-auto rounded-lg my-2;
@@ -136,26 +92,59 @@
         margin-right: auto;
     }
 
+    /* Fusion (Merge & Transform) Animation */
+    .fusion-line {
+        transform-origin: center;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Top Line Animation */
+    @keyframes fusion-top-open {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(6px) rotate(0deg); }
+        100% { transform: translateY(6px) rotate(45deg); }
+    }
+    @keyframes fusion-top-close {
+        0% { transform: translateY(6px) rotate(45deg); }
+        50% { transform: translateY(6px) rotate(0deg); }
+        100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* Bottom Line Animation */
+    @keyframes fusion-bottom-open {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-6px) rotate(0deg); }
+        100% { transform: translateY(-6px) rotate(-45deg); }
+    }
+    @keyframes fusion-bottom-close {
+        0% { transform: translateY(-6px) rotate(-45deg); }
+        50% { transform: translateY(-6px) rotate(0deg); }
+        100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* Apply Animations */
+    .menu-open .fusion-line-1 {
+        animation: fusion-top-open 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .menu-closed .fusion-line-1 {
+        animation: fusion-top-close 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .menu-open .fusion-line-2 { opacity: 0; }
+    .menu-closed .fusion-line-2 { opacity: 1; transition-delay: 0.3s; }
+
+    .menu-open .fusion-line-3 {
+        animation: fusion-bottom-open 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .menu-closed .fusion-line-3 {
+        animation: fusion-bottom-close 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
     /* Clearfix for floats */
     .tinymce-content::after {
         content: "";
         display: table;
         clear: both;
-    }
-
-    /* Custom Animations */
-    @keyframes slide-x {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        100% {
-            transform: translateX(100%);
-        }
-    }
-
-    .animate-slide-x {
-        animation: slide-x 2s infinite linear;
     }
 }
 

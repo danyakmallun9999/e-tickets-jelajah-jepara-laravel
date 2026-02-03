@@ -85,30 +85,22 @@
                     @endif
                 </div>
 
-                <!-- Mobile Menu Button (Imploding Star Animation - Monochrome) -->
+                <!-- Mobile Menu Button -->
+                <!-- Mobile Menu Button (Fusion Animation) -->
                 <button @click="mobileMenuOpen = !mobileMenuOpen"
-                    class="lg:hidden menu-button group relative z-50 text-text-light dark:text-text-dark">
+                    class="lg:hidden p-2 group relative z-50 text-text-light dark:text-text-dark"
+                    :class="mobileMenuOpen ? 'menu-open' : 'menu-closed'">
                     
-                    <!-- SVG Icon -->
-                    <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 relative z-10 transition-transform duration-300" 
-                         :class="{ 'rotate-90': mobileMenuOpen }">
-                        
-                        <!-- Menu Group (Implodes) -->
-                        <g class="menu-icon origin-center" :class="mobileMenuOpen ? 'menu-icon-hidden' : 'menu-icon-visible'">
-                            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        </g>
-
-                        <!-- Star/X Group (Explodes) -->
-                        <g class="menu-icon origin-center" :class="mobileMenuOpen ? 'menu-icon-visible' : 'menu-icon-hidden'">
-                             <!-- A 4-pointed star shape for the X -->
-                             <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" />
-                        </g>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+                        <path d="M4 6h16" class="fusion-line fusion-line-1" />
+                        <path d="M4 12h16" class="fusion-line fusion-line-2" />
+                        <path d="M4 18h16" class="fusion-line fusion-line-3" />
                     </svg>
                 </button>
             </div>
 
             <!-- Mobile Menu Dropdown -->
-            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 -translate-y-2"
                 x-transition:enter-end="opacity-100 translate-y-0"
                 x-transition:leave="transition ease-in duration-150"
