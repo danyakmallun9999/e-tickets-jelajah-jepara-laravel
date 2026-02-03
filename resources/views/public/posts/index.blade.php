@@ -1,7 +1,14 @@
 <x-public-layout>
-    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-36">
+    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-24">
         <!-- Main Container -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+            
+            <!-- Breadcrumb -->
+            <nav class="flex justify-center text-xs md:text-sm text-gray-500 mb-8 space-x-2">
+                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Nav.Home') }}</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium">{{ __('Nav.News') }}</span>
+            </nav>
             
             <!-- Header -->
             <div class="text-center mb-16">
@@ -18,7 +25,7 @@
             <!-- Featured Post -->
             <div class="mb-16">
                 <a href="{{ route('posts.show', $featuredPost) }}" class="group block relative rounded-3xl overflow-hidden shadow-2xl aspect-[21/9] md:aspect-[2/1]">
-                    <img src="{{ $featuredPost->image_path }}" alt="{{ $featuredPost->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <img src="{{ asset($featuredPost->image_path) }}" alt="{{ $featuredPost->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
                     <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16">
@@ -54,7 +61,7 @@
                 @foreach($posts as $post)
                 <article class="group flex flex-col h-full">
                     <a href="{{ route('posts.show', $post) }}" class="block overflow-hidden rounded-2xl aspect-[4/3] mb-5 relative shadow-md">
-                        <img src="{{ $post->image_path }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="{{ asset($post->image_path) }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute bottom-3 right-3 px-2 py-1 bg-black/50 backdrop-blur-md rounded text-xs text-white">
                             {{ __('News.ReadTime') }}
                         </div>

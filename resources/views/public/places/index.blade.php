@@ -1,6 +1,13 @@
 <x-public-layout>
-    <div class="bg-gray-50 dark:bg-background-dark min-h-screen py-10 lg:py-16">
+    <div class="bg-gray-50 dark:bg-background-dark min-h-screen -mt-20 pt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
+                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Nav.Home') }}</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium">{{ __('Nav.Destinations') }}</span>
+            </nav>
+
             @php
                 // Extract unique locations from addresses (e.g., "Keling, Jepara" -> "Keling")
                 $allPlaces = $places;

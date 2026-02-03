@@ -21,7 +21,7 @@
                     <!-- Badges -->
                     <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
                         <span class="px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs md:text-sm font-bold tracking-widest uppercase shadow-xl hover:bg-white/20 transition-colors">
-                            {{ $place->category->name ?? 'Destinasi' }}
+                            {{ $place->category->name ?? __('Tourism.Category.Default') }}
                         </span>
                         @if($place->rating)
                         <div class="flex items-center gap-1.5 bg-yellow-400/20 backdrop-blur-md px-4 py-1.5 md:py-2 rounded-full border border-yellow-400/30 text-yellow-300 text-xs md:text-sm font-bold shadow-xl">
@@ -64,7 +64,7 @@
                             <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                 <span class="material-symbols-outlined text-2xl">description</span>
                             </div>
-                            <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white">Tentang Destinasi</h2>
+                            <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white">{{ __('Places.Detail.About') }}</h2>
                         </div>
                         <div class="prose prose-lg prose-slate dark:prose-invert max-w-none font-light leading-relaxed">
                             <p class="whitespace-pre-line">{{ $place->description }}</p>
@@ -85,8 +85,8 @@
                                     <span class="material-symbols-outlined text-xl">attractions</span>
                                 </div>
                                 <div>
-                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">Wahana & Tur</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">Daftar harga dan aktivitas</p>
+                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">{{ __('Places.Detail.RidesTitle') }}</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Places.Detail.RidesSubtitle') }}</p>
                                 </div>
                             </div>
                             
@@ -135,8 +135,8 @@
                                     <span class="material-symbols-outlined text-xl">pool</span>
                                 </div>
                                 <div>
-                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">Fasilitas</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">Kenyamanan yang tersedia</p>
+                                    <h3 class="font-display font-bold text-lg text-slate-800 dark:text-white">{{ __('Places.Detail.FacilitiesTitle') }}</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Places.Detail.FacilitiesSubtitle') }}</p>
                                 </div>
                             </div>
 
@@ -186,7 +186,7 @@
                     }">
                         <div class="flex items-center gap-3 mb-8">
                              <div class="h-1 w-10 bg-primary rounded-full"></div>
-                             <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white">Galeri Foto</h2>
+                             <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white">{{ __('Places.Detail.Gallery') }}</h2>
                         </div>
                         
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
@@ -277,7 +277,7 @@
                     <!-- Sticky Sidebar -->
                     <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-700/50 sticky top-24">
                         <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4">
-                            <span class="material-symbols-outlined text-primary">info</span> Informasi Utama
+                            <span class="material-symbols-outlined text-primary">info</span> {{ __('Places.Detail.Sidebar.Title') }}
                         </h3>
 
                         <div class="space-y-6">
@@ -285,11 +285,11 @@
                             <div class="group">
                                 <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <span class="material-symbols-outlined text-base">confirmation_number</span>
-                                    Harga Tiket
+                                    {{ __('Places.Detail.Sidebar.Ticket') }}
                                 </div>
                                 <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 group-hover:border-primary/30 transition-colors">
                                     <p class="text-slate-700 dark:text-slate-200 font-medium text-sm whitespace-pre-line leading-relaxed">
-                                        {{ $place->ticket_price ?? 'Hubungi Pengelola' }}
+                                        {{ $place->ticket_price ?? __('Places.Detail.Sidebar.ContactLabel') }}
                                     </p>
                                 </div>
                             </div>
@@ -298,10 +298,10 @@
                             <div class="group">
                                 <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <span class="material-symbols-outlined text-base">schedule</span>
-                                    Jam Operasional
+                                    {{ __('Places.Detail.Sidebar.Hours') }}
                                 </div>
                                 <p class="text-slate-800 dark:text-white font-semibold pl-1">
-                                    {{ $place->opening_hours ?? 'Setiap Hari' }}
+                                    {{ $place->opening_hours ?? __('Places.Detail.Sidebar.EveryDay') }}
                                 </p>
                             </div>
 
@@ -310,7 +310,7 @@
                             <div class="group">
                                 <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <span class="material-symbols-outlined text-base">call</span>
-                                    Kontak
+                                    {{ __('Places.Detail.Sidebar.Contact') }}
                                 </div>
                                 <p class="text-slate-800 dark:text-white font-semibold pl-1">
                                     {{ $place->contact_info }}
@@ -323,7 +323,7 @@
                             <div class="group">
                                 <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <span class="material-symbols-outlined text-base">badge</span>
-                                    Pengelola
+                                    {{ __('Places.Detail.Sidebar.Manager') }}
                                 </div>
                                 <div class="pl-1">
                                     <p class="text-slate-800 dark:text-white font-semibold">{{ $place->manager ?? '-' }}</p>
@@ -339,7 +339,7 @@
                             <div class="group">
                                 <div class="flex items-center gap-3 mb-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <span class="material-symbols-outlined text-base">share</span>
-                                    Media Sosial
+                                    {{ __('Places.Detail.Sidebar.Social') }}
                                 </div>
                                 <p class="text-slate-700 dark:text-slate-300 text-sm whitespace-pre-line pl-1">{{ $place->social_media }}</p>
                             </div>
@@ -351,13 +351,13 @@
                              <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" 
                                class="flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5 transition-all">
                                 <img src="https://www.google.com/images/branding/product/2x/maps_96in128dp.png" alt="Google Maps" class="w-5 h-5 object-contain brightness-0 invert">
-                                <span>Petunjuk Arah</span>
+                                <span>{{ __('Places.Detail.Sidebar.Directions') }}</span>
                             </a>
                             
                             @if($place->website)
                             <a href="{{ $place->website }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition-all">
                                 <span class="material-symbols-outlined">language</span>
-                                <span>Kunjungi Website</span>
+                                <span>{{ __('Places.Detail.Sidebar.Website') }}</span>
                             </a>
                             @endif
                         </div>

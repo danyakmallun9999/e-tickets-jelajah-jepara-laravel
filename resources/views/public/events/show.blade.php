@@ -25,15 +25,15 @@
                 <!-- Badges -->
                 <div class="flex flex-wrap gap-3 mb-6">
                     <span class="px-3 py-1 bg-primary/90 backdrop-blur text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-primary/20">
-                        Event
+                        {{ __('Events.Badge') }}
                     </span>
                     @if($event->start_date->isFuture())
                          <span class="px-3 py-1 bg-emerald-500/90 backdrop-blur text-white text-xs font-bold uppercase tracking-wider rounded-lg">
-                            Upcoming
+                            {{ __('Events.Status.Upcoming') }}
                         </span>
                     @else
                         <span class="px-3 py-1 bg-slate-500/90 backdrop-blur text-white text-xs font-bold uppercase tracking-wider rounded-lg">
-                            Past Event
+                            {{ __('Events.Status.Past') }}
                         </span>
                     @endif
                 </div>
@@ -73,7 +73,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
                         <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
                             <span class="w-2 h-8 bg-primary rounded-full"></span>
-                            Tentang Event
+                            {{ __('Events.Detail.About') }}
                         </h2>
                         <div class="prose prose-lg prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
                              {!! nl2br(e($event->description)) !!}
@@ -87,7 +87,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
                         <h2 class="text-2xl font-display font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
                             <span class="w-2 h-8 bg-emerald-500 rounded-full"></span>
-                            Lokasi
+                            {{ __('Events.Detail.Location') }}
                         </h2>
                         <div class="aspect-video w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 relative">
                              <!-- Simple Map Embed or Link -->
@@ -103,7 +103,7 @@
                         </div>
                         <div class="mt-4 flex justify-end">
                             <a href="https://maps.google.com/maps?q={{ urlencode($event->location . ' Jepara') }}" target="_blank" class="inline-flex items-center gap-2 text-primary font-bold hover:text-primary-dark transition-colors">
-                                Halaman Google Maps
+                                {{ __('Events.Detail.MapsLink') }}
                                 <span class="material-symbols-outlined text-sm">open_in_new</span>
                             </a>
                         </div>
@@ -122,8 +122,8 @@
                                 <span class="material-symbols-outlined text-2xl">event</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-800 dark:text-white">Jadwal Pelaksanaan</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Catat tanggalnya!</p>
+                                <h3 class="font-bold text-slate-800 dark:text-white">{{ __('Events.Detail.Sidebar.Title') }}</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Events.Detail.Sidebar.Subtitle') }}</p>
                             </div>
                         </div>
                         
@@ -152,7 +152,7 @@
                                 <div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                 <div>
                                     <span class="block text-sm font-bold text-slate-700 dark:text-slate-200">{{ $event->end_date->translatedFormat('l') }}</span>
-                                    <span class="block text-xs text-slate-500 dark:text-slate-400">Selesai</span>
+                                    <span class="block text-xs text-slate-500 dark:text-slate-400">{{ __('Events.Detail.Sidebar.End') }}</span>
                                 </div>
                             </div>
                             @endif
@@ -161,7 +161,7 @@
                         <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
                              <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ urlencode($event->title) }}&dates={{ $event->start_date->format('Ymd') }}/{{ $event->end_date ? $event->end_date->addDay()->format('Ymd') : $event->start_date->addDay()->format('Ymd') }}&details={{ urlencode(Str::limit($event->description, 100)) }}&location={{ urlencode($event->location . ' Jepara') }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5">
                                 <span class="material-symbols-outlined text-xl">calendar_add_on</span>
-                                Simpan ke Kalender
+                                {{ __('Events.Detail.Sidebar.CalendarBtn') }}
                              </a>
                         </div>
                     </div>
@@ -171,12 +171,12 @@
                          <div class="absolute top-0 right-0 p-8 opacity-5">
                             <span class="material-symbols-outlined text-9xl">campaign</span>
                         </div>
-                        <h3 class="font-display font-bold text-lg mb-4 relative z-10">Informasi</h3>
+                        <h3 class="font-display font-bold text-lg mb-4 relative z-10">{{ __('Events.Detail.InfoTitle') }}</h3>
                         <div class="space-y-4 relative z-10">
                             <div class="flex items-start gap-3">
                                 <span class="material-symbols-outlined text-slate-400 mt-0.5">info</span>
                                 <p class="text-sm text-slate-300">
-                                    Event ini diselenggarakan oleh <strong class="text-white">Dinas Pariwisata & Kebudayaan Jepara</strong>.
+                                    {{ __('Events.Detail.OrganizerText') }} <strong class="text-white">Dinas Pariwisata & Kebudayaan Jepara</strong>.
                                 </p>
                             </div>
                         </div>
