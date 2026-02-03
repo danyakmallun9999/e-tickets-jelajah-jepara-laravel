@@ -50,19 +50,23 @@
                 <div
                     class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
                     <div class="max-w-4xl space-y-6 pointer-events-auto">
+                        <span
+                            class="hidden md:inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider animate-fade-in-down">
+                            {{ __('Hero.Badge') }}
+                        </span>
                         <h1
                             class="text-white text-3xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-sm animate-fade-in-up">
-                            Blusukan Jepara.<br /> Ukir Cerita Serumu Disini
+                            {!! __('Hero.Title') !!}
                         </h1>
                         <p
                             class="text-gray-100 text-lg sm:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-sm animate-fade-in-up delay-100">
-                            Temukan keindahan pantai tropis, kekayaan sejarah, dan mahakarya seni ukir kelas dunia.
+                            {{ __('Hero.Subtitle') }}
                         </p>
                         <div
                             class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up delay-200">
                             <a class="flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-dark text-white text-base font-bold shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5"
                                 href="{{ route('places.index') }}">
-                                Jelajahi Destinasi
+                                {{ __('Hero.Button') }}
                             </a>
                         </div>
                     </div>
@@ -267,32 +271,31 @@
                          :class="shown ? 'opacity-100 translate-y-0' : ''">
                         
                         <!-- Minimal Label -->
-                        <span class="block text-xs font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">Profil Wilayah</span>
+                        <span class="block text-xs font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">{{ __('Profile.Label') }}</span>
 
                         <!-- Typography -->
                         <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 dark:text-white leading-[1.1]">
-                            Mutiara <br>
-                            <span class="italic text-gray-500 font-light">Semenanjung.</span>
+                            {!! __('Profile.Title') !!}
                         </h2>
 
                         <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-light max-w-md">
-                            Kabupaten Jepara, permata di ujung utara Jawa Tengah. Garis pantai membentang 83 km, menyatukan budaya ukir kelas dunia dengan keindahan alam tropis.
+                            {{ __('Profile.Description') }}
                         </p>
 
                         <!-- Key Highlights (Pillars) -->
                         <div class="pt-8 mt-8 border-t border-gray-100 dark:border-gray-800">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Alam</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Surga <br> Tropis</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Nature.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Nature.Desc') !!}</p>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Sejarah</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Bumi <br> Kartini</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Heritage.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Heritage.Desc') !!}</p>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Seni</span>
-                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">Ukir <br> Dunia</p>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ __('Profile.Pillars.Arts.Title') }}</span>
+                                    <p class="font-serif text-lg text-gray-900 dark:text-white leading-tight">{!! __('Profile.Pillars.Arts.Desc') !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -325,7 +328,7 @@
                     <!-- Minimal Stats (Absolute, no glassmorphism, just solid) -->
                     <div class="absolute top-8 -right-4 bg-white dark:bg-gray-800 p-6 shadow-xl hidden lg:block">
                         <span class="block text-4xl font-serif text-gray-900 dark:text-white">{{ $countDestinasi }}</span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Destinasi</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">{{ __('Nav.Destinations') }}</span>
                     </div>
 
                 </div>
@@ -346,11 +349,11 @@
                  x-intersect.threshold.0.5="shown = true">
                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
                     :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    SEJARAH & LEGENDA
+                    {{ __('History.Title') }}
                 </h2>
                 <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
                    :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    Menelusuri jejak tokoh-tokoh besar yang membentuk karakter dan identitas Jepara sepanjang masa.
+                    {{ __('History.Subtitle') }}
                 </p>
             </div>
 
@@ -376,11 +379,11 @@
                         <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full group-hover:w-20 transition-all duration-500"></div>
                         <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">Ratu Shima</h3>
                         <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            "Keadilan Tanpa Pandang Bulu"
+                            {!! __('History.Shima.Quote') !!}
                         </p>
                         <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
                             <p class="text-white/80 text-sm leading-relaxed">
-                                Penguasa Kerajaan Kalingga yang termasyhur akan ketegasan hukumnya. Simbol integritas dan keadilan sejati dari masa lampau.
+                                {{ __('History.Shima.Desc') }}
                             </p>
                         </div>
                     </div>
@@ -405,11 +408,11 @@
                         <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full group-hover:w-20 transition-all duration-500"></div>
                         <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">Ratu Kalinyamat</h3>
                         <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            "Sang Ratu Laut yang Gagah Berani"
+                            {!! __('History.Kalinyamat.Quote') !!}
                         </p>
                         <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
                             <p class="text-white/80 text-sm leading-relaxed">
-                                Penguasa maritim Nusantara yang disegani. Membangun Jepara menjadi pusat niaga dan kekuatan laut yang tak tertandingi.
+                                {{ __('History.Kalinyamat.Desc') }}
                             </p>
                         </div>
                     </div>
@@ -434,11 +437,11 @@
                         <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full group-hover:w-20 transition-all duration-500"></div>
                         <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">R.A. Kartini</h3>
                         <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            "Habis Gelap Terbitlah Terang"
+                            {!! __('History.Kartini.Quote') !!}
                         </p>
                         <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100">
                             <p class="text-white/80 text-sm leading-relaxed">
-                                Pahlawan emansipasi yang memperjuangkan hak pendidikan wanita. Sosoknya menginspirasi perubahan besar dari Jepara untuk Indonesia.
+                                {{ __('History.Kartini.Desc') }}
                             </p>
                         </div>
                     </div>
@@ -460,11 +463,11 @@
             <div class="text-center mb-16" x-data="{ shown: false }" x-intersect.threshold.0.5="shown = true">
                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
                     :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    BUDAYA JEPARA
+                    {{ __('Culture.Title') }}
                 </h2>
                 <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
                    :class="shown ? 'opacity-100 translate-y-0' : ''">
-                    Ragam festival dan upacara adat yang lestari, menjadi identitas dan kebanggaan masyarakat Bumi Kartini.
+                    {{ __('Culture.Subtitle') }}
                 </p>
             </div>
 
@@ -519,7 +522,7 @@
                             
                             <!-- Link to Detail Page -->
                             <a href="{{ route('culture.show', $culture->slug) }}" class="mt-4 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white text-sm font-bold transition-all shadow-lg hover:translate-x-1 pointer-events-auto z-10">
-                                <span>Selengkapnya</span>
+                                <span>{{ __('Culture.Button.More') }}</span>
                                 <span class="material-symbols-outlined text-lg">arrow_forward</span>
                             </a>
                         </div>
@@ -598,10 +601,10 @@
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4 leading-tight">
-                        WISATA UNGGULAN JEPARA
+                        {{ __('Tourism.Title') }}
                     </h2>
                     <p class="text-text-light/70 dark:text-text-dark/70 text-lg leading-relaxed">
-                        Jelajahi keindahan alam, kekayaan budaya, dan sejarah yang memukau di Bumi Kartini.
+                        {{ __('Tourism.Subtitle') }}
                     </p>
                 </div>
                 
@@ -610,7 +613,7 @@
                     <!-- View All Button -->
                     <a href="{{ route('places.index') }}" 
                         class="text-primary font-bold hover:underline flex items-center gap-1">
-                        Lihat Semua <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        {{ __('Tourism.Button.ViewAll') }} <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </a>
                     
                     <!-- Navigation Buttons -->
@@ -648,7 +651,7 @@
                         <!-- Category Badge -->
                         <div class="absolute top-4 left-4">
                             <span class="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-sm">
-                                {{ $place->category->name ?? 'Wisata' }}
+                                {{ $place->category->name ?? __('Tourism.Category.Default') }}
                             </span>
                         </div>
 
@@ -671,7 +674,7 @@
 
                     @if($places->isEmpty())
                         <div class="w-full text-center py-10 text-gray-500">
-                            Belum ada destinasi wisata yang ditampilkan.
+                            {{ __('Tourism.Empty') }}
                         </div>
                     @endif
 
@@ -866,10 +869,10 @@
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4 leading-tight">
-                        KULINER KHAS JEPARA
+                        {{ __('Culinary.Title') }}
                     </h2>
                     <p class="text-text-light/70 dark:text-text-dark/70 text-lg leading-relaxed">
-                        Nikmati cita rasa autentik kuliner tradisional Jepara yang kaya akan rempah dan warisan budaya.
+                        {{ __('Culinary.Subtitle') }}
                     </p>
                 </div>
                 
@@ -910,7 +913,7 @@
                             <!-- Read More Button (Visible only when snapped/active) -->
                             <div class="opacity-0 group-data-[snapped=true]:opacity-100 transition-opacity duration-500 delay-100">
                                 <a href="{{ route('culinary.show', $culinary->slug) }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white text-sm font-bold transition-all shadow-lg hover:translate-x-1">
-                                    <span>Selengkapnya</span>
+                                    <span>{{ __('Culinary.Button.More') }}</span>
                                     <span class="material-symbols-outlined text-lg">arrow_forward</span>
                                 </a>
                             </div>
@@ -940,10 +943,10 @@
         id="news">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-8">
-                <h2 class="text-2xl md:text-3xl font-bold text-text-light dark:text-text-dark">BERITA & PENGUMUMAN</h2>
+                <h2 class="text-2xl md:text-3xl font-bold text-text-light dark:text-text-dark">{{ __('News.Title') }}</h2>
                 <a class="text-primary font-bold hover:underline flex items-center gap-1 self-start md:self-auto"
                     href="{{ route('posts.index') }}">
-                    Lihat Semua <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    {{ __('News.Button.ViewAll') }} <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -952,7 +955,7 @@
                 <article class="bg-background-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
                     <div class="h-48 overflow-hidden relative">
                         <div class="absolute top-3 left-3 {{ $post->type == 'event' ? 'bg-purple-600' : 'bg-blue-600' }} text-white text-xs font-bold px-3 py-1 rounded-full z-10 uppercase">
-                            {{ $post->type == 'event' ? 'Agenda' : 'Berita' }}
+                            {{ $post->type == 'event' ? __('News.Type.Agenda') : __('News.Type.News') }}
                         </div>
                         <img alt="{{ $post->title }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -970,7 +973,7 @@
                             {{ Str::limit(strip_tags($post->content), 100) }}
                         </p>
                         <div class="mt-auto">
-                            <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}">Baca Selengkapnya</a>
+                            <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}">{{ __('News.Button.ReadMore') }}</a>
                         </div>
                     </div>
                 </article>
@@ -978,7 +981,7 @@
                 
                 @if($posts->isEmpty())
                     <div class="col-span-full text-center py-10 text-gray-500">
-                        Belum ada berita atau agenda terbaru.
+                        {{ __('News.Empty') }}
                     </div>
                 @endif
 

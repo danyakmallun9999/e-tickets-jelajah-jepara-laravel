@@ -10,8 +10,13 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+        $middleware->validateCsrfTokens(except: [
+            '/posts/upload-image', // Bypass CSRF for image uploads from Trix
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
