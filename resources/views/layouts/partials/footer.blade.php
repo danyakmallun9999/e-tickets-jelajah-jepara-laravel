@@ -69,7 +69,7 @@
             <div class="inline-flex flex-col mb-4 md:mb-6 w-full items-center">
                 
                 <!-- Main Branding -->
-                <h2 class="text-3xl md:text-7xl font-bold tracking-tight leading-[0.9] md:leading-[0.8] uppercase mb-6 text-outline-sm md:text-outline drop-shadow-2xl">
+                <h2 class="text-3xl md:text-7xl font-bold tracking-tight leading-tight uppercase mb-6 text-outline-sm md:text-outline drop-shadow-2xl">
                     Pemerintah <br class="hidden md:block">
                     Kabupaten <span class="text-primary">Jepara</span>
                 </h2>
