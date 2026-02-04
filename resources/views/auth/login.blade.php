@@ -21,7 +21,7 @@
         <div class="relative hidden lg:block h-full overflow-hidden group">
             <div class="absolute inset-0 bg-background-dark/70 group-hover:bg-background-dark/60 transition-colors duration-700 z-10"></div>
             <!-- Dynamic Image or Fallback -->
-            <img src="/images/section-2.jpg" alt="Pesona Jepara" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+            <img src="/images/profile/section-2.jpg" alt="Pesona Jepara" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
             
             <div class="absolute bottom-0 left-0 right-0 z-20 p-16 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent">
                 <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
