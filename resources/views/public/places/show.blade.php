@@ -22,8 +22,15 @@
                     }
                  }">
                 
+                <!-- Back Button (Separated) -->
+                <div class="px-4 lg:px-6 pt-4 pb-2">
+                    <a href="{{ route('places.index') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white transition-all shadow-sm">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </a>
+                </div>
+
                 <!-- Main Image Area -->
-                <div class="flex-1 relative p-4 lg:p-6 pb-0 lg:pb-0 flex items-end justify-center overflow-hidden perspective-[1000px]">
+                <div class="flex-1 relative p-4 lg:p-6 pb-0 lg:pb-0 pt-0 lg:pt-0 flex items-end justify-center overflow-hidden perspective-[1000px]">
                     <div class="relative w-full h-full rounded-3xl overflow-hidden text-transparent">
                         <template x-if="activeImage">
                             <img :src="activeImage" 
@@ -37,11 +44,6 @@
                             </div>
                         </template>
                     </div>
-                    
-                    <!-- Floating Back Button -->
-                    <a href="{{ route('places.index') }}" class="absolute top-8 left-8 z-20 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all shadow-lg">
-                        <span class="material-symbols-outlined">arrow_back</span>
-                    </a>
                 </div>
 
                 <!-- Thumbnails / Gallery List -->

@@ -11,7 +11,10 @@
             @php
                 $allEvents = $groupedEvents->flatten();
                 $locations = $allEvents->pluck('location')->unique()->values();
-                $months = $groupedEvents->keys();
+                // Extract unique years
+                $years = $allEvents->pluck('start_date')->map(fn($date) => $date->format('Y'))->unique()->sortDesc()->values();
+                // Extract unique month names (localized)
+                $months = $allEvents->pluck('start_date')->map(fn($date) => $date->translatedFormat('F'))->unique()->values();
 
                 $allEventsJSON = $allEvents->map(function($event) {
                     return [
@@ -23,6 +26,8 @@
                         'image_url' => $event->image ? Storage::url($event->image) : null,
                         'start_date_month' => $event->start_date->format('M'),
                         'start_date_day' => $event->start_date->format('d'),
+                        'start_date_year' => $event->start_date->format('Y'),
+                        'start_date_month_name' => $event->start_date->translatedFormat('F'),
                         'start_date_full' => $event->start_date->translatedFormat('F Y'),
                         'start_time' => $event->start_time ? \Carbon\Carbon::parse($event->start_time)->format('H:i') : '-',
                     ];
@@ -31,6 +36,7 @@
 
             <div x-data="{ 
                 search: '', 
+                selectedYear: '', 
                 selectedMonth: '', 
                 selectedLocation: '',
                 currentPage: 1,
@@ -39,9 +45,10 @@
                 get filteredEvents() {
                     return this.events.filter(event => {
                         const matchesSearch = this.search === '' || event.title.toLowerCase().includes(this.search.toLowerCase());
-                        const matchesMonth = this.selectedMonth === '' || event.start_date_full === this.selectedMonth;
+                        const matchesYear = this.selectedYear === '' || event.start_date_year === this.selectedYear;
+                        const matchesMonth = this.selectedMonth === '' || event.start_date_month_name === this.selectedMonth;
                         const matchesLocation = this.selectedLocation === '' || event.location === this.selectedLocation;
-                        return matchesSearch && matchesMonth && matchesLocation;
+                        return matchesSearch && matchesYear && matchesMonth && matchesLocation;
                     });
                 },
                 get totalPages() {
@@ -61,7 +68,7 @@
                     }
                     return pages;
                 }
-            }" x-init="$watch('search', () => currentPage = 1); $watch('selectedMonth', () => currentPage = 1); $watch('selectedLocation', () => currentPage = 1)">
+            }" x-init="$watch('search', () => currentPage = 1); $watch('selectedYear', () => currentPage = 1); $watch('selectedMonth', () => currentPage = 1); $watch('selectedLocation', () => currentPage = 1)">
 
                 <!-- Header & Filters -->
                 <div class="mb-10 border-b border-gray-100 dark:border-white/10 pb-8">
@@ -90,8 +97,53 @@
                             >
                         </div>
 
+                        <!-- Year Dropdown (Custom) -->
+                        <div class="relative min-w-[180px]" x-data="{ open: false }">
+                            <i class="fa-regular fa-calendar-days absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none"></i>
+                            
+                            <button 
+                                @click="open = !open"
+                                @click.outside="open = false"
+                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between"
+                            >
+                                <span x-text="selectedYear === '' ? 'Semua Tahun    ' : selectedYear" class="truncate"></span>
+                                <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                            </button>
+
+                            <div 
+                                x-show="open" 
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95"
+                                class="absolute z-50 mt-2 w-full bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-white/10 max-h-60 overflow-y-auto no-scrollbar"
+                                style="display: none;"
+                            >
+                                <div class="p-1">
+                                    <button 
+                                        @click="selectedYear = ''; open = false"
+                                        class="w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                                        :class="selectedYear === '' ? 'text-primary font-bold bg-primary/5' : 'text-slate-600 dark:text-slate-300'"
+                                    >
+                                        Filter Tahun
+                                    </button>
+                                    @foreach($years as $year)
+                                        <button 
+                                            @click="selectedYear = '{{ $year }}'; open = false"
+                                            class="w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                                            :class="selectedYear === '{{ $year }}' ? 'text-primary font-bold bg-primary/5' : 'text-slate-600 dark:text-slate-300'"
+                                        >
+                                            {{ $year }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Month Dropdown (Custom) -->
-                        <div class="relative min-w-[220px]" x-data="{ open: false }">
+                        <div class="relative min-w-[180px]" x-data="{ open: false }">
                             <i class="fa-regular fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none"></i>
                             
                             <button 
@@ -182,9 +234,9 @@
 
                         <!-- Reset Button -->
                         <button 
-                            @click="search = ''; selectedMonth = ''; selectedLocation = ''"
+                            @click="search = ''; selectedYear = ''; selectedMonth = ''; selectedLocation = ''"
                             class="px-6 py-3 rounded-xl bg-white dark:bg-white/10 text-slate-600 dark:text-slate-300 font-bold text-sm ring-1 ring-gray-200 dark:ring-white/10 hover:bg-gray-100 dark:hover:bg-white/20 transition-colors"
-                            x-show="search || selectedMonth || selectedLocation"
+                            x-show="search || selectedYear || selectedMonth || selectedLocation"
                             x-transition
                         >
                             {{ __('Events.Filter.Reset') }}
