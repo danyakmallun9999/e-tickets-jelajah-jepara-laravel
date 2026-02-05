@@ -95,12 +95,12 @@
         }" 
         x-show="show" 
         x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-start="opacity-0 -translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0"
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 translate-y-2"
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-4 px-5 py-4 rounded-2xl shadow-xl border bg-white"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-5 py-4 rounded-2xl shadow-xl border bg-white"
         :class="{
             'border-green-100 dark:border-green-900/30': type === 'success',
             'border-red-100 dark:border-red-900/30': type === 'error'
@@ -147,7 +147,7 @@
         }"
         x-show="open" 
         style="display: none;"
-        class="fixed inset-0 z-50 flex items-center justify-center px-4"
+        class="fixed inset-0 z-[9999] flex items-center justify-center px-4"
         x-cloak>
             
             <!-- Backdrop -->

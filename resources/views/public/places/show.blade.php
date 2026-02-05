@@ -4,7 +4,7 @@
         <div class="flex flex-col lg:flex-row">
             
             <!-- Left Side: Sticky Visuals (50%) -->
-            <div class="lg:w-1/2 lg:h-[93vh] lg:sticky lg:top-0 relative h-[60vh] bg-white dark:bg-slate-950 overflow-hidden group flex flex-col lg:pb-6" 
+            <div class="lg:w-1/2 lg:h-[93vh] lg:sticky lg:top-24 relative h-[60vh] bg-white dark:bg-slate-950 overflow-hidden group flex flex-col lg:pb-6" 
                  @php
                      $uniqueGalleryImages = collect([]);
                      if ($place->image_path) {

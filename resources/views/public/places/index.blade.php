@@ -1,5 +1,5 @@
 <x-public-layout>
-    <div class="bg-gray-50 dark:bg-background-dark min-h-screen -mt-20 pt-24 pb-24">
+    <div class="bg-gray-50 dark:bg-background-dark min-h-screen -mt-20 pt-32 pb-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
@@ -9,11 +9,9 @@
             </nav>
 
             @php
-                // Extract unique locations from addresses (e.g., "Keling, Jepara" -> "Keling")
+                // Extract unique locations from kecamatan column
                 $allPlaces = $places;
-                $locations = $allPlaces->map(function($place) {
-                    return $place->address ? trim(explode(',', $place->address)[0]) : null;
-                })->filter()->unique()->values();
+                $locations = $allPlaces->pluck('kecamatan')->filter()->unique()->values();
             @endphp
 
             <div x-data="{
@@ -28,12 +26,8 @@
                         const matchesSearch = this.search === '' || place.name.toLowerCase().includes(this.search.toLowerCase());
                         const matchesCategory = this.selectedCategory === '' || (place.category && place.category.name === this.selectedCategory);
                         
-                        // Location matching (safe check)
-                        let placeLoc = '';
-                        if (place.address) {
-                            placeLoc = place.address.split(',')[0].trim();
-                        }
-                        const matchesLocation = this.selectedLocation === '' || placeLoc === this.selectedLocation;
+                        // Location matching (Match exact kecamatan)
+                        const matchesLocation = this.selectedLocation === '' || place.kecamatan === this.selectedLocation;
 
                         return matchesSearch && matchesCategory && matchesLocation;
                     });

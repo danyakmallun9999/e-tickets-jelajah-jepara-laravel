@@ -27,6 +27,19 @@ class AdminController extends Controller
         $this->placeService = $placeService;
     }
 
+    public function destroyImage(\App\Models\PlaceImage $placeImage): JsonResponse
+    {
+        // Delete from storage
+        if ($placeImage->image_path) {
+            $this->placeService->deleteImage($placeImage->image_path);
+        }
+
+        // Delete record
+        $placeImage->delete();
+
+        return response()->json(['message' => 'Foto berhasil dihapus.']);
+    }
+
     public function index(): View
     {
         $places = Place::with('category')->latest()->paginate(10);

@@ -232,12 +232,41 @@
                 <p class="text-xs text-gray-500 mt-1">Bisa pilih banyak foto sekaligus.</p>
 
                 <!-- Existing Gallery Images -->
+                <!-- Existing Gallery Images -->
                 @if($place->images && $place->images->count() > 0)
                 <div class="mt-4 grid grid-cols-3 gap-2">
                     @foreach($place->images as $img)
-                        <div class="relative group aspect-square">
-                            <img src="{{ $img->image_path }}" class="w-full h-full object-cover rounded-lg border">
-                            <!-- Delete button could be added here later -->
+                        <div class="relative group aspect-square" x-data="{ deleting: false }" x-show="!deleting">
+                            <img src="{{ asset($img->image_path) }}" class="w-full h-full object-cover rounded-lg border">
+                            
+                            <!-- Delete Button Overlay -->
+                            <button type="button" 
+                                @click="
+                                    window.confirmAction('Hapus Foto?', 'Foto yang dihapus tidak dapat dikembalikan. Lanjutkan?', () => {
+                                        deleting = true;
+                                        fetch('{{ route('admin.places.images.destroy', $img->id) }}', {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                'Accept': 'application/json'
+                                            }
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) throw new Error('Gagal menghapus');
+                                            $el.closest('.relative').remove();
+                                            window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Foto berhasil dihapus', type: 'success' } }));
+                                        })
+                                        .catch(error => {
+                                            deleting = false;
+                                            alert('Gagal menghapus foto.');
+                                            window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Gagal menghapus foto', type: 'error' } }));
+                                            console.error(error);
+                                        });
+                                    });
+                                "
+                                class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg cursor-pointer">
+                                <i class="fa-solid fa-trash text-white text-xl"></i>
+                            </button>
                         </div>
                     @endforeach
                 </div>
@@ -269,7 +298,6 @@
                 'zoom' => 15,
                 'height' => 'h-full',
             ])
-            @include('admin.components.load-geometry')
         </div>
     </div>
 </form>

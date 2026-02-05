@@ -1,5 +1,5 @@
 <x-public-layout>
-    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-24">
+    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-32">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
@@ -10,7 +10,6 @@
             
             @php
                 $allEvents = $groupedEvents->flatten();
-                $locations = $allEvents->pluck('location')->unique()->values();
                 // Extract unique years
                 $years = $allEvents->pluck('start_date')->map(fn($date) => $date->format('Y'))->unique()->sortDesc()->values();
                 // Extract unique month names (localized)
@@ -38,7 +37,6 @@
                 search: '', 
                 selectedYear: '', 
                 selectedMonth: '', 
-                selectedLocation: '',
                 currentPage: 1,
                 perPage: 9,
                 events: {{ Js::from($allEventsJSON) }},
@@ -47,8 +45,7 @@
                         const matchesSearch = this.search === '' || event.title.toLowerCase().includes(this.search.toLowerCase());
                         const matchesYear = this.selectedYear === '' || event.start_date_year === this.selectedYear;
                         const matchesMonth = this.selectedMonth === '' || event.start_date_month_name === this.selectedMonth;
-                        const matchesLocation = this.selectedLocation === '' || event.location === this.selectedLocation;
-                        return matchesSearch && matchesYear && matchesMonth && matchesLocation;
+                        return matchesSearch && matchesYear && matchesMonth;
                     });
                 },
                 get totalPages() {
@@ -68,7 +65,7 @@
                     }
                     return pages;
                 }
-            }" x-init="$watch('search', () => currentPage = 1); $watch('selectedYear', () => currentPage = 1); $watch('selectedMonth', () => currentPage = 1); $watch('selectedLocation', () => currentPage = 1)">
+            }" x-init="$watch('search', () => currentPage = 1); $watch('selectedYear', () => currentPage = 1); $watch('selectedMonth', () => currentPage = 1);">
 
                 <!-- Header & Filters -->
                 <div class="mb-10 border-b border-gray-100 dark:border-white/10 pb-8">
@@ -104,7 +101,7 @@
                             <button 
                                 @click="open = !open"
                                 @click.outside="open = false"
-                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between"
+                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between gap-3"
                             >
                                 <span x-text="selectedYear === '' ? 'Semua Tahun    ' : selectedYear" class="truncate"></span>
                                 <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
@@ -149,7 +146,7 @@
                             <button 
                                 @click="open = !open"
                                 @click.outside="open = false"
-                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between"
+                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between gap-3"
                             >
                                 <span x-text="selectedMonth === '' ? '{{ __('Events.Filter.AllMonths') }}' : selectedMonth" class="truncate"></span>
                                 <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
@@ -187,56 +184,13 @@
                             </div>
                         </div>
 
-                        <!-- Location Dropdown (Custom) -->
-                        <div class="relative min-w-[220px]" x-data="{ open: false }">
-                            <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none"></i>
-                            
-                            <button 
-                                @click="open = !open"
-                                @click.outside="open = false"
-                                class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between"
-                            >
-                                <span x-text="selectedLocation === '' ? '{{ __('Events.Filter.AllLocations') }}' : selectedLocation" class="truncate"></span>
-                                <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
-                            </button>
 
-                            <div 
-                                x-show="open" 
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="transform opacity-0 scale-95"
-                                x-transition:enter-end="transform opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="transform opacity-100 scale-100"
-                                x-transition:leave-end="transform opacity-0 scale-95"
-                                class="absolute z-50 mt-2 w-full bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-white/10 max-h-60 overflow-y-auto no-scrollbar"
-                                style="display: none;"
-                            >
-                                <div class="p-1">
-                                    <button 
-                                        @click="selectedLocation = ''; open = false"
-                                        class="w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
-                                        :class="selectedLocation === '' ? 'text-primary font-bold bg-primary/5' : 'text-slate-600 dark:text-slate-300'"
-                                    >
-                                        {{ __('Events.Filter.AllLocations') }}
-                                    </button>
-                                    @foreach($locations as $loc)
-                                        <button 
-                                            @click="selectedLocation = '{{ $loc }}'; open = false"
-                                            class="w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
-                                            :class="selectedLocation === '{{ $loc }}' ? 'text-primary font-bold bg-primary/5' : 'text-slate-600 dark:text-slate-300'"
-                                        >
-                                            {{ $loc }}
-                                        </button>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Reset Button -->
                         <button 
-                            @click="search = ''; selectedYear = ''; selectedMonth = ''; selectedLocation = ''"
+                            @click="search = ''; selectedYear = ''; selectedMonth = ''"
                             class="px-6 py-3 rounded-xl bg-white dark:bg-white/10 text-slate-600 dark:text-slate-300 font-bold text-sm ring-1 ring-gray-200 dark:ring-white/10 hover:bg-gray-100 dark:hover:bg-white/20 transition-colors"
-                            x-show="search || selectedYear || selectedMonth || selectedLocation"
+                            x-show="search || selectedYear || selectedMonth"
                             x-transition
                         >
                             {{ __('Events.Filter.Reset') }}

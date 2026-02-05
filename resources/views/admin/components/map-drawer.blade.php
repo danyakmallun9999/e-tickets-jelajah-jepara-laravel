@@ -73,14 +73,8 @@
     
             <div class="border-l border-gray-300 mx-2 h-8"></div>
     
-            <input type="file" x-ref="geojsonInput" accept=".geojson,.json" class="hidden" @change="handleFileUpload($event)">
             <button 
                 type="button"
-                @click="$refs.geojsonInput.click()"
-                class="px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition"
-            >
-                <i class="fa-solid fa-file-import mr-2"></i> Upload GeoJSON
-            </button>
         </div>
 
         <!-- Info Text -->
@@ -109,21 +103,6 @@
     <div class="flex-none mt-3 space-y-3">
         <!-- Geometry JSON Output (Hidden) -->
         <input type="hidden" name="geometry" x-model="geometryJson" :required="drawType !== 'point'">
-        
-        <!-- Multiple Feature Navigation -->
-        <div x-show="uploadedFeatures.length > 1" x-cloak class="bg-blue-50 p-3 rounded-lg flex items-center justify-between border border-blue-100">
-            <div class="text-sm text-blue-800 font-medium">
-                Fitur <span x-text="currentIndex + 1"></span> dari <span x-text="uploadedFeatures.length"></span>
-            </div>
-            <div class="flex gap-2">
-                <button type="button" @click="prevFeature()" class="px-3 py-1 bg-white border border-blue-200 rounded text-blue-700 hover:bg-blue-50 text-xs font-semibold disabled:opacity-50" :disabled="currentIndex === 0">
-                    <i class="fa-solid fa-chevron-left mr-1"></i> Prev
-                </button>
-                <button type="button" @click="nextFeature()" class="px-3 py-1 bg-white border border-blue-200 rounded text-blue-700 hover:bg-blue-50 text-xs font-semibold disabled:opacity-50" :disabled="currentIndex === uploadedFeatures.length - 1">
-                    Next <i class="fa-solid fa-chevron-right ml-1"></i>
-                </button>
-            </div>
-        </div>
         
         @if($drawType === 'point')
             <div class="grid grid-cols-2 gap-4">
@@ -170,9 +149,7 @@
             })(),
             coordinates: { lat: config.center[0], lng: config.center[1] },
             hasGeometry: false,
-            uploadedItems: null,
-            uploadedFeatures: [],
-            currentIndex: 0,
+            hasGeometry: false,
             currentDrawHandler: null, // Track active draw handler
 
             init() {
@@ -236,10 +213,6 @@
                 // Initialize feature group for drawn items
                 this.drawnItems = new L.FeatureGroup();
                 this.map.addLayer(this.drawnItems);
-
-                // Initialize feature group for uploaded items (candidates)
-                this.uploadedItems = new L.FeatureGroup();
-                this.map.addLayer(this.uploadedItems);
 
                 const overlays = {
                     "Gambar": this.drawnItems
@@ -479,20 +452,6 @@
                 if (layers.length > 0) {
                     const layer = layers[0];
                     
-                    // If it's a MultiPolygon, L.geoJSON might return a FeatureGroup or a single L.Polygon depending on implementation
-                    // But usually for single geometry it returns one layer.
-                    // If it's a FeatureGroup (e.g. GeometryCollection), we might need to handle differently.
-                    // But for standard Point/Line/Polygon/Multi types, it's usually one layer.
-                    
-                    // However, for MultiPolygon, Leaflet might create a layer that doesn't fully behave like a simple Polygon in Draw
-                    // But let's try adding it.
-                    
-                    // If the layer is a group (e.g. MultiPoint), extract children?
-                    // For now, assume simple geometry or handled by Leaflet.
-                    
-                    // Important: For editing to work, we need to add the layer to drawnItems
-                    // If it's a FeatureGroup, we might need to add its children.
-                    
                     if (layer instanceof L.LayerGroup) {
                         layer.eachLayer(l => {
                             l.addTo(this.drawnItems);
@@ -524,167 +483,6 @@
                         }
                     }
                 }
-            },
-
-            handleFileUpload(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const geojson = JSON.parse(e.target.result);
-                        
-                        // Clear existing
-                        this.clearDrawing();
-                        if (this.uploadedItems) {
-                            this.uploadedItems.clearLayers();
-                        }
-                        this.uploadedFeatures = [];
-                        this.currentIndex = 0;
-
-                        const layer = L.geoJSON(geojson);
-                        const layers = [];
-
-                        layer.eachLayer((l) => {
-                            // Validate geometry type
-                            const geometry = l.feature ? l.feature.geometry : l.toGeoJSON().geometry;
-                            let isValid = false;
-                            if (config.drawType === 'point' && geometry.type === 'Point') isValid = true;
-                            else if (config.drawType === 'line' && (geometry.type === 'LineString' || geometry.type === 'MultiLineString')) isValid = true;
-                            else if (config.drawType === 'polygon' && (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon')) isValid = true;
-
-                            if (isValid) {
-                                // Add click handler to select this feature
-                                l.on('click', () => {
-                                    // Find index
-                                    const index = this.uploadedFeatures.indexOf(l);
-                                    if (index !== -1) {
-                                        this.currentIndex = index;
-                                        this.selectFeature(l);
-                                    }
-                                });
-                                
-                                // Style for candidates
-                                if (l instanceof L.Path) {
-                                    l.setStyle({ color: '#9ca3af', weight: 2, dashArray: '5, 5' });
-                                } else if (l instanceof L.Marker) {
-                                    l.setOpacity(0.6);
-                                }
-
-                                this.uploadedItems.addLayer(l);
-                                layers.push(l);
-                            }
-                        });
-
-                        this.uploadedFeatures = layers;
-
-                        if (layers.length === 0) {
-                            alert(`Tidak ada fitur valid dalam file. Harapkan ${config.drawType}.`);
-                            return;
-                        }
-
-                        // Auto-select first feature
-                        this.selectFeature(layers[0]);
-                        
-                        if (layers.length > 1) {
-                            this.map.fitBounds(this.uploadedItems.getBounds());
-                            // alert(`File berisi ${layers.length} fitur. Gunakan tombol Next/Prev atau klik di peta untuk memilih.`);
-                        }
-
-                        event.target.value = ''; // Reset input
-                    } catch (error) {
-                        console.error('Error parsing GeoJSON:', error);
-                        alert('Gagal membaca file GeoJSON: ' + error.message);
-                    }
-                };
-                reader.readAsText(file);
-            },
-
-            nextFeature() {
-                if (this.currentIndex < this.uploadedFeatures.length - 1) {
-                    this.currentIndex++;
-                    this.selectFeature(this.uploadedFeatures[this.currentIndex]);
-                }
-            },
-
-            prevFeature() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                    this.selectFeature(this.uploadedFeatures[this.currentIndex]);
-                }
-            },
-
-            selectFeature(layer) {
-                // Clear drawn items
-                this.drawnItems.clearLayers();
-                
-                // Reset style of all uploaded items
-                this.uploadedItems.eachLayer(l => {
-                    if (l instanceof L.Path) {
-                        l.setStyle({ color: '#9ca3af', weight: 2, dashArray: '5, 5' });
-                    } else if (l instanceof L.Marker) {
-                        l.setOpacity(0.6);
-                    }
-                });
-
-                // Highlight selected in uploaded items
-                if (layer instanceof L.Path) {
-                    layer.setStyle({ color: '#2563eb', weight: 4, dashArray: null });
-                } else if (layer instanceof L.Marker) {
-                    layer.setOpacity(1);
-                }
-                
-                // Also add to drawnItems so it's the "active" geometry
-                const feature = layer.feature;
-                const geometry = feature ? feature.geometry : layer.toGeoJSON().geometry;
-                
-                this.loadExistingGeometry(geometry);
-                
-                // Populate properties
-                if (feature && feature.properties) {
-                    this.populateFormFields(feature.properties);
-                }
-            },
-
-            populateFormFields(properties) {
-                const fieldMapping = {
-                    'name': ['name', 'nama', 'title', 'label'],
-                    'description': ['description', 'desc', 'deskripsi', 'keterangan'],
-                    'category_id': ['category_id', 'category', 'kategori']
-                };
-
-                Object.entries(fieldMapping).forEach(([inputName, propertyKeys]) => {
-                    const input = document.querySelector(`[name="${inputName}"]`);
-                    if (input) {
-                        const foundKey = propertyKeys.find(key => properties[key] !== undefined && properties[key] !== null);
-                        if (foundKey) {
-                            const value = properties[foundKey];
-                            if (input.tagName === 'SELECT') {
-                                let matched = false;
-                                for (let i = 0; i < input.options.length; i++) {
-                                    if (input.options[i].value == value) {
-                                        input.value = value;
-                                        matched = true;
-                                        break;
-                                    }
-                                }
-                                if (!matched) {
-                                    const lowerValue = String(value).toLowerCase();
-                                    for (let i = 0; i < input.options.length; i++) {
-                                        if (input.options[i].text.toLowerCase() === lowerValue) {
-                                            input.value = input.options[i].value;
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                input.value = value;
-                            }
-                            input.dispatchEvent(new Event('input', { bubbles: true }));
-                        }
-                    }
-                });
             }
         }));
     });

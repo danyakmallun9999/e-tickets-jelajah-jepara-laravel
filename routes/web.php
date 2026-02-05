@@ -38,6 +38,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/places/{place}/edit', [AdminController::class, 'edit'])->name('places.edit');
     Route::put('/places/{place}', [AdminController::class, 'update'])->name('places.update');
     Route::delete('/places/{place}', [AdminController::class, 'destroy'])->name('places.destroy');
+    Route::delete('/places/images/{placeImage}', [AdminController::class, 'destroyImage'])->name('places.images.destroy');
 
     // Boundaries routes
     Route::resource('boundaries', BoundaryController::class);

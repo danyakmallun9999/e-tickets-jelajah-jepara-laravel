@@ -98,6 +98,7 @@ class PariwisataSeeder extends Seeder
                         'rides' => (!empty($item['wahana']) ? $item['wahana'] : null), // Already array
                         'facilities' => (!empty($item['fasilitas']) ? $item['fasilitas'] : null), // Already array
                         'social_media' => ($item['media_sosial'] !== '-' && $item['media_sosial'] !== '' ? $item['media_sosial'] : null),
+                        'kecamatan' => $item['kecamatan'] ?? null,
                         'contact_info' => null,
                     ]
                 );

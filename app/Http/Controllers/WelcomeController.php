@@ -51,7 +51,7 @@ class WelcomeController extends Controller
         $countKuliner = $this->staticDataService->getCulinaries()->count();
 
         // Event Count
-        $countEvent = Event::whereYear('start_date', 2026)->count();
+        $countEvent = Event::count();
 
         // Desa Wisata / Wilayah
         $countDesa = Boundary::count();

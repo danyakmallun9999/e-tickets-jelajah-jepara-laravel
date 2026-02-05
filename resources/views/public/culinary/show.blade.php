@@ -4,7 +4,7 @@
         <div class="flex flex-col lg:flex-row">
             
             <!-- Left Side: Sticky Visuals (50%) -->
-            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative h-[50vh] bg-slate-50 dark:bg-slate-950 z-10 p-4 lg:p-8 flex flex-col justify-center">
+            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-24 relative h-[50vh] bg-slate-50 dark:bg-slate-950 z-10 p-4 lg:p-8 flex flex-col justify-center">
                  <!-- Image Card Wrapper -->
                  <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-black/50 group">
                     <!-- Main Image with "Ken Burns" Effect -->

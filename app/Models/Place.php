@@ -48,6 +48,7 @@ class Place extends Model
         'rides',
         'facilities',
         'social_media',
+        'kecamatan',
     ];
 
     public function getDescriptionAttribute($value)
