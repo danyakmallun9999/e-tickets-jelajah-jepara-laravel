@@ -9,7 +9,7 @@
     :class="{ 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg': isScrolled, 'bg-transparent py-4': !isScrolled }">
     
     <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
-        <header class="flex h-16 items-center justify-between gap-8 transition-all duration-300" :class="{ 'h-16': isScrolled, 'h-20': !isScrolled }">
+        <header class="flex h-16 items-center justify-between gap-8 transition-all duration-300" :class="{ 'h-16': isScrolled, 'h-21': !isScrolled }">
             
             <!-- Logo Area -->
             <div class="flex items-center gap-8">
