@@ -203,7 +203,16 @@
                                 @foreach($place->rides as $ride)
                                     <div class="flex items-start gap-3 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800/30">
                                         <span class="material-symbols-outlined text-purple-600 dark:text-purple-400 mt-0.5">attractions</span>
-                                        <span class="text-slate-700 dark:text-slate-300 font-medium text-sm">{{ $ride }}</span>
+                                        <div class="flex flex-col">
+                                            @if(is_array($ride))
+                                                <span class="text-slate-700 dark:text-slate-300 font-medium text-sm">{{ $ride['name'] ?? '' }}</span>
+                                                @if(!empty($ride['price']))
+                                                    <span class="text-slate-500 dark:text-slate-400 text-xs">{{ $ride['price'] }}</span>
+                                                @endif
+                                            @else
+                                                <span class="text-slate-700 dark:text-slate-300 font-medium text-sm">{{ $ride }}</span>
+                                            @endif
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>

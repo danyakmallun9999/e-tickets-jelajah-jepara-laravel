@@ -220,9 +220,37 @@
             </div>
 
             <!-- Gallery Upload Section -->
-            <div class="mt-6 border-t pt-4">
+            <div class="mt-6 border-t pt-4" x-data="{ 
+                previews: [],
+                handleFileSelect(e) {
+                    const files = Array.from(e.target.files);
+                    this.previews = [];
+                    // Process files to generate previews
+                    files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.previews.push({
+                                file: file,
+                                url: event.target.result
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                },
+                removePreview(index) {
+                    this.previews.splice(index, 1);
+                    
+                    // Update the input files using DataTransfer
+                    const dt = new DataTransfer();
+                    this.previews.forEach(p => dt.items.add(p.file));
+                    $refs.galleryInput.files = dt.files;
+                }
+            }">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Galeri Foto Tambahan</label>
-                <input type="file" name="gallery_images[]" multiple class="block w-full text-sm text-gray-500
+                
+                <input type="file" name="gallery_images[]" multiple x-ref="galleryInput"
+                    @change="handleFileSelect($event)"
+                    class="block w-full text-sm text-gray-500
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0
                     file:text-sm file:font-semibold
@@ -231,7 +259,24 @@
                 "/>
                 <p class="text-xs text-gray-500 mt-1">Bisa pilih banyak foto sekaligus.</p>
 
-                <!-- Existing Gallery Images -->
+                <!-- New Upload Predictions -->
+                <div class="mt-4 grid grid-cols-3 gap-2" x-show="previews.length > 0" style="display: none;">
+                    <template x-for="(preview, index) in previews" :key="index">
+                        <div class="relative group aspect-square">
+                            <img :src="preview.url" class="w-full h-full object-cover rounded-lg border border-blue-300">
+                            <span class="absolute top-1 right-1 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow">Baru</span>
+                            
+                            <!-- Remove Preview Button -->
+                            <button type="button" 
+                                @click="removePreview(index)"
+                                class="absolute top-1 left-1 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow transition-colors"
+                                title="Batal upload foto ini">
+                                <i class="fa-solid fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
                 <!-- Existing Gallery Images -->
                 @if($place->images && $place->images->count() > 0)
                 <div class="mt-4 grid grid-cols-3 gap-2">
