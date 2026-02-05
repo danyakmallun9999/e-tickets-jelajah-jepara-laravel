@@ -5,7 +5,7 @@
             <div class="flex flex-col lg:flex-row">
                 
                 <!-- Left Side: Sticky Visuals (50%) -->
-                <div class="lg:w-1/2 lg:h-[93vh] lg:sticky lg:top-24 relative h-[60vh] bg-white dark:bg-slate-950 overflow-hidden group flex flex-col lg:pb-6" 
+                <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative h-[60vh] bg-white dark:bg-slate-950 z-10 group flex flex-col p-4 lg:pl-16 lg:pr-8 lg:pt-24" 
                      @php
                          $uniqueGalleryImages = collect([]);
                          if ($place->image_path) {
@@ -35,14 +35,14 @@
                      }">
                     
                     <!-- Back Button (Separated) -->
-                    <div class="px-4 lg:px-6 pt-4 pb-2">
+                    <div class="mb-6">
                         <a href="{{ route('places.index') }}" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-primary/20">
                             <span class="material-symbols-outlined text-lg">arrow_back</span>
                         </a>
                     </div>
     
                     <!-- Main Image Area -->
-                    <div class="flex-1 relative p-4 lg:p-6 pb-0 lg:pb-0 pt-0 lg:pt-0 flex items-end justify-center overflow-hidden perspective-[1000px]">
+                    <div class="flex-1 relative w-full flex items-start justify-start overflow-hidden perspective-[1000px]">
                         <div class="relative w-full h-full rounded-3xl overflow-hidden text-transparent">
                             <template x-if="activeImage">
                                 <img :src="activeImage" 
@@ -62,7 +62,7 @@
                     <div class="w-full px-4 lg:px-6 pb-6 pt-3 flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth">
                         @foreach($uniqueGalleryImages as $imgPath)
                             <button @click="changeImage('{{ asset($imgPath) }}')" 
-                                    :class="activeImage === '{{ asset($imgPath) }}' ? 'ring-2 ring-blue-500 scale-105' : 'opacity-70 hover:opacity-100'"
+                                    :class="activeImage === '{{ asset($imgPath) }}' ? 'ring-2 ring-primary scale-105' : 'opacity-70 hover:opacity-100'"
                                     class="relative w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300">
                                 <img src="{{ asset($imgPath) }}" class="w-full h-full object-cover">
                             </button>
@@ -76,7 +76,7 @@
                         
                         <!-- Top Meta: Category & Rating -->
                         <div class="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up">
-                            <span class="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider text-xs border border-blue-100 dark:border-blue-800">
+                            <span class="px-3 py-1 rounded-full bg-primary/5 dark:bg-primary/10 text-primary dark:text-primary font-bold uppercase tracking-wider text-xs border border-primary/20 dark:border-primary/20">
                                 {{ $place->category->name ?? 'Destinasi' }}
                             </span>
                             @if($place->rating)
@@ -107,7 +107,7 @@
                             <!-- Description -->
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-3">
-                                    <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+                                    <span class="w-1.5 h-6 bg-primary rounded-full"></span>
                                     Tentang Destinasi
                                 </h3>
                                 <div x-data="{ expanded: false }">
@@ -117,7 +117,7 @@
                                     </div>
                                     @if(strlen($place->description) > 300)
                                         <button @click="expanded = !expanded" 
-                                                class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                                                class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary dark:text-primary hover:text-primary/80 dark:hover:text-primary/80 transition-colors">
                                             <span x-text="expanded ? 'Sembunyikan' : 'Baca Selengkapnya'"></span>
                                             <span class="material-symbols-outlined text-lg transition-transform duration-300" 
                                                   :class="expanded ? 'rotate-180' : ''">expand_more</span>
@@ -129,10 +129,10 @@
                             <!-- Key Information Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Ticket -->
-                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800/50 transition-colors">
+                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
                                     <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Tiket Masuk</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex-shrink-0 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-xl">confirmation_number</span>
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1">
@@ -141,7 +141,7 @@
                                                     @foreach(explode("\n", $place->ticket_price) as $price)
                                                         @if(trim($price))
                                                             <div class="relative pl-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-                                                                <span class="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-blue-400/60"></span>
+                                                                <span class="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-primary/60"></span>
                                                                 {{ trim($price) }}
                                                             </div>
                                                         @endif
@@ -155,10 +155,10 @@
                                     </div>
                                 </div>
                                 <!-- Opening Hours -->
-                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800/50 transition-colors">
+                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
                                     <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Jam Operasional</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex-shrink-0 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-xl">schedule</span>
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1">
@@ -180,10 +180,10 @@
                                 </div>
                                 <!-- Ownership -->
                                 @if($place->ownership_status)
-                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800/50 transition-colors">
+                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
                                     <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Status Kepemilikan</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-sm">domain</span>
                                         </div>
                                         <span>{{ $place->ownership_status }}</span>
@@ -192,10 +192,10 @@
                                 @endif
                                 <!-- Manager -->
                                 @if($place->manager)
-                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800/50 transition-colors">
+                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
                                     <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Pengelola</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-sm">badge</span>
                                         </div>
                                         <span>{{ $place->manager }}</span>
