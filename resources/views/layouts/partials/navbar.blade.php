@@ -1,15 +1,15 @@
-<div class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-300"
+<div class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-500 ease-in-out border-b border-transparent"
     x-data="{ 
         isScrolled: false, 
         mobileMenuOpen: false, 
         searchOpen: false,
         menuUsed: false
     }" 
-    @scroll.window="isScrolled = (window.pageYOffset > 20)"
-    :class="{ 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg': isScrolled, 'bg-transparent py-4': !isScrolled }">
+    @scroll.window="isScrolled = (window.pageYOffset > 10)"
+    :class="{ 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200/50 dark:border-slate-800': isScrolled, 'bg-transparent py-4': !isScrolled }">
     
     <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
-        <header class="flex h-16 items-center justify-between gap-8 transition-all duration-300" :class="{ 'h-16': isScrolled, 'h-21': !isScrolled }">
+        <header class="flex h-16 items-center justify-between gap-8 transition-all duration-500 ease-in-out" :class="{ 'h-16': isScrolled, 'h-20': !isScrolled }">
             
             <!-- Logo Area -->
             <div class="flex items-center gap-8">
@@ -22,9 +22,6 @@
                         <h2 class="text-xl font-bold leading-none tracking-tight text-slate-800 dark:text-white group-hover:text-primary transition-colors">
                             Blusukan Jepara
                         </h2>
-                        <p class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 group-hover:tracking-[0.3em] transition-all duration-300">
-                            Explore The Beauty
-                        </p>
                     </div>
                 </a>
 
@@ -85,7 +82,7 @@
 
                     <!-- Search Results Dropdown -->
                      <div x-show="searchResults.length > 0" 
-                        class="absolute top-14 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-[100] max-h-96 overflow-y-auto w-[120%] -ml-[10%]"
+                        class="absolute top-14 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-100 dark:border-blue-900 overflow-hidden z-[100] max-h-96 overflow-y-auto w-[120%] -ml-[10%]"
                         x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -95,20 +92,24 @@
                         @click.away="searchResults = []"
                         x-cloak>
                         
-                        <div class="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-black/20">
-                            Search Results
+                        <div class="px-4 py-3 text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-50 dark:border-blue-900/30">
+                            Hasil Pencarian
                         </div>
                         
-                        <template x-for="result in searchResults" :key="result.id || result.name">
+                        <template x-for="(result, index) in searchResults" :key="index">
                             <button @click="selectFeature(result); scrollToMap(); searchResults = []"
-                                class="w-full text-left px-4 py-3 hover:bg-primary/5 dark:hover:bg-primary/10 border-b border-slate-50 dark:border-slate-800/50 last:border-0 transition-colors flex items-center gap-3 group">
-                                <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
-                                    <i :class="getIconClass(result.type)"></i>
+                                class="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/40 border-b border-slate-50 dark:border-slate-800/50 last:border-0 transition-colors flex items-center gap-4 group">
+                                <div class="shrink-0 w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl" x-text="result.type === 'event' ? 'event' : (result.type === 'news' ? 'article' : 'location_on')"></span>
                                 </div>
-                                <div class="min-w-0">
-                                    <p class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-primary transition-colors" x-text="result.name"></p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate" x-text="result.type || 'Location'"></p>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" x-text="result.name"></p>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400" x-text="result.type || 'Destinasi'"></span>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate" x-text="result.address || result.description || ''"></p>
+                                    </div>
                                 </div>
+                                <span class="material-symbols-outlined text-slate-300 group-hover:text-blue-500 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">arrow_forward</span>
                             </button>
                         </template>
                     </div>
