@@ -5,12 +5,23 @@
             
             <!-- Left Side: Sticky Visuals (50%) -->
             <div class="lg:w-1/2 lg:h-[93vh] lg:sticky lg:top-0 relative h-[60vh] bg-white dark:bg-slate-950 overflow-hidden group flex flex-col lg:pb-6" 
+                 @php
+                     $uniqueGalleryImages = collect([]);
+                     if ($place->image_path) {
+                         $uniqueGalleryImages->push($place->image_path);
+                     }
+                     foreach($place->images as $img) {
+                         $uniqueGalleryImages->push($img->image_path);
+                     }
+                     $uniqueGalleryImages = $uniqueGalleryImages->unique()->values();
+                 @endphp
                  x-data="{ 
-                    activeImage: '{{ $place->image_path ? asset($place->image_path) : '' }}',
+                    activeImage: '{{ $uniqueGalleryImages->first() ? asset($uniqueGalleryImages->first()) : '' }}',
                     isFlipping: false,
                     images: [
-                        @if($place->image_path) '{{ asset($place->image_path) }}', @endif
-                        @foreach($place->images as $img) '{{ asset($img->image_path) }}', @endforeach
+                        @foreach($uniqueGalleryImages as $imgPath)
+                            '{{ asset($imgPath) }}',
+                        @endforeach
                     ],
                     changeImage(url) {
                         if (this.activeImage === url) return;
@@ -48,19 +59,11 @@
 
                 <!-- Thumbnails / Gallery List -->
                 <div class="w-full px-4 lg:px-6 pb-6 pt-3 flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth">
-                    @if($place->image_path)
-                        <button @click="changeImage('{{ asset($place->image_path) }}')" 
-                                :class="activeImage === '{{ asset($place->image_path) }}' ? 'ring-2 ring-blue-500 scale-105' : 'opacity-70 hover:opacity-100'"
+                    @foreach($uniqueGalleryImages as $imgPath)
+                        <button @click="changeImage('{{ asset($imgPath) }}')" 
+                                :class="activeImage === '{{ asset($imgPath) }}' ? 'ring-2 ring-blue-500 scale-105' : 'opacity-70 hover:opacity-100'"
                                 class="relative w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300">
-                            <img src="{{ asset($place->image_path) }}" class="w-full h-full object-cover">
-                        </button>
-                    @endif
-
-                    @foreach($place->images as $key => $image)
-                        <button @click="changeImage('{{ asset($image->image_path) }}')" 
-                                :class="activeImage === '{{ asset($image->image_path) }}' ? 'ring-2 ring-blue-500 scale-105' : 'opacity-70 hover:opacity-100'"
-                                class="relative w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300">
-                            <img src="{{ asset($image->image_path) }}" class="w-full h-full object-cover">
+                            <img src="{{ asset($imgPath) }}" class="w-full h-full object-cover">
                         </button>
                     @endforeach
                 </div>
