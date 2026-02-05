@@ -1,29 +1,26 @@
 <x-public-layout>
-    <div class="bg-white dark:bg-slate-950 min-h-screen font-sans">
+    <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-20">
         
-        <div class="flex flex-col lg:flex-row">
+        <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
+            <div class="flex flex-col lg:flex-row">
             
             <!-- Left Side: Sticky Visuals (50%) -->
-            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-24 relative h-[50vh] bg-slate-50 dark:bg-slate-950 z-10 p-4 lg:p-8 flex flex-col justify-center">
+            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative bg-white dark:bg-slate-950 z-10 p-4 lg:pl-16 lg:pr-8 lg:pt-32 flex flex-col justify-start">
+                 
+                 <!-- Back Button (Separated) -->
+                 <div class="mb-6">
+                    <a href="{{ route('welcome') }}#culinary" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-primary/20">
+                        <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    </a>
+                 </div>
+
                  <!-- Image Card Wrapper -->
-                 <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-black/50 group">
+                 <div class="relative w-full max-w-2xl mx-auto aspect-[4/3] rounded-[2.5rem] overflow-hidden group">
                     <!-- Main Image with "Ken Burns" Effect -->
                     <img src="{{ asset($culinary->image) }}" alt="{{ $culinary->name }}" class="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-[20s] ease-in-out will-change-transform">
                     
                     <!-- Cinematic Overlays -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-80 lg:opacity-60 transition-opacity duration-700"></div>
-                    <div class="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
-
-                    <!-- Floating Title (Visible only on desktop when stickied) -->
-                    <div class="hidden lg:block absolute bottom-12 left-12 right-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 translate-y-4 group-hover:translate-y-0 text-shadow-lg">
-                         <p class="font-script text-3xl text-orange-300 mb-2">Taste of Jepara</p>
-                         <h2 class="font-playfair text-5xl font-bold leading-tight">{{ $culinary->name }}</h2>
-                    </div>
-
-                    <!-- Back Button (Floating) -->
-                    <a href="{{ route('welcome') }}#culinary" class="absolute top-8 left-8 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all duration-300 group-hover:scale-110">
-                        <span class="material-symbols-outlined text-xl">arrow_back</span>
-                    </a>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 opacity-60 transition-opacity duration-700"></div>
                  </div>
             </div>
 
@@ -35,7 +32,7 @@
                     <div class="mb-10 animate-fade-in-up">
                         <!-- Breadcrumbs / Badges -->
                         <div class="flex items-center gap-3 mb-4 text-sm">
-                            <span class="px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold uppercase tracking-wider text-xs">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-blue-900/30 text-primary dark:text-blue-400 font-bold uppercase tracking-wider text-xs border border-primary/20">
                                 Kuliner Khas
                             </span>
                         </div>
@@ -45,7 +42,7 @@
                         </h1>
                         
                         <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-lg">
-                            <span class="material-symbols-outlined text-xl text-orange-500">restaurant_menu</span>
+                            <span class="material-symbols-outlined text-xl text-primary">restaurant_menu</span>
                             <span>Authentic Taste of Jepara</span>
                         </div>
                     </div>
@@ -59,19 +56,30 @@
                         <!-- Description -->
                         <section>
                             <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                <span class="w-1 h-6 bg-orange-500 rounded-full"></span>
+                                <span class="w-1 h-6 bg-primary rounded-full"></span>
                                 Tentang Hidangan
                             </h3>
-                            <div class="prose prose-lg prose-slate dark:prose-invert font-light text-slate-600 dark:text-slate-300 leading-relaxed text-justify">
-                                <p class="whitespace-pre-line">{{ $culinary->full_description ?? $culinary->description }}</p>
+                            <div x-data="{ expanded: false }">
+                                <div class="prose prose-lg prose-slate dark:prose-invert font-light text-slate-600 dark:text-slate-300 leading-relaxed text-justify transition-all duration-300"
+                                     :class="expanded ? '' : 'line-clamp-4 mask-image-b'">
+                                    <p class="whitespace-pre-line">{{ $culinary->full_description ?? $culinary->description }}</p>
+                                </div>
+                                @if(strlen($culinary->full_description ?? $culinary->description) > 300)
+                                    <button @click="expanded = !expanded" 
+                                            class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary dark:text-blue-400 hover:text-primary-dark dark:hover:text-blue-300 transition-colors">
+                                        <span x-text="expanded ? 'Sembunyikan' : 'Baca Selengkapnya'"></span>
+                                        <span class="material-symbols-outlined text-lg transition-transform duration-300" 
+                                              :class="expanded ? 'rotate-180' : ''">expand_more</span>
+                                    </button>
+                                @endif
                             </div>
                         </section>
 
                         <!-- Highlights / Quick Info Grid -->
                         <div class="grid grid-cols-1 gap-4">
-                            <div class="p-6 rounded-2xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800/30">
-                                <div class="text-orange-400 text-xs font-bold uppercase tracking-wider mb-2">Rekomendasi Kami</div>
-                                <p class="text-orange-900 dark:text-orange-100 font-medium text-sm italic">
+                            <div class="p-6 rounded-2xl bg-primary/5 dark:bg-blue-900/10 border border-primary/20 dark:border-blue-800/30">
+                                <div class="text-primary text-xs font-bold uppercase tracking-wider mb-2">Rekomendasi Kami</div>
+                                <p class="text-slate-800 dark:text-blue-100 font-medium text-sm italic">
                                     "{{ $culinary->description }}"
                                 </p>
                             </div>
@@ -81,7 +89,7 @@
                         <section>
                              <div class="bg-slate-50 dark:bg-slate-900 rounded-2xl p-8 border border-slate-100 dark:border-slate-800">
                                  <div class="flex items-center gap-3 mb-4">
-                                     <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                                     <div class="w-10 h-10 rounded-full bg-primary/10 dark:bg-blue-900/30 flex items-center justify-center text-primary dark:text-blue-400">
                                          <span class="material-symbols-outlined text-xl">storefront</span>
                                      </div>
                                      <div>
@@ -91,7 +99,7 @@
                                  </div>
                                  
                                  <!-- Embedded Map -->
-                                 <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm group">
+                                 <div class="relative w-full h-[400px] md:h-auto md:aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm group">
                                      <iframe 
                                         width="100%" 
                                         height="100%" 
@@ -139,6 +147,7 @@
                 </main>
             </div>
 
+            </div>
         </div>
     </div>
 </x-public-layout>

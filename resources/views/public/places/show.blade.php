@@ -36,8 +36,8 @@
                     
                     <!-- Back Button (Separated) -->
                     <div class="px-4 lg:px-6 pt-4 pb-2">
-                        <a href="{{ route('places.index') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white transition-all shadow-sm">
-                            <span class="material-symbols-outlined">arrow_back</span>
+                        <a href="{{ route('places.index') }}" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">arrow_back</span>
                         </a>
                     </div>
     
@@ -278,7 +278,7 @@
                                     <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
                                     Lokasi Peta
                                 </h3>
-                                <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" class="block w-full aspect-video rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-[6px] border-white dark:border-slate-800 shadow-xl relative group">
+                            <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" class="block w-full h-[400px] md:h-auto md:aspect-video rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-[6px] border-white dark:border-slate-800 shadow-xl relative group">
                                     <!-- Leaflet Map Container -->
                                     <div id="mini-map" class="absolute inset-0 w-full h-full z-0"></div>
                                     
