@@ -181,7 +181,7 @@ class WelcomeController extends Controller
         $totalPlaces = Place::count();
         $totalBoundaries = Boundary::count();
 
-        return view('public.explore-map', compact(
+        return view('public.explore-map.index', compact(
             'categories',
             'totalPlaces',
             'totalBoundaries'
