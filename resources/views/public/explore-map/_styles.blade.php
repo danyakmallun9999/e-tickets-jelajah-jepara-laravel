@@ -62,7 +62,7 @@
     
     .marker-pulse {
         position: absolute;
-        top: 2px;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
         width: 36px;
