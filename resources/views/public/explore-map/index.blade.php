@@ -74,7 +74,7 @@
     </div>
 
     {{-- Mobile: Map Controls (Right Side) --}}
-    <div class="lg:hidden fixed right-4 z-[400] flex flex-col gap-3" :style="'bottom: ' + (bottomSheetState === 'collapsed' ? '180px' : '60px')">
+    <div class="lg:hidden fixed right-4 z-[400] flex flex-col gap-3" :style="'bottom: ' + (bottomSheetState === 'collapsed' ? '220px' : '60px')">
         {{-- Layer Toggle --}}
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open" class="w-12 h-12 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-600 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700 active:scale-95 transition-transform">
@@ -112,7 +112,7 @@
     {{-- Mobile: Bottom Sheet --}}
     <div class="lg:hidden fixed bottom-0 left-0 right-0 z-[450] transition-all duration-300 ease-out"
          :class="{
-             'translate-y-[calc(100%-160px)]': bottomSheetState === 'collapsed',
+             'translate-y-[calc(100%-200px)]': bottomSheetState === 'collapsed',
              'translate-y-[45%]': bottomSheetState === 'half',
              'translate-y-0': bottomSheetState === 'full'
          }"
