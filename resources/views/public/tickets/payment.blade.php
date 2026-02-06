@@ -21,37 +21,37 @@
                 </div>
 
                 <!-- Order Summary -->
-                <div class="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-5 mb-6">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <div class="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-4 md:p-5 mb-6">
+                    <h3 class="font-bold text-sm md:text-base text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-receipt text-primary"></i> Ringkasan Pesanan
                     </h3>
                     
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600 dark:text-slate-400">Nomor Pesanan</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $order->order_number }}</span>
+                    <div class="space-y-2.5 md:space-y-3 text-sm">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="text-slate-500 dark:text-slate-400 shrink-0">No. Pesanan</span>
+                            <span class="font-bold text-slate-900 dark:text-white text-right truncate text-xs">{{ $order->order_number }}</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600 dark:text-slate-400">Tiket</span>
-                            <span class="font-semibold text-slate-900 dark:text-white">{{ $order->ticket->name }}</span>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-slate-500 dark:text-slate-400 shrink-0">Tiket</span>
+                            <span class="font-semibold text-slate-900 dark:text-white text-right">{{ $order->ticket->name }}</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600 dark:text-slate-400">Destinasi</span>
-                            <span class="font-semibold text-slate-900 dark:text-white">{{ $order->ticket->place->name }}</span>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-slate-500 dark:text-slate-400 shrink-0">Destinasi</span>
+                            <span class="font-semibold text-slate-900 dark:text-white text-right">{{ $order->ticket->place->name }}</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600 dark:text-slate-400">Tanggal Kunjungan</span>
-                            <span class="font-semibold text-slate-900 dark:text-white">{{ $order->visit_date->translatedFormat('d F Y') }}</span>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-slate-500 dark:text-slate-400 shrink-0">Tanggal</span>
+                            <span class="font-semibold text-slate-900 dark:text-white text-right">{{ $order->visit_date->translatedFormat('d M Y') }}</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600 dark:text-slate-400">Jumlah Tiket</span>
-                            <span class="font-semibold text-slate-900 dark:text-white">{{ $order->quantity }} tiket</span>
+                        <div class="flex justify-between items-start gap-4">
+                            <span class="text-slate-500 dark:text-slate-400 shrink-0">Jumlah</span>
+                            <span class="font-semibold text-slate-900 dark:text-white text-right">{{ $order->quantity }} tiket</span>
                         </div>
                         
-                        <div class="border-t border-slate-200 dark:border-slate-600 pt-4 mt-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-lg font-semibold text-slate-700 dark:text-slate-300">Total Pembayaran</span>
-                                <span class="text-2xl font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                        <div class="border-t border-slate-200 dark:border-slate-600 pt-3 mt-3">
+                            <div class="flex justify-between items-center gap-4">
+                                <span class="text-sm md:text-base font-semibold text-slate-700 dark:text-slate-300">Total</span>
+                                <span class="text-lg md:text-xl font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>

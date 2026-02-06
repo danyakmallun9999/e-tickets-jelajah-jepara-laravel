@@ -21,25 +21,35 @@
 
                 <!-- Order Info -->
                 <div class="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-5 mb-8 text-left">
+                    <!-- Status Badge at Top -->
+                    <div class="text-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-600">
+                        <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-bold rounded-xl">
+                            <i class="fa-solid fa-check-circle"></i>
+                            {{ $order->status_label }}
+                        </span>
+                    </div>
+                    
+                    <!-- Order Details - Stacked Layout -->
+                    <div class="space-y-3 mb-4 pb-4 border-b border-slate-200 dark:border-slate-600">
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">No. Pesanan</p>
+                            <p class="font-bold text-lg text-slate-900 dark:text-white">{{ $order->order_number }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Kode Pesanan</p>
+                            <p class="font-mono text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-600/50 px-3 py-2 rounded-lg">{{ $order->order_number }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Ticket Info Grid -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Nomor Pesanan</p>
-                            <p class="font-bold text-slate-900 dark:text-white">{{ $order->order_number }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Status</p>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-xl">
-                                <i class="fa-solid fa-check-circle"></i>
-                                {{ $order->status_label }}
-                            </span>
-                        </div>
-                        <div>
                             <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Tiket</p>
-                            <p class="font-semibold text-slate-900 dark:text-white">{{ $order->ticket->name }}</p>
+                            <p class="font-semibold text-sm text-slate-900 dark:text-white">{{ $order->ticket->name }}</p>
                         </div>
                         <div>
                             <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Jumlah</p>
-                            <p class="font-semibold text-slate-900 dark:text-white">{{ $order->quantity }} tiket</p>
+                            <p class="font-semibold text-sm text-slate-900 dark:text-white">{{ $order->quantity }} tiket</p>
                         </div>
                     </div>
                 </div>

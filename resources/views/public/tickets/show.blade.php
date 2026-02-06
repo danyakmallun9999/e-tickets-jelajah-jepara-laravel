@@ -264,8 +264,8 @@
                                 <!-- Total Price -->
                                 <div class="bg-gradient-to-r from-primary/10 to-indigo-500/10 rounded-2xl p-5 border border-primary/20">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-lg font-semibold text-slate-700 dark:text-slate-300">Total Pembayaran</span>
-                                        <span class="text-2xl font-bold text-primary" x-text="'Rp ' + ({{ $ticket->price }} * quantity).toLocaleString('id-ID')">
+                                        <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Total Pembayaran</span>
+                                        <span class="text-lg font-bold text-primary" x-text="'Rp ' + ({{ $ticket->price }} * quantity).toLocaleString('id-ID')">
                                             Rp {{ number_format($ticket->price, 0, ',', '.') }}
                                         </span>
                                     </div>
