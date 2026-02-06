@@ -99,6 +99,7 @@
             
             handleTouchStart(e) {
                 this.touchStartY = e.touches[0].clientY;
+                this.touchCurrentY = e.touches[0].clientY; // Reset to avoid stale data
             },
             
             handleTouchMove(e) {

@@ -110,9 +110,9 @@
             <div class="flex-shrink-0 p-5 pt-4 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 space-y-3 safe-bottom">
                 {{-- Primary Actions --}}
                 <div class="grid grid-cols-2 gap-3 detail-actions" style="opacity: 0; transform: translateY(20px);">
-                    <button @click="startRouting(selectedFeature)" 
+                    <button @click="startRouting(selectedFeature); selectedFeature = null" 
                             class="group h-14 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-300">
-                        <span class="material-symbols-outlined text-xl group-hover:animate-bounce">directions</span>
+                        <span class="material-symbols-outlined text-xl">directions</span>
                         Rute
                     </button>
                     <button @click="openGoogleMaps(selectedFeature)" 
