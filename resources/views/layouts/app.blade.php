@@ -66,12 +66,22 @@
                         </header>
                     @endisset
 
-                    @if(isset($attributes) && $attributes->get('full-width'))
-                        @yield('content')
+                    @if(isset($slot) && $slot->isNotEmpty())
+                        @if(isset($attributes) && $attributes->get('full-width'))
+                            {{ $slot }}
+                        @else
+                            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                                {{ $slot }}
+                            </div>
+                        @endif
                     @else
-                        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        @if(isset($attributes) && $attributes->get('full-width'))
                             @yield('content')
-                        </div>
+                        @else
+                            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                                @yield('content')
+                            </div>
+                        @endif
                     @endif
                 </main>
             </div>
