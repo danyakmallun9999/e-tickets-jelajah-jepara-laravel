@@ -39,8 +39,7 @@
                 const targetIndex = this.originalsCount + index;
                 const targetElement = container.children[targetIndex];
                 if (targetElement) {
-                    const scrollPos = targetElement.offsetLeft - (container.clientWidth - targetElement.offsetWidth) / 2;
-                    container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+                    container.scrollTo({ left: targetElement.offsetLeft, behavior: 'smooth' });
                 }
                 this.stopAutoplay();
                 this.startAutoplay();
@@ -49,23 +48,22 @@
             updateActive() {
                 const container = $refs.foodContainer;
                 if (!container) return;
-                const center = container.scrollLeft + (container.clientWidth / 2);
+                const scrollLeft = container.scrollLeft;
+                const threshold = 50;
                 Array.from(container.children).forEach(child => {
-                    const childCenter = child.offsetLeft + (child.offsetWidth / 2);
-                    const distance = Math.abs(center - childCenter);
-                    child.setAttribute('data-snapped', distance < child.offsetWidth / 2 ? 'true' : 'false');
+                    const isSnapped = Math.abs(child.offsetLeft - scrollLeft) < threshold;
+                    child.setAttribute('data-snapped', isSnapped ? 'true' : 'false');
                 });
             },
 
             updateCurrentIndex() {
                 const container = $refs.foodContainer;
                 if (!container || !container.children.length) return;
-                const center = container.scrollLeft + (container.clientWidth / 2);
+                const scrollLeft = container.scrollLeft;
                 let closestIndex = -1;
                 let minDistance = Infinity;
                 Array.from(container.children).forEach((child, idx) => {
-                    const childCenter = child.offsetLeft + (child.offsetWidth / 2);
-                    const distance = Math.abs(center - childCenter);
+                    const distance = Math.abs(child.offsetLeft - scrollLeft);
                     if (distance < minDistance) {
                         minDistance = distance;
                         closestIndex = idx;
@@ -120,7 +118,7 @@
                 this.$nextTick(() => {
                     const startItem = container.children[this.originalsCount];
                     if (startItem) {
-                        container.scrollLeft = startItem.offsetLeft - (container.clientWidth - startItem.offsetWidth) / 2;
+                        container.scrollLeft = startItem.offsetLeft;
                     }
                     this.updateActive();
                     this.updateCurrentIndex();
@@ -186,12 +184,14 @@
 
             <!-- Carousel Container -->
             <div class="relative w-full group">
-                <div class="flex gap-4 lg:gap-8 overflow-x-auto pb-12 pt-4 px-4 lg:px-0 snap-x snap-mandatory scrollbar-hide" 
+                <div class="flex gap-4 lg:gap-8 overflow-x-auto pb-12 pt-4 px-4 lg:px-0 snap-x snap-mandatory scrollbar-hide scroll-smooth" 
+                     style="scroll-snap-type: x mandatory; scroll-padding-left: 1rem;"
                      x-ref="foodContainer">
                 
                     @foreach($culinaries as $index => $culinary)
                     <!-- Culinary Card -->
-                    <div class="min-w-[85%] sm:min-w-[65%] md:min-w-[55%] lg:min-w-[70%] snap-start group relative rounded-3xl overflow-hidden aspect-[3/4] sm:aspect-[4/5] md:aspect-[16/9] transition-all duration-500 scale-90 data-[snapped=true]:scale-100 data-[snapped=true]:shadow-xl data-[snapped=true]:hover:shadow-2xl data-[snapped=true]:border data-[snapped=true]:border-white/10">
+                    <div class="min-w-[85%] sm:min-w-[65%] md:min-w-[55%] lg:min-w-[70%] snap-start group relative rounded-3xl overflow-hidden aspect-[3/4] sm:aspect-[4/5] md:aspect-[16/9] transition-all duration-500 scale-90 data-[snapped=true]:scale-100 data-[snapped=true]:shadow-xl data-[snapped=true]:hover:shadow-2xl data-[snapped=true]:border data-[snapped=true]:border-white/10"
+                         style="scroll-snap-align: start; scroll-snap-stop: normal;">
                         
                         <!-- Image -->
                         <img src="{{ asset($culinary->image) }}" 
