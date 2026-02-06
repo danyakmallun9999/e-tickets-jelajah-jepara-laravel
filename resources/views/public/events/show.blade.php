@@ -93,7 +93,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Date Info -->
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Waktu Pelaksanaan</div>
+                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">{{ __('Events.Detail.Time') }}</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
                                         <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-xl">calendar_month</span>
@@ -102,7 +102,7 @@
                                             <div class="flex flex-col gap-1">
                                                 <div class="text-sm font-bold">{{ $event->start_date->translatedFormat('d F Y') }}</div>
                                                 @if($event->end_date && $event->end_date != $event->start_date)
-                                                    <div class="text-xs text-slate-500">sampai {{ $event->end_date->translatedFormat('d F Y') }}</div>
+                                                    <div class="text-xs text-slate-500">{{ __('Events.Detail.Until') }} {{ $event->end_date->translatedFormat('d F Y') }}</div>
                                                 @endif
                                                 <div class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                                                     <span class="material-symbols-outlined text-[10px]">schedule</span>
@@ -115,14 +115,14 @@
 
                                 <!-- Organizer / Contact -->
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Penyelenggara</div>
+                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">{{ __('Events.Detail.Organizer') }}</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
                                         <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-xl">campaign</span>
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1">
-                                            <div class="text-sm">Dinas Pariwisata & Kebudayaan Kabupaten Jepara</div>
-                                            <div class="text-xs text-slate-500 mt-1">Information Center</div>
+                                            <div class="text-sm">{{ __('Events.Detail.OrganizerName') }}</div>
+                                            <div class="text-xs text-slate-500 mt-1">{{ __('Events.Detail.InfoCenter') }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -130,14 +130,14 @@
     
                             <!-- Actions: Calendar & Share -->
                             <section>
-                                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4">Aksi & Bagikan</h3>
+                                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4">{{ __('Events.Detail.Actions') }}</h3>
                                  <div class="flex flex-wrap gap-4">
                                     <!-- Google Calendar -->
                                     <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ urlencode($event->title) }}&dates={{ $event->start_date->format('Ymd') }}/{{ $event->end_date ? $event->end_date->addDay()->format('Ymd') : $event->start_date->addDay()->format('Ymd') }}&details={{ urlencode(Str::limit($event->description, 100)) }}&location={{ urlencode($event->location . ' Jepara') }}" 
                                        target="_blank" 
                                        class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/25 hover:translate-y-[-2px]">
                                         <span class="material-symbols-outlined text-xl">calendar_add_on</span>
-                                        <span>Simpan ke Kalender</span>
+                                        <span>{{ __('Events.Detail.SaveCalendar') }}</span>
                                     </a>
                                  </div>
                             </section>
@@ -147,7 +147,7 @@
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                     <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                    Lokasi Acara
+                                    {{ __('Events.Detail.LocationTitle') }}
                                 </h3>
                                 <a href="https://maps.google.com/maps?q={{ urlencode($event->location . ' Jepara') }}" target="_blank" class="block w-full h-[300px] md:h-auto md:aspect-video rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-[6px] border-white dark:border-slate-800 shadow-xl relative group">
                                      <!-- Simple Map Embed -->
@@ -166,7 +166,7 @@
                                     <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center z-10">
                                         <div class="bg-white px-6 py-3 rounded-full shadow-2xl font-bold text-slate-900 flex items-center gap-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                                             <span class="material-symbols-outlined text-red-500">near_me</span>
-                                            Buka Google Maps
+                                            {{ __('Events.Detail.OpenMaps') }}
                                         </div>
                                     </div>
                                 </a>

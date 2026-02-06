@@ -103,7 +103,7 @@
                                 @click.outside="open = false"
                                 class="w-full pl-11 pr-10 py-3 text-left rounded-xl ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between gap-3"
                             >
-                                <span x-text="selectedYear === '' ? 'Semua Tahun    ' : selectedYear" class="truncate"></span>
+                                <span x-text="selectedYear === '' ? '{{ __('Events.Filter.AllYears') }}    ' : selectedYear" class="truncate"></span>
                                 <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
                             </button>
 
@@ -124,7 +124,7 @@
                                         class="w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                                         :class="selectedYear === '' ? 'text-primary font-bold bg-primary/5' : 'text-slate-600 dark:text-slate-300'"
                                     >
-                                        Semua Tahun
+                                        {{ __('Events.Filter.AllYears') }}
                                     </button>
                                     @foreach($years as $year)
                                         <button 
