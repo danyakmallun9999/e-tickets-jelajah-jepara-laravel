@@ -171,9 +171,7 @@
                         }
                     } catch (err) { console.log('Wake Lock error:', err); }
                     
-                    this.locateUser(() => {
-                        this.map.setZoom(19);
-                    }, true);
+                    this.locateUser(null, true);
                     
                 } else {
                     if (this.wakeLock) {
@@ -396,10 +394,20 @@
                     show: true,
                     addWaypoints: false,
                     draggableWaypoints: false,
-                    fitSelectedRoutes: true,
+                    fitSelectedRoutes: false,
                     createMarker: function() { return null; },
                     containerClassName: 'routing-container custom-scrollbar'
                 }).addTo(this.map);
+                
+                this.routingControl.on('routesfound', (e) => {
+                    const routes = e.routes;
+                    const bounds = L.latLngBounds(routes[0].coordinates);
+                    this.map.fitBounds(bounds, { 
+                        paddingTopLeft: [20, 100], 
+                        paddingBottomRight: [20, 300],
+                        animate: true
+                    });
+                });
                 
                 setTimeout(() => {
                     const container = this.routingControl.getContainer();
@@ -452,7 +460,7 @@
                         }
                         
                         if (this.isNavigating || forceFollow) {
-                            this.map.flyTo([latitude, longitude], this.isNavigating ? 18 : 16, { animate: true, duration: 0.5 });
+                            this.map.flyTo([latitude, longitude], this.isNavigating ? 19 : 16, { animate: true, duration: 0.5 });
                         }
                         
                         this.loading = false;

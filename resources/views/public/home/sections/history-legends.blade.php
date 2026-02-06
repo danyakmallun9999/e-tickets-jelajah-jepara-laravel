@@ -21,94 +21,67 @@
             <!-- Full Image Cards Grid -->
             <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide touch-pan-x">
                 
-                <!-- Shima Card (Kalingga - Oldest) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
-                     x-data="{ shown: false }" 
-                     x-intersect.threshold.0.2="shown = true"
-                     :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 transition-all duration-1000'">
-                    
-                    <!-- Full Background Image -->
-                    <img src="{{ asset('images/legenda/shima.jpg') }}" 
-                         alt="Ratu Shima" 
-                         class="absolute top-0 left-0 w-full h-full object-cover object-top origin-top filter grayscale-0 md:grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
-                    
-                    <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 md:group-hover:opacity-60 transition-opacity duration-700"></div>
+                @php
+                    $legends = [
+                        [
+                            'name' => 'Ratu Shima',
+                            'image' => 'images/legenda/shima.jpg',
+                            'quote' => 'History.Shima.Quote',
+                            'desc' => 'History.Shima.Desc',
+                            'delay' => 0,
+                            'grayscale' => 0
+                        ],
+                        [
+                            'name' => 'Ratu Kalinyamat',
+                            'image' => 'images/legenda/kalinyamat.jpg',
+                            'quote' => 'History.Kalinyamat.Quote',
+                            'desc' => 'History.Kalinyamat.Desc',
+                            'delay' => 200,
+                            'grayscale' => 0
+                        ],
+                        [
+                            'name' => 'R.A. Kartini',
+                            'image' => 'images/legenda/kartini.jpg',
+                            'quote' => 'History.Kartini.Quote',
+                            'desc' => 'History.Kartini.Desc',
+                            'delay' => 400,
+                            'grayscale' => 0
+                        ]
+                    ];
+                @endphp
 
-                    <!-- Content Overlay -->
-                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-700">
-                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full md:group-hover:w-20 transition-all duration-500"></div>
-                        <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">Ratu Shima</h3>
-                        <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            {!! __('History.Shima.Quote') !!}
-                        </p>
-                        <div class="h-auto opacity-100 md:h-0 md:opacity-0 md:group-hover:h-auto overflow-hidden transition-all duration-500 md:group-hover:opacity-100">
-                            <p class="text-white/80 text-sm leading-relaxed">
-                                {{ __('History.Shima.Desc') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kalinyamat Card (16th Century) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-200"
-                     x-data="{ shown: false }" 
-                     x-intersect.threshold.0.2="shown = true"
-                     :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
-                    
-                    <!-- Full Background Image -->
-                    <img src="{{ asset('images/legenda/kalinyamat.jpg') }}" 
-                         alt="Ratu Kalinyamat" 
-                         class="absolute top-0 left-0 w-full h-full object-cover object-center origin-top filter grayscale-0 md:grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
-                    
-                    <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 md:group-hover:opacity-60 transition-opacity duration-700"></div>
-
-                    <!-- Content Overlay -->
-                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-700">
-                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full md:group-hover:w-20 transition-all duration-500"></div>
-                        <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">Ratu Kalinyamat</h3>
-                        <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            {!! __('History.Kalinyamat.Quote') !!}
-                        </p>
-                        <div class="h-auto opacity-100 md:h-0 md:opacity-0 md:group-hover:h-auto overflow-hidden transition-all duration-500 md:group-hover:opacity-100">
-                            <p class="text-white/80 text-sm leading-relaxed">
-                                {{ __('History.Kalinyamat.Desc') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kartini Card (19th Century - Youngest) -->
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all duration-1000 delay-400"
+                @foreach($legends as $legend)
+                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none {{ $loop->index > 0 ? 'transition-all duration-1000' : '' }}"
+                     style="transition-delay: {{ $legend['delay'] }}ms"
                      x-data="{ shown: false }" 
                      x-intersect.threshold.0.2="shown = true"
                      :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
                     
                     <!-- Full Background Image -->
-                    <img src="{{ asset('images/legenda/kartini.jpg') }}" 
-                         alt="R.A. Kartini" 
-                         class="absolute top-0 left-0 w-full h-full object-cover object-top origin-top filter grayscale-0 md:grayscale-[0.2] md:group-hover:grayscale-0 md:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
+                    <img src="{{ asset($legend['image']) }}" 
+                         alt="{{ $legend['name'] }}" 
+                         class="absolute top-0 left-0 w-full h-full object-cover object-top origin-top filter grayscale-0 lg:grayscale-[0.2] lg:group-hover:grayscale-0 lg:group-hover:scale-105 transition-all duration-[1500ms] ease-out will-change-transform pointer-events-none select-none">
                     
-                    <!-- Gradient Overlay (Subtle) -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 md:group-hover:opacity-60 transition-opacity duration-700"></div>
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 lg:group-hover:opacity-60 transition-opacity duration-700"></div>
 
                     <!-- Content Overlay -->
-                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-700">
-                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full md:group-hover:w-20 transition-all duration-500"></div>
-                        <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">R.A. Kartini</h3>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-700">
+                        <div class="w-12 h-1 bg-white/30 backdrop-blur-sm mb-6 rounded-full lg:group-hover:w-20 transition-all duration-500"></div>
+                        <h3 class="text-3xl font-['Playfair_Display'] font-black mb-3 leading-tight tracking-tight">{{ $legend['name'] }}</h3>
                         <p class="text-xl font-['Pinyon_Script'] text-white/90 mb-6">
-                            {!! __('History.Kartini.Quote') !!}
+                            {!! __($legend['quote']) !!}
                         </p>
-                        <div class="h-auto opacity-100 md:h-0 md:opacity-0 md:group-hover:h-auto overflow-hidden transition-all duration-500 md:group-hover:opacity-100">
+                        <div class="h-auto opacity-100 lg:h-0 lg:opacity-0 lg:group-hover:h-auto overflow-hidden transition-all duration-500 lg:group-hover:opacity-100">
                             <p class="text-white/80 text-sm leading-relaxed">
-                                {{ __('History.Kartini.Desc') }}
+                                {{ __($legend['desc']) }}
                             </p>
                         </div>
                     </div>
                 </div>
+                @endforeach
 
-                </div>
+            </div>
         </div>
     </div>
     <!-- END SECTION: History -->

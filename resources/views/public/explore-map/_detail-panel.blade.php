@@ -26,118 +26,89 @@
                 <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full drag-handle"></div>
             </div>
 
-            {{-- Header Image --}}
-            <div class="h-52 lg:h-44 bg-slate-100 dark:bg-slate-700 relative flex-shrink-0 overflow-hidden">
+            {{-- Header Image with Minimalist Controls --}}
+            <div class="h-56 lg:h-48 bg-slate-100 dark:bg-slate-700 relative flex-shrink-0 overflow-hidden group">
                 <template x-if="selectedFeature?.image_url">
                     <img :src="selectedFeature.image_url" 
-                         class="w-full h-full object-cover detail-image"
-                         style="transform: scale(1.2);">
+                         class="w-full h-full object-cover detail-image transition-transform duration-700"
+                         style="transform: scale(1.1);">
                 </template>
                 <template x-if="!selectedFeature?.image_url">
-                    <div class="w-full h-full flex items-center justify-center text-slate-300 dark:text-slate-500 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
-                        <span class="material-symbols-outlined text-6xl detail-placeholder-icon" style="opacity: 0; transform: scale(0.5);">landscape</span>
+                    <div class="w-full h-full flex items-center justify-center text-slate-300 dark:text-slate-500 bg-slate-100 dark:bg-slate-800">
+                        <span class="material-symbols-outlined text-5xl detail-placeholder-icon opacity-50">landscape</span>
                     </div>
                 </template>
                 
-                {{-- Close Button --}}
+                {{-- Minimalist Close Button --}}
                 <button @click="selectedFeature = null" 
-                        class="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm flex items-center justify-center transition-all active:scale-95 detail-close-btn"
-                        style="opacity: 0; transform: translateX(20px);">
-                    <span class="material-symbols-outlined">close</span>
+                        class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md flex items-center justify-center transition-all active:scale-95 detail-close-btn opacity-0 translate-x-4">
+                    <span class="material-symbols-outlined text-lg">close</span>
                 </button>
                 
-                {{-- Gradient Overlay with Title --}}
-                <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                    <span class="inline-block text-xs font-bold px-3 py-1 rounded-full bg-sky-500/90 text-white uppercase tracking-wider mb-2 detail-category"
-                          style="opacity: 0; transform: translateY(10px);"
+                {{-- Clean Gradient Overlay --}}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                {{-- Title Area --}}
+                <div class="absolute bottom-4 left-5 right-5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/20 backdrop-blur-md border border-white/10 text-[10px] font-medium text-white uppercase tracking-wider mb-2 detail-category opacity-0 translate-y-2"
                           x-text="selectedFeature?.category?.name || selectedFeature?.type || 'Lokasi'"></span>
-                    <h3 class="text-white font-bold text-xl leading-tight detail-title"
-                        style="opacity: 0; transform: translateY(15px);"
+                    <h3 class="text-white font-bold text-xl leading-tight detail-title opacity-0 translate-y-2 drop-shadow-sm"
                         x-text="selectedFeature?.name"></h3>
                 </div>
             </div>
 
             {{-- Content --}}
-            <div class="flex-1 overflow-y-auto p-5 space-y-5">
-                {{-- Description --}}
-                <div x-data="{ expanded: false }" class="detail-description" style="opacity: 0; transform: translateY(20px);">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-base text-sky-500">info</span>
-                        Tentang
-                    </h4>
-                    <div class="relative overflow-hidden">
-                        {{-- Collapsed Preview (3 lines) --}}
-                        <div x-show="!expanded" x-collapse.min.72px>
-                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3"
-                               x-text="selectedFeature?.description || 'Tidak ada deskripsi tersedia.'"></p>
-                        </div>
-                        
-                        {{-- Expanded Full Text --}}
-                        <div x-show="expanded" x-collapse>
-                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
-                               x-text="selectedFeature?.description || 'Tidak ada deskripsi tersedia.'"></p>
-                        </div>
-                        
-                        {{-- Read More Button --}}
-                        <template x-if="selectedFeature?.description && selectedFeature.description.length > 120">
-                            <button @click="expanded = !expanded" 
-                                    class="mt-3 text-sm font-semibold text-sky-500 hover:text-sky-600 flex items-center gap-1.5 transition-all duration-300 active:scale-95">
-                                <span x-text="expanded ? 'Sembunyikan' : 'Baca selengkapnya'"></span>
-                                <span class="material-symbols-outlined text-lg transition-transform duration-300" :class="expanded ? 'rotate-180' : ''">expand_more</span>
-                            </button>
-                        </template>
-                    </div>
-                </div>
-                
-                {{-- Quick Info Pills --}}
-                <div class="flex flex-wrap gap-2 detail-pills" style="opacity: 0; transform: translateY(20px);">
+            <div class="flex-1 overflow-y-auto px-5 py-4 space-y-5 custom-scrollbar">
+                {{-- Quick Stats Row --}}
+                <div class="flex items-center gap-4 border-b border-slate-100 dark:border-slate-700/50 pb-4 detail-pills opacity-0 translate-y-4">
                     <template x-if="selectedFeature?.distance">
-                        <span class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-900/30 dark:to-cyan-900/30 text-sky-600 dark:text-sky-400 rounded-xl text-sm font-medium border border-sky-100 dark:border-sky-800">
-                            <span class="material-symbols-outlined text-lg">directions_walk</span>
-                            <span x-text="selectedFeature.distance + ' km dari lokasi Anda'"></span>
-                        </span>
+                        <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                            <span class="material-symbols-outlined text-lg text-sky-500">near_me</span>
+                            <span class="text-xs font-semibold" x-text="selectedFeature.distance + ' km'"></span>
+                        </div>
                     </template>
                     <template x-if="selectedFeature?.area">
-                        <span class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl text-sm font-medium border border-emerald-100 dark:border-emerald-800">
-                            <span class="material-symbols-outlined text-lg">square_foot</span>
-                            <span x-text="selectedFeature.area + ' hektar'"></span>
-                        </span>
+                         <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                         <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                            <span class="material-symbols-outlined text-lg text-emerald-500">square_foot</span>
+                            <span class="text-xs font-semibold" x-text="selectedFeature.area + ' ha'"></span>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Description --}}
+                <div x-data="{ expanded: false }" class="detail-description opacity-0 translate-y-4">
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
+                       :class="!expanded ? 'line-clamp-3' : ''"
+                       x-text="selectedFeature?.description || 'Tidak ada deskripsi tersedia.'"></p>
+                    
+                    <template x-if="selectedFeature?.description && selectedFeature.description.length > 120">
+                        <button @click="expanded = !expanded" 
+                                class="mt-2 text-xs font-medium text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+                            <span x-text="expanded ? 'Sembunyikan' : 'Baca selengkapnya'"></span>
+                        </button>
                     </template>
                 </div>
             </div>
 
-            {{-- Action Buttons (Sticky Bottom) --}}
-            <div class="flex-shrink-0 p-5 pt-4 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 space-y-3 safe-bottom">
-                {{-- Primary Actions --}}
-                <div class="grid grid-cols-2 gap-3 detail-actions" style="opacity: 0; transform: translateY(20px);">
+            {{-- Minimalist Action Bar --}}
+            <div class="flex-shrink-0 p-5 pt-3 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 safe-bottom">
+                <div class="grid grid-cols-[1fr,auto] gap-3 detail-actions opacity-0 translate-y-4">
+                    {{-- Primary Route Button --}}
                     <button @click="startRouting(selectedFeature); selectedFeature = null" 
-                            class="group h-14 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-300">
-                        <span class="material-symbols-outlined text-xl">directions</span>
-                        Rute
+                            class="h-11 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-slate-200 dark:shadow-none">
+                        <span class="material-symbols-outlined text-[18px]">directions</span>
+                        <span>Rute Sekarang</span>
                     </button>
+
+                    {{-- Icon-only Google Maps Button --}}
                     <button @click="openGoogleMaps(selectedFeature)" 
-                            class="group h-14 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-300">
-                        <i class="fa-brands fa-google text-lg text-red-500 group-hover:scale-110 transition-transform"></i>
-                        Maps
+                            class="w-11 h-11 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl flex items-center justify-center active:scale-[0.98] transition-all"
+                            title="Buka di Google Maps">
+                        <i class="fa-brands fa-google text-lg"></i>
                     </button>
                 </div>
                 
-                {{-- Secondary Actions --}}
-                <template x-if="routingControl">
-                    <button @click="toggleNavigationInstructions()" 
-                            class="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-300 detail-secondary-action"
-                            style="opacity: 0; transform: translateY(10px);">
-                        <span class="material-symbols-outlined text-xl">list_alt</span>
-                        Lihat Petunjuk Arah
-                    </button>
-                </template>
-                
-                <button @click="zoomToFeature(selectedFeature)" 
-                        class="w-full h-11 text-slate-500 dark:text-slate-400 hover:text-sky-500 text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 detail-focus-btn"
-                        style="opacity: 0; transform: translateY(10px);">
-                    <span class="material-symbols-outlined text-lg">my_location</span>
-                    Fokus ke lokasi
-                </button>
             </div>
         </div>
     </div>
@@ -213,12 +184,7 @@ function animateDetailPanel() {
         ease: 'back.out(1.2)'
     }, '-=0.2');
     
-    // Focus button
-    tl.to('.detail-focus-btn', {
-        opacity: 1,
-        y: 0,
-        duration: 0.3
-    }, '-=0.1');
+
     
     // Drag handle pulse
     tl.fromTo('.drag-handle', 

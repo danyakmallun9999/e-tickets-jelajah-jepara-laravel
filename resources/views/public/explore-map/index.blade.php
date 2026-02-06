@@ -270,7 +270,12 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="translate-y-0 opacity-100"
          x-transition:leave-end="translate-y-20 opacity-0"
-         class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[600]" x-cloak>
+         class="fixed left-1/2 -translate-x-1/2 z-[600] transition-all duration-300 ease-out"
+         :style="{
+             bottom: bottomSheetState === 'collapsed' ? '220px' : 
+                    (bottomSheetState === 'half' ? 'calc(55% + 20px)' : '30px')
+         }"
+         x-cloak>
         <button @click="toggleLiveNavigation()" class="h-12 pl-4 pr-6 bg-sky-600 hover:bg-sky-700 text-white rounded-full shadow-lg shadow-sky-600/30 flex items-center gap-2 active:scale-95 transition-all">
              <span class="material-symbols-outlined text-[20px]">near_me</span>
              <span class="font-bold text-sm tracking-wide">Mulai</span>
