@@ -118,5 +118,9 @@
     "Stats.Culinary": "Kuliner",
     "Stats.Events": "Event",
     "Stats.Villages": "Desa Wisata",
-    "Nav.SearchPlaceholder": "Cari lokasi, data..."
+    "Nav.SearchPlaceholder": "Cari lokasi, data...",
+    "Footer.Category.Nature": "Wisata Alam",
+    "Footer.Category.Culture": "Wisata Budaya",
+    "Footer.Category.Culinary": "Wisata Kuliner",
+    "Footer.Category.Religious": "Wisata Religi"
 }

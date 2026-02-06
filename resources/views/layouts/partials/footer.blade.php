@@ -47,10 +47,10 @@
             <div class="md:col-span-2">
                 <h4 class="text-white font-medium text-sm mb-6">{{ __('Footer.Section.Categories') }}</h4>
                 <ul class="space-y-3 text-sm">
-                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">Wisata Alam</a></li>
-                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">Wisata Budaya</a></li>
-                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">Wisata Kuliner</a></li>
-                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">Wisata Religi</a></li>
+                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">{{ __('Footer.Category.Nature') }}</a></li>
+                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">{{ __('Footer.Category.Culture') }}</a></li>
+                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">{{ __('Footer.Category.Culinary') }}</a></li>
+                    <li><a href="#" class="text-white/50 hover:text-white transition-colors">{{ __('Footer.Category.Religious') }}</a></li>
                 </ul>
             </div>
 

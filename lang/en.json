@@ -120,5 +120,9 @@
     "Stats.Culinary": "Culinary",
     "Stats.Events": "Events",
     "Stats.Villages": "Tourism Villages",
-    "Nav.SearchPlaceholder": "Search location, data..."
+    "Nav.SearchPlaceholder": "Search location, data...",
+    "Footer.Category.Nature": "Nature Tourism",
+    "Footer.Category.Culture": "Cultural Tourism",
+    "Footer.Category.Culinary": "Culinary Tourism",
+    "Footer.Category.Religious": "Religious Tourism"
 }
