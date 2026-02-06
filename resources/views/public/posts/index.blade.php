@@ -24,19 +24,19 @@
             @if($featuredPost)
             <!-- Featured Post -->
             <div class="mb-16">
-                <a href="{{ route('posts.show', $featuredPost) }}" class="group block relative rounded-3xl overflow-hidden shadow-2xl aspect-[21/9] md:aspect-[2/1]">
+                <a href="{{ route('posts.show', $featuredPost) }}" class="group block relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[2/1]">
                     <img src="{{ asset($featuredPost->image_path) }}" alt="{{ $featuredPost->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
-                    <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-12 lg:p-16">
                         <div class="max-w-4xl">
                             <span class="inline-block px-3 py-1 mb-4 text-xs font-bold text-white uppercase tracking-wider rounded-full bg-primary/90 backdrop-blur-sm">
                                 {{ __('News.FeaturedBadge') }}
                             </span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
                                 {{ $featuredPost->title }}
                             </h2>
-                            <p class="text-gray-200 text-lg md:text-xl line-clamp-2 mb-6 max-w-2xl">
+                            <p class="text-gray-200 text-sm md:text-xl line-clamp-2 mb-6 max-w-2xl">
                                 {{ Str::limit(strip_tags($featuredPost->content), 150) }}
                             </p>
                             
