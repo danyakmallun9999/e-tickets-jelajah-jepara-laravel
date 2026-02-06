@@ -61,24 +61,24 @@
         </div>
     </div>
 
-    {{-- Category Filter --}}
-    <div class="px-6 py-3 border-b border-slate-100 dark:border-slate-800 sidebar-categories relative z-[50]" style="opacity: 0; transform: translateY(10px);">
-        <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Kategori</p>
-        <div class="flex gap-2 flex-wrap">
-            @foreach($categories as $index => $category)
-            <button @click="toggleCategory({{ $category->id }})" 
-                    :class="selectedCategories.includes({{ $category->id }}) ? 'bg-sky-500 text-white border-sky-500' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-sky-500'"
-                    class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 category-btn"
-                    style="opacity: 0; transform: scale(0.8);">
-                <i class="{{ $category->icon_class ?? 'fa-solid fa-map-marker-alt' }} text-sm"></i>
-                <span>{{ $category->name }}</span>
-            </button>
-            @endforeach
-        </div>
-    </div>
-
     {{-- Scrollable Content Area --}}
     <div class="flex-1 overflow-y-auto custom-scrollbar px-6 py-4 sidebar-content" style="opacity: 0;">
+        
+        {{-- Category Filter --}}
+        <div class="mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 sidebar-categories relative z-[50]" style="opacity: 0; transform: translateY(10px);">
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Kategori</p>
+            <div class="flex gap-2 flex-wrap">
+                @foreach($categories as $index => $category)
+                <button @click="toggleCategory({{ $category->id }})" 
+                        :class="selectedCategories.includes({{ $category->id }}) ? 'bg-sky-500 text-white border-sky-500' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-sky-500'"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 category-btn"
+                        style="opacity: 0; transform: scale(0.8);">
+                    <i class="{{ $category->icon_class ?? 'fa-solid fa-map-marker-alt' }} text-sm"></i>
+                    <span>{{ $category->name }}</span>
+                </button>
+                @endforeach
+            </div>
+        </div>
         
         {{-- Header --}}
         <div class="flex items-center justify-between mb-4">

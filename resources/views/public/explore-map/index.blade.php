@@ -113,24 +113,26 @@
     </div>
 
     {{-- Mobile: Bottom Sheet --}}
+    {{-- Mobile: Bottom Sheet --}}
     <div class="lg:hidden fixed bottom-0 left-0 right-0 z-[450] transition-all duration-300 ease-out"
          :class="{
-             'translate-y-[calc(100%-200px)]': bottomSheetState === 'collapsed',
+             'translate-y-[calc(100%-80px)]': bottomSheetState === 'collapsed',
              'translate-y-[45%]': bottomSheetState === 'half',
              'translate-y-0': bottomSheetState === 'full'
          }"
          x-show="!selectedFeature && !isNavigating"
          x-transition:leave="transition ease-in duration-300"
          x-transition:leave-start="translate-y-0"
-         x-transition:leave-end="translate-y-full"
-         @touchstart.passive="handleTouchStart($event)"
-         @touchmove.passive="handleTouchMove($event)"
-         @touchend="handleTouchEnd($event)">
+         x-transition:leave-end="translate-y-full">
         
-        <div class="bg-white dark:bg-slate-800 rounded-t-3xl h-screen border-t border-slate-200 dark:border-slate-700 flex flex-col">
+        <div class="bg-white dark:bg-slate-800 rounded-t-3xl h-[calc(100vh-180px)] border-t border-slate-200 dark:border-slate-700 flex flex-col">
             
             {{-- Drag Handle --}}
-            <div class="flex justify-center py-3 cursor-grab active:cursor-grabbing" @click="cycleBottomSheet()">
+            <div class="flex justify-center py-3 cursor-grab active:cursor-grabbing w-full touch-none" 
+                 @click="cycleBottomSheet()"
+                 @touchstart.passive="handleTouchStart($event)"
+                 @touchmove.passive="handleTouchMove($event)"
+                 @touchend="handleTouchEnd($event)">
                 <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
             </div>
 
@@ -153,36 +155,12 @@
                 </div>
             </div>
 
-            {{-- Horizontal Cards (Collapsed State) --}}
-            <div x-show="bottomSheetState === 'collapsed'" class="px-4 pb-4 flex-shrink-0">
+             {{-- Horizontal Cards (Collapsed State) - REMOVED as per request --}}
+            {{-- <div x-show="bottomSheetState === 'collapsed'" class="px-4 pb-4 flex-shrink-0">
                 <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
-                    <template x-for="place in visiblePlaces.slice(0, 10)" :key="place.id">
-                        <div @click="selectPlace(place)" 
-                             class="flex-shrink-0 w-64 bg-slate-50 dark:bg-slate-700 rounded-2xl p-3 flex gap-3 snap-start cursor-pointer active:scale-[0.98] transition-transform">
-                            <div class="w-16 h-16 rounded-xl bg-slate-200 dark:bg-slate-600 overflow-hidden flex-shrink-0">
-                                <template x-if="place.image_path">
-                                    <img :src="'{{ url('/') }}/' + place.image_path" class="w-full h-full object-cover">
-                                </template>
-                                <template x-if="!place.image_path">
-                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
-                                        <i class="fa-solid fa-image text-xl"></i>
-                                    </div>
-                                </template>
-                            </div>
-                            <div class="flex-1 min-w-0 flex flex-col justify-center">
-                                <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate" x-text="place.name"></h4>
-                                <p class="text-xs text-slate-400 truncate" x-text="place.category?.name"></p>
-                                <template x-if="place.distance">
-                                    <p class="text-xs text-sky-500 font-medium mt-1 flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-sm">directions_walk</span>
-                                        <span x-text="place.distance + ' km'"></span>
-                                    </p>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
+                    ...
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Full List (Half/Full State) --}}
             <div x-show="bottomSheetState !== 'collapsed'" class="flex-1 overflow-y-auto px-4 pb-8">
