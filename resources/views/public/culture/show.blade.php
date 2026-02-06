@@ -69,14 +69,12 @@
                 </div>
 
                 <!-- Footer / Share -->
-                <div class="border-t border-slate-100 dark:border-slate-800 pt-10 flex flex-col items-center justify-center gap-4 text-center">
-                    <h3 class="font-playfair text-2xl font-bold text-slate-900 dark:text-white">Bagikan Cerita Ini</h3>
-                    <p class="text-slate-500 max-w-md mx-auto mb-4">Bantu kami memperkenalkan kekayaan budaya {{ $culture->name }} kepada dunia.</p>
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-8 flex items-center justify-between">
+                    <span class="text-slate-500 text-sm font-medium">Bagikan cerita ini</span>
                     
                     <x-share-modal :url="request()->url()" :title="$culture->name" :text="Str::limit(strip_tags($culture->description), 100)">
-                        <button class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/25 hover:-translate-y-1 hover:shadow-primary/40 group">
-                            <i class="fa-solid fa-share-nodes text-xl group-hover:rotate-12 transition-transform"></i>
-                            <span>Bagikan Budaya</span>
+                        <button class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white transition-all duration-300" title="Bagikan">
+                            <i class="fa-solid fa-share-nodes text-sm"></i>
                         </button>
                     </x-share-modal>
                 </div>
