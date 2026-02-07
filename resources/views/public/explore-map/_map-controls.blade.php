@@ -1,17 +1,22 @@
 {{-- Desktop Map Controls - Enhanced with GSAP --}}
 
 {{-- Layer Toggle (Top Left of Map Area) --}}
-<div id="layer-toggle" class="fixed top-4 z-[400]" style="left: 440px; opacity: 0; transform: translateY(-20px);"
+<div id="layer-toggle" 
+     class="fixed z-[400] transition-all duration-500 ease-in-out"
+     :class="isNavigating ? 'bottom-80 right-6' : 'top-4'"
+     :style="isNavigating ? '' : 'left: 440px'"
+     style="opacity: 0; transform: translateY(-20px);"
      x-init="$nextTick(() => animateMapControls())">
     <div x-data="{ open: false }" class="relative">
         <button @click="open = !open" class="w-11 h-11 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-sky-500 transition-all border border-slate-200 dark:border-slate-700 active:scale-95">
             <span class="material-symbols-outlined">layers</span>
         </button>
         <div x-show="open" @click.outside="open = false" 
-             class="absolute top-12 left-0 w-40 bg-white dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700"
+             class="absolute w-40 bg-white dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700"
+             :class="isNavigating ? 'bottom-12 right-0 origin-bottom-right' : 'top-12 left-0 origin-top-left'"
              x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"

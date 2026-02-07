@@ -285,7 +285,7 @@
     {{-- Navigation Mode Overlay --}}
     <div x-show="isNavigating" x-transition.opacity.duration.500ms class="fixed inset-0 z-[2000] pointer-events-none flex flex-col justify-between p-6" x-cloak>
         {{-- Top Bar --}}
-        <div class="pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-4 animate-slide-down">
+        <div class="pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-4 animate-slide-down w-full max-w-2xl mx-auto">
              <div class="w-12 h-12 rounded-xl bg-sky-500 flex items-center justify-center text-white shrink-0">
                  <span class="material-symbols-outlined text-2xl animate-pulse">navigation</span>
              </div>
