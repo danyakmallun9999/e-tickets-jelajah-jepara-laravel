@@ -9,7 +9,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 
                 <!-- Destinasi Wisata -->
-                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 opacity-0 transform translate-y-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
+                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                         <span class="material-symbols-outlined text-6xl text-primary rotate-12">photo_camera</span>
                     </div>
@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Kuliner Khas -->
-                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 opacity-0 transform translate-y-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
+                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                         <span class="material-symbols-outlined text-6xl text-primary -rotate-12">restaurant_menu</span>
                     </div>
@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- Agenda Event -->
-                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 opacity-0 transform translate-y-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
+                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                         <span class="material-symbols-outlined text-6xl text-primary rotate-12">event_available</span>
                     </div>
@@ -66,7 +66,7 @@
                 </div>
 
                 <!-- Desa Wisata -->
-                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 opacity-0 transform translate-y-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
+                <div class="stat-card relative overflow-hidden rounded-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-white/10 p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                         <span class="material-symbols-outlined text-6xl text-primary -rotate-12">holiday_village</span>
                     </div>
@@ -93,25 +93,30 @@
             gsap.registerPlugin(ScrollTrigger);
 
             const statCards = document.querySelectorAll('.stat-card');
+            const statsSection = document.querySelector('.stats-section');
             
-            ScrollTrigger.batch(statCards, {
-                start: "top 85%",
-                onEnter: batch => {
-                    gsap.to(batch, {
+            // Set initial state via GSAP
+            gsap.set(statCards, { opacity: 0, y: 25 });
+            
+            ScrollTrigger.create({
+                trigger: statsSection,
+                start: "top bottom-=50",
+                onEnter: () => {
+                    gsap.to(statCards, {
                         opacity: 1,
                         y: 0,
-                        duration: 0.8,
-                        stagger: 0.15,
-                        ease: "power2.out",
+                        duration: 0.35,
+                        stagger: 0.06,
+                        ease: "power1.out",
                         onStart: () => {
-                            // Counting Animation
-                            batch.forEach(card => {
+                            // Counting Animation - faster
+                            statCards.forEach(card => {
                                 const valueElement = card.querySelector('.stat-value');
                                 const target = parseInt(valueElement.getAttribute('data-target'));
                                 
                                 gsap.to(valueElement, {
                                     innerText: target,
-                                    duration: 2,
+                                    duration: 1,
                                     snap: { innerText: 1 },
                                     ease: "power1.out",
                                     onUpdate: function() {
