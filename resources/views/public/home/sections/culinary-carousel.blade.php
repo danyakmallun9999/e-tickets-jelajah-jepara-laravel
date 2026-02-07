@@ -82,16 +82,7 @@
             },
 
             startAutoplay() {
-                if (window.innerWidth < 768) return;
-                this.stopAutoplay();
-                this.autoplay = setInterval(() => {
-                    const container = $refs.foodContainer;
-                    if (container && container.children.length) {
-                        const itemWidth = container.children[0].offsetWidth;
-                        const gap = this.getGap();
-                        container.scrollBy({ left: (itemWidth + gap), behavior: 'smooth' });
-                    }
-                }, 3000);
+                // Autoplay disabled
             },
 
             stopAutoplay() {
@@ -160,8 +151,7 @@
                 });
             }
          }"
-         @mouseenter="stopAutoplay()" 
-         @mouseleave="startAutoplay()">
+         >
         
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->

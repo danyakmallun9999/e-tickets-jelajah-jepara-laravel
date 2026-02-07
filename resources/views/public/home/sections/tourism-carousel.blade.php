@@ -42,17 +42,7 @@
             this.currentIndex = Math.round(scrollValues * (this.totalItems - 1));
         },
         startAutoplay() {
-            // Only autoplay on desktop (md breakpoint and above)
-            if (window.innerWidth < 768) return;
-            
-            this.stopAutoplay();
-            this.autoplay = setInterval(() => {
-                if (this.currentIndex >= this.totalItems - 1) {
-                    this.scrollToIndex(0);
-                } else {
-                    this.scrollRight();
-                }
-            }, 3000);
+            // Autoplay disabled
         },
         stopAutoplay() {
             if (this.autoplay) {
@@ -73,7 +63,7 @@
                 }
             });
         }
-    }" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
+    }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div class="max-w-2xl tourism-header opacity-0 translate-y-8">

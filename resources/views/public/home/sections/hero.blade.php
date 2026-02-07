@@ -2,7 +2,7 @@
         <div class="relative w-full h-full mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
             <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden ring-1 ring-slate-900/5 dark:ring-white/10 group bg-slate-900">
                 <!-- 3D Map Container -->
-                <div id="hero-map" class="absolute inset-0 z-0 opacity-0 transition-opacity duration-[2000ms]"></div>
+                <div id="hero-map" class="absolute inset-0 z-0 opacity-0 transition-opacity duration-700"></div>
 
                 <!-- Overlay Gradient for Readability -->
                 <div class="absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/20 pointer-events-none"></div>
@@ -83,7 +83,7 @@
 
             map.on('load', () => {
                 // Map fade in using GSAP for consistency
-                gsap.to(mapContainer, { opacity: 1, duration: 2, ease: "power2.inOut" });
+                gsap.to(mapContainer, { opacity: 1, duration: 0.7, ease: "power2.out" });
 
                 map.addSource('boundaries', { type: 'geojson', data: '/boundaries.geojson' });
 
@@ -123,7 +123,7 @@
                         curve: 1.2,
                         essential: true
                     });
-                }, 2000);
+                }, 500);
 
                 // Rotation Loop
                 let startTime;
