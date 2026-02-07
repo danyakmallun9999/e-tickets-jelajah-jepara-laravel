@@ -209,11 +209,9 @@
                 if (!this.userLocation) {
                     this.locateUser(() => {
                         this.sortByDistance = true;
-                        this.applyFilters();
                     });
                 } else {
                     this.sortByDistance = !this.sortByDistance;
-                    this.applyFilters();
                 }
             },
 
@@ -440,6 +438,10 @@
                         L.latLng(this.userLocation.lat, this.userLocation.lng),
                         L.latLng(destination.latitude, destination.longitude)
                     ],
+                    // NOTE: This uses the default OSRM demo server which may show usage warnings.
+                    // For production, set up your own OSRM server or use a paid service (e.g. Mapbox)
+                    // and configure the 'serviceUrl' option here.
+                    // serviceUrl: 'https://YOUR_OSRM_SERVER/route/v1',
                     routeWhileDragging: false,
                     lineOptions: {
                         styles: [{color: '#0ea5e9', opacity: 0.8, weight: 6}]
