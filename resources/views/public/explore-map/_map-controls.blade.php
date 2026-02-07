@@ -11,7 +11,7 @@
             <span class="material-symbols-outlined">layers</span>
         </button>
         <div x-show="open" @click.outside="open = false" 
-             class="absolute w-40 bg-white dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700"
+             class="absolute w-auto whitespace-nowrap bg-transparent p-0"
              :class="isNavigating ? 'bottom-12 right-0 origin-bottom-right' : 'right-14 bottom-0 origin-bottom-right lg:top-12 lg:left-0 lg:right-auto lg:origin-top-left'"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
@@ -20,13 +20,14 @@
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
              x-cloak>
-             <p class="text-[10px] font-bold uppercase text-slate-400 mb-2 px-2">Peta Dasar</p>
-             <button @click="setBaseLayer('streets'); open = false" 
-                     :class="currentBaseLayer === 'streets' ? 'bg-sky-500 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                     class="w-full py-2 text-sm font-medium rounded-lg mb-1 transition-all active:scale-95">Jalan</button>
-             <button @click="setBaseLayer('satellite'); open = false"
-                     :class="currentBaseLayer === 'satellite' ? 'bg-sky-500 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                     class="w-full py-2 text-sm font-medium rounded-lg transition-all active:scale-95">Satelit</button>
+             <div class="flex flex-row gap-2 bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
+                 <button @click="setBaseLayer('streets'); open = false" 
+                         :class="currentBaseLayer === 'streets' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Jalan</button>
+                 <button @click="setBaseLayer('satellite'); open = false"
+                         :class="currentBaseLayer === 'satellite' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Satelit</button>
+             </div>
         </div>
     </div>
 </div>
