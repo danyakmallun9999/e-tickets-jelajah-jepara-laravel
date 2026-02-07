@@ -8,7 +8,11 @@ import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 window.gsap = gsap;
+window.ScrollTrigger = ScrollTrigger;
 window.maplibregl = maplibregl;
 
 import Chart from 'chart.js/auto';

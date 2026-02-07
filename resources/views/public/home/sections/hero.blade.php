@@ -10,19 +10,19 @@
                 <!-- Content -->
                 <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center pointer-events-none">
                     <div class="w-full max-w-4xl mx-auto space-y-8 pointer-events-auto flex flex-col items-center">
-                        <span class="inline-block px-5 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white text-xs font-bold uppercase tracking-widest animate-fade-in-down shadow-lg hover:bg-white/20 transition-colors cursor-default">
+                        <span class="hero-badge inline-block px-5 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white text-xs font-bold uppercase tracking-widest opacity-0 transform translate-y-4 shadow-lg hover:bg-white/20 transition-colors cursor-default">
                             {{ __('Hero.Badge') }}
                         </span>
                         
-                        <h1 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl animate-fade-in-up selection:bg-primary/30">
+                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl opacity-0 transform translate-y-8 selection:bg-primary/30">
                             {!! __('Hero.Title') !!}
                         </h1>
                         
-                        <p class="text-slate-200 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50 animate-fade-in-up delay-100">
+                        <p class="hero-subtitle text-slate-200 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50 opacity-0 transform translate-y-8">
                             {{ __('Hero.Subtitle') }}
                         </p>
                         
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 animate-fade-in-up delay-200">
+                        <div class="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 opacity-0 transform translate-y-8">
                             <a class="group relative flex items-center justify-center h-14 px-8 rounded-full bg-primary text-white text-base font-bold overflow-hidden transition-all hover:-translate-y-1 shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40"
                                 href="{{ route('places.index') }}">
                                 <span class="relative z-10">{{ __('Hero.Button') }}</span>
@@ -36,6 +36,15 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+             // GSAP Hero Animation
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+            
+            tl.to(".hero-badge", { y: 0, opacity: 1, duration: 1, delay: 0.5 })
+              .to(".hero-title", { y: 0, opacity: 1, duration: 1 }, "-=0.6")
+              .to(".hero-subtitle", { y: 0, opacity: 1, duration: 1 }, "-=0.8")
+              .to(".hero-buttons", { y: 0, opacity: 1, duration: 1 }, "-=0.8");
+
+            // Map setup
             if (typeof maplibregl === 'undefined') {
                 console.error('MapLibre GL JS not loaded');
                 return;
@@ -73,8 +82,8 @@
             });
 
             map.on('load', () => {
-                mapContainer.classList.remove('opacity-0');
-                mapContainer.classList.add('opacity-80');
+                // Map fade in using GSAP for consistency
+                gsap.to(mapContainer, { opacity: 1, duration: 2, ease: "power2.inOut" });
 
                 map.addSource('boundaries', { type: 'geojson', data: '/boundaries.geojson' });
 
@@ -116,7 +125,7 @@
                     });
                 }, 2000);
 
-                // Rotation Loop with Intersection Observer
+                // Rotation Loop
                 let startTime;
                 let requestID;
                 const rotationsPerMinute = 0.5;
@@ -130,26 +139,21 @@
                     requestID = requestAnimationFrame(rotateCamera);
                 }
 
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            if (!requestID) requestID = requestAnimationFrame(rotateCamera);
-                        } else {
-                            if (requestID) {
-                                cancelAnimationFrame(requestID);
-                                requestID = null;
-                            }
-                        }
-                    });
-                });
-
-                observer.observe(mapContainer);
-                
-                // Start rotation initially after move ends
-                map.once('moveend', () => {
-                    // Check visibility before starting
-                    if (mapContainer.offsetParent !== null) {
-                         requestID = requestAnimationFrame(rotateCamera);
+                ScrollTrigger.create({
+                    trigger: mapContainer,
+                    start: "top bottom",
+                    end: "bottom top",
+                    onEnter: () => {
+                        if (!requestID) requestID = requestAnimationFrame(rotateCamera);
+                    },
+                    onLeave: () => {
+                        if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
+                    },
+                    onEnterBack: () => {
+                        if (!requestID) requestID = requestAnimationFrame(rotateCamera);
+                    },
+                    onLeaveBack: () => {
+                        if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
                     }
                 });
             });

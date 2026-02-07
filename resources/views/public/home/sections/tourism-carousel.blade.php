@@ -76,7 +76,7 @@
     }" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
-                <div class="max-w-2xl">
+                <div class="max-w-2xl tourism-header opacity-0 translate-y-8">
                     <h2 class="text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-4 leading-tight">
                         {{ __('Tourism.Title') }}
                     </h2>
@@ -114,7 +114,7 @@
                     @foreach($places as $place)
                     @if(!$place->slug) @continue @endif
                     <!-- Gallery Item -->
-                    <a href="{{ route('places.show', $place) }}" class="block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5">
+                    <a href="{{ route('places.show', $place) }}" class="tourism-card block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5 opacity-0 translate-y-8">
                         <!-- Image -->
                         <div class="absolute inset-0 bg-gray-200">
                             @if($place->image_path)
@@ -175,4 +175,38 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Header Animation
+            gsap.to(".tourism-header", {
+                scrollTrigger: {
+                    trigger: ".tourism-header",
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out"
+            });
+
+            // Cards Animation
+            const tourismCards = document.querySelectorAll('.tourism-card');
+            
+            ScrollTrigger.batch(tourismCards, {
+                start: "top 85%",
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        stagger: 0.15,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        });
+    </script>
     <!-- END SECTION: Tourism Potency -->

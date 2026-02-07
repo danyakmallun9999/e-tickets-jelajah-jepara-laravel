@@ -5,21 +5,11 @@
         
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Section Header -->
-            <div class="text-center mb-16" 
-                 x-data="{ shown: false }" 
-                 x-intersect.threshold.0.5="shown = true">
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6"
-                    x-show="shown"
-                    x-transition:enter="transition ease-out duration-700 delay-100"
-                    x-transition:enter-start="opacity-0 translate-y-4"
-                    x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="text-center mb-16 history-header opacity-0 translate-y-8">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6">
                     {{ __('History.Title') }}
                 </h2>
-                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg"
-                    x-show="shown"
-                    x-transition:enter="transition ease-out duration-700 delay-200"
-                    x-transition:enter-start="opacity-0 translate-y-4"
-                    x-transition:enter-end="opacity-100 translate-y-0">
+                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg">
                     {{ __('History.Subtitle') }}
                 </p>
             </div>
@@ -81,15 +71,9 @@
                 @endphp
 
                 @foreach($legends as $legend)
-                <div class="min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none"
-                     x-data="{ shown: false }" 
-                     x-intersect.threshold.0.2="shown = true">
+                <div class="history-card min-w-[85%] md:min-w-0 snap-center group relative h-[450px] md:h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none opacity-0 translate-y-8">
                     
-                    <div x-show="shown"
-                         x-transition:enter="transition ease-out duration-1000 delay-[{{ $legend['delay'] }}ms]"
-                         x-transition:enter-start="opacity-0 translate-y-12"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         class="w-full h-full">
+                    <div class="w-full h-full">
                         
                         <!-- Full Background Image -->
                         <img src="{{ asset($legend['image']) }}" 
@@ -119,4 +103,38 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Header Animation
+            gsap.to(".history-header", {
+                scrollTrigger: {
+                    trigger: ".history-header",
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out"
+            });
+
+            // Cards Animation
+            const historyCards = document.querySelectorAll('.history-card');
+            
+            ScrollTrigger.batch(historyCards, {
+                start: "top 85%",
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        stagger: 0.15,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        });
+    </script>
     <!-- END SECTION: History -->

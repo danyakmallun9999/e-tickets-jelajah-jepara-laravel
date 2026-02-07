@@ -12,7 +12,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 @foreach($posts as $post)
-                <article class="bg-background-light dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5">
+                <article class="news-card bg-background-light dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col h-full border border-surface-light dark:border-white/5 opacity-0 translate-y-8">
                     <div class="h-48 overflow-hidden relative">
                         <div class="absolute top-3 left-3 {{ $post->type == 'event' ? 'bg-purple-600' : 'bg-blue-600' }} text-white text-xs font-bold px-3 py-1 rounded-full z-10 uppercase">
                             {{ $post->type == 'event' ? __('News.Type.Agenda') : __('News.Type.News') }}
@@ -48,4 +48,24 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const newsCards = document.querySelectorAll('.news-card');
+
+            ScrollTrigger.batch(newsCards, {
+                start: "top 85%",
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        stagger: 0.15,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        });
+    </script>
     <!-- END SECTION: News -->

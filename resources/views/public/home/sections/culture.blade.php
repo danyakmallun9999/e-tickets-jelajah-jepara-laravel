@@ -7,13 +7,11 @@
         
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header -->
-            <div class="text-center mb-16" x-intersect.threshold.0.5="reveal()">
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6 opacity-0 translate-y-4 transition-all duration-700 delay-100"
-                    :class="shown ? 'opacity-100 translate-y-0' : ''">
+            <div class="text-center mb-16 culture-header opacity-0 translate-y-8">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light dark:text-text-dark mb-6">
                     {{ __('Culture.Title') }}
                 </h2>
-                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg opacity-0 translate-y-4 transition-all duration-700 delay-200"
-                    :class="shown ? 'opacity-100 translate-y-0' : ''">
+                <p class="text-text-light/70 dark:text-text-dark/70 max-w-2xl mx-auto text-lg">
                     {{ __('Culture.Subtitle') }}
                 </p>
             </div>
@@ -79,4 +77,21 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.to(".culture-header", {
+                scrollTrigger: {
+                    trigger: ".culture-header",
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
+    </script>
     <!-- END SECTION: Culture -->

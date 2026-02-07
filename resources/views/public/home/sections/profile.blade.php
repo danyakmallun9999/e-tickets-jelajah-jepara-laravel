@@ -5,12 +5,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-32 items-start">
                 
                 <!-- Left Column: Pure Content -->
-                <div class="order-2 lg:order-1 pt-0 md:pt-8" 
-                     x-data="{ shown: false }" 
-                     x-intersect.threshold.0.3="shown = true">
+                <div class="profile-content order-2 lg:order-1 pt-0 md:pt-8 opacity-0 -translate-x-12">
                     
-                    <div class="space-y-8 md:space-y-10 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
-                         :class="shown ? 'opacity-100 translate-y-0' : ''">
+                    <div class="space-y-8 md:space-y-10">
                         
                         <!-- Minimal Label -->
                         <span class="block text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">{{ __('Profile.Label') }}</span>
@@ -41,18 +38,17 @@
                     </div>
                 </div>
                 <!-- Right Column: Clean Visuals -->
-                <div class="relative order-1 lg:order-2" 
-                     x-data="{ hover: false, shown: false }" 
-                     @mouseenter="hover = true" 
-                     @mouseleave="hover = false"
-                     x-intersect.threshold.0.5="shown = true">
+                <div class="relative order-1 lg:order-2">
                     
                     <!-- Main Image (Clean Crop) -->
-                    <div class="relative w-full aspect-[4/3] md:aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900 rounded-[2.5rem]">
+                    <div class="profile-image relative w-full aspect-[4/3] md:aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900 rounded-[2.5rem] opacity-0 translate-x-12"
+                         x-data="{ hover: false }" 
+                         @mouseenter="hover = true" 
+                         @mouseleave="hover = false">
                         <img src="{{ asset('images/profile/section-2.jpg') }}" 
                              alt="Landscape Jepara" 
                              class="w-full h-full object-cover transition-all duration-1000 ease-out"
-                             :class="(hover || shown) ? 'grayscale-0 scale-105' : 'grayscale'">
+                             :class="hover ? 'grayscale-0 scale-105' : 'grayscale'">
                     </div>
                     <!-- Secondary Image (Smaller, Clean Overlay) -->
                     <div class="absolute bottom-6 -left-6 md:bottom-8 md:-left-12 w-32 md:w-48 lg:w-64 aspect-square overflow-hidden rounded-[1.5rem] shadow-2xl border-4 md:border-8 border-white dark:border-gray-950 transition-transform duration-700 ease-out hidden sm:block"
@@ -73,4 +69,37 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Left Column (Content) Slide In
+            gsap.to(".profile-content", {
+                scrollTrigger: {
+                    trigger: ".profile-content",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out"
+            });
+
+            // Right Column (Image) Slide In
+            gsap.to(".profile-image", {
+                scrollTrigger: {
+                    trigger: ".profile-image",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                delay: 0.2, // Slight delay for staggering
+                ease: "power2.out"
+            });
+        });
+    </script>
     <!-- END SECTION: Profile -->
