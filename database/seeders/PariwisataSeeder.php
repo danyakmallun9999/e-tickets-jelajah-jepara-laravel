@@ -76,9 +76,9 @@ class PariwisataSeeder extends Seeder
                 );
 
                 // 3. Prepare Data
-                // Default coordinates if not parseable (JSON has no lat/lng, only links)
-                $lat = -6.581768; 
-                $lng = 110.669896;
+                // Use dynamic coordinates from JSON
+                $lat = $item['latitude'] ?? -6.581768; 
+                $lng = $item['longitude'] ?? 110.669896;
 
                 // 4. Create or Update Place
                 Place::updateOrCreate(
