@@ -40,8 +40,15 @@
         </button>
     </div>
     
-    {{-- Navigation Toggle --}}
+    {{-- Navigation Toggle (Only visible when route is active) --}}
     <button @click="toggleLiveNavigation()" 
+            x-show="hasActiveRoute"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-75"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-75"
             :class="isNavigating ? 'bg-red-500 text-white animate-pulse' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-sky-500 border border-slate-200 dark:border-slate-700'"
             class="w-11 h-11 rounded-xl flex items-center justify-center hover:scale-105 transition-all active:scale-95">
         <span class="material-symbols-outlined" x-text="isNavigating ? 'navigation' : 'near_me'"></span>

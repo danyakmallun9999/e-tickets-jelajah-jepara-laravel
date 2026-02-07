@@ -430,6 +430,23 @@
                      container.style.display = container.style.display === 'none' ? 'block' : 'none';
                  }
             },
+            
+            cancelRoute() {
+                // Remove routing control from map
+                if (this.routingControl) {
+                    this.map.removeControl(this.routingControl);
+                    this.routingControl = null;
+                }
+                
+                // Reset route state
+                this.hasActiveRoute = false;
+                this.navigationDestination = null;
+                
+                // Re-open sidebar on desktop
+                if (window.innerWidth >= 1024) {
+                    this.sidebarOpen = true;
+                }
+            },
 
             // ============================================
             // GEOLOCATION
