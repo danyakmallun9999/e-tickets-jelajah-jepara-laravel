@@ -228,13 +228,15 @@ function animateDetailPanel() {
         ease: 'power2.out'
     }, '-=0.3');
     
-    // Placeholder icon
-    tl.to('.detail-placeholder-icon', {
-        opacity: 1,
-        scale: 1,
-        duration: 0.4,
-        ease: 'back.out(1.7)'
-    }, '-=0.6');
+    // Placeholder icon (only if exists)
+    if (document.querySelector('.detail-placeholder-icon')) {
+        tl.to('.detail-placeholder-icon', {
+            opacity: 0.5,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.7)'
+        }, '-=0.6');
+    }
     
     // Close button
     tl.to('.detail-close-btn', {
