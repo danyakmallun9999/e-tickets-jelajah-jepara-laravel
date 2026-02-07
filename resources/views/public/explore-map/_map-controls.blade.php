@@ -3,8 +3,7 @@
 {{-- Layer Toggle (Top Left of Map Area) --}}
 <div id="layer-toggle" 
      class="fixed z-[400] transition-all duration-500 ease-in-out"
-     :class="isNavigating ? 'bottom-80 right-6' : 'top-4'"
-     :style="isNavigating ? '' : 'left: 440px'"
+     :class="isNavigating ? 'bottom-80 right-6' : 'bottom-48 right-6 lg:top-4 lg:left-[440px] lg:right-auto'"
      style="opacity: 0; transform: translateY(-20px);"
      x-init="$nextTick(() => animateMapControls())">
     <div x-data="{ open: false }" class="relative">
@@ -13,7 +12,7 @@
         </button>
         <div x-show="open" @click.outside="open = false" 
              class="absolute w-40 bg-white dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700"
-             :class="isNavigating ? 'bottom-12 right-0 origin-bottom-right' : 'top-12 left-0 origin-top-left'"
+             :class="isNavigating ? 'bottom-12 right-0 origin-bottom-right' : 'right-14 bottom-0 origin-bottom-right lg:top-12 lg:left-0 lg:right-auto lg:origin-top-left'"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"

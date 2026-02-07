@@ -53,6 +53,29 @@ class PariwisataSeeder extends Seeder
 
         $count = 0;
 
+        // Image Mapping (Manual mapping based on available files)
+        $imageMapping = [
+            'Pantai Kartini' => 'images/destinasi/pantai kartini.jpg',
+            'Museum RA. Kartini' => 'images/destinasi/museum kartini.jpg',
+            'Pantai Tirta Samudra (Bandengan)' => 'images/destinasi/pantai bandengan.jpg',
+            'Jepara Ourland Park' => 'images/destinasi/jepara-ourland-waterpark.jpg',
+            'Pantai Teluk Awur Jepara' => 'images/destinasi/pantai-teluk-awur-jepara-sunset.jpg',
+            'Pantai Blebak' => 'images/destinasi/Aktivitas-Menarik-Pantai-Blebak.jpg',
+            'Pulau Panjang' => 'images/destinasi/Panjang-Island-Destination-4233181372.webp',
+            'Benteng Portugis' => 'images/destinasi/Benteng Portugis.jpg',
+            'Gua Manik' => 'images/destinasi/Pantai-Gua-Manik-1.jpg',
+            'Air Terjun Songgo Langit' => 'images/destinasi/Daya-Tarik-Air-Terjun-Songgo-Langit.jpg',
+            'Wisata Telaga Harun Somosari' => 'images/destinasi/TELAGA HARUNs.jpg',
+            'Gua Tritip' => 'images/destinasi/goa tririp.webp',
+            'Pulau Mandalika' => 'images/destinasi/Pulau-Mandalika-Jepara.jpg',
+            'Wisata Desa Tempur' => 'images/destinasi/Desa-tempur-957230617.webp',
+            'Wana Wisata Sreni Indah' => 'images/destinasi/wana-wisata-sreni-indah-jepara.jpg',
+            'Pasar Sore Karangrandu (PSK)' => 'images/destinasi/Pasar Sore Karangrandu Jepara.jpg',
+            'Tiara Park Waterboom' => 'images/destinasi/tiara park.jpg',
+            'Makam Mantingan' => 'images/destinasi/MANTINGAN01.jpg',
+            'Wisata Kali Ndayung' => 'images/destinasi/kali dayung.jpg',
+        ];
+
         foreach ($items as $item) {
             try {
                 // Skip empty names if any
@@ -80,12 +103,16 @@ class PariwisataSeeder extends Seeder
                 $lat = $item['latitude'] ?? -6.581768; 
                 $lng = $item['longitude'] ?? 110.669896;
 
+                // Get image path from mapping
+                $imagePath = $imageMapping[$item['nama_wisata']] ?? null;
+
                 // 4. Create or Update Place
                 Place::updateOrCreate(
                     ['name' => $item['nama_wisata']], 
                     [
                         'category_id' => $category->id,
                         'slug' => Str::slug($item['nama_wisata']), 
+                        'image_path' => $imagePath,
                         'description' => $item['deskripsi'] ?? null,
                         'address' => $item['lokasi'] ?? null,
                         'ticket_price' => ($item['harga_tiket'] !== '-' ? $item['harga_tiket'] : null),
