@@ -9,6 +9,11 @@
     {{-- GSAP Animation Library --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     
+    {{-- Leaflet MarkerCluster --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('public.explore-map._styles')
 </head>

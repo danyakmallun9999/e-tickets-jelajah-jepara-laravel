@@ -93,7 +93,7 @@
 
             {{-- Minimalist Action Bar --}}
             <div class="flex-shrink-0 p-5 pt-3 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 safe-bottom">
-                <div class="grid grid-cols-[1fr,auto] gap-3 detail-actions opacity-0 translate-y-4">
+                <div class="grid grid-cols-[1fr,auto,auto,auto] gap-2 detail-actions opacity-0 translate-y-4">
                     {{-- Primary Route Button --}}
                     <button @click="startRouting(selectedFeature); selectedFeature = null" 
                             class="h-12 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-sky-500/30">
@@ -101,11 +101,51 @@
                         <span>Rute Sekarang</span>
                     </button>
 
+                    {{-- Share Button with Dropdown --}}
+                    <div x-data="{ shareOpen: false }" class="relative">
+                        <button @click="shareOpen = !shareOpen" 
+                                class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
+                                title="Bagikan">
+                            <span class="material-symbols-outlined text-xl">share</span>
+                        </button>
+                        
+                        {{-- Share Dropdown --}}
+                        <div x-show="shareOpen" 
+                             @click.outside="shareOpen = false"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute bottom-14 right-0 w-48 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden z-10"
+                             x-cloak>
+                            <button @click="shareToWhatsApp(selectedFeature); shareOpen = false" 
+                                    class="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left">
+                                <i class="fa-brands fa-whatsapp text-lg text-green-500"></i>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">WhatsApp</span>
+                            </button>
+                            <div class="h-px bg-slate-100 dark:bg-slate-700"></div>
+                            <button @click="copyShareLink(selectedFeature); shareOpen = false" 
+                                    class="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left">
+                                <span class="material-symbols-outlined text-lg text-slate-500">content_copy</span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Salin Link</span>
+                            </button>
+                        </div>
+                    </div>
+
                     {{-- Icon-only Google Maps Button --}}
                     <button @click="openGoogleMaps(selectedFeature)" 
                             class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
                             title="Buka di Google Maps">
                         <i class="fa-brands fa-google text-lg"></i>
+                    </button>
+                    
+                    {{-- Street View Button --}}
+                    <button @click="openStreetView(selectedFeature)" 
+                            class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
+                            title="Street View">
+                        <span class="material-symbols-outlined text-xl">streetview</span>
                     </button>
                 </div>
                 

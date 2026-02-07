@@ -277,4 +277,40 @@
     .glow-sky {
         box-shadow: 0 0 20px rgba(14, 165, 233, 0.3), 0 0 40px rgba(14, 165, 233, 0.1);
     }
+
+    /* ============================================ */
+    /* MARKER CLUSTER STYLES */
+    /* ============================================ */
+    .custom-cluster-icon {
+        background: transparent !important;
+    }
+    
+    .cluster-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        animation: clusterPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .cluster-small { font-size: 13px; }
+    .cluster-medium { font-size: 14px; }
+    .cluster-large { font-size: 15px; }
+    
+    @keyframes clusterPop {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .cluster-icon:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
 </style>

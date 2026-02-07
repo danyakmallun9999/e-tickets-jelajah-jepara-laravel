@@ -22,6 +22,7 @@
             searchResults: [],
             selectedFeature: null,
             markers: [],
+            markerClusterGroup: null,
             boundariesLayer: null,
             boundariesFeatures: [],
             routingControl: null,
@@ -294,8 +295,40 @@
             // ============================================
 
             updateMapMarkers() {
-                this.markers.forEach(m => this.map.removeLayer(m));
+                // Remove existing markers and cluster group
+                if (this.markerClusterGroup) {
+                    this.map.removeLayer(this.markerClusterGroup);
+                }
                 this.markers = [];
+                
+                // Create new cluster group with custom styling
+                this.markerClusterGroup = L.markerClusterGroup({
+                    maxClusterRadius: 50,
+                    spiderfyOnMaxZoom: true,
+                    showCoverageOnHover: false,
+                    zoomToBoundsOnClick: true,
+                    iconCreateFunction: (cluster) => {
+                        const count = cluster.getChildCount();
+                        let size = 'small';
+                        let color = '#0ea5e9'; // sky-500
+                        
+                        if (count >= 50) {
+                            size = 'large';
+                            color = '#10b981'; // emerald-500
+                        } else if (count >= 10) {
+                            size = 'medium';
+                            color = '#06b6d4'; // cyan-500
+                        }
+                        
+                        return L.divIcon({
+                            html: `<div class="cluster-icon cluster-${size}" style="background-color: ${color};">
+                                       <span>${count}</span>
+                                   </div>`,
+                            className: 'custom-cluster-icon',
+                            iconSize: L.point(40, 40)
+                        });
+                    }
+                });
                 
                 const visible = this.visiblePlaces;
                 
@@ -314,9 +347,11 @@
                          icon: L.divIcon({ html: iconHtml, className: '', iconSize: [44, 52], iconAnchor: [22, 52] })
                     });
                     marker.on('click', () => { this.selectPlace(p); });
-                    marker.addTo(this.map);
+                    this.markerClusterGroup.addLayer(marker);
                     this.markers.push(marker);
                 });
+                
+                this.map.addLayer(this.markerClusterGroup);
             },
 
             // ============================================
@@ -431,6 +466,50 @@
             openGoogleMaps(destination) {
                 const url = `https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}&travelmode=driving`;
                 window.open(url, '_blank');
+            },
+            
+            openStreetView(place) {
+                const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${place.latitude},${place.longitude}`;
+                window.open(url, '_blank');
+            },
+            
+            shareToWhatsApp(place) {
+                const mapsUrl = `https://www.google.com/maps?q=${place.latitude},${place.longitude}`;
+                const description = place.description ? place.description.substring(0, 100) + '...' : '';
+                const message = `🗺️ *${place.name}*\n📍 ${place.category?.name || 'Destinasi Wisata'}\n\n${description}\n\nLihat di peta: ${mapsUrl}`;
+                const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                window.open(waUrl, '_blank');
+            },
+            
+            async copyShareLink(place) {
+                const mapsUrl = `https://www.google.com/maps?q=${place.latitude},${place.longitude}`;
+                const text = `${place.name} - ${mapsUrl}`;
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    // Show toast notification
+                    this.showToast('Link berhasil disalin!');
+                } catch (err) {
+                    // Fallback for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    this.showToast('Link berhasil disalin!');
+                }
+            },
+            
+            showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-[1000] animate-fade-in';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2000);
             },
             
             toggleNavigationInstructions() {
