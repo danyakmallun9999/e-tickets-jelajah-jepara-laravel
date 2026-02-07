@@ -1,24 +1,23 @@
-<script>
-    // Immediate scroll check to prevent FOUC
-    if (window.pageYOffset > 10) { document.documentElement.classList.add('is-scrolled'); }
-    else { document.documentElement.classList.remove('is-scrolled'); }
-</script>
-
-<div class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-500 ease-in-out border-b border-transparent py-4 bg-transparent [.is-scrolled_&]:bg-white/90 [.is-scrolled_&]:dark:bg-slate-900/90 [.is-scrolled_&]:backdrop-blur-md [.is-scrolled_&]:border-slate-200/50 [.is-scrolled_&]:dark:border-slate-800 [.is-scrolled_&]:!py-0"
+<div class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-b border-slate-200/50 dark:border-slate-800 py-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md"
     x-data="{ 
         mobileMenuOpen: false, 
         searchOpen: false,
-        menuUsed: false
-    }" 
-    @scroll.window="window.pageYOffset > 10 ? document.documentElement.classList.add('is-scrolled') : document.documentElement.classList.remove('is-scrolled')">
+        isScrolled: false,
+        init() {
+            this.isScrolled = window.pageYOffset > 10;
+            window.addEventListener('scroll', () => {
+                this.isScrolled = window.pageYOffset > 10;
+            });
+        }
+    }">
     
     <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
-        <header class="flex items-center justify-between gap-8 transition-all duration-500 ease-in-out h-20 [.is-scrolled_&]:!h-16">
+        <header class="flex items-center justify-between gap-8 transition-all duration-500 ease-in-out h-20">
             
             <!-- Logo Area -->
             <div class="flex items-center gap-8">
                 <a class="flex items-center gap-3 group relative" href="{{ route('welcome') }}">
-                    <div class="relative transition-all duration-300 group-hover:scale-110 w-20 h-20 [.is-scrolled_&]:w-16 [.is-scrolled_&]:h-16">
+                    <div class="relative transition-all duration-300 group-hover:scale-110 w-20 h-20">
                          <!-- Logo Image -->
                          <img src="{{ asset('images/logo-kura.png') }}" alt="Logo Kabupaten Jepara" class="w-full h-full object-contain filter">
                     </div>
