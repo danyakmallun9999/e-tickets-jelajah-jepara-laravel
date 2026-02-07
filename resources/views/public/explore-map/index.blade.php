@@ -195,10 +195,10 @@
                         <div @click="selectPlace(place)" 
                              class="flex gap-4 p-4 rounded-2xl cursor-pointer active:scale-[0.98] transition-all bg-slate-50 dark:bg-slate-700/50">
                             <div class="w-20 h-20 rounded-xl bg-slate-200 dark:bg-slate-600 overflow-hidden flex-shrink-0">
-                                <template x-if="place.image_path">
-                                    <img :src="'{{ url('/') }}/' + place.image_path" class="w-full h-full object-cover">
+                                <template x-if="place.image_url">
+                                    <img :src="place.image_url" class="w-full h-full object-cover">
                                 </template>
-                                <template x-if="!place.image_path">
+                                <template x-if="!place.image_url">
                                     <div class="w-full h-full flex items-center justify-center text-slate-400">
                                         <i class="fa-solid fa-image text-2xl"></i>
                                     </div>

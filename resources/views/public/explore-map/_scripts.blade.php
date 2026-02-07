@@ -60,7 +60,7 @@
                 let places = this.allPlaces.filter(p => ids.includes(p.properties.category?.id))
                      .map(p => ({
                          ...p.properties,
-                         image_url: p.properties.image_url,
+                         image_url: p.properties.image_url || (p.properties.image_path ? '{{ url('/') }}/' + p.properties.image_path : null),
                          category: p.properties.category,
                          latitude: p.geometry.coordinates[1],
                          longitude: p.geometry.coordinates[0],
