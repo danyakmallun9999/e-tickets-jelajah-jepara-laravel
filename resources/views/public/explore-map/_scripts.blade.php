@@ -37,6 +37,10 @@
             navigationDestination: null,
             heading: 0,
             wakeLock: null,
+            
+            // Route Info
+            routeDistance: null,
+            routeTime: null,
 
             // Map Settings
             defaultCenter: [-6.59, 110.68],
@@ -403,7 +407,13 @@
                 
                 this.routingControl.on('routesfound', (e) => {
                     const routes = e.routes;
-                    const bounds = L.latLngBounds(routes[0].coordinates);
+                    const route = routes[0];
+                    
+                    // Extract distance (in km) and time (in seconds)
+                    this.routeDistance = (route.summary.totalDistance / 1000).toFixed(1);
+                    this.routeTime = Math.round(route.summary.totalTime / 60); // Convert to minutes
+                    
+                    const bounds = L.latLngBounds(route.coordinates);
                     this.map.fitBounds(bounds, { 
                         paddingTopLeft: [20, 100], 
                         paddingBottomRight: [20, 300],
@@ -441,6 +451,8 @@
                 // Reset route state
                 this.hasActiveRoute = false;
                 this.navigationDestination = null;
+                this.routeDistance = null;
+                this.routeTime = null;
                 
                 // Re-open sidebar on desktop
                 if (window.innerWidth >= 1024) {

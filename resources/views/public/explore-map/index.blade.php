@@ -254,19 +254,36 @@
                     (bottomSheetState === 'half' ? 'calc(55% + 20px)' : '30px')
          }"
          x-cloak>
-        <div class="flex items-center gap-2">
-            {{-- Start Navigation Button --}}
-            <button @click="toggleLiveNavigation()" class="h-12 pl-4 pr-6 bg-sky-600 hover:bg-sky-700 text-white rounded-full shadow-lg shadow-sky-600/30 flex items-center gap-2 active:scale-95 transition-all">
-                 <span class="material-symbols-outlined text-[20px]">near_me</span>
-                 <span class="font-bold text-sm tracking-wide">Mulai</span>
-            </button>
+        <div class="flex flex-col items-center gap-2">
+            {{-- Route Info Pill --}}
+            <div x-show="routeDistance && routeTime" 
+                 class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-slate-200/50 dark:border-slate-700 flex items-center gap-3 text-sm">
+                <div class="flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
+                    <span class="material-symbols-outlined text-sky-500 text-base">straighten</span>
+                    <span class="font-bold" x-text="routeDistance + ' km'"></span>
+                </div>
+                <div class="w-px h-4 bg-slate-300 dark:bg-slate-600"></div>
+                <div class="flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
+                    <span class="material-symbols-outlined text-emerald-500 text-base">schedule</span>
+                    <span class="font-medium" x-text="'~' + (routeTime >= 60 ? Math.floor(routeTime/60) + ' jam ' + (routeTime % 60 > 0 ? (routeTime % 60) + ' mnt' : '') : routeTime + ' menit')"></span>
+                </div>
+            </div>
             
-            {{-- Cancel Route Button --}}
-            <button @click="cancelRoute()" 
-                    class="w-12 h-12 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-all"
-                    title="Batalkan Rute">
-                <span class="material-symbols-outlined text-xl">close</span>
-            </button>
+            {{-- Action Buttons --}}
+            <div class="flex items-center gap-2">
+                {{-- Start Navigation Button --}}
+                <button @click="toggleLiveNavigation()" class="h-12 pl-4 pr-6 bg-sky-600 hover:bg-sky-700 text-white rounded-full shadow-lg shadow-sky-600/30 flex items-center gap-2 active:scale-95 transition-all">
+                     <span class="material-symbols-outlined text-[20px]">near_me</span>
+                     <span class="font-bold text-sm tracking-wide">Mulai</span>
+                </button>
+                
+                {{-- Cancel Route Button --}}
+                <button @click="cancelRoute()" 
+                        class="w-12 h-12 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-all"
+                        title="Batalkan Rute">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
         </div>
     </div>
 
