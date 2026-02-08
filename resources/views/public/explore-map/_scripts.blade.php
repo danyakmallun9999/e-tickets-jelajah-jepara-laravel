@@ -397,7 +397,7 @@
                     .map(p => ({ 
                         ...p.properties, 
                         image_url: p.properties.image_url,
-                        type: 'Lokasi', 
+                        type: '{{ __('Map.JS.Location') }}', 
                         category: p.properties.category,
                         latitude: p.geometry.coordinates[1], 
                         longitude: p.geometry.coordinates[0] 
@@ -421,7 +421,7 @@
             selectPlace(place) {
                  this.selectedFeature = {
                     ...place,
-                    type: place.category?.name || 'Lokasi',
+                    type: place.category?.name || '{{ __('Map.JS.Location') }}',
                     image_url: place.image_url || (place.image_path ? '{{ url('/') }}/' + place.image_path : null)
                 };
                 this.zoomToFeature(place);
@@ -512,7 +512,7 @@
             shareToWhatsApp(place) {
                 const mapsUrl = `https://www.google.com/maps?q=${place.latitude},${place.longitude}`;
                 const description = place.description ? place.description.substring(0, 100) + '...' : '';
-                const message = `🗺️ *${place.name}*\n📍 ${place.category?.name || 'Destinasi Wisata'}\n\n${description}\n\nLihat di peta: ${mapsUrl}`;
+                const message = `🗺️ *${place.name}*\n📍 ${place.category?.name || '{{ __('Map.JS.Destination') }}'}\n\n${description}\n\n{{ __('Map.JS.ViewOnMap') }}: ${mapsUrl}`;
                 const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                 window.open(waUrl, '_blank');
             },
@@ -524,7 +524,7 @@
                 try {
                     await navigator.clipboard.writeText(text);
                     // Show toast notification
-                    this.showToast('Link berhasil disalin!');
+                    this.showToast('{{ __('Map.JS.LinkCopied') }}');
                 } catch (err) {
                     // Fallback for older browsers
                     const textarea = document.createElement('textarea');
@@ -533,7 +533,7 @@
                     textarea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textarea);
-                    this.showToast('Link berhasil disalin!');
+                    this.showToast('{{ __('Map.JS.LinkCopied') }}');
                 }
             },
             
@@ -580,7 +580,7 @@
             // ============================================
 
             locateUser(callback = null, forceFollow = false) {
-                if (!navigator.geolocation) { alert('Browser tidak mendukung geolokasi'); return; }
+                if (!navigator.geolocation) { alert('{{ __('Map.JS.BrowserNoGeo') }}'); return; }
                 this.loading = true;
                 
                 if (this.watchId) navigator.geolocation.clearWatch(this.watchId);
@@ -617,7 +617,7 @@
                     (err) => { 
                         this.loading = false; 
                         console.error('Geolocation error:', err);
-                        alert('Tidak dapat mendeteksi lokasi. Pastikan GPS aktif.');
+                        alert('{{ __('Map.JS.GeoError') }}');
                     },
                     { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
                 );

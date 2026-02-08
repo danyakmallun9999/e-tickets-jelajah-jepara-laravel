@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Jelajahi Destinasi - Kabupaten Jepara</title>
+    <title>{{ __('Map.Title') }} - {{ __('Map.Subtitle') }}</title>
     <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,7 +18,7 @@
     <div x-show="loading" x-transition.opacity class="fixed inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm z-[1000] flex items-center justify-center">
         <div class="text-center">
             <div class="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Memuat Peta...</p>
+            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">{{ __('Map.Loading') }}</p>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                     <input type="text" 
                            x-model="searchQuery" 
                            @input.debounce.300ms="performSearch()"
-                           placeholder="Cari destinasi wisata..." 
+                           placeholder="{{ __('Map.SearchPlaceholder') }}" 
                            class="flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-sm text-slate-800 dark:text-white placeholder:text-slate-400">
                     <button x-show="searchQuery" @click="searchQuery = ''; searchResults = []" class="text-slate-400 flex-shrink-0">
                         <span class="material-symbols-outlined text-xl">close</span>
@@ -103,7 +103,7 @@
                     <button @click="selectedCategories = categories.map(c => c.id)" 
                             :class="selectedCategories.length === categories.length ? 'bg-sky-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
                             class="flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors active:scale-95">
-                        Semua
+                        {{ __('Map.Filter.All') }}
                     </button>
                     @foreach($categories as $category)
                     <button @click="toggleCategorySingle({{ $category->id }})" 
@@ -129,13 +129,13 @@
                 <div class="flex items-center justify-between mb-4 sticky top-0 bg-white dark:bg-slate-800 py-2 z-10">
                     <div class="flex items-baseline gap-2">
                         <span class="text-2xl font-bold text-slate-800 dark:text-white" x-text="visiblePlaces.length"></span>
-                        <span class="text-sm text-slate-400">Destinasi</span>
+                        <span class="text-sm text-slate-400">{{ __('Nav.Destinations') }}</span>
                     </div>
                     <button @click="toggleSortNearby()" 
                             :class="sortByDistance ? 'bg-sky-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
                             class="px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 transition-colors active:scale-95">
                         <span class="material-symbols-outlined text-base">near_me</span>
-                        <span x-text="sortByDistance ? 'Terdekat' : 'Urutkan'"></span>
+                        <span x-text="sortByDistance ? '{{ __('Map.Sort.Nearest') }}' : '{{ __('Map.Sort.Sort') }}'"></span>
                     </button>
                 </div>
 
@@ -145,8 +145,8 @@
                         <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="material-symbols-outlined text-3xl text-slate-400">location_off</span>
                         </div>
-                        <p class="text-slate-500 font-medium">Tidak ada destinasi</p>
-                        <p class="text-xs text-slate-400 mt-1">Coba ubah filter kategori</p>
+                        <p class="text-slate-500 font-medium">{{ __('Map.Empty.Title') }}</p>
+                        <p class="text-xs text-slate-400 mt-1">{{ __('Map.Empty.Subtitle') }}</p>
                     </div>
                 </template>
 
@@ -230,13 +230,13 @@
                 {{-- Start Navigation Button --}}
                 <button @click="toggleLiveNavigation()" class="h-12 pl-4 pr-6 bg-sky-600 hover:bg-sky-700 text-white rounded-full shadow-lg shadow-sky-600/30 flex items-center gap-2 active:scale-95 transition-all">
                      <span class="material-symbols-outlined text-[20px]">near_me</span>
-                     <span class="font-bold text-sm tracking-wide">Mulai</span>
+                     <span class="font-bold text-sm tracking-wide">{{ __('Map.Route.Start') }}</span>
                 </button>
                 
                 {{-- Cancel Route Button --}}
                 <button @click="cancelRoute()" 
                         class="w-12 h-12 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-all"
-                        title="Batalkan Rute">
+                        title="{{ __('Map.Route.Cancel') }}">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
@@ -251,9 +251,9 @@
                  <span class="material-symbols-outlined text-2xl animate-pulse">navigation</span>
              </div>
              <div class="flex-1 min-w-0">
-                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Menuju Lokasi</p>
+                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __('Map.Navigation.Heading') }}</p>
                  <h2 class="text-lg font-bold text-slate-800 dark:text-white truncate" x-text="navigationDestination?.name || 'Destinasi'"></h2>
-                 <p class="text-xs text-sky-600 dark:text-sky-400 font-medium mt-0.5">Mode Navigasi Aktif</p>
+                 <p class="text-xs text-sky-600 dark:text-sky-400 font-medium mt-0.5">{{ __('Map.Navigation.Active') }}</p>
              </div>
         </div>
 

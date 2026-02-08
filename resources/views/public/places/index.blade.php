@@ -20,7 +20,11 @@
                 selectedLocation: '',
                 currentPage: 1,
                 perPage: 9,
-                places: {{ Js::from($places) }},
+                places: {{ Js::from($places->map(function($place) {
+                    $place->name = $place->translated_name;
+                    $place->description = $place->translated_description;
+                    return $place;
+                })) }},
                 get filteredPlaces() {
                     return this.places.filter(place => {
                         const matchesSearch = this.search === '' || place.name.toLowerCase().includes(this.search.toLowerCase());

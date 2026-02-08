@@ -82,12 +82,12 @@
                 <div x-data="{ expanded: false }" class="detail-description opacity-0 translate-y-4">
                     <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
                        :class="!expanded ? 'line-clamp-3' : ''"
-                       x-text="selectedFeature?.description || 'Tidak ada deskripsi tersedia.'"></p>
+                       x-text="selectedFeature?.description || '{{ __('Map.Detail.DescriptionEmpty') }}'"></p>
                     
                     <template x-if="selectedFeature?.description && selectedFeature.description.length > 120">
                         <button @click="expanded = !expanded" 
                                 class="mt-2 text-xs font-medium text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
-                            <span x-text="expanded ? 'Sembunyikan' : 'Baca selengkapnya'"></span>
+                            <span x-text="expanded ? '{{ __('Map.Detail.Hide') }}' : '{{ __('Map.Detail.ReadMore') }}'"></span>
                         </button>
                     </template>
                 </div>
@@ -97,7 +97,7 @@
                     <div class="flex items-start gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 detail-info opacity-0 translate-y-4">
                         <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-xl mt-0.5">schedule</span>
                         <div>
-                            <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">Jam Operasional</span>
+                            <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">{{ __('Map.Detail.Hours') }}</span>
                             <p class="text-sm text-slate-700 dark:text-slate-200 mt-0.5" x-text="selectedFeature.opening_hours"></p>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                 {{-- Photo Gallery --}}
                 <template x-if="selectedFeature?.images && selectedFeature.images.length > 0">
                     <div x-data="{ galleryIndex: 0 }" class="detail-gallery opacity-0 translate-y-4">
-                        <h4 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">Galeri Foto</h4>
+                        <h4 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">{{ __('Map.Detail.Gallery') }}</h4>
                         <div class="relative">
                             {{-- Main Image --}}
                             <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700">
@@ -155,14 +155,14 @@
                     <button @click="startRouting(selectedFeature); selectedFeature = null" 
                             class="h-12 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-sky-500/30">
                         <span class="material-symbols-outlined text-[20px]">directions</span>
-                        <span>Rute Sekarang</span>
+                        <span>{{ __('Map.Detail.RouteNow') }}</span>
                     </button>
 
                     {{-- Share Button with Dropdown --}}
                     <div x-data="{ shareOpen: false }" class="relative">
                         <button @click="shareOpen = !shareOpen" 
                                 class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
-                                title="Bagikan">
+                                title="{{ __('Map.Detail.Share') }}">
                             <span class="material-symbols-outlined text-xl">share</span>
                         </button>
                         
@@ -186,7 +186,7 @@
                             <button @click="copyShareLink(selectedFeature); shareOpen = false" 
                                     class="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left">
                                 <span class="material-symbols-outlined text-lg text-slate-500">content_copy</span>
-                                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Salin Link</span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('Map.Detail.CopyLink') }}</span>
                             </button>
                         </div>
                     </div>
@@ -194,14 +194,14 @@
                     {{-- Icon-only Google Maps Button --}}
                     <button @click="openGoogleMaps(selectedFeature)" 
                             class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
-                            title="Buka di Google Maps">
+                            title="{{ __('Map.Detail.OpenGoogleMaps') }}">
                         <i class="fa-brands fa-google text-lg"></i>
                     </button>
                     
                     {{-- Street View Button --}}
                     <button @click="openStreetView(selectedFeature)" 
                             class="w-12 h-12 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-2xl flex items-center justify-center active:scale-[0.98] transition-all"
-                            title="Street View">
+                            title="{{ __('Map.Detail.StreetView') }}">
                         <span class="material-symbols-outlined text-xl">streetview</span>
                     </button>
                 </div>

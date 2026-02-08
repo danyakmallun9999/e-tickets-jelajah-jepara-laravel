@@ -46,7 +46,7 @@
                         <div class="relative w-full h-full rounded-3xl overflow-hidden text-transparent">
                             <template x-if="activeImage">
                                 <img :src="activeImage" 
-                                     alt="{{ $place->name }}" 
+                                     alt="{{ $place->translated_name }}" 
                                      class="w-full h-full object-cover transition-all duration-500 ease-in-out transform origin-center"
                                      :class="isFlipping ? '[transform:rotateY(90deg)] opacity-75 scale-95' : '[transform:rotateY(0deg)] opacity-100 scale-100'">
                             </template>
@@ -77,7 +77,7 @@
                         <!-- Top Meta: Category & Rating -->
                         <div class="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up">
                             <span class="px-3 py-1 rounded-full bg-primary/5 dark:bg-primary/10 text-primary dark:text-primary font-bold uppercase tracking-wider text-xs border border-primary/20 dark:border-primary/20">
-                                {{ $place->category->name ?? 'Destinasi' }}
+                                {{ $place->category->name ?? __('Places.Category.Default') }}
                             </span>
                             @if($place->rating)
                             <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-800/30">
@@ -90,11 +90,11 @@
                         <!-- Title & Address -->
                         <div class="mb-10 animate-fade-in-up delay-100">
                             <h1 class="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
-                                {{ $place->name }}
+                                {{ $place->translated_name }}
                             </h1>
                             <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-lg">
                                 <span class="material-symbols-outlined text-xl flex-shrink-0">location_on</span>
-                                <span class="font-light">{{ $place->address ?? 'Jepara, Jawa Tengah' }}</span>
+                                <span class="font-light">{{ $place->address ?? __('Places.Address.Default') }}</span>
                             </div>
                         </div>
     
@@ -108,17 +108,17 @@
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-3">
                                     <span class="w-1.5 h-6 bg-primary rounded-full"></span>
-                                    Tentang Destinasi
+                                    {{ __('Places.About') }}
                                 </h3>
                                 <div x-data="{ expanded: false }">
                                     <div class="prose prose-lg prose-slate dark:prose-invert font-light text-slate-600 dark:text-slate-300 leading-relaxed text-justify transition-all duration-300"
                                          :class="expanded ? '' : 'line-clamp-4 mask-image-b'">
-                                        <p class="whitespace-pre-line">{{ $place->description }}</p>
+                                        <p class="whitespace-pre-line">{{ $place->translated_description }}</p>
                                     </div>
-                                    @if(strlen($place->description) > 300)
+                                    @if(strlen($place->translated_description) > 300)
                                         <button @click="expanded = !expanded" 
                                                 class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary dark:text-primary hover:text-primary/80 dark:hover:text-primary/80 transition-colors">
-                                            <span x-text="expanded ? 'Sembunyikan' : 'Baca Selengkapnya'"></span>
+                                            <span x-text="expanded ? '{{ __('Places.ShowLess') }}' : '{{ __('Places.ReadMore') }}'"></span>
                                             <span class="material-symbols-outlined text-lg transition-transform duration-300" 
                                                   :class="expanded ? 'rotate-180' : ''">expand_more</span>
                                         </button>
@@ -137,8 +137,8 @@
                                                 <span class="material-symbols-outlined text-white text-xl">confirmation_number</span>
                                             </div>
                                             <div>
-                                                <h4 class="text-white font-bold text-base">Tiket Masuk</h4>
-                                                <p class="text-white/70 text-xs">Pilih tiket sesuai kebutuhan Anda</p>
+                                                <h4 class="text-white font-bold text-base">{{ __('Places.Ticket.Title') }}</h4>
+                                                <p class="text-white/70 text-xs">{{ __('Places.Ticket.Subtitle') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +160,7 @@
                                                                     <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-sky-100 dark:from-primary/30 dark:to-sky-900/30 flex items-center justify-center">
                                                                         <span class="material-symbols-outlined text-primary text-sm">{{ $index === 0 ? 'person' : 'child_care' }}</span>
                                                                     </div>
-                                                                    <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tiket {{ $index + 1 }}</span>
+                                                                    <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('Places.Ticket.Type') }} {{ $index + 1 }}</span>
                                                                 </div>
                                                             </div>
                                                             
@@ -173,7 +173,7 @@
                                                             @if($ticket->description)
                                                                 <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">{{ $ticket->description }}</p>
                                                             @else
-                                                                <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">Tiket masuk destinasi wisata</p>
+                                                                <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">{{ __('Places.Ticket.DescriptionDefault') }}</p>
                                                             @endif
                                                             
                                                             <!-- Divider with dots -->
@@ -186,15 +186,15 @@
                                                             <!-- Price & Action -->
                                                             <div class="flex items-end justify-between gap-3 mt-3">
                                                                 <div>
-                                                                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block mb-0.5">Harga</span>
+                                                                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block mb-0.5">{{ __('Places.Ticket.Price') }}</span>
                                                                     <div class="flex flex-col">
                                                                         <div class="flex items-baseline gap-1">
-                                                                            <span class="text-xs text-slate-500">Normal</span>
+                                                                            <span class="text-xs text-slate-500">{{ __('Places.Ticket.Normal') }}</span>
                                                                             <span class="text-lg font-extrabold text-primary dark:text-primary">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
                                                                         </div>
                                                                         @if($ticket->price_weekend)
                                                                             <div class="flex items-baseline gap-1">
-                                                                                <span class="text-[10px] text-rose-500 font-semibold">Weekend</span>
+                                                                                <span class="text-[10px] text-rose-500 font-semibold">{{ __('Places.Ticket.Weekend') }}</span>
                                                                                 <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Rp {{ number_format($ticket->price_weekend, 0, ',', '.') }}</span>
                                                                             </div>
                                                                         @endif
@@ -203,7 +203,7 @@
                                                                 <a href="{{ route('tickets.show', $ticket->id) }}" 
                                                                    class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-500 hover:from-primary/90 hover:to-sky-500/90 text-white font-bold text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
                                                                     <span class="material-symbols-outlined text-sm">shopping_cart</span>
-                                                                    Beli
+                                                                    {{ __('Places.Ticket.Buy') }}
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -215,15 +215,15 @@
                                                 <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                                                     <span class="material-symbols-outlined text-amber-500 text-xl">info</span>
                                                 </div>
-                                                <span class="block text-base font-semibold text-slate-800 dark:text-white mb-1">Hubungi Pengelola</span>
-                                                <span class="text-xs text-slate-500 dark:text-slate-400">Untuk informasi harga tiket terbaru</span>
+                                                <span class="block text-base font-semibold text-slate-800 dark:text-white mb-1">{{ __('Places.Ticket.Contact') }}</span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-400">{{ __('Places.Ticket.ContactInfo') }}</span>
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                                 <!-- Opening Hours -->
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Jam Operasional</div>
+                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">{{ __('Places.Hours') }}</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
                                         <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-xl">schedule</span>
@@ -240,7 +240,7 @@
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <span class="block text-lg leading-tight">Setiap Hari</span>
+                                                <span class="block text-lg leading-tight">{{ __('Places.Hours.Everyday') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -248,7 +248,7 @@
                                 <!-- Ownership -->
                                 @if($place->ownership_status)
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Status Kepemilikan</div>
+                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">{{ __('Places.Ownership') }}</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-sm">domain</span>
@@ -260,7 +260,7 @@
                                 <!-- Manager -->
                                 @if($place->manager)
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Pengelola</div>
+                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">{{ __('Places.Manager') }}</div>
                                     <div class="text-slate-900 dark:text-white font-semibold flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
                                             <span class="material-symbols-outlined text-sm">badge</span>
@@ -276,7 +276,7 @@
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                     <span class="w-1.5 h-6 bg-purple-500 rounded-full"></span>
-                                    Wahana & Aktivitas
+                                    {{ __('Places.Rides') }}
                                 </h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     @foreach($place->rides as $ride)
@@ -303,7 +303,7 @@
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                     <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
-                                    Fasilitas Tersedia
+                                    {{ __('Places.Facilities') }}
                                 </h3>
                                 <div class="flex flex-wrap gap-3">
                                     @foreach($place->facilities as $facility)
@@ -319,7 +319,7 @@
                             <!-- Social Media & Contact -->
                             @if($place->social_media || $place->contact_info)
                             <section class="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800">
-                                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4">Informasi Kontak & Media Sosial</h3>
+                                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4">{{ __('Places.Contact') }}</h3>
                                  <div class="flex flex-wrap gap-4">
                                     @if($place->social_media)
                                         <a href="{{ $place->social_media }}" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-pink-500 text-white font-bold hover:bg-pink-600 transition-colors shadow-lg hover:shadow-pink-500/30">
@@ -343,7 +343,7 @@
                             <section>
                                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
                                     <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                    Lokasi Peta
+                                    {{ __('Places.Map') }}
                                 </h3>
                             <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" class="block w-full h-[400px] md:h-auto md:aspect-video rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-[6px] border-white dark:border-slate-800 shadow-xl relative group">
                                     <!-- Leaflet Map Container -->
@@ -353,7 +353,7 @@
                                     <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center z-10 pointer-events-none">
                                         <div class="bg-white px-6 py-3 rounded-full shadow-2xl font-bold text-slate-900 flex items-center gap-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                                             <span class="material-symbols-outlined text-red-500">near_me</span>
-                                            Buka Google Maps
+                                            {{ __('Places.OpenMap') }}
                                         </div>
                                     </div>
                                 </a>
@@ -396,7 +396,7 @@
                         <!-- Footer Area -->
                         <div class="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800 text-center">
                             <p class="text-slate-400 text-sm">
-                                &copy; {{ date('Y') }} Dinas Pariwisata & Kebudayaan Kabupaten Jepara
+                                {{ __('Places.Footer', ['year' => date('Y')]) }}
                             </p>
                         </div>
     

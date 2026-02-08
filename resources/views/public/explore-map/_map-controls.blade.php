@@ -23,10 +23,10 @@
              <div class="flex flex-row gap-2 bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
                  <button @click="setBaseLayer('streets'); open = false" 
                          :class="currentBaseLayer === 'streets' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
-                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Jalan</button>
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">{{ __('Map.Controls.Streets') }}</button>
                  <button @click="setBaseLayer('satellite'); open = false"
                          :class="currentBaseLayer === 'satellite' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
-                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Satelit</button>
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">{{ __('Map.Controls.Satellite') }}</button>
              </div>
         </div>
     </div>
@@ -85,10 +85,10 @@
              <div class="flex flex-row gap-2 bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
                  <button @click="setBaseLayer('streets'); open = false" 
                          :class="currentBaseLayer === 'streets' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
-                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Jalan</button>
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">{{ __('Map.Controls.Streets') }}</button>
                  <button @click="setBaseLayer('satellite'); open = false"
                          :class="currentBaseLayer === 'satellite' ? 'bg-sky-500 text-white border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-transparent'"
-                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">Satelit</button>
+                         class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all active:scale-95">{{ __('Map.Controls.Satellite') }}</button>
              </div>
         </div>
     </div>

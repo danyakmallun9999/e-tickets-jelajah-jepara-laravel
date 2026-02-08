@@ -108,7 +108,7 @@
                         <!-- Image -->
                         <div class="absolute inset-0 bg-gray-200">
                             @if($place->image_path)
-                                <img src="{{ $place->image_path }}" alt="{{ $place->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <img src="{{ $place->image_path }}" alt="{{ $place->translated_name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <span class="material-symbols-outlined text-4xl">image</span>
@@ -126,9 +126,9 @@
 
                         <!-- Content -->
                         <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                            <h3 class="text-xl font-bold text-white mb-2 leading-tight drop-shadow-sm">{{ $place->name }}</h3>
+                            <h3 class="text-xl font-bold text-white mb-2 leading-tight drop-shadow-sm">{{ $place->translated_name }}</h3>
                             <p class="text-white/80 text-sm line-clamp-2 mb-4 leading-relaxed">
-                                {{ Str::limit($place->description, 80) }}
+                                {{ Str::limit($place->translated_description, 80) }}
                             </p>
                             
                             <div class="flex items-center justify-between border-t border-white/20 pt-4">

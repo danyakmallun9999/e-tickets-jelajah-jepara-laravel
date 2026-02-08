@@ -30,6 +30,7 @@ class Place extends Model
     protected $fillable = [
         'category_id',
         'name',
+        'name_en',
         'address',
         'slug',
         'description',
@@ -37,7 +38,7 @@ class Place extends Model
         'image_path',
         'latitude',
         'longitude',
-        'longitude',
+        // 'longitude', // Duplicate removed
         'opening_hours',
         'contact_info',
         'rating',
@@ -51,12 +52,30 @@ class Place extends Model
         'kecamatan',
     ];
 
-    public function getDescriptionAttribute($value)
+    // Accessor for Translated Name
+    public function getTranslatedNameAttribute()
     {
-        if (app()->getLocale() === 'en' && !empty($this->attributes['description_en'])) {
-            return $this->attributes['description_en'];
+        if (app()->getLocale() == 'en' && !empty($this->name_en)) {
+            return $this->name_en;
         }
-        return $value;
+        return $this->name;
+    }
+
+    // Accessor for Translated Description
+    // Renamed from getDescriptionAttribute to avoid conflict with raw attribute access in admin
+    // BUT we need to check if existing code relies on $place->description automatically translating.
+    // The previous implementation overrode getDescriptionAttribute.
+    // To be safe and consistent with Post, let's use explicit translated_description
+    // AND keep description as raw, OR keep the override if we want auto-magic.
+    // However, the user plan said "Update/Rename getDescriptionAttribute to getTranslatedDescriptionAttribute".
+    // So let's do that to avoid admin form issues where it shows English content in Indonesian field.
+
+    public function getTranslatedDescriptionAttribute()
+    {
+        if (app()->getLocale() == 'en' && !empty($this->description_en)) {
+            return $this->description_en;
+        }
+        return $this->description;
     }
 
     public function tickets()

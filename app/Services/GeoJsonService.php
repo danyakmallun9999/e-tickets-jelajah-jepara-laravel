@@ -20,8 +20,8 @@ class GeoJsonService
                 'type' => 'Feature',
                 'properties' => [
                     'id' => $place->id,
-                    'name' => $place->name,
-                    'description' => $place->description,
+                    'name' => $place->translated_name,
+                    'description' => $place->translated_description,
                     'image_url' => $place->image_path ? asset($place->image_path) : null,
                     'ticket_price' => $place->ticket_price,
                     'opening_hours' => $place->opening_hours,

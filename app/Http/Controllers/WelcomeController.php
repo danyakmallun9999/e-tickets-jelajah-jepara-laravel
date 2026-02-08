@@ -247,8 +247,8 @@ class WelcomeController extends Controller
             ->map(function ($place) {
                 return [
                     'id' => $place->id,
-                    'name' => $place->name,
-                    'description' => Str::limit($place->description, 50),
+                    'name' => $place->translated_name,
+                    'description' => Str::limit($place->translated_description, 50),
                     'image_url' => $place->image_path ? asset($place->image_path) : null,
                     'type' => 'Destinasi',
                     'url' => route('places.show', $place->slug),

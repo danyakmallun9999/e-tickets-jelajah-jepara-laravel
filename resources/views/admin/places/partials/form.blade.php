@@ -28,9 +28,39 @@
                 <p class="text-xs text-gray-500">Isi informasi detail mengenai lokasi ini.</p>
             </div>
 
+            <!-- English Content Section -->
+            <div class="bg-blue-50/50 border border-blue-100 overflow-hidden shadow-sm rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-sm text-blue-800 flex items-center gap-2">
+                        <img src="https://flagcdn.com/w20/gb.png" class="rounded-sm w-4">
+                        English Content
+                    </h3>
+                    <button type="button" id="auto-translate-btn" class="inline-flex items-center px-2 py-1 bg-blue-600 border border-transparent rounded text-xs font-semibold text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <i class="fa-solid fa-language mr-1"></i>
+                        Auto Translate
+                    </button>
+                </div>
+
+                <!-- English Name -->
+                <div class="mb-3">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Nama (English)</label>
+                    <input type="text" id="name_en" name="name_en" value="{{ old('name_en', $place->name_en) }}"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Automatic or manual english name...">
+                </div>
+
+                <!-- English Description -->
+                <div class="mb-0">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Deskripsi (English)</label>
+                    <textarea id="description_en" name="description_en" rows="3"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Automatic or manual english description...">{{ old('description_en', $place->description_en) }}</textarea>
+                </div>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lokasi</label>
-                <input type="text" name="name" value="{{ old('name', $place->name) }}"
+                <input type="text" id="name_id" name="name" value="{{ old('name', $place->name) }}"
                     class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     required placeholder="Contoh: Balai Desa Mayonglor">
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -61,7 +91,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                <textarea name="description" rows="4"
+                <textarea id="description_id" name="description" rows="4"
                     class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Deskripsi singkat lokasi...">{{ old('description', $place->description) }}</textarea>
                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
@@ -341,5 +371,74 @@
         </div>
     </div>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const translateBtn = document.getElementById('auto-translate-btn');
+        if (translateBtn) {
+            translateBtn.addEventListener('click', async function() {
+                const btnOriginalText = translateBtn.innerHTML;
+                translateBtn.disabled = true;
+                translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Translating...';
+
+                try {
+                    // Translate Title/Name
+                    const titleSource = document.getElementById('name_id').value;
+                    if (titleSource) {
+                        const response = await fetch('{{ route('admin.posts.translate') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                text: titleSource,
+                                source: 'id',
+                                target: 'en'
+                            })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            document.getElementById('name_en').value = data.translation;
+                        }
+                    }
+
+                    // Translate Description (Plain Text)
+                    const contentSource = document.getElementById('description_id').value;
+                    if (contentSource) {
+                        const response = await fetch('{{ route('admin.posts.translate') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                text: contentSource,
+                                source: 'id',
+                                target: 'en'
+                            })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            document.getElementById('description_en').value = data.translation;
+                        }
+                    }
+
+                    // Notify success
+                     window.dispatchEvent(new CustomEvent('notify', { 
+                        detail: { message: 'Auto translation complete!', type: 'success' } 
+                    }));
+
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    alert('Translation failed. Please try again.');
+                } finally {
+                    translateBtn.disabled = false;
+                    translateBtn.innerHTML = btnOriginalText;
+                }
+            });
+        }
+    });
+</script>
 
 

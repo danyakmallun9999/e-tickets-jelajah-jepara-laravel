@@ -131,46 +131,84 @@ class PariwisataSeeder extends Seeder
 
                 // 5. Create Tickets if price info exists
                 if ($item['harga_tiket'] !== '-' && !empty($item['harga_tiket'])) {
-                    // Try to parse price, e.g. "Rp 5000" or "5000" or multiple lines
-                    // Simple heuristic: just create one generic ticket for now or split by newlines if sophisticated
-                    // The user prompt implies we should migrate this data.
-                    
                     // Cleanup existing tickets for this place to avoid duplicates on re-seed
                     $place->tickets()->delete();
 
-                    $prices = explode("\n", $item['harga_tiket']);
-                    foreach($prices as $priceStr) {
-                        $priceStr = trim($priceStr);
-                        if (empty($priceStr)) continue;
+                    $lines = explode("\n", $item['harga_tiket']);
+                    foreach($lines as $line) {
+                        $line = trim($line);
+                        if (empty($line)) continue;
 
-                        // Extract number from string
-                        $priceValue = preg_replace('/[^0-9]/', '', $priceStr);
-                        $priceValue = (float) $priceValue;
-                        
-                        // Determine name (e.g. assume "Tiket Masuk" unless specifically named in string)
-                        $ticketName = "Tiket Masuk";
-                        if (stripos($priceStr, 'Anak') !== false) {
-                            $ticketName = "Tiket Anak";
-                        } elseif (stripos($priceStr, 'Dewasa') !== false) {
-                            $ticketName = "Tiket Dewasa";
-                        } elseif (stripos($priceStr, 'WNA') !== false) {
-                            $ticketName = "Tiket WNA";
-                        } elseif (stripos($priceStr, 'Weekend') !== false) {
-                            $ticketName = "Tiket Weekend";
+                        // Case 1: "Gratis" 
+                        if (stripos($line, 'Gratis') !== false) {
+                             \App\Models\Ticket::create([
+                                'place_id' => $place->id,
+                                'name' => 'Tiket Masuk',
+                                'description' => $line,
+                                'price' => 0,
+                                'quota' => null,
+                                'valid_days' => 1,
+                                'is_active' => true,
+                            ]);
+                            continue;
                         }
 
-                        // If price is 0, maybe don't create ticket or create free ticket?
-                        // Let's create it as 0
-                        
-                        \App\Models\Ticket::create([
-                            'place_id' => $place->id,
-                            'name' => $ticketName,
-                            'description' => $priceStr, // Keep original string as description
-                            'price' => $priceValue,
-                            'quota' => null, // Unlimited
-                            'valid_days' => 1,
-                            'is_active' => true,
-                        ]);
+                        // Case 2: Extract Price Pairs like "Dewasa Rp 10.000, Anak Rp 5.000"
+                        // Regex looks for: (Label text) (Rp) (Number with dots)
+                        if (preg_match_all('/(.*?)\s*Rp\.?\s*([\d\.]+)/iu', $line, $matches, PREG_SET_ORDER)) {
+                            foreach ($matches as $match) {
+                                $rawLabel = $match[1]; // e.g. "Hari Biasa: Dewasa" or ", Anak"
+                                $amountStr = $match[2]; // e.g. "10.000"
+                                
+                                $priceValue = (float) str_replace(['.', ','], '', $amountStr);
+
+                                // Clean up label
+                                // Remove leading/trailing punctuation (colon, comma, hyphen)
+                                $label = trim(preg_replace('/^[,\-:\s]+|[,\-:\s]+$/', '', $rawLabel));
+                                
+                                // Generate a sensible name
+                                $ticketName = "Tiket Masuk";
+                                if (!empty($label)) {
+                                    // If label is long (e.g. "Senin-Jumat"), use it.
+                                    // If label contains specific keywords, prioritize them?
+                                    // For now, just use the label if it's not too long, or fallback.
+                                    $ticketName = $label;
+                                }
+
+                                // Further refinement for very short labels like "Anak" -> "Tiket Anak"
+                                if (strtolower($ticketName) == 'anak') $ticketName = 'Tiket Anak';
+                                if (strtolower($ticketName) == 'dewasa') $ticketName = 'Tiket Dewasa';
+
+                                // Create Ticket
+                                \App\Models\Ticket::create([
+                                    'place_id' => $place->id,
+                                    'name' => Str::limit($ticketName, 50), // Ensure name fits
+                                    'description' => $line, // Use the full line as description for context
+                                    'price' => $priceValue,
+                                    'quota' => null,
+                                    'valid_days' => 1,
+                                    'is_active' => true,
+                                ]);
+                            }
+                        } else {
+                            // Case 3: Just a number found without Rp? Or simple text?
+                            // Try simplistic extraction as fallback if it's just one number
+                            // But avoid concatenating multiple numbers.
+                            // Only if we didn't find "Rp" pattern.
+                             $numbers = preg_replace('/[^0-9]/', '', $line);
+                             if (!empty($numbers) && strlen($numbers) < 9) { // Sanity check length to avoid overflow
+                                 $priceValue = (float) $numbers;
+                                 \App\Models\Ticket::create([
+                                    'place_id' => $place->id,
+                                    'name' => 'Tiket Masuk',
+                                    'description' => $line,
+                                    'price' => $priceValue,
+                                    'quota' => null,
+                                    'valid_days' => 1,
+                                    'is_active' => true,
+                                ]);
+                             }
+                        }
                     }
                 }
 

@@ -14,12 +14,12 @@
     {{-- Header Section --}}
     <div class="p-6 pb-4 border-b border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sidebar-header" style="opacity: 0; transform: translateY(-20px);">
         <div class="flex items-center gap-3">
-             <a href="{{ route('welcome') }}" class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 transition group" title="Kembali ke Beranda">
+             <a href="{{ route('welcome') }}" class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 transition group" title="{{ __('Map.BackToHome') }}">
                 <span class="material-symbols-outlined text-lg group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
              </a>
             <div>
-                <h1 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Jelajahi Jepara</h1>
-                <p class="text-xs text-slate-400">Kabupaten Jepara</p>
+                <h1 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">{{ __('Map.Title') }}</h1>
+                <p class="text-xs text-slate-400">{{ __('Map.Subtitle') }}</p>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
                 <span class="material-symbols-outlined">search</span>
             </div>
             <input class="peer h-full w-full bg-transparent border-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 text-sm" 
-                   placeholder="Cari destinasi wisata..." type="text"
+                   placeholder="{{ __('Map.SearchPlaceholder') }}" type="text"
                    x-model="searchQuery" @input.debounce.300ms="performSearch()">
         </div>
         
@@ -66,7 +66,7 @@
         
         {{-- Category Filter --}}
         <div class="mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 sidebar-categories relative z-[50]" style="opacity: 0; transform: translateY(10px);">
-            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Kategori</p>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">{{ __('Map.Category') }}</p>
             <div class="flex gap-2 flex-wrap">
                 @foreach($categories as $index => $category)
                 <button @click="toggleCategory({{ $category->id }})" 
@@ -84,14 +84,14 @@
         <div class="flex items-center justify-between mb-4">
              <div class="flex items-baseline gap-2">
                 <span class="text-2xl font-bold text-slate-800 dark:text-white" x-text="visiblePlaces.length"></span>
-                <span class="text-sm text-slate-400">Destinasi</span>
+                <span class="text-sm text-slate-400">{{ __('Nav.Destinations') }}</span>
              </div>
              
              <button @click="toggleSortNearby()" 
                      :class="sortByDistance ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
                      class="text-xs font-bold px-4 py-2 rounded-full transition-all flex items-center gap-2 active:scale-95">
                  <span class="material-symbols-outlined text-base">near_me</span>
-                 <span x-text="sortByDistance ? 'Terdekat' : 'Cari Terdekat'"></span>
+                 <span x-text="sortByDistance ? '{{ __('Map.Sort.Nearest') }}' : '{{ __('Map.Sort.SearchNearest') }}'"></span>
              </button>
         </div>
         
@@ -102,8 +102,8 @@
                      <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
                          <span class="material-symbols-outlined text-3xl text-slate-300">location_off</span>
                      </div>
-                     <p class="text-slate-500 font-medium">Tidak ada destinasi</p>
-                     <p class="text-xs text-slate-400 mt-1">Coba ubah filter kategori</p>
+                     <p class="text-slate-500 font-medium">{{ __('Map.Empty.Title') }}</p>
+                     <p class="text-xs text-slate-400 mt-1">{{ __('Map.Empty.Subtitle') }}</p>
                  </div>
              </template>
 
@@ -151,7 +151,7 @@
     
     {{-- Footer --}}
     <div class="p-4 border-t border-slate-100 dark:border-slate-800 sidebar-footer" style="opacity: 0;">
-        <p class="text-xs text-slate-400 text-center">© {{ date('Y') }} Dinas Pariwisata Kab. Jepara</p>
+        <p class="text-xs text-slate-400 text-center">{{ __('Map.Footer', ['year' => date('Y')]) }}</p>
     </div>
 </aside>
 
