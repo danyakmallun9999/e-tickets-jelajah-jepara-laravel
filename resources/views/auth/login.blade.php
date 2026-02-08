@@ -101,7 +101,7 @@
                                 @input="showError = false"
                                 class="block w-full rounded-xl border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900/50 pl-11 pr-4 py-3.5 text-text-light dark:text-text-dark placeholder:text-text-light/30 focus:border-primary focus:bg-white dark:focus:bg-stone-900 focus:ring-4 focus:ring-primary/10 sm:text-sm transition-all shadow-sm group-hover:border-stone-300 dark:group-hover:border-stone-600"
                                 :class="showError ? 'border-red-300 bg-red-50/50' : ''"
-                                placeholder="admin@jepara.go.id">
+                                placeholder="masukkan email">
                         </div>
                     </div>
 
