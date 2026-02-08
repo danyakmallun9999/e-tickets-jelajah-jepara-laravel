@@ -31,7 +31,14 @@ class EventController extends Controller
 
         $events = $query->latest('start_date')->paginate(10);
 
-        return view('admin.events.index', compact('events'));
+        // Stats for the dashboard
+        $stats = [
+            'total' => Event::count(),
+            'published' => Event::where('is_published', true)->count(),
+            'upcoming' => Event::where('start_date', '>=', now())->count(),
+        ];
+
+        return view('admin.events.index', compact('events', 'stats'));
     }
 
     public function create(): View

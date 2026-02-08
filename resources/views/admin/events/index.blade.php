@@ -25,8 +25,9 @@
                             <i class="fa-solid fa-calendar-days text-violet-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ $events->total() }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
                             <p class="text-sm text-gray-500">Total Event</p>
+                            <p class="text-xs text-gray-400">Semua data tersimpan</p>
                         </div>
                     </div>
                 </div>
@@ -36,8 +37,9 @@
                             <i class="fa-solid fa-check-circle text-emerald-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ $events->where('is_published', true)->count() }}</p>
-                            <p class="text-sm text-gray-500">Published</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $stats['published'] }}</p>
+                            <p class="text-sm text-gray-500">Dipublikasikan</p>
+                            <p class="text-xs text-gray-400">Tampil di kalender publik</p>
                         </div>
                     </div>
                 </div>
@@ -47,8 +49,9 @@
                             <i class="fa-solid fa-clock text-amber-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ $events->where('start_date', '>=', now())->count() }}</p>
-                            <p class="text-sm text-gray-500">Upcoming</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $stats['upcoming'] }}</p>
+                            <p class="text-sm text-gray-500">Akan Datang</p>
+                            <p class="text-xs text-gray-400">Event mulai hari ini atau nanti</p>
                         </div>
                     </div>
                 </div>

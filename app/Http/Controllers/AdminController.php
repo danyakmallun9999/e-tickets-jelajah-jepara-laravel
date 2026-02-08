@@ -60,7 +60,14 @@ class AdminController extends Controller
 
         $places = $query->paginate(10);
 
-        return view('admin.places.index', compact('places'));
+        // Stats for the dashboard - query database directly for accurate totals
+        $stats = [
+            'total' => Place::count(),
+            'avg_rating' => Place::avg('rating') ?? 0,
+            'with_photo' => Place::whereNotNull('image_path')->where('image_path', '!=', '')->count(),
+        ];
+
+        return view('admin.places.index', compact('places', 'stats'));
     }
 
     public function create(): View

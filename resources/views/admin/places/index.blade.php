@@ -25,8 +25,9 @@
                             <i class="fa-solid fa-map-location-dot text-blue-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ $places->total() }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
                             <p class="text-sm text-gray-500">Total Lokasi</p>
+                            <p class="text-xs text-gray-400">Semua destinasi</p>
                         </div>
                     </div>
                 </div>
@@ -36,8 +37,9 @@
                             <i class="fa-solid fa-star text-green-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ number_format($places->avg('rating') ?? 0, 1) }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['avg_rating'], 1) }}</p>
                             <p class="text-sm text-gray-500">Rata-rata Rating</p>
+                            <p class="text-xs text-gray-400">Dari semua lokasi</p>
                         </div>
                     </div>
                 </div>
@@ -47,8 +49,9 @@
                             <i class="fa-solid fa-images text-purple-600 text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gray-900">{{ $places->filter(fn($p) => $p->image_path)->count() }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $stats['with_photo'] }}</p>
                             <p class="text-sm text-gray-500">Dengan Foto</p>
+                            <p class="text-xs text-gray-400">Sudah ada gambar</p>
                         </div>
                     </div>
                 </div>
