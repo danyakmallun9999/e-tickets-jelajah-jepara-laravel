@@ -8,7 +8,7 @@
                 </h2>
             </div>
             <a href="{{ route('admin.events.create') }}" 
-               class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm rounded-xl hover:from-violet-700 hover:to-purple-700 focus:ring-4 focus:ring-violet-500/25 transition-all shadow-lg shadow-violet-500/25">
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm rounded-xl hover:from-violet-700 hover:to-purple-700 focus:ring-4 focus:ring-violet-500/25 transition-all">
                 <i class="fa-solid fa-plus"></i>
                 <span>Tambah Event</span>
             </a>
@@ -130,7 +130,14 @@
                                             @endif
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="text-sm font-bold text-gray-900 line-clamp-1">{{ $event->title }}</p>
+                                            <div class="flex items-center gap-2">
+                                                <p class="text-sm font-bold text-gray-900 line-clamp-1">{{ $event->title }}</p>
+                                                @if($event->title_en || $event->description_en)
+                                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 bg-blue-50 rounded" title="Tersedia dalam Bahasa Inggris">
+                                                        <i class="fa-solid fa-language"></i> EN
+                                                    </span>
+                                                @endif
+                                            </div>
                                             <p class="text-xs text-gray-500 line-clamp-1 mt-0.5 max-w-xs">{{ Str::limit(strip_tags($event->description), 60) }}</p>
                                         </div>
                                     </div>

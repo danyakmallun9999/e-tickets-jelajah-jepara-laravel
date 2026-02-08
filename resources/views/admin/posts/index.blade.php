@@ -143,7 +143,14 @@
                                                     @endif
                                                 </div>
                                                 <div class="min-w-0 flex-1">
-                                                    <div class="text-sm font-bold text-gray-900 line-clamp-1 mb-1 group-hover:text-blue-600 transition-colors">{{ $post->title }}</div>
+                                                    <div class="flex items-center gap-2 mb-1">
+                                                        <div class="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ $post->title }}</div>
+                                                        @if($post->title_en || $post->content_en)
+                                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 bg-blue-50 rounded" title="Tersedia dalam Bahasa Inggris">
+                                                                <i class="fa-solid fa-language"></i> EN
+                                                            </span>
+                                                        @endif
+                                                    </div>
                                                     <div class="text-xs text-gray-500 line-clamp-1 max-w-md">{{ Str::limit(strip_tags($post->content), 80) }}</div>
                                                     @if($post->author)
                                                         <div class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
