@@ -60,7 +60,7 @@
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-white">
                     @isset($header)
                         <header class="bg-white sticky top-0 z-20 h-20 flex items-center border-b border-gray-200">
-                            <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="w-full px-4 sm:px-6 lg:px-8">
                                 {{ $header }}
                             </div>
                         </header>
