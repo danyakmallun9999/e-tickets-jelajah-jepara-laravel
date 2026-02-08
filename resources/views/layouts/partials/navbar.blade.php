@@ -23,7 +23,7 @@
                     </div>
                     <div>
                         <h2 class="text-2xl font-bold leading-none tracking-tight text-slate-600 dark:text-white group-hover:text-primary transition-colors font-['Caveat']">
-                            Jelajah Jepara
+                            {{ __('Nav.AppName') }}
                         </h2>
                     </div>
                 </a>
