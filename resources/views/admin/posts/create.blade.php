@@ -60,8 +60,6 @@
                             </div>
                         </div>
 
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hidden">
-
                         <!-- TinyMCE Initialization -->
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
@@ -123,89 +121,77 @@
                                         xhr.send(formData);
                                     })
                                 });
-                            // Auto Translate Logic
-                            const translateBtn = document.getElementById('auto-translate-btn');
-                            
-                            if(translateBtn) {
-                                translateBtn.addEventListener('click', async function() {
-                                    const titleId = document.getElementById('title').value;
-                                    const contentId = tinymce.get('content').getContent({format: 'text'}); // Get plain text for better translation, or 'html' if using advanced logic
-                                    // Note: for HTML content, Google Translate API often handles tags better, but free library might be cleaner with text-only paragraphs. 
-                                    // For now, let's try sending HTML but be aware of structure. 
-                                    const contentIdHtml = tinymce.get('content').getContent();
 
-                                    if(!titleId && !contentIdHtml) {
-                                        alert('Isi judul atau konten bahasa Indonesia terlebih dahulu.');
-                                        return;
-                                    }
+                                // Auto Translate Logic
+                                const translateBtn = document.getElementById('auto-translate-btn');
+                                
+                                if(translateBtn) {
+                                    translateBtn.addEventListener('click', async function() {
+                                        const titleId = document.getElementById('title').value;
+                                        const contentIdHtml = tinymce.get('content').getContent();
 
-                                    // Disable button
-                                    const originalText = translateBtn.innerHTML;
-                                    translateBtn.disabled = true;
-                                    translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Translating...';
-
-                                    try {
-                                        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                                        
-                                        // Translate Title
-                                        if(titleId) {
-                                            const responseTitle = await fetch('{{ route('admin.posts.translate') }}', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRF-TOKEN': token
-                                                },
-                                                body: JSON.stringify({ text: titleId, source: 'id', target: 'en' })
-                                            });
-                                            const dataTitle = await responseTitle.json();
-                                            if(dataTitle.success) {
-                                                document.getElementById('title_en').value = dataTitle.translation;
-                                            }
+                                        if(!titleId && !contentIdHtml) {
+                                            alert('Isi judul atau konten bahasa Indonesia terlebih dahulu.');
+                                            return;
                                         }
 
-                                        // Translate Content
-                                        if(contentIdHtml) {
-                                            // Sending raw HTML to translation might break tags with this library. 
-                                            // Better approach for full HTML is usually paid API. 
-                                            // For this free tool, we will try to translate, but complex HTML might get messy.
-                                            // Alternative: Translate text only? No, we need formatting.
-                                            // Let's rely on the library's ability to handle some tags or just basic text.
-                                            // Actually, `stichoza/google-translate-php` creates a fresh instance which might strip tags if not careful, 
-                                            // but let's try sending the HTML. If it fails, users can edit.
+                                        // Disable button
+                                        const originalText = translateBtn.innerHTML;
+                                        translateBtn.disabled = true;
+                                        translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Translating...';
+
+                                        try {
+                                            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                                             
-                                            const responseContent = await fetch('{{ route('admin.posts.translate') }}', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRF-TOKEN': token
-                                                },
-                                                body: JSON.stringify({ text: contentIdHtml, source: 'id', target: 'en' })
-                                            });
-                                            const dataContent = await responseContent.json();
-                                            if(dataContent.success) {
-                                                tinymce.get('content_en').setContent(dataContent.translation);
+                                            // Translate Title
+                                            if(titleId) {
+                                                const responseTitle = await fetch('{{ route('admin.posts.translate') }}', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'X-CSRF-TOKEN': token
+                                                    },
+                                                    body: JSON.stringify({ text: titleId, source: 'id', target: 'en' })
+                                                });
+                                                const dataTitle = await responseTitle.json();
+                                                if(dataTitle.success) {
+                                                    document.getElementById('title_en').value = dataTitle.translation;
+                                                }
                                             }
-                                        }
-                                        
-                                        // Success visual feedback
-                                        translateBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Done!';
-                                        setTimeout(() => {
+
+                                            // Translate Content
+                                            if(contentIdHtml) {
+                                                const responseContent = await fetch('{{ route('admin.posts.translate') }}', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'X-CSRF-TOKEN': token
+                                                    },
+                                                    body: JSON.stringify({ text: contentIdHtml, source: 'id', target: 'en' })
+                                                });
+                                                const dataContent = await responseContent.json();
+                                                if(dataContent.success) {
+                                                    tinymce.get('content_en').setContent(dataContent.translation);
+                                                }
+                                            }
+                                            
+                                            // Success visual feedback
+                                            translateBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Done!';
+                                            setTimeout(() => {
+                                                translateBtn.disabled = false;
+                                                translateBtn.innerHTML = originalText;
+                                            }, 2000);
+
+                                        } catch (error) {
+                                            console.error('Translation error:', error);
+                                            alert('Gagal melakukan translasi otomatis. Cek konsol untuk detail.');
                                             translateBtn.disabled = false;
                                             translateBtn.innerHTML = originalText;
-                                        }, 2000);
-
-                                    } catch (error) {
-                                        console.error('Translation error:', error);
-                                        alert('Gagal melakukan translasi otomatis. Cek konsol untuk detail.');
-                                        translateBtn.disabled = false;
-                                        translateBtn.innerHTML = originalText;
-                                    }
-                                });
-                            }
-                        });
-
-                        <!-- SEO / Meta (Optional, can be expanded later) -->
-
+                                        }
+                                    });
+                                }
+                            });
+                        </script>
                     </div>
 
                     <!-- Right Column: Sidebar settings -->

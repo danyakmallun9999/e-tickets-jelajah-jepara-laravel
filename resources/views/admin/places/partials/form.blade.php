@@ -404,8 +404,8 @@
     </div>
 
     <!-- Right Side: Map (60%) -->
-    <div class="w-3/5 bg-gray-100 flex flex-col">
-        <div class="flex-1 p-3">
+    <div class="w-3/5 bg-gray-100 relative">
+        <div class="absolute inset-0 p-4">
             @include('admin.components.map-drawer', [
                 'drawType' => 'point',
                 'initialGeometry' => old('geometry', $initialGeometry),
