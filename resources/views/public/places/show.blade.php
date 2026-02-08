@@ -128,30 +128,104 @@
     
                             <!-- Key Information Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Ticket -->
-                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
-                                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Tiket Masuk</div>
-                                    <div class="text-slate-900 dark:text-white font-semibold flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary dark:text-primary">
-                                            <span class="material-symbols-outlined text-xl">confirmation_number</span>
+                                <!-- Ticket Section - Premium Design -->
+                                <div class="md:col-span-2 rounded-2xl bg-gradient-to-br from-primary/5 via-white to-sky-50/50 dark:from-primary/10 dark:via-slate-900 dark:to-slate-900 border border-primary/20 dark:border-primary/30 overflow-hidden">
+                                    <!-- Header -->
+                                    <div class="px-5 py-4 bg-gradient-to-r from-primary to-sky-500 dark:from-primary dark:to-sky-600">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-white text-xl">confirmation_number</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-white font-bold text-base">Tiket Masuk</h4>
+                                                <p class="text-white/70 text-xs">Pilih tiket sesuai kebutuhan Anda</p>
+                                            </div>
                                         </div>
-                                        <div class="min-w-0 flex-1 pt-1">
-                                            @if($place->ticket_price)
-                                                <div class="flex flex-col gap-1.5">
+                                    </div>
+                                    
+                                    <!-- Ticket Cards -->
+                                    <div class="p-5">
+                                        @if($place->activeTickets->isNotEmpty())
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                @foreach($place->activeTickets as $index => $ticket)
+                                                    <div class="group relative bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden hover:shadow-lg hover:shadow-primary/10 hover:border-primary/40 transition-all duration-300">
+                                                        <!-- Decorative Element -->
+                                                        <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                                                        
+                                                        <!-- Ticket Content -->
+                                                        <div class="relative p-4">
+                                                            <!-- Ticket Type Badge -->
+                                                            <div class="flex items-start justify-between mb-3">
+                                                                <div class="flex items-center gap-2">
+                                                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-sky-100 dark:from-primary/30 dark:to-sky-900/30 flex items-center justify-center">
+                                                                        <span class="material-symbols-outlined text-primary text-sm">{{ $index === 0 ? 'person' : 'child_care' }}</span>
+                                                                    </div>
+                                                                    <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tiket {{ $index + 1 }}</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Ticket Name -->
+                                                            <h5 class="font-bold text-slate-800 dark:text-white text-base mb-1 leading-snug group-hover:text-primary transition-colors">
+                                                                {{ $ticket->name }}
+                                                            </h5>
+                                                            
+                                                            <!-- Description -->
+                                                            @if($ticket->description)
+                                                                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">{{ $ticket->description }}</p>
+                                                            @else
+                                                                <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">Tiket masuk destinasi wisata</p>
+                                                            @endif
+                                                            
+                                                            <!-- Divider with dots -->
+                                                            <div class="relative my-3">
+                                                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-100 dark:bg-slate-900 rounded-r-full"></div>
+                                                                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-100 dark:bg-slate-900 rounded-l-full"></div>
+                                                                <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-600 mx-4"></div>
+                                                            </div>
+                                                            
+                                                            <!-- Price & Action -->
+                                                            <div class="flex items-end justify-between gap-3 mt-3">
+                                                                <div>
+                                                                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block mb-0.5">Harga</span>
+                                                                    <div class="flex items-baseline gap-1">
+                                                                        <span class="text-xs text-slate-500">Rp</span>
+                                                                        <span class="text-xl font-extrabold text-primary dark:text-primary">{{ number_format($ticket->price, 0, ',', '.') }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <a href="{{ route('tickets.show', $ticket->id) }}" 
+                                                                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-500 hover:from-primary/90 hover:to-sky-500/90 text-white font-bold text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+                                                                    <span class="material-symbols-outlined text-sm">shopping_cart</span>
+                                                                    Beli
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @elseif($place->ticket_price)
+                                            <div class="bg-white dark:bg-slate-800/80 rounded-xl p-4 border border-slate-200/80 dark:border-slate-700/50">
+                                                <div class="flex flex-col gap-2">
                                                     @foreach(explode("\n", $place->ticket_price) as $price)
                                                         @if(trim($price))
-                                                            <div class="relative pl-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-                                                                <span class="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-primary/60"></span>
-                                                                {{ trim($price) }}
+                                                            <div class="flex items-center gap-3 py-2 border-b border-dashed border-slate-100 dark:border-slate-700 last:border-0">
+                                                                <span class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                                                    <span class="material-symbols-outlined text-primary text-xs">sell</span>
+                                                                </span>
+                                                                <span class="text-sm text-slate-700 dark:text-slate-200 font-medium">{{ trim($price) }}</span>
                                                             </div>
                                                         @endif
                                                     @endforeach
                                                 </div>
-                                            @else
-                                                <span class="block text-lg leading-tight">Hubungi Pengelola</span>
-                                                <span class="text-xs text-slate-500 font-normal">Harga dapat berubah sewaktu-waktu</span>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @else
+                                            <div class="bg-white dark:bg-slate-800/80 rounded-xl p-5 border border-slate-200/80 dark:border-slate-700/50 text-center">
+                                                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                                                    <span class="material-symbols-outlined text-amber-500 text-xl">info</span>
+                                                </div>
+                                                <span class="block text-base font-semibold text-slate-800 dark:text-white mb-1">Hubungi Pengelola</span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-400">Untuk informasi harga tiket terbaru</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <!-- Opening Hours -->

@@ -59,6 +59,16 @@ class Place extends Model
         return $value;
     }
 
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function activeTickets()
+    {
+        return $this->tickets()->where('is_active', true);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
