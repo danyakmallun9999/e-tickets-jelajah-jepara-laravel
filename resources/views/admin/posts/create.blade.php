@@ -15,20 +15,52 @@
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <!-- Title -->
                             <div class="mb-4">
-                                <x-input-label for="title" :value="__('Judul Article / Event')" class="text-lg font-bold" />
+                                <x-input-label for="title" :value="__('Judul Article / Event (Bahasa Indonesia)')" class="text-lg font-bold" />
                                 <x-text-input id="title" class="block mt-1 w-full text-lg" type="text" name="title" :value="old('title')" required autofocus placeholder="Masukkan judul yang menarik..." />
                                 <x-input-error :messages="$errors->get('title')" class="mt-2" />
                             </div>
 
                             <!-- Content -->
                             <div class="mb-4">
-                                <x-input-label for="content" :value="__('Isi Konten')" />
+                                <x-input-label for="content" :value="__('Isi Konten (Bahasa Indonesia)')" />
                                 <div class="mt-1">
                                     <textarea id="content" name="content" class="block w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 settings-tiny">{{ old('content') }}</textarea>
                                 </div>
                                 <x-input-error :messages="$errors->get('content')" class="mt-2" />
                             </div>
                         </div>
+
+                        <!-- English Content Section -->
+                        <div class="bg-blue-50/50 border border-blue-100 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-lg text-blue-800 flex items-center gap-2">
+                                    <img src="https://flagcdn.com/w20/gb.png" class="rounded-sm">
+                                    English Content (Optional)
+                                </h3>
+                                <button type="button" id="auto-translate-btn" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                    <i class="fa-solid fa-language mr-1.5"></i>
+                                    Auto Translate
+                                </button>
+                            </div>
+
+                            <!-- English Title -->
+                            <div class="mb-4">
+                                <x-input-label for="title_en" :value="__('Judul (English)')" />
+                                <x-text-input id="title_en" class="block mt-1 w-full" type="text" name="title_en" :value="old('title_en')" placeholder="Automatic or manual english title..." />
+                                <x-input-error :messages="$errors->get('title_en')" class="mt-2" />
+                            </div>
+
+                            <!-- English Content -->
+                            <div class="mb-4">
+                                <x-input-label for="content_en" :value="__('Isi Konten (English)')" />
+                                <div class="mt-1">
+                                    <textarea id="content_en" name="content_en" class="block w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 settings-tiny">{{ old('content_en') }}</textarea>
+                                </div>
+                                <x-input-error :messages="$errors->get('content_en')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hidden">
 
                         <!-- TinyMCE Initialization -->
                         <script>
@@ -91,8 +123,86 @@
                                         xhr.send(formData);
                                     })
                                 });
-                            });
-                        </script>
+                            // Auto Translate Logic
+                            const translateBtn = document.getElementById('auto-translate-btn');
+                            
+                            if(translateBtn) {
+                                translateBtn.addEventListener('click', async function() {
+                                    const titleId = document.getElementById('title').value;
+                                    const contentId = tinymce.get('content').getContent({format: 'text'}); // Get plain text for better translation, or 'html' if using advanced logic
+                                    // Note: for HTML content, Google Translate API often handles tags better, but free library might be cleaner with text-only paragraphs. 
+                                    // For now, let's try sending HTML but be aware of structure. 
+                                    const contentIdHtml = tinymce.get('content').getContent();
+
+                                    if(!titleId && !contentIdHtml) {
+                                        alert('Isi judul atau konten bahasa Indonesia terlebih dahulu.');
+                                        return;
+                                    }
+
+                                    // Disable button
+                                    const originalText = translateBtn.innerHTML;
+                                    translateBtn.disabled = true;
+                                    translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Translating...';
+
+                                    try {
+                                        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                                        
+                                        // Translate Title
+                                        if(titleId) {
+                                            const responseTitle = await fetch('{{ route('admin.posts.translate') }}', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': token
+                                                },
+                                                body: JSON.stringify({ text: titleId, source: 'id', target: 'en' })
+                                            });
+                                            const dataTitle = await responseTitle.json();
+                                            if(dataTitle.success) {
+                                                document.getElementById('title_en').value = dataTitle.translation;
+                                            }
+                                        }
+
+                                        // Translate Content
+                                        if(contentIdHtml) {
+                                            // Sending raw HTML to translation might break tags with this library. 
+                                            // Better approach for full HTML is usually paid API. 
+                                            // For this free tool, we will try to translate, but complex HTML might get messy.
+                                            // Alternative: Translate text only? No, we need formatting.
+                                            // Let's rely on the library's ability to handle some tags or just basic text.
+                                            // Actually, `stichoza/google-translate-php` creates a fresh instance which might strip tags if not careful, 
+                                            // but let's try sending the HTML. If it fails, users can edit.
+                                            
+                                            const responseContent = await fetch('{{ route('admin.posts.translate') }}', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': token
+                                                },
+                                                body: JSON.stringify({ text: contentIdHtml, source: 'id', target: 'en' })
+                                            });
+                                            const dataContent = await responseContent.json();
+                                            if(dataContent.success) {
+                                                tinymce.get('content_en').setContent(dataContent.translation);
+                                            }
+                                        }
+                                        
+                                        // Success visual feedback
+                                        translateBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Done!';
+                                        setTimeout(() => {
+                                            translateBtn.disabled = false;
+                                            translateBtn.innerHTML = originalText;
+                                        }, 2000);
+
+                                    } catch (error) {
+                                        console.error('Translation error:', error);
+                                        alert('Gagal melakukan translasi otomatis. Cek konsol untuk detail.');
+                                        translateBtn.disabled = false;
+                                        translateBtn.innerHTML = originalText;
+                                    }
+                                });
+                            }
+                        });
 
                         <!-- SEO / Meta (Optional, can be expanded later) -->
 

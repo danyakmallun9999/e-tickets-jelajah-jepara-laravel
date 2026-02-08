@@ -9,13 +9,13 @@
                 <span>/</span>
                 <a href="{{ route('posts.index') }}" class="text-gray-400 hover:text-primary transition-colors">{{ __('Nav.News') }}</a>
                 <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 truncate max-w-[200px]">{{ $post->title }}</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate max-w-[200px]">{{ $post->translated_title }}</span>
             </nav>
 
             <!-- Header Section -->
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-6 tracking-tight font-serif">
-                    {{ $post->title }}
+                    {{ $post->translated_title }}
                 </h1>
                 
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6 border-b border-gray-100 dark:border-gray-800 pb-8 mb-8">
@@ -27,7 +27,7 @@
                         <div class="text-left">
                             <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $post->author ?? __('News.Header.Department') }}</p>
                             <p class="text-xs text-gray-500">
-                                Published {{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }} • {{ ceil(str_word_count(strip_tags($post->content)) / 200) }} {{ __('News.ReadTime') }}
+                                Published {{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }} • {{ ceil(str_word_count(strip_tags($post->translated_content)) / 200) }} {{ __('News.ReadTime') }}
                             </p>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                     <!-- Share Buttons -->
                     <div class="flex items-center gap-3">
                         <span class="text-sm text-gray-500 mr-2 hidden md:inline">Share:</span>
-                        <x-share-modal :url="route('posts.show', $post)" :title="$post->title" :text="Str::limit(strip_tags($post->content), 100)">
+                        <x-share-modal :url="route('posts.show', $post)" :title="$post->translated_title" :text="Str::limit(strip_tags($post->translated_content), 100)">
                             <button class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Bagikan artikel ini">
                                 <i class="fa-solid fa-share-nodes"></i>
                             </button>
@@ -51,7 +51,7 @@
 
             <!-- Hero Image -->
             <div class="relative w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden mb-12 shadow-2xl">
-                <img src="{{ asset($post->image_path) }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
+                <img src="{{ asset($post->image_path) }}" alt="{{ $post->translated_title }}" class="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                 <!-- Image Credit -->
                 @if($post->image_credit)
@@ -69,7 +69,7 @@
 
                     <!-- Article Body -->
                     <article class="tinymce-content text-gray-700 dark:text-gray-300">
-                        {!! $post->content !!}
+                        {!! $post->translated_content !!}
                     </article>
 
                     <!-- Tags -->
@@ -101,7 +101,7 @@
                                         {{ $related->published_at ? $related->published_at->format('M d, Y') : '' }}
                                     </span>
                                     <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-primary transition-colors line-clamp-2">
-                                        {{ $related->title }}
+                                        {{ $related->translated_title }}
                                     </h4>
                                 </div>
                             </a>

@@ -25,7 +25,7 @@
             <!-- Featured Post -->
             <div class="mb-16">
                 <a href="{{ route('posts.show', $featuredPost) }}" class="group block relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[2/1]">
-                    <img src="{{ asset($featuredPost->image_path) }}" alt="{{ $featuredPost->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <img src="{{ asset($featuredPost->image_path) }}" alt="{{ $featuredPost->translated_title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
                     <div class="absolute bottom-0 left-0 right-0 p-6 md:p-12 lg:p-16">
@@ -34,10 +34,10 @@
                                 {{ __('News.FeaturedBadge') }}
                             </span>
                             <h2 class="text-2xl md:text-5xl font-black text-white leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
-                                {{ $featuredPost->title }}
+                                {{ $featuredPost->translated_title }}
                             </h2>
                             <p class="text-gray-200 text-sm md:text-xl line-clamp-2 mb-6 max-w-2xl">
-                                {{ Str::limit(strip_tags($featuredPost->content), 150) }}
+                                {{ Str::limit(strip_tags($featuredPost->translated_content), 150) }}
                             </p>
                             
                             <div class="flex items-center gap-4 text-white/80 text-sm">
@@ -79,12 +79,12 @@
                         
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight mb-3 group-hover:text-primary transition-colors">
                             <a href="{{ route('posts.show', $post) }}">
-                                {{ $post->title }}
+                                {{ $post->translated_title }}
                             </a>
                         </h3>
                         
                         <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
-                            {{ Str::limit(strip_tags($post->content), 120) }}
+                            {{ Str::limit(strip_tags($post->translated_content), 120) }}
                         </p>
                         
                         <a href="{{ route('posts.show', $post) }}" class="inline-flex items-center text-sm font-bold text-primary group-hover:underline decoration-2 underline-offset-4">

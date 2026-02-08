@@ -19,10 +19,28 @@ class Post extends Model
         'is_published',
         'author',
         'image_credit',
+        'title_en',
+        'content_en',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
         'is_published' => 'boolean',
     ];
+
+    public function getTranslatedTitleAttribute()
+    {
+        if (app()->getLocale() == 'en' && !empty($this->title_en)) {
+            return $this->title_en;
+        }
+        return $this->title;
+    }
+
+    public function getTranslatedContentAttribute()
+    {
+        if (app()->getLocale() == 'en' && !empty($this->content_en)) {
+            return $this->content_en;
+        }
+        return $this->content;
+    }
 }

@@ -17,7 +17,7 @@
                         <div class="absolute top-3 left-3 {{ $post->type == 'event' ? 'bg-purple-600' : 'bg-blue-600' }} text-white text-xs font-bold px-3 py-1 rounded-full z-10 uppercase">
                             {{ $post->type == 'event' ? __('News.Type.Agenda') : __('News.Type.News') }}
                         </div>
-                        <img alt="{{ $post->title }}"
+                        <img alt="{{ $post->translated_title }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             src="{{ $post->image_path }}" />
                     </div>
@@ -27,10 +27,10 @@
                             <span>{{ $post->published_at ? $post->published_at->format('d M Y') : '-' }}</span>
                         </div>
                         <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2 leading-tight line-clamp-2">
-                            {{ $post->title }}
+                            {{ $post->translated_title }}
                         </h3>
                         <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">
-                            {{ Str::limit(strip_tags($post->content), 100) }}
+                            {{ Str::limit(strip_tags($post->translated_content), 100) }}
                         </p>
                         <div class="mt-auto">
                             <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}">{{ __('News.Button.ReadMore') }}</a>
