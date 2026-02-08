@@ -64,8 +64,31 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                <form method="POST" action="{{ route('login') }}" class="space-y-6" x-data="{ showError: {{ $errors->has('email') ? 'true' : 'false' }} }">
                     @csrf
+
+                    <!-- Error Alert - Above Form Fields -->
+                    @error('email')
+                    <div x-show="showError"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-4"
+                         class="flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 shadow-sm">
+                        <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-red-500 dark:text-red-400">error</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-red-700 dark:text-red-300">Login Gagal</p>
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-0.5">{{ $message }}</p>
+                        </div>
+                        <button type="button" @click="showError = false" class="text-red-400 hover:text-red-600 transition-colors p-1">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
+                    @enderror
 
                     <!-- Email Address -->
                     <div class="space-y-2">
@@ -75,14 +98,11 @@
                                 <span class="material-symbols-outlined">mail</span>
                             </div>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" 
+                                @input="showError = false"
                                 class="block w-full rounded-xl border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900/50 pl-11 pr-4 py-3.5 text-text-light dark:text-text-dark placeholder:text-text-light/30 focus:border-primary focus:bg-white dark:focus:bg-stone-900 focus:ring-4 focus:ring-primary/10 sm:text-sm transition-all shadow-sm group-hover:border-stone-300 dark:group-hover:border-stone-600"
+                                :class="showError ? 'border-red-300 bg-red-50/50' : ''"
                                 placeholder="admin@jepara.go.id">
                         </div>
-                        @error('email')
-                            <p class="text-sm text-red-600 flex items-center gap-1 mt-1">
-                                <span class="material-symbols-outlined text-base">error</span> {{ $message }}
-                            </p>
-                        @enderror
                     </div>
 
                     <!-- Password -->
