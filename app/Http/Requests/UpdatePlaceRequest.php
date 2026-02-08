@@ -26,9 +26,11 @@ class UpdatePlaceRequest extends FormRequest
 
         $rules = [
             'name' => ['required', 'string', 'max:255'],
+            'name_en' => ['nullable', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
             'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'description_en' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'max:2048'],
             'geometry' => ['nullable', 'string'],
             'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],

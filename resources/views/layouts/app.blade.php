@@ -67,7 +67,7 @@
                     @endisset
 
                     @if(isset($slot) && $slot->isNotEmpty())
-                        @if(isset($attributes) && $attributes->get('full-width'))
+                        @if($fullWidth ?? false)
                             {{ $slot }}
                         @else
                             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -75,7 +75,7 @@
                             </div>
                         @endif
                     @else
-                        @if(isset($attributes) && $attributes->get('full-width'))
+                        @if($fullWidth ?? false)
                             @yield('content')
                         @else
                             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">

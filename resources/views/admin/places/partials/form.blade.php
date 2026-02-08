@@ -12,355 +12,400 @@
     }
 @endphp
 
-
-
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data" class="flex h-[calc(100vh-80px)]">
     @csrf
     @if ($method !== 'POST')
         @method($method)
     @endif
 
-    <!-- Left Sidebar: Form Inputs -->
-    <div class="w-96 min-w-[380px] bg-white border-r border-gray-200 flex flex-col z-10">
-        <div class="flex-1 overflow-y-auto p-6 space-y-6">
-            <div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-1">Detail Lokasi</h3>
-                <p class="text-xs text-gray-500">Isi informasi detail mengenai lokasi ini.</p>
+    <!-- Left Side: Form Inputs (40%) -->
+    <div class="w-2/5 bg-white border-r border-gray-200 flex flex-col z-10">
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <div class="sticky top-0 z-10 bg-white border-b border-gray-100 px-5 py-3">
+                <h3 class="text-base font-bold text-gray-900">Detail Lokasi</h3>
+                <p class="text-xs text-gray-500">Lengkapi informasi detail lokasi wisata</p>
             </div>
 
-            <!-- English Content Section -->
-            <div class="bg-blue-50/50 border border-blue-100 overflow-hidden shadow-sm rounded-lg p-4">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-sm text-blue-800 flex items-center gap-2">
-                        <img src="https://flagcdn.com/w20/gb.png" class="rounded-sm w-4">
-                        English Content
-                    </h3>
-                    <button type="button" id="auto-translate-btn" class="inline-flex items-center px-2 py-1 bg-blue-600 border border-transparent rounded text-xs font-semibold text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        <i class="fa-solid fa-language mr-1"></i>
-                        Auto Translate
-                    </button>
+            <div class="p-5 space-y-5">
+                <!-- Basic Information Section -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-800 flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <i class="fa-solid fa-circle-info text-indigo-500 text-xs"></i>
+                        Informasi Dasar
+                    </h4>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Nama Lokasi <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="name_id" name="name" 
+                               value="{{ old('name', $place->name) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               required placeholder="Contoh: Pantai Kartini">
+                        <x-input-error :messages="$errors->get('name')" class="mt-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Kategori <span class="text-red-500">*</span>
+                        </label>
+                        <select name="category_id"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                required>
+                            <option value="">Pilih kategori</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(old('category_id', $place->category_id) == $category->id)>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('category_id')" class="mt-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Alamat Lengkap
+                        </label>
+                        <input type="text" name="address" 
+                               value="{{ old('address', $place->address) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               placeholder="Alamat lengkap lokasi...">
+                        <x-input-error :messages="$errors->get('address')" class="mt-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Deskripsi
+                        </label>
+                        <textarea id="description_id" name="description" rows="3"
+                                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                  placeholder="Deskripsi singkat lokasi...">{{ old('description', $place->description) }}</textarea>
+                        <x-input-error :messages="$errors->get('description')" class="mt-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Rating (0-5)
+                        </label>
+                        <input type="number" step="0.1" min="0" max="5" name="rating" 
+                               value="{{ old('rating', $place->rating) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               placeholder="0.0">
+                    </div>
                 </div>
 
-                <!-- English Name -->
-                <div class="mb-3">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Nama (English)</label>
-                    <input type="text" id="name_en" name="name_en" value="{{ old('name_en', $place->name_en) }}"
-                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Automatic or manual english name...">
+                <!-- English Translation Section -->
+                <div class="rounded-xl border border-blue-200 bg-blue-50/50 p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-blue-800 flex items-center gap-2">
+                            <i class="fa-solid fa-language text-blue-600 text-xs"></i>
+                            English Translation
+                        </h4>
+                        <button type="button" id="auto-translate-btn" 
+                                class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                            Translate
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1.5">Name (English)</label>
+                        <input type="text" id="name_en" name="name_en" 
+                               value="{{ old('name_en', $place->name_en) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white"
+                               placeholder="English name...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1.5">Description (English)</label>
+                        <textarea id="description_en" name="description_en" rows="2"
+                                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white"
+                                  placeholder="English description...">{{ old('description_en', $place->description_en) }}</textarea>
+                    </div>
                 </div>
 
-                <!-- English Description -->
-                <div class="mb-0">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Deskripsi (English)</label>
-                    <textarea id="description_en" name="description_en" rows="3"
-                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Automatic or manual english description...">{{ old('description_en', $place->description_en) }}</textarea>
+                <!-- Operational Info Section -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-800 flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <i class="fa-solid fa-clock text-green-500 text-xs"></i>
+                        Operasional & Kontak
+                    </h4>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Jam Operasional</label>
+                            <input type="text" name="opening_hours" 
+                                   value="{{ old('opening_hours', $place->opening_hours) }}"
+                                   class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                   placeholder="08:00 - 17:00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Kontak</label>
+                            <input type="text" name="contact_info" 
+                                   value="{{ old('contact_info', $place->contact_info) }}"
+                                   class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                   placeholder="Nomor telepon">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Website URL</label>
+                        <input type="url" name="website" 
+                               value="{{ old('website', $place->website) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               placeholder="https://example.com">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Link Google Maps</label>
+                        <input type="url" name="google_maps_link" 
+                               value="{{ old('google_maps_link', $place->google_maps_link) }}"
+                               class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               placeholder="https://maps.app.goo.gl/...">
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lokasi</label>
-                <input type="text" id="name_id" name="name" value="{{ old('name', $place->name) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required placeholder="Contoh: Balai Desa Mayonglor">
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-            </div>
+                <!-- Management Section -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-800 flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <i class="fa-solid fa-building text-purple-500 text-xs"></i>
+                        Pengelolaan
+                    </h4>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Status Kepemilikan</label>
+                            <input type="text" name="ownership_status" 
+                                   value="{{ old('ownership_status', $place->ownership_status) }}"
+                                   class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                   placeholder="Pemda, Swasta">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Pengelola</label>
+                            <input type="text" name="manager" 
+                                   value="{{ old('manager', $place->manager) }}"
+                                   class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                   placeholder="Nama pengelola">
+                        </div>
+                    </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                <select name="category_id"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required>
-                    <option value="">Pilih kategori</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" @selected(old('category_id', $place->category_id) == $category->id)>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap</label>
-                <input type="text" name="address" value="{{ old('address', $place->address) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Alamat lengkap lokasi...">
-                <x-input-error :messages="$errors->get('address')" class="mt-2" />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                <textarea id="description_id" name="description" rows="4"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Deskripsi singkat lokasi...">{{ old('description', $place->description) }}</textarea>
-                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-            </div>
-
-            <div class="grid grid-cols-1 gap-4">
-                {{-- Ticket Price moved to E-Tickets --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating (0-5)</label>
-                    <input type="number" step="0.1" min="0" max="5" name="rating" value="{{ old('rating', $place->rating) }}"
-                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Media Sosial</label>
+                        <textarea name="social_media" rows="2"
+                                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                  placeholder="Info akun sosial media...">{{ old('social_media', $place->social_media) }}</textarea>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jam Operasional</label>
-                <input type="text" name="opening_hours" value="{{ old('opening_hours', $place->opening_hours) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Contoh: 08:00 - 17:00">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Kontak / Telepon</label>
-                <input type="text" name="contact_info" value="{{ old('contact_info', $place->contact_info) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Masukkan nomor telepon">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Link Google Maps</label>
-                <input type="url" name="google_maps_link" value="{{ old('google_maps_link', $place->google_maps_link) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="https://maps.app.goo.gl/...">
-                <p class="text-xs text-gray-500 mt-1">Opsional: Jika kosong, akan menggunakan koordinat otomatis.</p>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Website URL</label>
-                <input type="url" name="website" value="{{ old('website', $place->website) }}"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="https://example.com">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status Kepemilikan</label>
-                    <input type="text" name="ownership_status" value="{{ old('ownership_status', $place->ownership_status) }}"
-                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Contoh: Pemda, Swasta">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Pengelola</label>
-                    <input type="text" name="manager" value="{{ old('manager', $place->manager) }}"
-                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Nama pengelola...">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Media Sosial</label>
-                <textarea name="social_media" rows="2"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Info akun sosial media...">{{ old('social_media', $place->social_media) }}</textarea>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Wahana</label>
-                @php
-                    $ridesInput = old('rides', $place->rides);
-                    if (is_array($ridesInput)) {
-                        $lines = [];
-                        foreach ($ridesInput as $r) {
-                            if (is_array($r)) {
-                                $str = $r['name'];
-                                if (!empty($r['price'])) {
-                                    $str .= ' - ' . $r['price'];
+                <!-- Facilities Section -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-800 flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <i class="fa-solid fa-ticket text-amber-500 text-xs"></i>
+                        Wahana & Fasilitas
+                    </h4>
+                    
+                    @php
+                        $ridesInput = old('rides', $place->rides);
+                        if (is_array($ridesInput)) {
+                            $lines = [];
+                            foreach ($ridesInput as $r) {
+                                if (is_array($r)) {
+                                    $str = $r['name'];
+                                    if (!empty($r['price'])) {
+                                        $str .= ' - ' . $r['price'];
+                                    }
+                                    $lines[] = $str;
+                                } else {
+                                    $lines[] = $r;
                                 }
-                                $lines[] = $str;
-                            } else {
-                                $lines[] = $r;
                             }
+                            $ridesInput = implode("\n", $lines);
                         }
-                        $ridesInput = implode("\n", $lines);
-                    }
-                @endphp
-                <textarea name="rides" rows="3"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Daftar wahana yang tersedia (Format: Nama Wahana - Harga)...">{{ $ridesInput }}</textarea>
-                <p class="mt-1 text-xs text-slate-500">Gunakan format "Nama - Harga" per baris. Contoh: Jetsky - Rp 150.000</p>
-            </div>
+                    @endphp
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Wahana</label>
+                        <textarea name="rides" rows="2"
+                                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                  placeholder="Daftar wahana (Format: Nama - Harga)">{{ $ridesInput }}</textarea>
+                        <p class="text-xs text-gray-400 mt-1">Contoh: Jetsky - Rp 150.000</p>
+                    </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Fasilitas</label>
-                @php
-                    $facilitiesInput = old('facilities', $place->facilities);
-                    if (is_array($facilitiesInput)) {
-                        $facilitiesInput = implode("\n", $facilitiesInput);
-                    }
-                @endphp
-                <textarea name="facilities" rows="3"
-                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Daftar fasilitas yang tersedia...">{{ $facilitiesInput }}</textarea>
-            </div>
+                    @php
+                        $facilitiesInput = old('facilities', $place->facilities);
+                        if (is_array($facilitiesInput)) {
+                            $facilitiesInput = implode("\n", $facilitiesInput);
+                        }
+                    @endphp
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Fasilitas</label>
+                        <textarea name="facilities" rows="2"
+                                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                  placeholder="Daftar fasilitas yang tersedia...">{{ $facilitiesInput }}</textarea>
+                    </div>
+                </div>
 
-            <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 sm:col-span-4 mt-6">
-                <!-- Photo File Input -->
-                <input type="file" class="hidden" x-ref="photo" name="image"
-                    @change="
-                        photoName = $refs.photo.files[0].name;
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            photoPreview = e.target.result;
-                        };
-                        reader.readAsDataURL($refs.photo.files[0]);
-                    " />
+                <!-- Media Section -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-800 flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <i class="fa-solid fa-images text-rose-500 text-xs"></i>
+                        Foto & Media
+                    </h4>
+                    
+                    <!-- Main Photo -->
+                    <div x-data="{ photoName: null, photoPreview: null }">
+                        <input type="file" class="hidden" x-ref="photo" name="image"
+                            accept="image/*"
+                            @change="
+                                photoName = $refs.photo.files[0].name;
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    photoPreview = e.target.result;
+                                };
+                                reader.readAsDataURL($refs.photo.files[0]);
+                            " />
 
-                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Lokasi</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Foto Utama</label>
 
-                <!-- Current Profile Photo -->
-                <div class="mt-2" x-show="! photoPreview">
-                    @if ($place->image_path)
-                        <div class="mb-3 relative group">
-                            <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}"
-                                class="w-full h-40 object-cover rounded-lg border">
-                            <div
-                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition rounded-lg">
+                        <!-- Current Photo -->
+                        <div class="mb-3" x-show="!photoPreview">
+                            @if ($place->image_path)
+                                <div class="relative group rounded-lg overflow-hidden">
+                                    <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}"
+                                        class="w-full h-32 object-cover">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                        <span class="text-white text-sm font-medium">Klik untuk mengganti</span>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- New Photo Preview -->
+                        <div class="mb-3" x-show="photoPreview" style="display: none;">
+                            <div class="relative">
+                                <span class="block w-full h-32 rounded-lg bg-cover bg-no-repeat bg-center border-2 border-blue-300"
+                                    x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
+                                </span>
+                                <span class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                                    Baru
+                                </span>
                             </div>
                         </div>
-                    @endif
-                </div>
 
-                <!-- New Profile Photo Preview -->
-                <div class="mt-2" x-show="photoPreview" style="display: none;">
-                    <span class="block w-full h-40 rounded-lg border bg-cover bg-no-repeat bg-center"
-                        x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                    </span>
-                </div>
-
-                <div class="flex items-center justify-center w-full mt-2">
-                    <label @click.prevent="$refs.photo.click()"
-                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <i class="fa-solid fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                            <p class="text-xs text-gray-500"><span class="font-semibold">Klik untuk upload</span> atau
-                                drag & drop</p>
-                            <p class="text-xs text-gray-500">JPG/PNG (MAX. 2MB)</p>
+                        <div @click.prevent="$refs.photo.click()"
+                            class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-blue-400 transition-all">
+                            <i class="fa-solid fa-cloud-upload-alt text-lg text-gray-400 mb-1"></i>
+                            <p class="text-xs text-gray-500"><span class="font-semibold text-blue-600">Klik untuk upload</span> (MAX 2MB)</p>
                         </div>
-                    </label>
-                </div>
-                <x-input-error :messages="$errors->get('image')" class="mt-2" />
-            </div>
+                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                    </div>
 
-            <!-- Gallery Upload Section -->
-            <div class="mt-6 border-t pt-4" x-data="{ 
-                previews: [],
-                handleFileSelect(e) {
-                    const files = Array.from(e.target.files);
-                    this.previews = [];
-                    // Process files to generate previews
-                    files.forEach(file => {
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            this.previews.push({
-                                file: file,
-                                url: event.target.result
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                },
-                removePreview(index) {
-                    this.previews.splice(index, 1);
-                    
-                    // Update the input files using DataTransfer
-                    const dt = new DataTransfer();
-                    this.previews.forEach(p => dt.items.add(p.file));
-                    $refs.galleryInput.files = dt.files;
-                }
-            }">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Galeri Foto Tambahan</label>
-                
-                <input type="file" name="gallery_images[]" multiple x-ref="galleryInput"
-                    @change="handleFileSelect($event)"
-                    class="block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100
-                "/>
-                <p class="text-xs text-gray-500 mt-1">Bisa pilih banyak foto sekaligus.</p>
-
-                <!-- New Upload Predictions -->
-                <div class="mt-4 grid grid-cols-3 gap-2" x-show="previews.length > 0" style="display: none;">
-                    <template x-for="(preview, index) in previews" :key="index">
-                        <div class="relative group aspect-square">
-                            <img :src="preview.url" class="w-full h-full object-cover rounded-lg border border-blue-300">
-                            <span class="absolute top-1 right-1 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow">Baru</span>
-                            
-                            <!-- Remove Preview Button -->
-                            <button type="button" 
-                                @click="removePreview(index)"
-                                class="absolute top-1 left-1 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow transition-colors"
-                                title="Batal upload foto ini">
-                                <i class="fa-solid fa-times text-xs"></i>
-                            </button>
-                        </div>
-                    </template>
-                </div>
-
-                <!-- Existing Gallery Images -->
-                @if($place->images && $place->images->count() > 0)
-                <div class="mt-4 grid grid-cols-3 gap-2">
-                    @foreach($place->images as $img)
-                        <div class="relative group aspect-square" x-data="{ deleting: false }" x-show="!deleting">
-                            <img src="{{ asset($img->image_path) }}" class="w-full h-full object-cover rounded-lg border">
-                            
-                            <!-- Delete Button Overlay -->
-                            <button type="button" 
-                                @click="
-                                    window.confirmAction('Hapus Foto?', 'Foto yang dihapus tidak dapat dikembalikan. Lanjutkan?', () => {
-                                        deleting = true;
-                                        fetch('{{ route('admin.places.images.destroy', $img->id) }}', {
-                                            method: 'DELETE',
-                                            headers: {
-                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                'Accept': 'application/json'
-                                            }
-                                        })
-                                        .then(response => {
-                                            if (!response.ok) throw new Error('Gagal menghapus');
-                                            $el.closest('.relative').remove();
-                                            window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Foto berhasil dihapus', type: 'success' } }));
-                                        })
-                                        .catch(error => {
-                                            deleting = false;
-                                            alert('Gagal menghapus foto.');
-                                            window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Gagal menghapus foto', type: 'error' } }));
-                                            console.error(error);
-                                        });
+                    <!-- Gallery Upload -->
+                    <div x-data="{ 
+                        previews: [],
+                        handleFileSelect(e) {
+                            const files = Array.from(e.target.files);
+                            this.previews = [];
+                            files.forEach(file => {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                    this.previews.push({
+                                        file: file,
+                                        url: event.target.result
                                     });
-                                "
-                                class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg cursor-pointer">
-                                <i class="fa-solid fa-trash text-white text-xl"></i>
-                            </button>
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                        },
+                        removePreview(index) {
+                            this.previews.splice(index, 1);
+                            const dt = new DataTransfer();
+                            this.previews.forEach(p => dt.items.add(p.file));
+                            $refs.galleryInput.files = dt.files;
+                        }
+                    }">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Galeri Foto</label>
+                        
+                        <input type="file" name="gallery_images[]" multiple x-ref="galleryInput"
+                            @change="handleFileSelect($event)"
+                            class="block w-full text-sm text-gray-500
+                            file:mr-3 file:py-1.5 file:px-3
+                            file:rounded-lg file:border-0
+                            file:text-xs file:font-medium
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100 transition-all
+                        "/>
+                        <p class="text-xs text-gray-400 mt-1">Bisa pilih banyak foto sekaligus.</p>
+
+                        <!-- New Upload Previews -->
+                        <div class="mt-3 grid grid-cols-4 gap-2" x-show="previews.length > 0" style="display: none;">
+                            <template x-for="(preview, index) in previews" :key="index">
+                                <div class="relative group aspect-square">
+                                    <img :src="preview.url" class="w-full h-full object-cover rounded-lg border-2 border-blue-300">
+                                    <span class="absolute top-1 right-1 bg-blue-500 text-white text-[8px] px-1 py-0.5 rounded font-medium">Baru</span>
+                                    <button type="button" 
+                                        @click="removePreview(index)"
+                                        class="absolute top-1 left-1 bg-red-500 hover:bg-red-600 text-white w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <i class="fa-solid fa-times text-[8px]"></i>
+                                    </button>
+                                </div>
+                            </template>
                         </div>
-                    @endforeach
+
+                        <!-- Existing Gallery -->
+                        @if($place->images && $place->images->count() > 0)
+                        <div class="mt-3 grid grid-cols-4 gap-2">
+                            @foreach($place->images as $img)
+                                <div class="relative group aspect-square" x-data="{ deleting: false }" x-show="!deleting">
+                                    <img src="{{ asset($img->image_path) }}" class="w-full h-full object-cover rounded-lg border border-gray-200">
+                                    <button type="button" 
+                                        @click="
+                                            window.confirmAction('Hapus Foto?', 'Foto yang dihapus tidak dapat dikembalikan.', () => {
+                                                deleting = true;
+                                                fetch('{{ route('admin.places.images.destroy', $img->id) }}', {
+                                                    method: 'DELETE',
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                        'Accept': 'application/json'
+                                                    }
+                                                })
+                                                .then(response => {
+                                                    if (!response.ok) throw new Error('Gagal menghapus');
+                                                    window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Foto berhasil dihapus', type: 'success' } }));
+                                                })
+                                                .catch(error => {
+                                                    deleting = false;
+                                                    window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Gagal menghapus foto', type: 'error' } }));
+                                                });
+                                            });
+                                        "
+                                        class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg cursor-pointer">
+                                        <i class="fa-solid fa-trash text-white text-sm"></i>
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
                 </div>
-                @endif
             </div>
         </div>
 
         <!-- Footer Actions -->
         <div class="p-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between gap-3">
             <a href="{{ route('admin.places.index') }}"
-                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-white transition text-sm font-medium">
-                Batal
+               class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-white text-sm font-medium flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left text-xs"></i>Batal
             </a>
             <button type="submit"
-                class="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition text-sm shadow-md hover:shadow-lg">
-                {{ $submitLabel }}
+                    class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors text-sm flex items-center gap-2">
+                <i class="fa-solid fa-check text-xs"></i>{{ $submitLabel }}
             </button>
         </div>
     </div>
 
-    <!-- Right Area: Map -->
-    <div class="flex-1 bg-gray-100 relative">
-        <div class="absolute inset-0 p-4">
-            <!-- Map Drawing Component for Point -->
+    <!-- Right Side: Map (60%) -->
+    <div class="w-3/5 bg-gray-100 flex flex-col">
+        <div class="flex-1 p-3">
             @include('admin.components.map-drawer', [
                 'drawType' => 'point',
                 'initialGeometry' => old('geometry', $initialGeometry),
@@ -379,7 +424,7 @@
             translateBtn.addEventListener('click', async function() {
                 const btnOriginalText = translateBtn.innerHTML;
                 translateBtn.disabled = true;
-                translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Translating...';
+                translateBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> <span>Translating...</span>';
 
                 try {
                     // Translate Title/Name
@@ -403,7 +448,7 @@
                         }
                     }
 
-                    // Translate Description (Plain Text)
+                    // Translate Description
                     const contentSource = document.getElementById('description_id').value;
                     if (contentSource) {
                         const response = await fetch('{{ route('admin.posts.translate') }}', {
@@ -424,14 +469,15 @@
                         }
                     }
 
-                    // Notify success
-                     window.dispatchEvent(new CustomEvent('notify', { 
-                        detail: { message: 'Auto translation complete!', type: 'success' } 
+                    window.dispatchEvent(new CustomEvent('notify', { 
+                        detail: { message: 'Terjemahan berhasil!', type: 'success' } 
                     }));
 
                 } catch (error) {
                     console.error('Translation error:', error);
-                    alert('Translation failed. Please try again.');
+                    window.dispatchEvent(new CustomEvent('notify', { 
+                        detail: { message: 'Terjemahan gagal. Coba lagi.', type: 'error' } 
+                    }));
                 } finally {
                     translateBtn.disabled = false;
                     translateBtn.innerHTML = btnOriginalText;
@@ -440,5 +486,3 @@
         }
     });
 </script>
-
-

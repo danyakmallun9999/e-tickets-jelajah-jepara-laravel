@@ -1,4 +1,4 @@
-<x-app-layout full-width="true">
+<x-app-layout :full-width="true">
     <x-slot name="header">
         <div>
             <p class="text-sm text-gray-500">Admin Panel · Lokasi</p>
