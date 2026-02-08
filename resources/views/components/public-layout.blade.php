@@ -25,7 +25,7 @@
             <header class="flex h-20 items-center justify-between gap-8" x-data="{ mobileMenuOpen: false }">
                 <div class="flex items-center gap-8">
                     <a class="flex items-center gap-3 text-slate-900 group" href="{{ route('welcome') }}">
-                        <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" alt="Logo Kabupaten Jepara"
+                        <img src="{{ asset('images/logo-kura.png') }}" alt="Logo Kabupaten Jepara"
                             class="w-10 h-auto object-contain">
                         <h2 class="text-xl font-bold leading-tight tracking-tight">Blusukan Jepara</h2>
                     </a>

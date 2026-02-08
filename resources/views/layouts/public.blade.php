@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Portal Wisata - {{ config('app.name', 'Jepara') }}</title>
-    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
 
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRSq550=" crossorigin=""/>

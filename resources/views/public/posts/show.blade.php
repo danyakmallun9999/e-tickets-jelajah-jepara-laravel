@@ -22,7 +22,7 @@
                     <!-- Author Info -->
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                            <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" class="w-6 h-6 object-contain" alt="Admin">
+                            <img src="{{ asset('images/logo-kura.png') }}" class="w-6 h-6 object-contain" alt="Admin">
                         </div>
                         <div class="text-left">
                             <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $post->author ?? __('News.Header.Department') }}</p>

@@ -43,7 +43,7 @@
                             <div class="flex items-center gap-4 text-white/80 text-sm">
                                 <span class="flex items-center gap-2">
                                     <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                                        <img src="{{ asset('images/logo-kabupaten-jepara.png') }}" class="w-4 h-4 object-contain">
+                                        <img src="{{ asset('images/logo-kura.png') }}" class="w-4 h-4 object-contain">
                                     </div>
                                     {{ __('News.Author.Admin') }}
                                 </span>

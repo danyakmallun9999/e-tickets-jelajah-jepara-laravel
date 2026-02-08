@@ -26,7 +26,7 @@
             <div class="absolute bottom-0 left-0 right-0 z-20 p-16 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent">
                 <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
                     <div class="flex items-center gap-3 mb-4">
-                        <img src="/images/logo-kabupaten-jepara.png" alt="Logo" class="h-12 w-auto drop-shadow-md">
+                        <img src="/images/logo-kura.png" alt="Logo" class="h-12 w-auto drop-shadow-md">
                         <div class="h-8 w-[1px] bg-white/30"></div>
                         <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/90 font-display">Official Admin Portal</p>
                     </div>

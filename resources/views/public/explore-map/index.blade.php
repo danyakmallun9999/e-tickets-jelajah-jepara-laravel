@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Jelajahi Destinasi - Kabupaten Jepara</title>
-    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('public.explore-map._styles')

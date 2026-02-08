@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>@yield('title') - Jelajah Jepara</title>
-    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

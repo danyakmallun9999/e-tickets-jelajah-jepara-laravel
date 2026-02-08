@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Portal Wisata - {{ config('app.name', 'Dinas Pariwisata dan Kebudayaan Jepara') }}</title>
-    <link rel="icon" href="{{ asset('images/logo-kabupaten-jepara.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
 
     {{-- Leaflet & Icon --}}
     {{-- Local assets handled by Vite --}}
