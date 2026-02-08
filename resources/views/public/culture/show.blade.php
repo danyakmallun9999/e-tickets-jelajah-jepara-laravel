@@ -1,4 +1,12 @@
 <x-public-layout>
+    @push('seo')
+        <x-seo 
+            :title="$culture->name . ' - Budaya Jepara'"
+            :description="Str::limit(strip_tags($culture->full_description ?? $culture->description), 150)"
+            :image="$culture->image ? asset($culture->image) : asset('images/logo-kura.png')"
+            type="article"
+        />
+    @endpush
     <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-20">
         
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">

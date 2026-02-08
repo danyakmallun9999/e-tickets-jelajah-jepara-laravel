@@ -1,4 +1,12 @@
 <x-public-layout>
+    @push('seo')
+        <x-seo 
+            :title="$post->title . ' - Jelajah Jepara'"
+            :description="Str::limit(strip_tags($post->content), 150)"
+            :image="$post->image_path ? asset($post->image_path) : asset('images/logo-kura.png')"
+            type="article"
+        />
+    @endpush
     <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-32">
         <!-- Main Container -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

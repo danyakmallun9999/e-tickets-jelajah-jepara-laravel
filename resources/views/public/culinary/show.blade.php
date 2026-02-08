@@ -1,4 +1,12 @@
 <x-public-layout>
+    @push('seo')
+        <x-seo 
+            :title="$culinary->name . ' - Kuliner Jepara'"
+            :description="Str::limit(strip_tags($culinary->full_description ?? $culinary->description), 150)"
+            :image="$culinary->image ? asset($culinary->image) : asset('images/logo-kura.png')"
+            type="article"
+        />
+    @endpush
     <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-20">
         
         <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">

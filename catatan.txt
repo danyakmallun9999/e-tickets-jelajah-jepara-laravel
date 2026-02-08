@@ -8,11 +8,11 @@ promosijepara
 wisatajepara
 
 
-# 1. Optimalisasi SEO
-# 2. Implementasi Open Graph pada setiap halaman (agar ketika di share ke media sosial akan muncul gambar dan deskripsi)
-# 3. Implementasi Bahasa Indonesia dan Bahasa Inggris
+# 1. Optimalisasi SEO ( done )
+# 2. Implementasi Open Graph pada setiap halaman (agar ketika di share ke media sosial akan muncul gambar dan deskripsi) ( done )
+# 3. Implementasi Bahasa Indonesia dan Bahasa Inggris ( done )
 # 4. Rubah nama Blusukan Jepara menjadi Jelajah Jepara ( done )
-# 5. Advance dashboard admin (eticket)
+# 5. Advance dashboard admin (eticket) ( done )
     - Advance chart analytics jumlah pengunjung wisata (data dari e-ticketing) ( done )
     - Role super admin(bisa tambah role admin dan role pengelola tempat wisata)
     - Role admin(bisa tambah role pengelola tempat wisata)
@@ -22,4 +22,3 @@ wisatajepara
 # 8. Update README.md
 
 
-dari hasil analisa, dalam sistem yang telah dibuat.. fitur bahasa inggris-indonesia masih dilakukan secara manual, bagaimana cara mengoptimalkannya? apakah ada library yang bisa membantu? sebagai contoh isi konten artikel yang dimana datanya dinamis bisa ditambahkan kapan saja dan pastinya dalam basaha indonesia oleh admin, bagaimana caranya bisa menerapkan fitur bahasa inggris-indonesia pada konten dinamis tersebut?

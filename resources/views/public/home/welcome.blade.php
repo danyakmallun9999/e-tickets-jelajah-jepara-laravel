@@ -4,7 +4,11 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Portal Wisata - {{ config('app.name', 'Dinas Pariwisata dan Kebudayaan Jepara') }}</title>
+    <x-seo 
+        title="Jelajah Jepara - Portal Wisata Resmi" 
+        description="Temukan keindahan Jepara, dari wisata alam memukau di Karimunjawa hingga kekayaan budaya ukir yang mendunia. Panduan lengkap liburanmu ada di sini!" 
+        image="{{ asset('images/logo-kura.png') }}"
+    />
     <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
 
     {{-- Leaflet & Icon --}}

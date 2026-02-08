@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Portal Wisata - {{ config('app.name', 'Jepara') }}</title>
+    @stack('seo')
     <link rel="icon" href="{{ asset('images/logo-kura.png') }}" type="image/png">
 
     <!-- Fonts & Icons -->

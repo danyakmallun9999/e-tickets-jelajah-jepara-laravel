@@ -1,4 +1,12 @@
 <x-public-layout>
+    @push('seo')
+        <x-seo 
+            :title="$event->title . ' - Agenda Jelajah Jepara'"
+            :description="Str::limit(strip_tags($event->description), 150)"
+            :image="$event->image ? asset($event->image) : asset('images/logo-kura.png')"
+            type="article"
+        />
+    @endpush
     @section('meta_title', $event->title)
     @section('meta_description', Str::limit(strip_tags($event->description), 150))
     @if($event->image)

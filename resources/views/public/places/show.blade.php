@@ -1,4 +1,12 @@
 <x-public-layout>
+    @push('seo')
+        <x-seo 
+            :title="$place->translated_name . ' - Jelajah Jepara'"
+            :description="$place->translated_description ? Str::limit(strip_tags($place->translated_description), 150) : 'Jelajahi ' . $place->translated_name . ' di Jepara.'"
+            :image="$place->image_path ? asset($place->image_path) : asset('images/logo-kura.png')"
+            type="article"
+        />
+    @endpush
     <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-20">
         
         <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
