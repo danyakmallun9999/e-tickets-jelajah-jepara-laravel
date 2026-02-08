@@ -74,6 +74,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('/posts/upload-image', [\App\Http\Controllers\PostController::class, 'uploadImage'])->name('posts.uploadImage');
     Route::post('/posts/translate', [\App\Http\Controllers\Admin\TranslationController::class, 'translate'])->name('posts.translate');
     Route::resource('posts', \App\Http\Controllers\PostController::class);
+    Route::post('/events/translate', [\App\Http\Controllers\Admin\TranslationController::class, 'translate'])->name('events.translate');
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
 
     // Ticket routes

@@ -62,6 +62,52 @@
                             </div>
                         </div>
 
+                        <!-- English Translation Card -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-blue-200 overflow-hidden">
+                            <div class="px-6 py-4 bg-blue-50 border-b border-blue-100">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg">🇬🇧</span>
+                                        <h3 class="font-bold text-blue-900">English Translation</h3>
+                                    </div>
+                                    <button type="button" 
+                                            id="auto-translate-btn" 
+                                            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i class="fa-solid fa-language"></i>
+                                        Auto Translate
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6 space-y-5">
+                                <!-- Title EN -->
+                                <div>
+                                    <label for="title_en" class="block text-sm font-semibold text-blue-800 mb-2">
+                                        <i class="fa-solid fa-heading text-blue-400 mr-1.5"></i>
+                                        Event Title (English)
+                                    </label>
+                                    <input type="text" 
+                                           id="title_en" 
+                                           name="title_en" 
+                                           value="{{ old('title_en') }}"
+                                           class="block w-full px-4 py-3 bg-blue-50/50 border border-blue-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                           placeholder="English title">
+                                    <x-input-error :messages="$errors->get('title_en')" class="mt-2" />
+                                </div>
+
+                                <!-- Description EN -->
+                                <div>
+                                    <label for="description_en" class="block text-sm font-semibold text-blue-800 mb-2">
+                                        <i class="fa-solid fa-align-left text-blue-400 mr-1.5"></i>
+                                        Description (English)
+                                    </label>
+                                    <textarea id="description_en" 
+                                              name="description_en" 
+                                              class="settings-tiny-en">{{ old('description_en') }}</textarea>
+                                    <x-input-error :messages="$errors->get('description_en')" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- TinyMCE Initialization -->
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
@@ -76,6 +122,66 @@
                                     remove_script_host: false,
                                     document_base_url: '{{ url('/') }}',
                                 });
+                                tinymce.init({
+                                    selector: '.settings-tiny-en',
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: 'lists link image table code wordcount',
+                                    toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
+                                    content_style: 'body { font-family:Figtree,sans-serif; font-size:16px; overflow-x: hidden; word-wrap: break-word; } img { max-width: 100%; height: auto; }',
+                                    relative_urls: false,
+                                    remove_script_host: false,
+                                    document_base_url: '{{ url('/') }}',
+                                });
+
+                                // Auto translate functionality
+                                const translateBtn = document.getElementById('auto-translate-btn');
+                                if(translateBtn) {
+                                    translateBtn.addEventListener('click', async function() {
+                                        const title = document.getElementById('title').value;
+                                        const description = tinymce.get('description')?.getContent() || '';
+
+                                        if(!title && !description) {
+                                            alert('Isi judul dan deskripsi terlebih dahulu');
+                                            return;
+                                        }
+
+                                        const originalText = translateBtn.innerHTML;
+                                        translateBtn.disabled = true;
+                                        translateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Translating...';
+
+                                        try {
+                                            if(title) {
+                                                const res = await fetch('{{ route('admin.events.translate') }}', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                                    body: JSON.stringify({ text: title, source: 'id', target: 'en' })
+                                                });
+                                                const data = await res.json();
+                                                if(data.success) document.getElementById('title_en').value = data.translation;
+                                            }
+                                            if(description) {
+                                                const res = await fetch('{{ route('admin.events.translate') }}', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                                    body: JSON.stringify({ text: description, source: 'id', target: 'en' })
+                                                });
+                                                const data = await res.json();
+                                                if(data.success) tinymce.get('description_en')?.setContent(data.translation);
+                                            }
+                                            translateBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Done!';
+                                            setTimeout(() => {
+                                                translateBtn.disabled = false;
+                                                translateBtn.innerHTML = originalText;
+                                            }, 2000);
+                                        } catch(e) {
+                                            console.error(e);
+                                            alert('Translation failed');
+                                            translateBtn.disabled = false;
+                                            translateBtn.innerHTML = originalText;
+                                        }
+                                    });
+                                }
                             });
                         </script>
                     </div>

@@ -22,6 +22,8 @@ class StorePostRequest extends FormRequest
             'author' => 'nullable|string|max:255',
             'image_credit' => 'nullable|string|max:255',
             'is_published' => 'sometimes|boolean',
+            'title_en' => 'nullable|string|max:255',
+            'content_en' => 'nullable|string',
         ];
     }
 }
