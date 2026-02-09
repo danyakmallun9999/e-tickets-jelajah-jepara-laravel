@@ -60,7 +60,7 @@
 
                     <!-- Minimal Stats (Absolute, no glassmorphism, just solid) -->
                     <div class="absolute top-8 -right-4 bg-white dark:bg-gray-800 p-6 rounded-[2rem] shadow-xl hidden lg:block">
-                        <span class="block text-4xl font-serif text-gray-900 dark:text-white">{{ $countDestinasi }}</span>
+                        <span class="block text-4xl font-serif text-gray-900 dark:text-white">{{ $countDestinasi }}+</span>
                         <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">{{ __('Nav.Destinations') }}</span>
                     </div>
 
