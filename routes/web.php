@@ -35,18 +35,17 @@ Route::post('/auth/logout', [GoogleAuthController::class, 'logout'])->name('auth
 Route::get('/e-tiket', [App\Http\Controllers\Public\TicketController::class, 'index'])->name('tickets.index');
 
 // Protected E-Ticket routes - require Google authentication
-// IMPORTANT: These specific routes MUST be defined BEFORE the wildcard {ticket} route below,
-// otherwise /e-tiket/confirmation/xxx would be caught by /e-tiket/{ticket} and bypass auth.
-Route::middleware('auth.user')->group(function () {
-    Route::post('/e-tiket/book', [App\Http\Controllers\Public\TicketController::class, 'book'])->name('tickets.book');
-    Route::get('/e-tiket/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
-    Route::get('/e-tiket/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
-    Route::get('/e-tiket/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
-    Route::get('/e-tiket/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
-    Route::get('/e-tiket/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
-    Route::get('/e-tiket/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
-    Route::get('/tiket-saya', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
-    Route::post('/tiket-saya/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])->name('tickets.retrieve');
+// All user-specific ticket routes are grouped under /tiket-saya prefix
+Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
+    Route::get('/', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
+    Route::post('/book', [App\Http\Controllers\Public\TicketController::class, 'book'])->name('tickets.book');
+    Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
+    Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
+    Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
+    Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
+    Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
+    Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
+    Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])->name('tickets.retrieve');
 });
 
 // E-Ticket detail (Public) - wildcard route MUST be last to avoid catching specific routes above

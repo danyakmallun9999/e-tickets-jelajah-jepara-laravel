@@ -5,7 +5,7 @@
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
                 <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">Beranda</a>
                 <span>/</span>
-                <a href="{{ route('tickets.index') }}" class="hover:text-primary transition-colors">E-Tiket</a>
+                <a href="{{ route('tickets.my') }}" class="hover:text-primary transition-colors">Tiket Saya</a>
                 <span>/</span>
                 <span class="text-gray-800 dark:text-gray-200 font-medium">Konfirmasi</span>
             </nav>

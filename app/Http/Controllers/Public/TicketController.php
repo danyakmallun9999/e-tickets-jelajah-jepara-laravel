@@ -129,7 +129,7 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        return view('public.tickets.confirmation', compact('order'));
+        return view('user.tickets.confirmation', compact('order'));
     }
 
     /**
@@ -144,7 +144,7 @@ class TicketController extends Controller
             ->latest()
             ->get();
 
-        return view('public.tickets.my-tickets', compact('orders'));
+        return view('user.tickets.my-tickets', compact('orders'));
     }
 
     /**
@@ -161,7 +161,7 @@ class TicketController extends Controller
             ->latest()
             ->get();
 
-        return view('public.tickets.my-tickets', compact('orders'));
+        return view('user.tickets.my-tickets', compact('orders'));
     }
 
     /**
@@ -181,7 +181,7 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        return view('public.tickets.download', compact('order'));
+        return view('user.tickets.download', compact('order'));
     }
 
     /**
@@ -269,7 +269,7 @@ class TicketController extends Controller
             }
         }
 
-        return view('public.tickets.payment', compact('order'));
+        return view('user.tickets.payment', compact('order'));
     }
 
     /**
@@ -310,7 +310,7 @@ class TicketController extends Controller
             }
         }
 
-        return view('public.tickets.payment-success', compact('order'));
+        return view('user.tickets.payment-success', compact('order'));
     }
 
     /**
@@ -324,6 +324,6 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        return view('public.tickets.payment-failed', compact('order'));
+        return view('user.tickets.payment-failed', compact('order'));
     }
 }

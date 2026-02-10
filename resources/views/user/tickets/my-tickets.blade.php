@@ -5,8 +5,6 @@
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
                 <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Tickets.Breadcrumb.Home') }}</a>
                 <span>/</span>
-                <a href="{{ route('tickets.index') }}" class="hover:text-primary transition-colors">{{ __('Tickets.Breadcrumb.Index') }}</a>
-                <span>/</span>
                 <span class="text-gray-800 dark:text-gray-200 font-medium">{{ __('Tickets.Breadcrumb.MyTickets') }}</span>
             </nav>
 
