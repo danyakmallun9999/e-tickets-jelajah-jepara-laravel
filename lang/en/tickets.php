@@ -13,6 +13,7 @@ return [
     'total_payment' => 'Total Payment',
     'footer_thanks' => 'Thank you for visiting Jepara.',
     'save_qr' => 'Save QR',
-    'download_pdf' => 'Download E-Ticket',
+    'download_pdf' => 'Download',
     'people' => 'People',
+    'my_tickets_button' => 'My Tickets',
 ];

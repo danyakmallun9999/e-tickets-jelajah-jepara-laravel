@@ -15,4 +15,5 @@ return [
     'save_qr' => 'Simpan QR',
     'download_pdf' => 'Unduh E-Tiket',
     'people' => 'Orang',
+    'my_tickets_button' => 'Tiket Saya',
 ];
