@@ -66,78 +66,97 @@
                         </p>
                     </div>
 
-                    <div class="space-y-3">
+                    {{-- Ticket-style CSS --}}
+                    <style>
+                        .ticket-punch {
+                            position: relative;
+                        }
+                        .ticket-punch::before,
+                        .ticket-punch::after {
+                            content: '';
+                            position: absolute;
+                            width: 20px;
+                            height: 20px;
+                            background: #f9fafb;
+                            border-radius: 50%;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            z-index: 10;
+                        }
+                        .dark .ticket-punch::before,
+                        .dark .ticket-punch::after {
+                            background: var(--color-background-dark, #0f172a);
+                        }
+                        .ticket-punch::before { left: -10px; }
+                        .ticket-punch::after { right: -10px; }
+                    </style>
+
+                    <div class="space-y-5">
                         @foreach($orders as $order)
-                            <div class="relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors overflow-hidden">
-                                {{-- Status accent bar --}}
-                                <div class="absolute top-0 left-0 w-1 h-full
-                                    {{ $order->status == 'pending' ? 'bg-yellow-400' : '' }}
-                                    {{ $order->status == 'paid' ? 'bg-emerald-500' : '' }}
-                                    {{ $order->status == 'used' ? 'bg-blue-500' : '' }}
-                                    {{ $order->status == 'cancelled' ? 'bg-red-400' : '' }}">
-                                </div>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/60 dark:shadow-none border border-slate-100 dark:border-slate-700 overflow-hidden">
                                 
-                                <div class="p-4 md:p-5 pl-5 md:pl-6">
-                                    {{-- Top row --}}
-                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-                                        <div>
-                                            <div class="text-[11px] text-slate-400 uppercase tracking-wider font-medium">{{ __('Tickets.My.OrderNumber') }}</div>
-                                            <div class="font-bold text-slate-900 dark:text-white">{{ $order->order_number }}</div>
+                                {{-- TOP: Main ticket section --}}
+                                <div class="p-5 pb-4">
+                                    {{-- Destination & Status row --}}
+                                    <div class="flex items-start justify-between gap-3 mb-4">
+                                        <div class="min-w-0 flex-1">
+                                            <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
                                         </div>
-                                        <span class="inline-flex items-center self-start sm:self-auto gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold
-                                            {{ $order->status == 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400' : '' }}
-                                            {{ $order->status == 'paid' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : '' }}
-                                            {{ $order->status == 'used' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : '' }}
-                                            {{ $order->status == 'cancelled' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : '' }}">
+                                        <span class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap
+                                            {{ $order->status == 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' : '' }}
+                                            {{ $order->status == 'paid' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : '' }}
+                                            {{ $order->status == 'used' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : '' }}
+                                            {{ $order->status == 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : '' }}">
                                             @if($order->status == 'pending')
-                                                <i class="fa-solid fa-clock text-[10px]"></i>
+                                                <i class="fa-solid fa-clock text-[9px]"></i>
                                             @elseif($order->status == 'paid')
-                                                <i class="fa-solid fa-check-circle text-[10px]"></i>
+                                                <i class="fa-solid fa-check-circle text-[9px]"></i>
                                             @elseif($order->status == 'used')
-                                                <i class="fa-solid fa-ticket text-[10px]"></i>
+                                                <i class="fa-solid fa-ticket text-[9px]"></i>
                                             @else
-                                                <i class="fa-solid fa-times-circle text-[10px]"></i>
+                                                <i class="fa-solid fa-times-circle text-[9px]"></i>
                                             @endif
                                             {{ $order->status_label }}
                                         </span>
                                     </div>
 
-                                    {{-- Dashed separator --}}
-                                    <div class="border-t border-dashed border-slate-100 dark:border-slate-700 my-3"></div>
-
-                                    {{-- Ticket details --}}
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2.5 mb-4">
+                                    {{-- Details 2x2 grid --}}
+                                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                                         <div>
-                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Ticket') }}</div>
-                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->ticket->name }}</div>
-                                            <div class="text-xs text-slate-500 mb-0.5 capitalize">{{ $order->ticket->type }}</div>
-                                            <div class="text-xs text-primary font-medium">{{ $order->ticket->place->name }}</div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
+                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
                                         </div>
                                         <div>
-                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Date') }}</div>
-                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->visit_date->translatedFormat('d M Y') }}</div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Quantity') }}</p>
+                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
                                         </div>
                                         <div>
-                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Quantity') }}</div>
-                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.OrderNumber') }}</p>
+                                            <p class="font-mono text-sm text-slate-800 dark:text-white mt-0.5 tracking-wide">{{ $order->order_number }}</p>
                                         </div>
                                         <div>
-                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Total') }}</div>
-                                            <div class="font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
+                                            <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
                                         </div>
                                     </div>
+                                </div>
 
-                                    {{-- Action buttons --}}
-                                    <div class="flex gap-2">
-                                        <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                           class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
-                                            <i class="fa-solid fa-eye text-xs"></i>{{ __('Tickets.My.ViewDetail') }}
-                                        </a>
-                                        <a href="{{ route('tickets.download', $order->order_number) }}" 
-                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600">
-                                            <i class="fa-solid fa-download text-xs"></i>{{ __('Tickets.My.Download') }}
-                                        </a>
-                                    </div>
+                                {{-- Perforated tear line with punch holes --}}
+                                <div class="ticket-punch">
+                                    <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
+                                </div>
+
+                                {{-- BOTTOM: Actions stub --}}
+                                <div class="px-5 py-3 flex gap-2">
+                                    <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                       class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20">
+                                        <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                    </a>
+                                    <a href="{{ route('tickets.download', $order->order_number) }}" 
+                                       class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                        <i class="fa-solid fa-download text-xs"></i> {{ __('Tickets.My.Download') }}
+                                    </a>
                                 </div>
                             </div>
                         @endforeach

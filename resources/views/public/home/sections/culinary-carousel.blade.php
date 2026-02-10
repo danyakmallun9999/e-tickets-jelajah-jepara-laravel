@@ -1,5 +1,5 @@
     <!-- SECTION: Culinary -->
-    <div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-10 lg:py-16 border-t border-surface-light dark:border-surface-dark" 
+    <div class="w-full bg-surface-light/30 dark:bg-surface-dark/20 py-6 lg:py-16 border-t border-surface-light dark:border-surface-dark" 
          x-data="{
             currentIndex: 0,
             autoplay: null,
@@ -153,9 +153,9 @@
          }"
          >
         
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+            <div class="flex flex-col md:flex-row items-end justify-between mb-6 md:mb-12 gap-4 md:gap-6 px-2 sm:px-0">
                 <div class="max-w-2xl culinary-header">
                     <h2 class="text-3xl md:text-4xl font-poppins font-bold text-text-light dark:text-text-dark mb-4 leading-tight">
                         {{ __('Culinary.Title') }}
@@ -180,13 +180,13 @@
 
             <!-- Carousel Container -->
             <div class="relative w-full group">
-                <div class="flex gap-4 md:gap-8 overflow-x-auto pb-12 pt-4 px-[5%] md:px-[20%] snap-x snap-mandatory scrollbar-hide scroll-smooth items-center" 
+                <div class="flex gap-3 md:gap-8 overflow-x-auto pb-8 md:pb-12 pt-2 md:pt-4 px-[2%] md:px-[20%] snap-x snap-mandatory scrollbar-hide scroll-smooth items-center" 
                      style="scroll-snap-type: x mandatory;"
                      x-ref="foodContainer">
                 
                     @foreach($culinaries as $index => $culinary)
                     <!-- Culinary Card -->
-                    <div class="culinary-card shrink-0 w-[90vw] md:w-[60vw] lg:w-[50vw] snap-center group relative rounded-[2.5rem] overflow-hidden aspect-[16/9] transition-all duration-500 scale-95 data-[snapped=true]:scale-100 data-[snapped=true]:shadow-xl data-[snapped=true]:hover:shadow-2xl data-[snapped=true]:border data-[snapped=true]:border-white/10"
+                    <div class="culinary-card shrink-0 w-[94vw] md:w-[60vw] lg:w-[50vw] snap-center group relative rounded-2xl md:rounded-[2.5rem] overflow-hidden aspect-[4/3] md:aspect-[16/9] transition-all duration-500 scale-[0.97] data-[snapped=true]:scale-100 data-[snapped=true]:shadow-xl data-[snapped=true]:hover:shadow-2xl data-[snapped=true]:border data-[snapped=true]:border-white/10"
                          style="scroll-snap-align: center; scroll-snap-stop: always;">
                         
                         <!-- Image -->
