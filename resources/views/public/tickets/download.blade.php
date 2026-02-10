@@ -1,410 +1,162 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>E-Tiket - {{ $order->order_number }}</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f1f5f9;
-            padding: 20px;
-            color: #1e293b;
-        }
-        .ticket-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .ticket {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 32px 40px;
-            position: relative;
-            overflow: hidden;
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        .ticket-badge {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-        .content {
-            padding: 32px 40px;
-        }
-        .order-number-section {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-left: 4px solid #3b82f6;
-            border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .order-label {
-            font-size: 12px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-        .order-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1e40af;
-        }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .status-pending { background: #fef3c7; color: #92400e; }
-        .status-paid { background: #d1fae5; color: #065f46; }
-        .status-used { background: #dbeafe; color: #1e40af; }
-        .status-cancelled { background: #fee2e2; color: #991b1b; }
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-        .detail-item {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .detail-label {
-            font-size: 12px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        .detail-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-        .detail-value.price {
-            color: #3b82f6;
-            font-size: 24px;
-        }
-        .qr-section {
-            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            margin: 24px 0;
-            border: 2px dashed #e2e8f0;
-        }
-        .qr-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-        #qrcode canvas {
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .qr-instruction {
-            color: #64748b;
-            font-size: 13px;
-        }
-        .customer-section {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .section-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title::before {
-            content: '👤';
-        }
-        .customer-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-        .customer-item {
-            font-size: 14px;
-        }
-        .customer-item span {
-            display: block;
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-        .notes-section {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-        }
-        .notes-section strong {
-            color: #92400e;
-        }
-        .footer {
-            background: #1e293b;
-            color: #94a3b8;
-            padding: 24px 40px;
-            font-size: 12px;
-            line-height: 1.8;
-        }
-        .footer strong {
-            color: white;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .footer-info {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-        }
-        .print-actions {
-            text-align: center;
-            margin-top: 24px;
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-        .btn {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
-        }
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
-        }
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-        @media print {
-            body { 
-                background: white; 
-                padding: 0;
+<x-public-layout>
+    @push('styles')
+        <!-- Fonts: Playfair Display for Headings, Inter for UI text -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+        <style>
+            .font-inter { font-family: 'Inter', sans-serif; }
+            h1, h2, h3, h4, .font-serif { font-family: 'Playfair Display', serif; }
+            
+            @media print {
+                .no-print { display: none !important; }
+                body { background: white; -webkit-print-color-adjust: exact; }
+                .ticket-container { box-shadow: none; margin: 0; }
+                nav, footer, .pt-20 { padding-top: 0 !important; }
             }
-            .ticket {
-                box-shadow: none;
-                border-radius: 0;
+            
+            /* Custom Pattern for Luxury Feel */
+            .bg-luxury {
+                background-color: #f5f5f4; /* stone-100 */
+                background-image: radial-gradient(#e7e5e4 1px, transparent 1px);
+                background-size: 24px 24px;
             }
-            .print-actions { 
-                display: none !important; 
-            }
-            .header {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-        @media (max-width: 600px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-            .customer-info {
-                grid-template-columns: 1fr;
-            }
-            .content {
-                padding: 24px;
-            }
-            .header {
-                padding: 24px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="ticket-container">
-        <div class="ticket">
-            <div class="header">
-                <div class="header-content">
-                    <h1>E-TIKET WISATA JEPARA</h1>
-                    <p>Dinas Pariwisata dan Kebudayaan Kabupaten Jepara</p>
+        </style>
+    @endpush
+
+    <div class="bg-luxury min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center p-6 text-stone-800 font-inter">
+        <!-- Ticket Container -->
+        <div class="max-w-[400px] w-full bg-white border border-stone-200 overflow-hidden relative ticket-card shadow-xl shadow-stone-200/50">
+            
+            <!-- Header / Brand Section -->
+            <div class="bg-stone-900 text-white p-8 text-center relative overflow-hidden">
+                <!-- Subtle Texture/Noise could go here -->
+                <div class="relative z-10">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-2">@lang('tickets.department')</p>
+                    <h1 class="text-3xl font-serif italic tracking-wide text-stone-50">@lang('tickets.header')</h1>
+                    <div class="w-16 h-px bg-stone-700 mx-auto mt-4"></div>
                 </div>
-                <div class="ticket-badge">🎫 E-Ticket</div>
+                
+                <!-- Abstract decorative circles for premium feel -->
+                <div class="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
+                <div class="absolute bottom-0 right-0 w-48 h-48 bg-stone-800/50 rounded-full translate-x-1/3 translate-y-1/3 blur-xl"></div>
             </div>
 
-            <div class="content">
-                <div class="order-number-section">
+            <!-- Ticket Body -->
+            <div class="p-8 relative">
+                 <!-- Decorative connectors mimicking a physical ticket tear-off line -->
+                 <div class="absolute top-0 left-0 w-4 h-8 bg-stone-100 rounded-r-full -mt-4 z-20"></div>
+                 <div class="absolute top-0 right-0 w-4 h-8 bg-stone-100 rounded-l-full -mt-4 z-20"></div>
+                 
+                 <!-- Primary Info -->
+                 <div class="text-center mb-8">
+                     <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">@lang('tickets.destination')</p>
+                     <h2 class="text-2xl font-serif font-bold text-stone-900 leading-tight">
+                         {{ $order->ticket->place->name }}
+                     </h2>
+                 </div>
+
+                <!-- QR Code Section -->
+                <div class="flex justify-center mb-8">
+                    <div class="p-4 border border-stone-200 bg-stone-50">
+                        <div id="qrcode" class="mix-blend-multiply opacity-90"></div>
+                    </div>
+                </div>
+                <div class="text-center mb-8">
+                    <p class="text-[10px] text-stone-400 tracking-widest uppercase mb-1">@lang('tickets.order_code')</p>
+                    <p class="font-mono text-lg font-bold text-stone-700 tracking-wider">{{ $order->order_number }}</p>
+                    <div class="mt-2 inline-block px-4 py-1 border border-stone-200 rounded-full">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                            {{ $order->status_label }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-stone-100 pt-6">
+                    
                     <div>
-                        <div class="order-label">Nomor Pesanan</div>
-                        <div class="order-value">{{ $order->order_number }}</div>
+                        <p class="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-1">@lang('tickets.visit_date')</p>
+                        <p class="font-serif text-lg text-stone-800">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
                     </div>
-                    <span class="status-badge status-{{ $order->status }}">
-                        @if($order->status == 'paid')✓@elseif($order->status == 'pending')⏳@elseif($order->status == 'used')✔@else✕@endif
-                        {{ $order->status_label }}
-                    </span>
-                </div>
 
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">Destinasi</div>
-                        <div class="detail-value">{{ $order->ticket->place->name }}</div>
+                    <div class="text-right">
+                        <p class="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-1">@lang('tickets.visitors')</p>
+                        <p class="font-serif text-lg text-stone-800">{{ $order->quantity }} @lang('tickets.people')</p>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Jenis Tiket</div>
-                        <div class="detail-value">{{ $order->ticket->name }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Tanggal Kunjungan</div>
-                        <div class="detail-value">{{ $order->visit_date->translatedFormat('d F Y') }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Jumlah Tiket</div>
-                        <div class="detail-value">{{ $order->quantity }} tiket</div>
+
+                    <div class="col-span-2">
+                         <p class="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-1">@lang('tickets.ticket_type')</p>
+                         <div class="flex items-baseline gap-2">
+                            <span class="font-serif text-lg text-stone-800">{{ $order->ticket->name }}</span>
+                            <span class="text-xs text-stone-500 italic">({{ ucfirst($order->ticket->type) }})</span>
+                         </div>
                     </div>
                 </div>
 
-                <div class="detail-item" style="margin-bottom: 24px;">
-                    <div class="detail-label">Total Pembayaran</div>
-                    <div class="detail-value price">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
-                </div>
-
-                <div class="qr-section">
-                    <div class="qr-title">📱 Scan QR Code untuk Verifikasi</div>
-                    <div id="qrcode"></div>
-                    <p class="qr-instruction">Tunjukkan QR code ini kepada petugas saat memasuki lokasi wisata</p>
-                </div>
-
-                <div class="customer-section">
-                    <div class="section-title">Informasi Pemesan</div>
-                    <div class="customer-info">
-                        <div class="customer-item">
-                            <span>Nama Lengkap</span>
-                            <strong>{{ $order->customer_name }}</strong>
+                <!-- Total Section -->
+                <div class="mt-8 pt-6 border-t border-dashed border-stone-300">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-1">@lang('tickets.customer')</p>
+                            <p class="text-sm font-semibold text-stone-700">{{ $order->customer_name }}</p>
                         </div>
-                        <div class="customer-item">
-                            <span>Email</span>
-                            <strong>{{ $order->customer_email }}</strong>
-                        </div>
-                        <div class="customer-item">
-                            <span>No. Telepon</span>
-                            <strong>{{ $order->customer_phone }}</strong>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-1">@lang('tickets.total_payment')</p>
+                            <p class="font-serif text-2xl font-bold text-stone-900">RP {{ number_format($order->total_price, 0, ',', '.') }}</p>
                         </div>
                     </div>
                 </div>
-
-                @if($order->notes)
-                    <div class="notes-section">
-                        <strong>📝 Catatan:</strong>
-                        {{ $order->notes }}
-                    </div>
-                @endif
             </div>
-
-            <div class="footer">
-                <strong>Syarat & Ketentuan:</strong>
-                <p>• Tiket ini berlaku untuk {{ $order->ticket->valid_days }} hari sejak tanggal kunjungan.</p>
-                <p>• Harap tunjukkan tiket ini (cetak atau digital) beserta identitas diri saat memasuki lokasi wisata.</p>
-                <p>• Tiket tidak dapat dipindahtangankan atau dijual kembali.</p>
-                <div class="footer-info">
-                    <span>Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }}</span>
-                    <span>Dinas Pariwisata Jepara</span>
-                </div>
+            
+            <!-- Footer / Decorative Bottom -->
+            <div class="bg-stone-50 p-4 text-center border-t border-stone-200">
+                <p class="text-[10px] text-stone-400 italic font-serif">@lang('tickets.footer_thanks')</p>
             </div>
         </div>
 
-        <div class="print-actions">
-            <button onclick="window.print()" class="btn btn-primary">
-                🖨️ Cetak Tiket
-            </button>
-            <button onclick="window.close()" class="btn btn-secondary">
-                ✕ Tutup
+        <!-- Actions Area -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 w-full max-w-[400px] no-print">
+            <a href="{{ route('tickets.download-qr', $order->order_number) }}" 
+               class="flex-1 px-6 py-3 bg-white border border-stone-300 text-stone-600 text-xs font-bold uppercase tracking-widest hover:bg-stone-50 transition-colors text-center">
+                @lang('tickets.save_qr')
+            </a>
+            <button onclick="downloadTicketImage()" 
+                    class="flex-1 px-6 py-3 bg-stone-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-colors">
+                @lang('tickets.download_pdf')
             </button>
         </div>
     </div>
 
-    <script>
-        // Generate QR code on page load
-        document.addEventListener('DOMContentLoaded', function() {
+    @push('scripts')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script>
+            // Generate QR Code
             new QRCode(document.getElementById("qrcode"), {
                 text: "{{ $order->order_number }}",
-                width: 180,
-                height: 180,
-                colorDark : "#1e293b",
-                colorLight : "#ffffff",
+                width: 120,
+                height: 120,
+                colorDark : "#292524", // stone-800
+                colorLight : "#f5f5f4", // stone-100 bg matches container
                 correctLevel : QRCode.CorrectLevel.H
             });
-        });
-    </script>
-</body>
-</html>
+
+            function downloadTicketImage() {
+                const ticketCard = document.querySelector('.ticket-card');
+                
+                html2canvas(ticketCard, {
+                    scale: 3, // High resolution for print quality
+                    useCORS: true,
+                    backgroundColor: null
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'E-Tiket-{{ $order->order_number }}.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }
+        </script>
+    @endpush
+</x-public-layout>
+

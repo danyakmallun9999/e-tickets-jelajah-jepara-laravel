@@ -206,9 +206,9 @@
                         <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadTicket') }}
                     </a>
                     
-                    <a href="{{ route('tickets.index') }}" 
+                    <a href="{{ route('tickets.my') }}" 
                        class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300">
-                        {{ __('Tickets.Success.BookMore') }}
+                        @lang('tickets.my_tickets_button')
                     </a>
                 </div>
             </div>
