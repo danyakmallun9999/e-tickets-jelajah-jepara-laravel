@@ -289,7 +289,7 @@
                                     <h3 class="font-bold text-gray-900">Poster Event</h3>
                                 </div>
                             </div>
-                            <div class="p-5" x-data="{ preview: '{{ $event->image ? Storage::url($event->image) : '' }}' }">
+                            <div class="p-5" x-data="{ preview: '{{ $event->image ? asset($event->image) : '' }}' }">
                                 <div class="relative w-full aspect-[3/4] bg-gray-100 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden hover:border-violet-400 hover:bg-violet-50/30 transition-all cursor-pointer group"
                                      @click="$refs.fileInput.click()">
                                     

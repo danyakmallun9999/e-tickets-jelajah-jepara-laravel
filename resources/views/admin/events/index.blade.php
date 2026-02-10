@@ -120,14 +120,10 @@
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-4">
                                         <div class="flex-shrink-0 h-14 w-14 rounded-xl overflow-hidden bg-gradient-to-br from-violet-100 to-purple-100 border border-violet-200/50 flex items-center justify-center">
-                                            @if($event->image)
-                                                <img class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ Storage::url($event->image) }}" alt="">
-                                            @else
-                                                <div class="text-center">
-                                                    <span class="text-[10px] font-bold text-violet-600 uppercase tracking-wider">{{ $event->start_date->isoFormat('MMM') }}</span>
-                                                    <p class="text-lg font-bold text-violet-800 -mt-0.5">{{ $event->start_date->format('d') }}</p>
-                                                </div>
-                                            @endif
+                                            <div class="text-center">
+                                                <span class="text-[10px] font-bold text-violet-600 uppercase tracking-wider">{{ $event->start_date->isoFormat('MMM') }}</span>
+                                                <p class="text-lg font-bold text-violet-800 -mt-0.5">{{ $event->start_date->format('d') }}</p>
+                                            </div>
                                         </div>
                                         <div class="min-w-0">
                                             <div class="flex items-center gap-2">
