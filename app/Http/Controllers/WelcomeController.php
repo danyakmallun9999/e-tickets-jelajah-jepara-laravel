@@ -69,6 +69,16 @@ class WelcomeController extends Controller
         $cultures = $this->staticDataService->getCultures();
         $culinaries = $this->staticDataService->getCulinaries();
 
+        // Upcoming Events
+        $upcomingEvents = Event::where('is_published', true)
+            ->where('start_date', '>=', now())
+            ->orderBy('start_date', 'asc')
+            ->take(5)
+            ->get();
+
+        $upcomingEvent = $upcomingEvents->first();
+        $nextEvents = $upcomingEvents->skip(1);
+
         return view('public.home.welcome', compact(
             'categories',
             'totalPlaces',
@@ -83,7 +93,9 @@ class WelcomeController extends Controller
             'places',
             'posts',
             'cultures',
-            'culinaries'
+            'culinaries',
+            'upcomingEvent',
+            'nextEvents'
         ));
     }
 

@@ -51,6 +51,9 @@
     {{-- Culture Section --}}
     @include('public.home.sections.culture')
 
+    {{-- Upcoming Event Section --}}
+    @include('public.home.sections.upcoming-event')
+
     {{-- Tourism Carousel Section --}}
     @include('public.home.sections.tourism-carousel')
 
