@@ -58,139 +58,102 @@
                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Tickets.My.Subtitle') }}</p>
                 </div>
 
-                @if(!isset($orders))
-                    {{-- Email search form --}}
-                    <div class="max-w-md mx-auto">
-                        <p class="text-slate-500 dark:text-slate-400 mb-5 text-center text-sm">{{ __('Tickets.My.EmailPrompt') }}</p>
-                        
-                        <form action="{{ route('tickets.retrieve') }}" method="POST">
-                            @csrf
-                            <div class="mb-4">
-                                <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                                    <i class="fa-solid fa-envelope mr-1 text-primary text-xs"></i> {{ __('Tickets.Form.Email') }}
-                                </label>
-                                <input type="email" name="email" id="email" required
-                                       value="{{ auth('web')->check() ? auth('web')->user()->email : '' }}"
-                                       class="w-full px-4 py-3 rounded-xl border-none bg-slate-50 dark:bg-slate-700/50 ring-1 ring-slate-200 dark:ring-slate-600 focus:ring-2 focus:ring-primary text-slate-900 dark:text-white font-medium transition-all placeholder:text-slate-400"
-                                       placeholder="{{ __('Tickets.Form.EmailPlaceholder') }}">
-                            </div>
-                            <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-search text-sm"></i>
-                                {{ __('Tickets.My.SearchButton') }}
-                            </button>
-                        </form>
+                @if($orders->count() > 0)
+                    {{-- Results count --}}
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <p class="text-sm text-slate-400">
+                            Menampilkan <span class="font-semibold text-slate-600 dark:text-white">{{ $orders->count() }}</span> pesanan
+                        </p>
                     </div>
-                @else
-                    {{-- Orders list --}}
-                    @if($orders->count() > 0)
-                        {{-- Results count --}}
-                        <div class="flex items-center justify-between mb-4 px-1">
-                            <p class="text-sm text-slate-400">
-                                Menampilkan <span class="font-semibold text-slate-600 dark:text-white">{{ $orders->count() }}</span> pesanan
-                            </p>
-                        </div>
 
-                        <div class="space-y-3">
-                            @foreach($orders as $order)
-                                <div class="relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors overflow-hidden">
-                                    {{-- Status accent bar --}}
-                                    <div class="absolute top-0 left-0 w-1 h-full
-                                        {{ $order->status == 'pending' ? 'bg-yellow-400' : '' }}
-                                        {{ $order->status == 'paid' ? 'bg-emerald-500' : '' }}
-                                        {{ $order->status == 'used' ? 'bg-blue-500' : '' }}
-                                        {{ $order->status == 'cancelled' ? 'bg-red-400' : '' }}">
+                    <div class="space-y-3">
+                        @foreach($orders as $order)
+                            <div class="relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors overflow-hidden">
+                                {{-- Status accent bar --}}
+                                <div class="absolute top-0 left-0 w-1 h-full
+                                    {{ $order->status == 'pending' ? 'bg-yellow-400' : '' }}
+                                    {{ $order->status == 'paid' ? 'bg-emerald-500' : '' }}
+                                    {{ $order->status == 'used' ? 'bg-blue-500' : '' }}
+                                    {{ $order->status == 'cancelled' ? 'bg-red-400' : '' }}">
+                                </div>
+                                
+                                <div class="p-4 md:p-5 pl-5 md:pl-6">
+                                    {{-- Top row --}}
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                                        <div>
+                                            <div class="text-[11px] text-slate-400 uppercase tracking-wider font-medium">{{ __('Tickets.My.OrderNumber') }}</div>
+                                            <div class="font-bold text-slate-900 dark:text-white">{{ $order->order_number }}</div>
+                                        </div>
+                                        <span class="inline-flex items-center self-start sm:self-auto gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold
+                                            {{ $order->status == 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400' : '' }}
+                                            {{ $order->status == 'paid' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : '' }}
+                                            {{ $order->status == 'used' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : '' }}
+                                            {{ $order->status == 'cancelled' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : '' }}">
+                                            @if($order->status == 'pending')
+                                                <i class="fa-solid fa-clock text-[10px]"></i>
+                                            @elseif($order->status == 'paid')
+                                                <i class="fa-solid fa-check-circle text-[10px]"></i>
+                                            @elseif($order->status == 'used')
+                                                <i class="fa-solid fa-ticket text-[10px]"></i>
+                                            @else
+                                                <i class="fa-solid fa-times-circle text-[10px]"></i>
+                                            @endif
+                                            {{ $order->status_label }}
+                                        </span>
                                     </div>
-                                    
-                                    <div class="p-4 md:p-5 pl-5 md:pl-6">
-                                        {{-- Top row --}}
-                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-                                            <div>
-                                                <div class="text-[11px] text-slate-400 uppercase tracking-wider font-medium">{{ __('Tickets.My.OrderNumber') }}</div>
-                                                <div class="font-bold text-slate-900 dark:text-white">{{ $order->order_number }}</div>
-                                            </div>
-                                            <span class="inline-flex items-center self-start sm:self-auto gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold
-                                                {{ $order->status == 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400' : '' }}
-                                                {{ $order->status == 'paid' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : '' }}
-                                                {{ $order->status == 'used' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : '' }}
-                                                {{ $order->status == 'cancelled' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : '' }}">
-                                                @if($order->status == 'pending')
-                                                    <i class="fa-solid fa-clock text-[10px]"></i>
-                                                @elseif($order->status == 'paid')
-                                                    <i class="fa-solid fa-check-circle text-[10px]"></i>
-                                                @elseif($order->status == 'used')
-                                                    <i class="fa-solid fa-ticket text-[10px]"></i>
-                                                @else
-                                                    <i class="fa-solid fa-times-circle text-[10px]"></i>
-                                                @endif
-                                                {{ $order->status_label }}
-                                            </span>
-                                        </div>
 
-                                        {{-- Dashed separator --}}
-                                        <div class="border-t border-dashed border-slate-100 dark:border-slate-700 my-3"></div>
+                                    {{-- Dashed separator --}}
+                                    <div class="border-t border-dashed border-slate-100 dark:border-slate-700 my-3"></div>
 
-                                        {{-- Ticket details --}}
-                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2.5 mb-4">
-                                            <div>
-                                                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Ticket') }}</div>
-                                                <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->ticket->name }}</div>
-                                                <div class="text-xs text-primary font-medium">{{ $order->ticket->place->name }}</div>
-                                            </div>
-                                            <div>
-                                                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Date') }}</div>
-                                                <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->visit_date->translatedFormat('d M Y') }}</div>
-                                            </div>
-                                            <div>
-                                                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Quantity') }}</div>
-                                                <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</div>
-                                            </div>
-                                            <div>
-                                                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Total') }}</div>
-                                                <div class="font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
-                                            </div>
+                                    {{-- Ticket details --}}
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2.5 mb-4">
+                                        <div>
+                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Ticket') }}</div>
+                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->ticket->name }}</div>
+                                            <div class="text-xs text-primary font-medium">{{ $order->ticket->place->name }}</div>
                                         </div>
+                                        <div>
+                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Date') }}</div>
+                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->visit_date->translatedFormat('d M Y') }}</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Quantity') }}</div>
+                                            <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Total') }}</div>
+                                            <div class="font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
+                                        </div>
+                                    </div>
 
-                                        {{-- Action buttons --}}
-                                        <div class="flex gap-2">
-                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                               class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
-                                                <i class="fa-solid fa-eye text-xs"></i>{{ __('Tickets.My.ViewDetail') }}
-                                            </a>
-                                            <a href="{{ route('tickets.download', $order->order_number) }}" 
-                                               class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600">
-                                                <i class="fa-solid fa-download text-xs"></i>{{ __('Tickets.My.Download') }}
-                                            </a>
-                                        </div>
+                                    {{-- Action buttons --}}
+                                    <div class="flex gap-2">
+                                        <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                           class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye text-xs"></i>{{ __('Tickets.My.ViewDetail') }}
+                                        </a>
+                                        <a href="{{ route('tickets.download', $order->order_number) }}" 
+                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-center font-semibold py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600">
+                                            <i class="fa-solid fa-download text-xs"></i>{{ __('Tickets.My.Download') }}
+                                        </a>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-
-                        <div class="mt-6 text-center">
-                            <a href="{{ route('tickets.my') }}" class="text-primary hover:text-primary/80 font-medium text-sm inline-flex items-center gap-2 transition-colors">
-                                <i class="fa-solid fa-search text-xs"></i>{{ __('Tickets.My.SearchOtherButton') }}
-                            </a>
-                        </div>
-                    @else
-                        {{-- Empty state --}}
-                        <div class="text-center py-14">
-                            <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <i class="fa-solid fa-ticket text-slate-300 dark:text-slate-500 text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1.5">{{ __('Tickets.My.NoTicketsTitle') }}</h3>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">{{ __('Tickets.My.NoTicketsSubtitle') }}</p>
-                            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5">
-                                <a href="{{ route('tickets.my') }}" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors text-sm inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-search text-xs"></i>
-                                    {{ __('Tickets.My.TryAgain') }}
-                                </a>
-                                <a href="{{ route('tickets.index') }}" class="px-5 py-2.5 text-slate-500 hover:text-primary font-medium rounded-xl transition-colors text-sm inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-store text-xs"></i>
-                                    Beli Tiket Baru
-                                </a>
-                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    {{-- Empty state --}}
+                    <div class="text-center py-14">
+                        <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-ticket text-slate-300 dark:text-slate-500 text-2xl"></i>
                         </div>
-                    @endif
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1.5">{{ __('Tickets.My.NoTicketsTitle') }}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">{{ __('Tickets.My.NoTicketsSubtitle') }}</p>
+                        <a href="{{ route('tickets.index') }}" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors text-sm inline-flex items-center gap-2">
+                            <i class="fa-solid fa-store text-xs"></i>
+                            Beli Tiket Baru
+                        </a>
+                    </div>
                 @endif
 
                 {{-- Footer navigation --}}

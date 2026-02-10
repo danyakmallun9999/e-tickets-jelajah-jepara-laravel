@@ -131,11 +131,18 @@ class TicketController extends Controller
     }
 
     /**
-     * Show my tickets page.
+     * Show my tickets page — auto-loads orders for the logged-in user.
      */
     public function myTickets()
     {
-        return view('public.tickets.my-tickets');
+        $user = Auth::guard('web')->user();
+
+        $orders = TicketOrder::with('ticket.place')
+            ->where('customer_email', $user->email)
+            ->latest()
+            ->get();
+
+        return view('public.tickets.my-tickets', compact('orders'));
     }
 
     /**
