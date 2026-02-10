@@ -131,9 +131,51 @@
                        class="px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 {{ app()->getLocale() == 'en' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">EN</a>
                 </div>
 
-                <!-- Auth Buttons (Hidden as per request, but structure kept if needed) -->
-                <div class="hidden">
-                    <!-- ... -->
+                <!-- Auth Buttons -->
+                <div class="hidden lg:flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-700">
+                    @auth('web')
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full p-1 pr-3 transition-all">
+                                <img src="{{ Auth::guard('web')->user()->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::guard('web')->user()->name) }}" 
+                                     alt="Profile" 
+                                     class="w-8 h-8 rounded-full object-cover ring-2 ring-white dark:ring-slate-700">
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[100px] truncate">
+                                    {{ explode(' ', Auth::guard('web')->user()->name)[0] }}
+                                </span>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                            </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="open" 
+                                 x-cloak
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-2"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden z-50">
+                                
+                                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Halo,</p>
+                                    <p class="font-bold text-slate-800 dark:text-white truncate">{{ Auth::guard('web')->user()->name }}</p>
+                                </div>
+
+                                <a href="{{ route('tickets.my') }}" class="block px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-ticket text-slate-400"></i> {{ __('Tickets.My.Title') ?? 'Tiket Saya' }}
+                                </a>
+
+                                <form method="POST" action="{{ route('auth.user.logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-right-from-bracket opacity-70"></i> {{ __('Logout') ?? 'Keluar' }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('auth.google') }}" class="px-5 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-lg shadow-slate-200/50 dark:shadow-none flex items-center gap-2">
+                            <i class="fa-brands fa-google"></i>
+                            <span>Login</span>
+                        </a>
+                    @endauth
                 </div>
 
                 <!-- Mobile Menu Button (Hamburger to Close) -->
@@ -149,6 +191,7 @@
 
             <!-- Mobile Menu Fullscreen Overlay -->
             <div x-show="mobileMenuOpen" 
+                x-cloak
                 class="fixed inset-0 min-h-screen w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl lg:hidden z-40 flex flex-col pt-24 px-8"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95"
@@ -177,6 +220,36 @@
                     </a>
                     @endforeach
                 </nav>
+
+                <!-- Mobile Auth -->
+                <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    @auth('web')
+                        <div class="nav-profile mb-4">
+                            <div class="flex items-center gap-3 mb-4">
+                                <img src="{{ Auth::guard('web')->user()->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::guard('web')->user()->name) }}" 
+                                     alt="Profile" 
+                                     class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-bold text-slate-900 dark:text-white">{{ Auth::guard('web')->user()->name }}</p>
+                                    <p class="text-xs text-slate-500">{{ Auth::guard('web')->user()->email }}</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('tickets.my') }}" class="block w-full py-3 px-4 bg-primary/10 text-primary font-bold rounded-xl mb-2 text-center">
+                                <i class="fa-solid fa-ticket mr-2"></i> Tiket Saya
+                            </a>
+                            <form method="POST" action="{{ route('auth.user.logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full py-3 px-4 bg-red-50 text-red-600 font-bold rounded-xl text-center">
+                                    Keluar
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="{{ route('auth.google') }}" class="block w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-xl">
+                            <i class="fa-brands fa-google mr-2"></i> Login dengan Google
+                        </a>
+                    @endauth
+                </div>
 
                 <div class="mt-8">
                      <p class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">{{ __('Nav.LanguageSettings') }}</p>
