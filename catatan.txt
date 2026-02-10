@@ -21,4 +21,5 @@ wisatajepara
 # 7. Optimalisasi ukuran file gambar
 # 8. Update README.md
 # 9. Update ke breadcrum pada detail eveent, detail kuliner, detail destinasi
+# 10. Hilangkan GSAP pada folder errors
 
