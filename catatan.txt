@@ -14,12 +14,11 @@ wisatajepara
 # 4. Rubah nama Blusukan Jepara menjadi Jelajah Jepara ( done )
 # 5. Advance dashboard admin (eticket) ( done )
     - Advance chart analytics jumlah pengunjung wisata (data dari e-ticketing) ( done )
-    - Role super admin(bisa tambah role admin dan role pengelola tempat wisata)
-    - Role admin(bisa tambah role pengelola tempat wisata)
-    - Role Pengelola tempat wisata(hanya bisa mengelola tempat wisata yang menjadi miliknya)
 # 6. Pengembangan lebih lanjut fitur e-ticketing
 # 7. Optimalisasi ukuran file gambar
 # 8. Update README.md
 # 9. Update ke breadcrum pada detail eveent, detail kuliner, detail destinasi
 # 10. Hilangkan GSAP pada folder errors
-
+# 11. Role super admin
+# 12. Role admin
+# 13. Role pengelola tempat wisata
