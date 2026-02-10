@@ -71,113 +71,116 @@
                 </div>
 
                 <!-- Advanced Filter Bar -->
-                <div class="bg-white dark:bg-slate-800/50 backdrop-blur-xl p-4 rounded-3xl border border-slate-200 dark:border-white/5 flex flex-col lg:flex-row gap-4 mb-16 relative z-20">
+                <div class="bg-white dark:bg-slate-800/50 backdrop-blur-xl p-3 lg:p-4 rounded-3xl border border-slate-200 dark:border-white/5 flex flex-col lg:flex-row gap-3 lg:gap-4 mb-16 relative z-20">
                     
                     <!-- Search -->
-                    <div class="flex-1 relative group">
-                        <i class="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"></i>
+                    <div class="flex-1 relative group w-full">
+                        <i class="fa-solid fa-search absolute left-4 lg:left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-sm lg:text-base"></i>
                         <input 
                             x-model="search"
                             type="text" 
                             placeholder="{{ __('Destinations.SearchPlaceholder') }}" 
-                            class="w-full pl-12 pr-4 py-3.5 rounded-2xl border-none bg-slate-50 dark:bg-black/20 focus:bg-white dark:focus:bg-black/40 ring-1 ring-slate-200 dark:ring-white/10 focus:ring-2 focus:ring-primary text-slate-700 dark:text-white font-medium transition-all placeholder:text-slate-400"
+                            class="w-full pl-10 lg:pl-12 pr-4 py-2.5 lg:py-3.5 rounded-2xl border-none bg-slate-50 dark:bg-black/20 focus:bg-white dark:focus:bg-black/40 ring-1 ring-slate-200 dark:ring-white/10 focus:ring-2 focus:ring-primary text-slate-700 dark:text-white font-medium transition-all placeholder:text-slate-400 text-sm lg:text-base"
                         >
                     </div>
 
-                    <!-- Category Dropdown (Custom) -->
-                    <div class="relative min-w-[220px]" x-data="{ open: false }">
-                        <i class="fa-solid fa-layer-group absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none"></i>
-                        
-                        <button 
-                            @click="open = !open"
-                            @click.outside="open = false"
-                            class="w-full pl-12 pr-10 py-3.5 text-left rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 bg-slate-50 dark:bg-black/20 hover:bg-white dark:hover:bg-black/40 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between transition-all text-slate-700 dark:text-white"
-                        >
-                            <span x-text="selectedCategory === '' ? '{{ __('Destinations.Filter.AllCategories') }}' : selectedCategory" class="truncate"></span>
-                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
-                        </button>
-
-                        <div 
-                            x-show="open" 
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="transform opacity-0 translate-y-2"
-                            x-transition:enter-end="transform opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="transform opacity-100 translate-y-0"
-                            x-transition:leave-end="transform opacity-0 translate-y-2"
-                            class="absolute z-50 mt-2 w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 max-h-80 overflow-y-auto no-scrollbar p-1.5"
-                            style="display: none;"
-                        >
+                    <!-- Filter Group: Grid on Mobile, Flex/Contents on Desktop -->
+                    <div class="grid grid-cols-2 gap-3 lg:contents">
+                        <!-- Category Dropdown (Custom) -->
+                        <div class="relative min-w-[0] lg:min-w-[220px]" x-data="{ open: false }">
+                            <i class="fa-solid fa-layer-group absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none text-sm lg:text-base"></i>
+                            
                             <button 
-                                @click="selectedCategory = ''; open = false"
-                                class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
-                                :class="selectedCategory === '' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                @click="open = !open"
+                                @click.outside="open = false"
+                                class="w-full pl-9 lg:pl-12 pr-7 lg:pr-10 py-2.5 lg:py-3.5 text-left rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 bg-slate-50 dark:bg-black/20 hover:bg-white dark:hover:bg-black/40 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between transition-all text-slate-700 dark:text-white"
                             >
-                                <span>{{ __('Destinations.Filter.AllCategories') }}</span>
-                                <i class="fa-solid fa-check text-primary" x-show="selectedCategory === ''"></i>
+                                <span x-text="selectedCategory === '' ? '{{ __('Destinations.Filter.AllCategories') }}' : selectedCategory" class="truncate block w-full"></span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200 absolute right-3 lg:right-4" :class="{ 'rotate-180': open }"></i>
                             </button>
-                            @foreach($categories as $category)
+
+                            <div 
+                                x-show="open" 
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="transform opacity-0 translate-y-2"
+                                x-transition:enter-end="transform opacity-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="transform opacity-100 translate-y-0"
+                                x-transition:leave-end="transform opacity-0 translate-y-2"
+                                class="absolute z-50 mt-2 w-full min-w-[180px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 max-h-80 overflow-y-auto no-scrollbar p-1.5"
+                                style="display: none;"
+                            >
                                 <button 
-                                    @click="selectedCategory = '{{ $category->name }}'; open = false"
+                                    @click="selectedCategory = ''; open = false"
                                     class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
-                                    :class="selectedCategory === '{{ $category->name }}' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                    :class="selectedCategory === '' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
                                 >
-                                    <span>{{ $category->name }}</span>
-                                    <i class="fa-solid fa-check text-primary" x-show="selectedCategory === '{{ $category->name }}'"></i>
+                                    <span>{{ __('Destinations.Filter.AllCategories') }}</span>
+                                    <i class="fa-solid fa-check text-primary" x-show="selectedCategory === ''"></i>
                                 </button>
-                            @endforeach
+                                @foreach($categories as $category)
+                                    <button 
+                                        @click="selectedCategory = '{{ $category->name }}'; open = false"
+                                        class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
+                                        :class="selectedCategory === '{{ $category->name }}' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                    >
+                                        <span>{{ $category->name }}</span>
+                                        <i class="fa-solid fa-check text-primary" x-show="selectedCategory === '{{ $category->name }}'"></i>
+                                    </button>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Location Dropdown (Custom) -->
-                    <div class="relative min-w-[220px]" x-data="{ open: false }">
-                        <i class="fa-solid fa-location-dot absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none"></i>
-                        
-                        <button 
-                            @click="open = !open"
-                            @click.outside="open = false"
-                            class="w-full pl-12 pr-10 py-3.5 text-left rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 bg-slate-50 dark:bg-black/20 hover:bg-white dark:hover:bg-black/40 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between transition-all text-slate-700 dark:text-white"
-                        >
-                            <span x-text="selectedLocation === '' ? '{{ __('Destinations.Filter.AllLocations') }}' : selectedLocation" class="truncate"></span>
-                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
-                        </button>
-
-                        <div 
-                            x-show="open" 
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="transform opacity-0 translate-y-2"
-                            x-transition:enter-end="transform opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="transform opacity-100 translate-y-0"
-                            x-transition:leave-end="transform opacity-0 translate-y-2"
-                            class="absolute z-50 mt-2 w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 max-h-80 overflow-y-auto no-scrollbar p-1.5"
-                            style="display: none;"
-                        >
+                        <!-- Location Dropdown (Custom) -->
+                        <div class="relative min-w-[0] lg:min-w-[220px]" x-data="{ open: false }">
+                            <i class="fa-solid fa-location-dot absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none text-sm lg:text-base"></i>
+                            
                             <button 
-                                @click="selectedLocation = ''; open = false"
-                                class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
-                                :class="selectedLocation === '' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                @click="open = !open"
+                                @click.outside="open = false"
+                                class="w-full pl-9 lg:pl-12 pr-7 lg:pr-10 py-2.5 lg:py-3.5 text-left rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 bg-slate-50 dark:bg-black/20 hover:bg-white dark:hover:bg-black/40 focus:ring-2 focus:ring-primary text-sm font-medium flex items-center justify-between transition-all text-slate-700 dark:text-white"
                             >
-                                <span>{{ __('Destinations.Filter.AllLocations') }}</span>
-                                <i class="fa-solid fa-check text-primary" x-show="selectedLocation === ''"></i>
+                                <span x-text="selectedLocation === '' ? '{{ __('Destinations.Filter.AllLocations') }}' : selectedLocation" class="truncate block w-full"></span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200 absolute right-3 lg:right-4" :class="{ 'rotate-180': open }"></i>
                             </button>
-                            @foreach($locations as $loc)
+
+                            <div 
+                                x-show="open" 
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="transform opacity-0 translate-y-2"
+                                x-transition:enter-end="transform opacity-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="transform opacity-100 translate-y-0"
+                                x-transition:leave-end="transform opacity-0 translate-y-2"
+                                class="absolute z-50 mt-2 right-0 origin-top-right w-full min-w-[180px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 max-h-80 overflow-y-auto no-scrollbar p-1.5"
+                                style="display: none;"
+                            >
                                 <button 
-                                    @click="selectedLocation = '{{ $loc }}'; open = false"
+                                    @click="selectedLocation = ''; open = false"
                                     class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
-                                    :class="selectedLocation === '{{ $loc }}' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                    :class="selectedLocation === '' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
                                 >
-                                    <span>{{ $loc }}</span>
-                                    <i class="fa-solid fa-check text-primary" x-show="selectedLocation === '{{ $loc }}'"></i>
+                                    <span>{{ __('Destinations.Filter.AllLocations') }}</span>
+                                    <i class="fa-solid fa-check text-primary" x-show="selectedLocation === ''"></i>
                                 </button>
-                            @endforeach
+                                @foreach($locations as $loc)
+                                    <button 
+                                        @click="selectedLocation = '{{ $loc }}'; open = false"
+                                        class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group"
+                                        :class="selectedLocation === '{{ $loc }}' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'"
+                                    >
+                                        <span>{{ $loc }}</span>
+                                        <i class="fa-solid fa-check text-primary" x-show="selectedLocation === '{{ $loc }}'"></i>
+                                    </button>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
                     <!-- Reset Button -->
                     <button 
                         @click="search = ''; selectedCategory = ''; selectedLocation = ''"
-                        class="px-6 py-3.5 rounded-2xl bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 font-bold text-sm ring-1 ring-slate-200 dark:ring-white/10 hover:bg-slate-50 dark:hover:bg-white/10 transition-all"
+                        class="px-6 py-2.5 lg:py-3.5 rounded-2xl bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 font-bold text-sm ring-1 ring-slate-200 dark:ring-white/10 hover:bg-slate-50 dark:hover:bg-white/10 transition-all w-full lg:w-auto"
                         x-show="search || selectedCategory || selectedLocation"
                         x-transition
                     >
