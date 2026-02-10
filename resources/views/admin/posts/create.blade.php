@@ -154,7 +154,41 @@
                                         const formData = new FormData();
                                         formData.append('file', blobInfo.blob(), blobInfo.filename());
                                         xhr.send(formData);
-                                    })
+                                    }),
+                                    setup: function(editor) {
+                                        editor.on('ExecCommand', function(e) {
+                                            if (e.command === 'mceImage') {
+                                                let checks = 0;
+                                                const checkDialog = setInterval(() => {
+                                                    checks++;
+                                                    // Stop checking after 2 seconds (20 checks * 100ms)
+                                                    if (checks > 20) clearInterval(checkDialog);
+
+                                                    const dialog = document.querySelector('.tox-dialog[role="dialog"]');
+                                                    if (dialog) {
+                                                        const title = dialog.querySelector('.tox-dialog__title');
+                                                        // Ensure it's the Image dialog
+                                                        if (title && (title.innerText.includes('Image') || title.innerText.includes('Gambar'))) {
+                                                            const tabs = dialog.querySelectorAll('.tox-dialog__body-nav-item');
+                                                            if (tabs.length > 0) {
+                                                                // Found the tabs, apply logic and stop
+                                                                clearInterval(checkDialog);
+                                                                
+                                                                // 1. Hide General Tab
+                                                                tabs[0].style.display = 'none';
+
+                                                                // 2. Click Upload Tab for new images
+                                                                const node = editor.selection.getNode();
+                                                                if (node.nodeName !== 'IMG' && tabs.length > 1) {
+                                                                    tabs[1].click();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }, 100); // Check every 100ms
+                                            }
+                                        });
+                                    }
                                 });
 
                                 // Auto Translate
