@@ -171,9 +171,23 @@ class TicketController extends Controller
      * Download ticket QR code as SVG.
      */
     /**
-     * Download ticket QR code as PNG.
+     * Show ticket view (for printing/downloading).
      */
     public function downloadTicket($orderNumber)
+    {
+        $order = TicketOrder::with('ticket.place')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        $this->verifyOrderOwnership($order);
+
+        return view('public.tickets.download', compact('order'));
+    }
+
+    /**
+     * Download ticket QR code as PNG.
+     */
+    public function downloadQrCode($orderNumber)
     {
         $order = TicketOrder::where('order_number', $orderNumber)->firstOrFail();
 

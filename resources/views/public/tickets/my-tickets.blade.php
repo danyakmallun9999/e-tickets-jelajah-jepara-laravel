@@ -110,6 +110,7 @@
                                         <div>
                                             <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">{{ __('Tickets.My.Ticket') }}</div>
                                             <div class="font-semibold text-slate-900 dark:text-white text-sm">{{ $order->ticket->name }}</div>
+                                            <div class="text-xs text-slate-500 mb-0.5 capitalize">{{ $order->ticket->type }}</div>
                                             <div class="text-xs text-primary font-medium">{{ $order->ticket->place->name }}</div>
                                         </div>
                                         <div>

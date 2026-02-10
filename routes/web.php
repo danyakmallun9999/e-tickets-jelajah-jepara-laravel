@@ -41,6 +41,7 @@ Route::middleware('auth.user')->group(function () {
     Route::post('/e-tiket/book', [App\Http\Controllers\Public\TicketController::class, 'book'])->name('tickets.book');
     Route::get('/e-tiket/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
     Route::get('/e-tiket/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
+    Route::get('/e-tiket/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
     Route::get('/e-tiket/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
     Route::get('/e-tiket/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
     Route::get('/e-tiket/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
