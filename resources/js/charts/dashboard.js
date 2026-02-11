@@ -126,7 +126,7 @@ function buildAreaOptions({ seriesName, data, labels, color, yFormatter, tooltip
             tickAmount: 15,
             labels: {
                 style: { colors: '#9ca3af', fontSize: '10px' },
-                rotate: 0,
+                rotate: -90,
                 hideOverlappingLabels: true,
             },
         },
