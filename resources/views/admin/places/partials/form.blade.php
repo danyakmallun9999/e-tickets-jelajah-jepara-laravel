@@ -420,57 +420,77 @@
                 translateBtn.disabled = true;
                 translateBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> <span>Translating...</span>';
 
+                let successCount = 0;
+                let errorCount = 0;
+                const translateUrl = "{{ route('admin.posts.translate') }}";
+
                 try {
+                    // Helper function for translation
+                    const translateText = async (text, targetId) => {
+                        if (!text) return;
+
+                        try {
+                            const response = await fetch(translateUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json' 
+                                },
+                                body: JSON.stringify({
+                                    text: text,
+                                    source: 'id',
+                                    target: 'en'
+                                })
+                            });
+
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                            const data = await response.json();
+                            
+                            if (data.success) {
+                                document.getElementById(targetId).value = data.translation;
+                                successCount++;
+                            } else {
+                                console.error('Translation failed for ' + targetId + ':', data.message);
+                                errorCount++;
+                            }
+                        } catch (e) {
+                            console.error('Translation exception for ' + targetId + ':', e);
+                            errorCount++;
+                        }
+                    };
+
                     // Translate Title/Name
                     const titleSource = document.getElementById('name_id').value;
-                    if (titleSource) {
-                        const response = await fetch('{{ route('admin.posts.translate') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                text: titleSource,
-                                source: 'id',
-                                target: 'en'
-                            })
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            document.getElementById('name_en').value = data.translation;
-                        }
-                    }
+                    await translateText(titleSource, 'name_en');
+
+                    // Wait 1.5s to avoid rate limiting from Google Translate
+                    await new Promise(resolve => setTimeout(resolve, 1500));
 
                     // Translate Description
-                    const contentSource = document.getElementById('description_id').value;
-                    if (contentSource) {
-                        const response = await fetch('{{ route('admin.posts.translate') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                text: contentSource,
-                                source: 'id',
-                                target: 'en'
-                            })
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            document.getElementById('description_en').value = data.translation;
-                        }
+                    const descriptionElement = document.getElementById('description_id');
+                    const contentSource = descriptionElement ? descriptionElement.value : '';
+                    await translateText(contentSource, 'description_en');
+
+                    if (successCount > 0) {
+                        window.dispatchEvent(new CustomEvent('notify', { 
+                            detail: { message: 'Terjemahan berhasil!', type: 'success' } 
+                        }));
+                    } else if (errorCount > 0) {
+                        window.dispatchEvent(new CustomEvent('notify', { 
+                            detail: { message: 'Gagal menerjemahkan. Cek console untuk detail.', type: 'error' } 
+                        }));
+                    } else {
+                         window.dispatchEvent(new CustomEvent('notify', { 
+                            detail: { message: 'Tidak ada teks untuk diterjemahkan.', type: 'info' } 
+                        }));
                     }
 
-                    window.dispatchEvent(new CustomEvent('notify', { 
-                        detail: { message: 'Terjemahan berhasil!', type: 'success' } 
-                    }));
-
                 } catch (error) {
-                    console.error('Translation error:', error);
+                    console.error('General translation error:', error);
                     window.dispatchEvent(new CustomEvent('notify', { 
-                        detail: { message: 'Terjemahan gagal. Coba lagi.', type: 'error' } 
+                        detail: { message: 'Terjemahan gagal. Terjadi kesalahan sistem.', type: 'error' } 
                     }));
                 } finally {
                     translateBtn.disabled = false;
