@@ -16,30 +16,46 @@
             $totalRevenue = $summary['gross_revenue'] > 0 ? $summary['gross_revenue'] : 1;
         @endphp
 
-        {{-- Donut Chart --}}
-        <div id="paymentMethodChart" class="mx-auto"></div>
-
-        {{-- Legend --}}
-        <div class="mt-4 space-y-2">
-            @foreach($paymentMethods as $index => $method)
-                @php $pct = round(($method->revenue / $totalRevenue) * 100, 1); @endphp
-                <div class="group p-3 rounded-xl hover:bg-gray-50 transition-all duration-200 cursor-default">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white shadow" style="background-color: {{ $chartColors[$index % count($chartColors)] }}"></span>
-                            <span class="text-sm text-gray-700 font-medium">{{ $method->payment_method ?: 'Lainnya' }}</span>
-                        </div>
-                        <span class="text-sm font-bold text-gray-800">Rp {{ number_format($method->revenue, 0, ',', '.') }}</span>
-                    </div>
-                    {{-- Progress bar --}}
-                    <div class="flex items-center gap-2 pl-5">
-                        <div class="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                            <div class="h-1.5 rounded-full transition-all duration-700" style="width: {{ $pct }}%; background-color: {{ $chartColors[$index % count($chartColors)] }}"></div>
-                        </div>
-                        <span class="text-xs text-gray-500 font-semibold w-12 text-right">{{ $pct }}%</span>
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            {{-- Donut Chart (Left) --}}
+            <div class="flex flex-col items-center justify-center border-r border-gray-100 pr-8">
+                <div id="paymentMethodChart" class="w-full flex justify-center"></div>
+                <div class="text-center mt-4">
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Total Pendapatan</p>
+                    <p class="text-xl font-bold text-gray-800">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
                 </div>
-            @endforeach
+            </div>
+
+            {{-- Legend & Data List (Right) --}}
+            <div class="lg:col-span-2 space-y-3">
+                <h4 class="text-sm font-semibold text-gray-600 mb-4 px-3">Rincian per Metode</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @foreach($paymentMethods as $index => $method)
+                        @php $pct = round(($method->revenue / $totalRevenue) * 100, 1); @endphp
+                        <div class="group p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-300 border border-transparent hover:border-blue-100">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm" style="background-color: {{ $chartColors[$index % count($chartColors)] }}"></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-700 group-hover:text-blue-700 transition-colors">{{ $method->payment_method ?: 'Lainnya' }}</p>
+                                        <p class="text-xs text-gray-500">{{ $pct }}% kontribusi</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-gray-800">Rp {{ number_format($method->revenue, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                            {{-- Enhanced Progress bar --}}
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                                    <div class="h-1.5 rounded-full transition-all duration-1000 ease-out group-hover:brightness-110" 
+                                         style="width: {{ $pct }}%; background-color: {{ $chartColors[$index % count($chartColors)] }}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
     @else
         {{-- Enhanced Empty State --}}

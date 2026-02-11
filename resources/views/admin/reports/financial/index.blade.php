@@ -23,14 +23,14 @@
             {{-- 2. Summary Insight Cards --}}
             @include('admin.reports.financial.partials._summary-cards')
 
-            {{-- 3. Revenue Trend Chart + Payment Distribution --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2">
-                    @include('admin.reports.financial.partials._revenue-chart')
-                </div>
-                <div>
-                    @include('admin.reports.financial.partials._payment-methods')
-                </div>
+            {{-- 3. Revenue Trend Chart (Full Width) --}}
+            <div class="h-[420px]">
+                @include('admin.reports.financial.partials._revenue-chart')
+            </div>
+
+            {{-- 4. Payment Distribution (Full Width Card) --}}
+            <div>
+                @include('admin.reports.financial.partials._payment-methods')
             </div>
 
             {{-- 4. Insight Highlights --}}
