@@ -19,7 +19,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
 
     <style>
         body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
@@ -178,81 +178,7 @@
         </p>
     </div>
 
-    <!-- GSAP Animations -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initial states
-            gsap.set('#error-code-section', { opacity: 0, y: -30 });
-            gsap.set('#error-message', { opacity: 0, y: 20 });
-            gsap.set('#error-description', { opacity: 0, y: 20 });
-            gsap.set('#error-actions', { opacity: 0, y: 30 });
-            gsap.set('#blob-1, #blob-2, #blob-3', { opacity: 0, scale: 0.5 });
 
-            // Create timeline
-            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-            // Animate blobs first
-            tl.to('#blob-1, #blob-2, #blob-3', {
-                opacity: 1,
-                scale: 1,
-                duration: 1,
-                stagger: 0.2
-            })
-            // Then error code with bounce
-            .to('#error-code-section', {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'back.out(1.7)'
-            }, '-=0.5')
-            // Message
-            .to('#error-message', {
-                opacity: 1,
-                y: 0,
-                duration: 0.5
-            }, '-=0.3')
-            // Description
-            .to('#error-description', {
-                opacity: 1,
-                y: 0,
-                duration: 0.5
-            }, '-=0.3')
-            // Actions
-            .to('#error-actions', {
-                opacity: 1,
-                y: 0,
-                duration: 0.5
-            }, '-=0.2');
-
-            // Turtle logo subtle animation
-            gsap.to('.error-code-logo', {
-                rotation: 5,
-                duration: 3,
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1
-            });
-
-            // Continuous blob movement
-            gsap.to('#blob-1', {
-                x: 20,
-                y: -20,
-                duration: 8,
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1
-            });
-
-            gsap.to('#blob-2', {
-                x: -30,
-                y: 20,
-                duration: 10,
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1
-            });
-        });
-    </script>
 
 </body>
 </html>

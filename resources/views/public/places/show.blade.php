@@ -42,11 +42,34 @@
                         }
                      }">
                     
-                    <!-- Back Button (Separated) -->
+                    <!-- Breadcrumbs -->
                     <div class="mb-6">
-                        <a href="{{ route('places.index') }}" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-primary/20">
-                            <span class="material-symbols-outlined text-lg">arrow_back</span>
-                        </a>
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                <li class="inline-flex items-center">
+                                    <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg mr-1">home</span>
+                                        Home
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
+                                        <a href="{{ route('places.index') }}" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                            Destinasi
+                                        </a>
+                                    </div>
+                                </li>
+                                <li aria-current="page">
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
+                                        <span class="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 max-w-[150px] md:max-w-xs">
+                                            {{ $place->translated_name }}
+                                        </span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </nav>
                     </div>
     
                     <!-- Main Image Area -->

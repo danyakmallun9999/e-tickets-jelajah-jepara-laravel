@@ -43,7 +43,7 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <a href="{{ route('admin.places.create') }}" class="flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 hover:-translate-y-1 transition-all group">
                     <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
                         <i class="fa-solid fa-map-location-dot"></i>
@@ -65,12 +65,7 @@
                     <span class="font-semibold text-gray-700 group-hover:text-orange-600">Agenda Baru</span>
                 </a>
 
-                <a href="{{ route('admin.reports.index') }}" class="flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 hover:-translate-y-1 transition-all group">
-                    <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl group-hover:bg-green-600 group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-file-contract"></i>
-                    </div>
-                    <span class="font-semibold text-gray-700 group-hover:text-green-600">Laporan</span>
-                </a>
+
             </div>
 
             <!-- Main Statistics -->

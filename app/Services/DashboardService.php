@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Boundary;
+
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Infrastructure;
@@ -19,7 +19,6 @@ class DashboardService
     {
         return [
             'places_count' => Place::count(),
-            'boundaries_count' => Boundary::count(),
             'infrastructures_count' => Infrastructure::count(),
             'land_uses_count' => LandUse::count(),
             'categories' => Category::withCount('places')->get(),
@@ -29,14 +28,9 @@ class DashboardService
             'land_use_types' => LandUse::selectRaw('type, COUNT(*) as count, SUM(area_hectares) as total_area')
                 ->groupBy('type')
                 ->get(),
-            'boundary_types' => Boundary::selectRaw('type, COUNT(*) as count, SUM(area_hectares) as total_area')
-                ->groupBy('type')
-                ->get(),
-            'total_boundary_area' => Boundary::sum('area_hectares'),
             'total_land_use_area' => LandUse::sum('area_hectares'),
             'total_infrastructure_length' => Infrastructure::sum('length_meters'),
             'recent_places' => Place::with('category')->latest()->take(5)->get(),
-            'recent_boundaries' => Boundary::latest()->take(5)->get(),
             'recent_infrastructures' => Infrastructure::latest()->take(5)->get(),
             'recent_land_uses' => LandUse::latest()->take(5)->get(),
             'posts_count' => Post::count(),

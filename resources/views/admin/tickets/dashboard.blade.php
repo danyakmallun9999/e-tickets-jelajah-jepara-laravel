@@ -336,7 +336,7 @@
 
     <!-- GSAP & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <script>
         // Chart.js instances
         let salesChartInstance = null;
@@ -350,26 +350,7 @@
         function dashboardData() {
             return {
                 initAnimations() {
-                    // GSAP entrance animations using fromTo for reliability
-                    gsap.fromTo('.stat-card', 
-                        { y: 30, opacity: 0 },
-                        { duration: 0.8, y: 0, opacity: 1, stagger: 0.1, ease: 'power3.out' }
-                    );
-
-                    gsap.fromTo('.chart-card', 
-                        { y: 30, opacity: 0 },
-                        { duration: 0.8, y: 0, opacity: 1, delay: 0.3, stagger: 0.1, ease: 'power3.out' }
-                    );
-
-                    gsap.fromTo('.table-card', 
-                        { y: 30, opacity: 0 },
-                        { duration: 0.8, y: 0, opacity: 1, delay: 0.5, ease: 'power3.out' }
-                    );
-
-                    gsap.fromTo('.leaderboard-card', 
-                        { y: 30, opacity: 0 },
-                        { duration: 0.8, y: 0, opacity: 1, delay: 0.6, ease: 'power3.out' }
-                    );
+                    // Animations removed
                 }
             }
         }

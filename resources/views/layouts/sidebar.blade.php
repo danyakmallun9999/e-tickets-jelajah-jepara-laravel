@@ -123,19 +123,15 @@
                 </div>
             </a>
 
-            <!-- E-Tiket Dropdown -->
-            <!-- E-Tiket Dropdown -->
-            <div x-data="{ ticketOpen: {{ request()->routeIs('admin.tickets.*') ? 'true' : 'false' }} }" class="relative">
-                <button @click="ticketOpen = !ticketOpen"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.tickets.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
+            <!-- E-Tiket Parent (Static Expanded) -->
+            <div class="relative">
+                <div class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600"
                     :class="sidebarMinimized ? 'justify-center' : 'justify-between'">
                     
                     <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-ticket w-5 text-center {{ request()->routeIs('admin.tickets.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
+                        <i class="fa-solid fa-ticket w-5 text-center text-gray-400 text-lg"></i>
                         <span x-show="!sidebarMinimized" class="whitespace-nowrap transition-opacity duration-300">E-Tiket</span>
                     </div>
-
-                    <i x-show="!sidebarMinimized" class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{'rotate-180': ticketOpen}"></i>
 
                     <!-- Tooltip for Minimized -->
                     <div x-show="sidebarMinimized" 
@@ -144,14 +140,11 @@
                          style="display: none;">
                         E-Tiket
                     </div>
-                </button>
+                </div>
 
-                <!-- Dropdown Content -->
-                <div x-show="ticketOpen && !sidebarMinimized" 
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     class="pl-4 pr-3 py-2 space-y-1 relative ml-2.5 border-l-2 border-gray-100">
+                <!-- Static Submenu Content -->
+                <div x-show="!sidebarMinimized" 
+                     class="pl-4 pr-3 py-1 space-y-1 relative ml-2.5 border-l-2 border-gray-100">
                     
                     <a href="{{ route('admin.tickets.dashboard') }}" 
                        class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.dashboard') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
