@@ -394,51 +394,29 @@
                                     <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
                                     {{ __('Places.Map') }}
                                 </h3>
-                            <a href="{{ $place->google_maps_link ?? 'https://www.google.com/maps/dir/?api=1&destination=' . $place->latitude . ',' . $place->longitude }}" target="_blank" class="block w-full h-[400px] md:h-auto md:aspect-video rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-[6px] border-white dark:border-slate-800 shadow-xl relative group">
-                                    <!-- Leaflet Map Container -->
-                                    <div id="mini-map" class="absolute inset-0 w-full h-full z-0"></div>
-                                    
-                                    <!-- Hover Overlay -->
-                                    <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center z-10 pointer-events-none">
-                                        <div class="bg-white px-6 py-3 rounded-full shadow-2xl font-bold text-slate-900 flex items-center gap-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                            <span class="material-symbols-outlined text-red-500">near_me</span>
-                                            {{ __('Places.OpenMap') }}
-                                        </div>
-                                    </div>
-                                </a>
+                                 <div class="relative w-full h-[400px] md:h-auto md:aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm group">
+                                     <iframe 
+                                        width="100%" 
+                                        height="100%" 
+                                        frameborder="0" 
+                                        scrolling="no" 
+                                        marginheight="0" 
+                                        marginwidth="0" 
+                                        src="https://maps.google.com/maps?q={{ $place->latitude && $place->longitude ? $place->latitude . ',' . $place->longitude : urlencode($place->translated_name . ' Jepara') }}&t=&z=14&ie=UTF8&iwloc=&output=embed">
+                                     </iframe>
+                                     
+                                     <!-- Click Overlay to Open External Map -->
+                                     <a href="https://www.google.com/maps/search/?api=1&query={{ $place->latitude && $place->longitude ? $place->latitude . ',' . $place->longitude : urlencode($place->translated_name . ' Jepara') }}" 
+                                        target="_blank"
+                                        class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center z-10"
+                                        title="{{ __('Events.Detail.MapsLink') }}">
+                                         <div class="bg-white/90 backdrop-blur text-slate-900 px-4 py-2 rounded-full font-bold text-sm shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all flex items-center gap-2">
+                                             <span class="material-symbols-outlined text-red-500">map</span>
+                                             {{ __('Events.Detail.MapsLink') }}
+                                         </div>
+                                     </a>
+                                 </div>
                             </section>
-    
-                            @push('scripts')
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const lat = {{ $place->latitude ?? -6.5817 }};
-                                    const lng = {{ $place->longitude ?? 110.6685 }};
-                                    
-                                    const map = L.map('mini-map', {
-                                        center: [lat, lng],
-                                        zoom: 15, // Zoomed in a bit more for detail
-                                        zoomControl: false,
-                                        dragging: false,
-                                        scrollWheelZoom: false,
-                                        doubleClickZoom: false,
-                                        boxZoom: false,
-                                        attributionControl: false,
-                                        keyboard: false
-                                    });
-    
-                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                        attribution: '© OpenStreetMap contributors'
-                                    }).addTo(map);
-    
-                                    // Marker removed as per request
-                                    
-                                    // Invalidate size to ensure render
-                                    setTimeout(() => {
-                                        map.invalidateSize();
-                                    }, 100);
-                                });
-                            </script>
-                            @endpush
     
                         </div>
     
