@@ -130,10 +130,10 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Nomor Virtual Account {{ $bankName }}</p>
 
                         <!-- VA Number -->
-                        <div class="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-500 rounded-xl px-6 py-4 inline-flex items-center gap-3 mb-3">
-                            <span class="font-mono text-2xl font-bold text-slate-900 dark:text-white tracking-widest" id="va-number">{{ $paymentData['va_number'] }}</span>
-                            <button onclick="copyVA()" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 rounded-xl flex items-center justify-center transition-colors" title="Salin">
-                                <i class="fa-solid fa-copy text-primary" id="copy-icon"></i>
+                        <div class="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-500 rounded-xl px-3 md:px-6 py-4 inline-flex items-center gap-2 md:gap-3 mb-3 max-w-full overflow-hidden">
+                            <span class="font-mono text-lg md:text-2xl font-bold text-slate-900 dark:text-white tracking-wide md:tracking-widest truncate" id="va-number">{{ $paymentData['va_number'] }}</span>
+                            <button onclick="copyVA()" class="w-8 h-8 md:w-10 md:h-10 bg-primary/10 hover:bg-primary/20 rounded-xl flex items-center justify-center transition-colors flex-shrink-0" title="Salin">
+                                <i class="fa-solid fa-copy text-primary text-xs md:text-base" id="copy-icon"></i>
                             </button>
                         </div>
                         <p class="text-xs text-green-600 dark:text-green-400 hidden" id="copy-success">

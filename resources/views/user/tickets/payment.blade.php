@@ -65,8 +65,8 @@
                             <button type="button" @click="selectMethod('qris')"
                                 :class="paymentType === 'qris' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-slate-200 dark:border-slate-600 hover:border-primary/50'"
                                 class="relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer group">
-                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                    <i class="fa-solid fa-qrcode text-white text-xl"></i>
+                                <div class="w-16 h-16 flex items-center justify-center">
+                                    <img src="{{ asset('images/payment/kiris.png') }}" alt="QRIS" class="w-full h-full object-contain">
                                 </div>
                                 <div class="text-center">
                                     <p class="font-bold text-sm text-slate-900 dark:text-white">QRIS</p>
@@ -81,8 +81,8 @@
                             <button type="button" @click="selectMethod('gopay')"
                                 :class="paymentType === 'gopay' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-slate-200 dark:border-slate-600 hover:border-primary/50'"
                                 class="relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer group">
-                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                                    <span class="text-white font-bold text-xs">Go</span>
+                                <div class="w-16 h-16 flex items-center justify-center">
+                                    <img src="{{ asset('images/payment/gopi.png') }}" alt="GoPay" class="w-full h-full object-contain">
                                 </div>
                                 <div class="text-center">
                                     <p class="font-bold text-sm text-slate-900 dark:text-white">GoPay</p>
@@ -97,8 +97,8 @@
                             <button type="button" @click="selectMethod('shopeepay')"
                                 :class="paymentType === 'shopeepay' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-slate-200 dark:border-slate-600 hover:border-primary/50'"
                                 class="relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer group">
-                                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-                                    <i class="fa-solid fa-shop text-white text-lg"></i>
+                                <div class="w-16 h-16 flex items-center justify-center">
+                                    <img src="{{ asset('images/payment/sopipi.png') }}" alt="ShopeePay" class="w-full h-full object-contain">
                                 </div>
                                 <div class="text-center">
                                     <p class="font-bold text-sm text-slate-900 dark:text-white">ShopeePay</p>
