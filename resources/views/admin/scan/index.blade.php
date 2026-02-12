@@ -36,16 +36,26 @@
                 <!-- Manual Input Fallback -->
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
                     <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-keyboard text-slate-400"></i> Manual Input
+                        <i class="fa-solid fa-keyboard text-slate-400"></i> Manual Input / Upload
                     </h3>
-                    <form @submit.prevent="handleManualInput" class="flex gap-2">
-                        <input type="text" x-model="manualInput" 
-                            class="form-input w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                            placeholder='Scan atau ketik kode QR (contoh: {"order_number":"TKT-..."})'>
-                        <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl px-6">
-                            Check
-                        </button>
-                    </form>
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <form @submit.prevent="handleManualInput" class="flex-1 flex gap-2">
+                            <input type="text" x-model="manualInput" 
+                                class="form-input w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" 
+                                placeholder='Scan manual atau ketik kode...'>
+                            <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl px-4">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </form>
+                        
+                        <!-- Upload Button -->
+                        <div class="relative">
+                            <input type="file" id="qr-input-file" accept="image/*" class="hidden" @change="handleFileUpload">
+                            <label for="qr-input-file" class="btn bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl px-4 cursor-pointer flex items-center gap-2 h-full">
+                                <i class="fa-solid fa-image"></i> Upload QR
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -82,7 +92,7 @@
         <!-- CUSTOM VALIDATION MODAL -->
         <div x-show="showModal" 
              style="display: none;"
-             class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6 z-[9999]"
+             class="fixed inset-0 flex items-center justify-center px-4 sm:px-6 z-[9999]"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -195,8 +205,7 @@
                     this.scanner = new Html5Qrcode("reader");
                     // Config adjusted for better compatibility
                     const config = { 
-                        fps: 15, // Increased FPS
-                        qrbox: { width: 250, height: 250 },
+                        fps: 15,
                         aspectRatio: 1.0 
                     };
                     
@@ -208,29 +217,81 @@
                 },
 
                 onScanSuccess(decodedText, decodedResult) {
-                    if (this.showModal) return; // Ignore if modal is open check
+                    if (this.showModal) return; 
                     
-                    console.log("Scan Success:", decodedText); // Debug
+                    // Safely extract text if it's an object
+                    let validText = decodedText;
+                    if (typeof decodedText === 'object' && decodedText !== null) {
+                        validText = decodedText.decodedText || JSON.stringify(decodedText);
+                    }
+
+                    console.log("Scan Success:", validText); 
                     this.scanner.pause();
-                    this.validateQr(decodedText);
+                    this.validateQr(validText);
                 },
 
-                onScanFailure(error) {
-                    // console.warn(`Code scan error = ${error}`);
+                // ... (onScanFailure)
+
+                async handleFileUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const label = document.querySelector('label[for="qr-input-file"]');
+                    const originalText = label.innerHTML;
+                    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                    
+                    try {
+                        if (this.scanner && this.scanner.isScanning) {
+                            await this.scanner.stop();
+                        }
+
+                        const scanResult = await this.scanner.scanFileV2(file, true);
+                        
+                        // Safely extract text
+                        let validText = scanResult;
+                        if (typeof scanResult === 'object' && scanResult !== null) {
+                            validText = scanResult.decodedText || JSON.stringify(scanResult);
+                        }
+                        
+                        console.log("File Scan Result:", validText);
+                        this.validateQr(validText);
+
+                    } catch (err) {
+                        console.error("File Scan Failed:", err);
+                        alert("Gagal membaca gambar QR! \nPastikan gambar jelas, kontras hitam-putih.\nError: " + err);
+                        
+                        if (!this.showModal) this.startScanner();
+                    } finally {
+                        label.innerHTML = originalText;
+                        event.target.value = '';
+                    }
                 },
 
                 async validateQr(qrData) {
                     try {
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                        
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                        if (!csrfToken) {
+                            alert("Error: CSRF Token Missing. Silakan refresh halaman.");
+                            return;
+                        }
+
                         const response = await fetch('{{ route("admin.scan.store") }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
                             },
                             body: JSON.stringify({ qr_data: qrData })
                         });
+
+                        // Handle non-JSON response (Server Error)
+                        const contentType = response.headers.get("content-type");
+                        if (!contentType || !contentType.includes("application/json")) {
+                            const text = await response.text();
+                            console.error("Server Error Response:", text);
+                            throw new Error("Server Error (500). Cek console untuk detail.");
+                        }
 
                         const result = await response.json();
 
@@ -241,7 +302,15 @@
                         }
 
                     } catch (error) {
-                        this.handleResult(false, "Network Error Check Connection", {});
+                        console.error("Validation Error:", error);
+                        // Show specific error instead of generic "Network Error"
+                        this.handleResult(false, "System Error: " + error.message, {});
+                        
+                        // Resume if paused
+                        /*
+                        if (this.scanner.getState() === 2) { 
+                             this.scanner.resume();
+                        }*/
                     }
                 },
 

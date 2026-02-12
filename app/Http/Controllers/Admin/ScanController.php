@@ -27,17 +27,30 @@ class ScanController extends Controller
         ]);
 
         try {
-            // Decode the QR JSON data
-            $qrData = json_decode($request->qr_data, true);
+            // Flexible QR Parsing: Handle both JSON and Plain Text
+            $inputData = $request->qr_data;
+            \Illuminate\Support\Facades\Log::info('QR Scan Input:', ['data' => $inputData]); // DEBUG LOG
 
-            if (!$qrData || !isset($qrData['order_number'])) {
+            $orderNumber = null;
+
+            // 1. Try to decode as JSON
+            $qrJson = json_decode($inputData, true);
+            
+            if (json_last_error() === JSON_ERROR_NONE && is_array($qrJson) && isset($qrJson['order_number'])) {
+                $orderNumber = $qrJson['order_number'];
+            } else {
+                // 2. Assume Plain Text (Order Number direct)
+                $orderNumber = trim($inputData, '"\' ');
+            }
+            
+            \Illuminate\Support\Facades\Log::info('Parsed Order Number:', ['order_number' => $orderNumber]); // DEBUG LOG
+
+            if (empty($orderNumber)) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Format QR Code tidak valid!',
+                    'message' => 'Format QR tidak dikenali!',
                 ], 400);
             }
-
-            $orderNumber = $qrData['order_number'];
 
             // Find the order
             $order = TicketOrder::with('ticket.place')
@@ -45,6 +58,7 @@ class ScanController extends Controller
                 ->first();
 
             if (!$order) {
+                \Illuminate\Support\Facades\Log::warning('Scan Failed: Not Found', ['order_number' => $orderNumber]); // DEBUG LOG
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket tidak ditemukan di sistem!',
@@ -53,14 +67,16 @@ class ScanController extends Controller
 
             // Check Payment Status
             if ($order->status !== 'paid') {
+                \Illuminate\Support\Facades\Log::warning('Scan Failed: Unpaid', ['status' => $order->status]); // DEBUG LOG
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket belum dibayar! Status: ' . ucfirst($order->status),
                 ], 400);
             }
 
-            // Check Visit Date
+            // Check Visit Date - Allow checking D-1 or D+1 for testing flexibilty if needed, but strict for now
             if (!$order->visit_date->isToday()) {
+                \Illuminate\Support\Facades\Log::warning('Scan Failed: Wrong Date', ['visit_date' => $order->visit_date]); // DEBUG LOG
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tanggal tiket tidak sesuai! Tiket untuk: ' . $order->visit_date->format('d M Y'),
@@ -69,6 +85,7 @@ class ScanController extends Controller
 
             // Check if Already Used
             if ($order->check_in_time !== null) {
+                \Illuminate\Support\Facades\Log::warning('Scan Failed: Already Used', ['check_in_time' => $order->check_in_time]); // DEBUG LOG
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket SUDAH DIGUNAKAN pada ' . $order->check_in_time->format('H:i'),

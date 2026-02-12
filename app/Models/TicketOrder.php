@@ -115,13 +115,8 @@ class TicketOrder extends Model
      */
     public function generateQRCodeData()
     {
-        return json_encode([
-            'order_number' => $this->order_number,
-            'ticket_id' => $this->ticket_id,
-            'customer_name' => $this->customer_name,
-            'visit_date' => $this->visit_date->format('Y-m-d'),
-            'quantity' => $this->quantity,
-        ]);
+        // Return simple string for better density/readability & scanning performance
+        return $this->order_number;
     }
 
     /**
