@@ -12,6 +12,7 @@ export default function registerQrScanner(Alpine) {
         showModal: false,
         isValid: false,
         statusMessage: '',
+        isProcessing: false, // Prevent duplicate scans while validating
         scanData: {},
         recentScans: [],
         hasCameraPermission: false,
@@ -90,11 +91,17 @@ export default function registerQrScanner(Alpine) {
         },
 
         onScanSuccess(decodedText, decodedResult) {
-            if (this.showModal) return;
+            if (this.showModal || this.isProcessing) return;
+
+            this.isProcessing = true;
             console.log("Scan Success:", decodedText);
-            this.scanner.pause();
-            this.isScanning = false;
-            this.validateQr(decodedText);
+            // Don't pause scanner
+            // this.scanner.pause();
+            // this.isScanning = false;
+
+            this.validateQr(decodedText).finally(() => {
+                this.isProcessing = false;
+            });
         },
 
         onScanFailure(errorMessage) {
