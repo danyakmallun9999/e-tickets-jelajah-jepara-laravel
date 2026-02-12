@@ -195,7 +195,7 @@
                         <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-qrcode text-primary"></i> {{ __('Tickets.Success.QRCodeTitle') }}
                         </h3>
-                        <div id="qrcode" class="flex justify-center mb-3"></div>
+                        <div id="qrcode" class="flex justify-center mb-3 mx-auto" style="width: 200px; height: 200px; overflow: hidden;"></div>
                         <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Tickets.Success.QRCodeSubtitle') }}</p>
                         <div class="mt-4">
                             <button onclick="downloadQR()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
@@ -295,18 +295,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Scale down for display
-    setTimeout(() => {
+    const styleQR = () => {
         const canvas = qrContainer.querySelector('canvas');
-        if(canvas) {
-            canvas.style.width = '200px';
-            canvas.style.height = '200px';
-        }
         const img = qrContainer.querySelector('img');
-        if(img) {
-            img.style.width = '200px';
-            img.style.height = '200px';
+        if(canvas) {
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
         }
-    }, 50);
+        if(img) {
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.display = 'block';
+        }
+    };
+
+    styleQR();
+    setTimeout(styleQR, 0);
 });
 
 function downloadQR() {

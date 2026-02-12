@@ -228,7 +228,7 @@
                         <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-qrcode text-primary"></i> QR Code Tiket
                         </h3>
-                        <div id="qrcode" class="flex justify-center mb-3"></div>
+                        <div id="qrcode" class="flex justify-center mb-3 mx-auto" style="width: 200px; height: 200px; overflow: hidden;"></div>
                         <p class="text-xs text-slate-500 dark:text-slate-400">Tunjukkan QR code ini saat berkunjung</p>
                         <div class="mt-4">
                             <button onclick="downloadQR()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
@@ -452,13 +452,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Scale down visible QR via CSS
-    setTimeout(() => {
+    const styleQR = () => {
         const qrc = document.getElementById("qrcode");
         const canvas = qrc.querySelector('canvas');
         const img = qrc.querySelector('img');
-        if(canvas) { canvas.style.width = '200px'; canvas.style.height = '200px'; }
-        if(img) { img.style.width = '200px'; img.style.height = '200px'; }
-    }, 100);
+        if(canvas) { 
+            canvas.style.width = '100%'; 
+            canvas.style.height = '100%'; 
+        }
+        if(img) { 
+            img.style.width = '100%'; 
+            img.style.height = '100%'; 
+            img.style.display = 'block';
+        }
+    };
+    
+    // Run immediately and after short delay
+    styleQR();
+    setTimeout(styleQR, 0);
 });
 
 function downloadQR() {

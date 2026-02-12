@@ -235,7 +235,7 @@
         const qrContent = document.getElementById('qrContent');
         qrContent.innerHTML = `
             <div class="text-sm text-gray-500 mb-4 font-mono">Order: ${orderNumber}</div>
-            <div id="qrcode" class="flex justify-center mb-2 mx-auto"></div>
+            <div id="qrcode" class="flex justify-center mb-2 mx-auto" style="width: 200px; height: 200px; overflow: hidden;"></div>
             <p class="text-xs text-gray-400 mt-2">Scan QR code ini untuk verifikasi tiket</p>
         `;
         
@@ -250,25 +250,29 @@
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
+
+        // Force display size with CSS styles injected into the generated elements
+        // We use a MutationObserver or simply style the children immediately after creation
+        // But since QRCode.js is synchronous, we can style immediately.
+        // Also the container constraint (width: 200px) handles the layout, but the canvas inside needs to fit.
         
-        // Force display size with CSS
-        // Note: QRCode.js appends a canvas or img. We style the container to constrain it?
-        // Actually, QRCode.js sets width/height attributes on canvas. We need to override via CSS.
-        // But simply setting width on container might works if canvas is responsive? No.
-        // We will scale down via CSS transform or max-width.
-        // Let's use styling on the generated canvas
-        setTimeout(() => {
+        const styleQR = () => {
             const canvas = qrContainer.querySelector('canvas');
-            if(canvas) {
-                canvas.style.width = '200px';
-                canvas.style.height = '200px';
-            }
             const img = qrContainer.querySelector('img');
-            if(img) {
-                img.style.width = '200px';
-                img.style.height = '200px';
+            if(canvas) {
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
             }
-        }, 50);
+            if(img) {
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.display = 'block'; // Remove extra space
+            }
+        };
+
+        // Run immediately and after a short delay to catch DOM updates
+        styleQR();
+        setTimeout(styleQR, 0);
     }
 
     function closeQR() {

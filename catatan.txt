@@ -45,4 +45,4 @@ wisatajepara
 4. pada halaman laporan keuangan, card 'Metode Pembayaran' hanya menampilkan data untuk 1 entitas, yaitu hanya 'midtrans' harusnya (dana, gopay, etc) (done)
 5. pada halaman tiket orders, card 'Sudah Dibayar' dan 'Revenue' masih 0. (done)
 6. Improvisasi hasil gambar dari cr-code masuk wisata yang di hasilkan, kondisi gambar masih kurang bagus sehingga susah discan, jangan buat png tapi buat jpg dan buat lebih besar dengan padding yang cukup (done)
-7. Hapus fitur 'tombol hapus' pada halaman tiket orders
+7. Hapus fitur 'tombol hapus' pada halaman tiket orders (done)
