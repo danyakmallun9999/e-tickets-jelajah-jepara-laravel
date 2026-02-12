@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(BoundarySeeder::class);
         $this->call(DestinasiImageSeeder::class);
         $this->call(JeparaEventSeeder::class);
+        // $this->call(DummyTicketSeeder::class);
 
         // Fetch Categories
         $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();
