@@ -13,16 +13,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8" x-data="{ 
-        showDeleteModal: false, 
-        deleteUrl: '', 
-        deleteOrderNumber: '',
-        openDeleteModal(url, orderNumber) {
-            this.deleteUrl = url;
-            this.deleteOrderNumber = orderNumber;
-            this.showDeleteModal = true;
-        }
-    }">
+    <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
             @if(session('success'))
@@ -107,16 +98,18 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cari</label>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="No. Pesanan, Nama, Email" class="w-full border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
                     </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors">
-                            <i class="fa-solid fa-search mr-2"></i>Filter
-                        </button>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">&nbsp;</label>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors">
+                                <i class="fa-solid fa-search mr-2"></i>Filter
+                            </button>
+                            <button type="button" onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors" title="Refresh Data">
+                                <i class="fa-solid fa-sync"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
-                <div class="mt-4 flex justify-end">
-                    <button onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors">
-                        <i class="fa-solid fa-sync mr-2"></i>Refresh Data
-                    </button>
-                </div>
             </div>
 
             <!-- Orders Table -->
@@ -181,11 +174,6 @@
                                             <button onclick="showQR('{{ $order->order_number }}')" class="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="Lihat QR Code">
                                                 <i class="fa-solid fa-qrcode"></i>
                                             </button>
-                                            <button type="button" 
-                                                    @click="openDeleteModal('{{ route('admin.tickets.orders.destroy', $order) }}', '{{ $order->order_number }}')"
-                                                    class="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors" title="Hapus Pesanan">
-                                                <i class="fa-solid fa-trash-can"></i>
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -212,56 +200,9 @@
                 </div>
             @endif
         </div>
-
-        <!-- Delete Confirmation Modal -->
-        <div x-show="showDeleteModal" 
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-50 overflow-y-auto" 
-             x-cloak>
-            <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 bg-black/50 transition-opacity" @click="showDeleteModal = false"></div>
-                
-                <div x-show="showDeleteModal"
-                     x-transition:enter="ease-out duration-300"
-                     x-transition:enter-start="opacity-0 scale-95"
-                     x-transition:enter-end="opacity-100 scale-100"
-                     x-transition:leave="ease-in duration-200"
-                     x-transition:leave-start="opacity-100 scale-100"
-                     x-transition:leave-end="opacity-0 scale-95"
-                     class="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6 z-10">
-                    
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fa-solid fa-triangle-exclamation text-red-600 text-2xl"></i>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Konfirmasi Hapus</h3>
-                    <p class="text-gray-600 text-center mb-6">
-                        Apakah Anda yakin ingin menghapus pesanan <strong x-text="deleteOrderNumber"></strong>? Tindakan ini tidak dapat dibatalkan.
-                    </p>
-                    
-                    <div class="flex gap-3">
-                        <button @click="showDeleteModal = false" 
-                                class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition-colors">
-                            Batal
-                        </button>
-                        <form :action="deleteUrl" method="POST" class="flex-1">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" 
-                                    class="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors">
-                                <i class="fa-solid fa-trash-can mr-2"></i>Hapus
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+
+
 
     <!-- QR Code Modal -->
     <div id="qrModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
