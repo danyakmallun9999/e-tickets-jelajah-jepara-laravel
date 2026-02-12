@@ -52,7 +52,7 @@
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 border border-blue-100">
                             <i class="fa-solid fa-map-location-dot"></i>
                         </div>
-                        <span class="font-bold text-gray-700 group-hover:text-blue-600 transition-colors">Tambah Destinasi</span>
+                        <span class="font-bold text-gray-700 group-hover:text-blue-600 transition-colors text-center">Tambah Destinasi</span>
                     </div>
                 </a>
 
@@ -61,7 +61,7 @@
                         <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 border border-purple-100">
                             <i class="fa-solid fa-pen-nib"></i>
                         </div>
-                        <span class="font-bold text-gray-700 group-hover:text-purple-600 transition-colors">Tulis Berita</span>
+                        <span class="font-bold text-gray-700 group-hover:text-purple-600 transition-colors text-center">Tulis Berita</span>
                     </div>
                 </a>
 
@@ -70,7 +70,7 @@
                         <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl group-hover:bg-orange-600 group-hover:text-white transition-all duration-300 border border-orange-100">
                             <i class="fa-solid fa-calendar-plus"></i>
                         </div>
-                        <span class="font-bold text-gray-700 group-hover:text-orange-600 transition-colors">Agenda Baru</span>
+                        <span class="font-bold text-gray-700 group-hover:text-orange-600 transition-colors text-center">Agenda Baru</span>
                     </div>
                 </a>
 
@@ -80,7 +80,7 @@
                         <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 border border-emerald-100">
                             <i class="fa-solid fa-qrcode"></i>
                         </div>
-                        <span class="font-bold text-gray-700 group-hover:text-emerald-600 transition-colors">Check-in Tiket</span>
+                        <span class="font-bold text-gray-700 group-hover:text-emerald-600 transition-colors text-center">Check-in Tiket</span>
                     </div>
                 </a>
             </div>
@@ -246,11 +246,11 @@
                                 @endif
                                 <div class="flex-1 min-w-0">
                                     <h4 class="font-bold text-gray-800 truncate">{{ $place->name }}</h4>
-                                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white border border-white/20" style="background-color: {{ $place->category->color }}">
+                                    <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white border border-white/20 whitespace-nowrap" style="background-color: {{ $place->category->color }}">
                                             {{ $place->category->name }}
                                         </span>
-                                        <span>• {{ $place->created_at->diffForHumans() }}</span>
+                                        <span class="whitespace-nowrap">• {{ $place->created_at->diffForHumans() }}</span>
                                     </div>
                                 </div>
                                 <a href="{{ route('admin.places.edit', $place) }}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors bg-white rounded-lg border border-gray-100 opacity-0 group-hover:opacity-100">

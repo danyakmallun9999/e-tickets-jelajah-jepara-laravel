@@ -72,11 +72,9 @@
                         </button>
                         <span class="font-bold text-gray-800 text-lg">Admin Panel</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                         <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm border border-blue-200">
-                            {{ substr(Auth::user()->name, 0, 1) }}
-                        </div>
-                    </div>
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                         <img src="{{ asset('images/logo-kura.png') }}" alt="Logo" class="w-9 h-9 object-contain">
+                    </a>
                 </header>
 
                 <!-- Page Content -->
