@@ -284,25 +284,58 @@
 <script>
 // Generate QR code on page load
 document.addEventListener('DOMContentLoaded', function() {
-    new QRCode(document.getElementById("qrcode"), {
+    const qrContainer = document.getElementById("qrcode");
+    new QRCode(qrContainer, {
         text: "{{ $order->order_number }}",
-        width: 200,
-        height: 200,
+        width: 800, // Reducded for padding
+        height: 800,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });
+    
+    // Scale down for display
+    setTimeout(() => {
+        const canvas = qrContainer.querySelector('canvas');
+        if(canvas) {
+            canvas.style.width = '200px';
+            canvas.style.height = '200px';
+        }
+        const img = qrContainer.querySelector('img');
+        if(img) {
+            img.style.width = '200px';
+            img.style.height = '200px';
+        }
+    }, 50);
 });
 
 function downloadQR() {
-    const canvas = document.querySelector('#qrcode canvas');
-    if (canvas) {
-        const url = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'ticket-qr-{{ $order->order_number }}.png';
-        link.href = url;
-        link.click();
-    }
+    const sourceCanvas = document.querySelector('#qrcode canvas');
+    if (!sourceCanvas) return;
+
+    // Create a new canvas for the final image with padding
+    const padding = 100;
+    const size = sourceCanvas.width;
+    const newSize = size + (padding * 2);
+    
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = newSize;
+    finalCanvas.height = newSize;
+    const ctx = finalCanvas.getContext('2d');
+
+    // Fill with white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, newSize, newSize);
+
+    // Draw original QR code centered
+    ctx.drawImage(sourceCanvas, padding, padding);
+
+    // Export as JPG
+    const url = finalCanvas.toDataURL('image/jpeg', 1.0);
+    const link = document.createElement('a');
+    link.download = 'ticket-qr-{{ $order->order_number }}.jpg';
+    link.href = url;
+    link.click();
 }
 </script>
 @endif

@@ -36,8 +36,8 @@
             @php
                 $totalOrders = $orders->total();
                 $pendingOrders = $orders->where('status', 'pending')->count();
-                $paidOrders = $orders->where('status', 'paid')->count();
-                $totalRevenue = $orders->where('status', 'paid')->sum('total_price');
+                $paidOrders = $orders->whereIn('status', ['paid', 'used'])->count();
+                $totalRevenue = $orders->whereIn('status', ['paid', 'used'])->sum('total_price');
             @endphp
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -107,12 +107,16 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cari</label>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="No. Pesanan, Nama, Email" class="w-full border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
                     </div>
-                    <div class="flex items-end">
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors">
                             <i class="fa-solid fa-search mr-2"></i>Filter
                         </button>
                     </div>
                 </form>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors">
+                        <i class="fa-solid fa-sync mr-2"></i>Refresh Data
+                    </button>
+                </div>
             </div>
 
             <!-- Orders Table -->
@@ -158,20 +162,19 @@
                                         Rp {{ number_format($order->total_price, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <form action="{{ route('admin.tickets.orders.updateStatus', $order) }}" method="POST" class="inline">
-                                            @csrf
-                                            <select name="status" onchange="this.form.submit()" 
-                                                    class="text-xs rounded-full px-3 py-1.5 border-0 font-bold cursor-pointer
-                                                    {{ $order->status == 'pending' ? 'bg-yellow-100 text-yellow-700' : '' }}
-                                                    {{ $order->status == 'paid' ? 'bg-green-100 text-green-700' : '' }}
-                                                    {{ $order->status == 'used' ? 'bg-blue-100 text-blue-700' : '' }}
-                                                    {{ $order->status == 'cancelled' ? 'bg-red-100 text-red-700' : '' }}">
-                                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Menunggu</option>
-                                                <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>Dibayar</option>
-                                                <option value="used" {{ $order->status == 'used' ? 'selected' : '' }}>Digunakan</option>
-                                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Batal</option>
-                                            </select>
-                                        </form>
+                                        <span class="text-xs rounded-full px-3 py-1.5 font-bold inline-block
+                                            {{ $order->status == 'pending' ? 'bg-yellow-100 text-yellow-700' : '' }}
+                                            {{ $order->status == 'paid' ? 'bg-green-100 text-green-700' : '' }}
+                                            {{ $order->status == 'used' ? 'bg-blue-100 text-blue-700' : '' }}
+                                            {{ $order->status == 'cancelled' ? 'bg-red-100 text-red-700' : '' }}">
+                                            {{ match($order->status) {
+                                                'pending' => 'Menunggu',
+                                                'paid' => 'Dibayar',
+                                                'used' => 'Digunakan',
+                                                'cancelled' => 'Batal',
+                                                default => $order->status
+                                            } }}
+                                        </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -291,18 +294,40 @@
         const qrContent = document.getElementById('qrContent');
         qrContent.innerHTML = `
             <div class="text-sm text-gray-500 mb-4 font-mono">Order: ${orderNumber}</div>
-            <div id="qrcode" class="flex justify-center mb-2"></div>
+            <div id="qrcode" class="flex justify-center mb-2 mx-auto"></div>
             <p class="text-xs text-gray-400 mt-2">Scan QR code ini untuk verifikasi tiket</p>
         `;
         
-        new QRCode(document.getElementById("qrcode"), {
+        // Render QR in high resolution (500px) but display smaller via CSS
+        const qrContainer = document.getElementById("qrcode");
+        
+        new QRCode(qrContainer, {
             text: orderNumber,
-            width: 200,
-            height: 200,
-            colorDark : "#1f2937",
+            width: 800,  // Reduced for more padding
+            height: 800, 
+            colorDark : "#000000", // Pure black
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
+        
+        // Force display size with CSS
+        // Note: QRCode.js appends a canvas or img. We style the container to constrain it?
+        // Actually, QRCode.js sets width/height attributes on canvas. We need to override via CSS.
+        // But simply setting width on container might works if canvas is responsive? No.
+        // We will scale down via CSS transform or max-width.
+        // Let's use styling on the generated canvas
+        setTimeout(() => {
+            const canvas = qrContainer.querySelector('canvas');
+            if(canvas) {
+                canvas.style.width = '200px';
+                canvas.style.height = '200px';
+            }
+            const img = qrContainer.querySelector('img');
+            if(img) {
+                img.style.width = '200px';
+                img.style.height = '200px';
+            }
+        }, 50);
     }
 
     function closeQR() {
@@ -310,14 +335,33 @@
     }
 
     function downloadQR() {
-        const canvas = document.querySelector('#qrcode canvas');
-        if (canvas) {
-            const url = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = `ticket-qr-${currentOrderNumber}.png`;
-            link.href = url;
-            link.click();
-        }
+        const sourceCanvas = document.querySelector('#qrcode canvas');
+        if (!sourceCanvas) return;
+
+        // Create a new canvas for the final image with padding
+        // Target 1000x1000 total
+        const padding = 100; // Increased padding
+        const size = sourceCanvas.width; // Should be 800
+        const newSize = size + (padding * 2); // 800 + 200 = 1000
+        
+        const finalCanvas = document.createElement('canvas');
+        finalCanvas.width = newSize;
+        finalCanvas.height = newSize;
+        const ctx = finalCanvas.getContext('2d');
+
+        // Fill with white background (JPG doesn't support transparency)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, newSize, newSize);
+
+        // Draw original QR code centered
+        ctx.drawImage(sourceCanvas, padding, padding);
+
+        // Export as JPG
+        const url = finalCanvas.toDataURL('image/jpeg', 1.0); // High quality JPG
+        const link = document.createElement('a');
+        link.download = `ticket-qr-${currentOrderNumber}.jpg`;
+        link.href = url;
+        link.click();
     }
     </script>
 </x-app-layout>

@@ -18,7 +18,7 @@ class FinancialReportService
         $endDate = Carbon::parse($endDate)->endOfDay();
 
         $orders = TicketOrder::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'paid');
+            ->whereIn('status', ['paid', 'used']);
 
         // Gross Revenue (Total paid by customers)
         $grossRevenue = $orders->sum('total_price');
@@ -55,7 +55,7 @@ class FinancialReportService
     public function getDailyTrend($startDate, $endDate)
     {
         return TicketOrder::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'paid')
+            ->whereIn('status', ['paid', 'used'])
             ->selectRaw('DATE(created_at) as date, SUM(total_price) as revenue, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
@@ -68,9 +68,13 @@ class FinancialReportService
     public function getByPaymentMethod($startDate, $endDate)
     {
         return TicketOrder::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'paid')
-            ->select('payment_method', DB::raw('SUM(total_price) as revenue'), DB::raw('COUNT(*) as count'))
-            ->groupBy('payment_method')
+            ->whereIn('status', ['paid', 'used'])
+            ->select(
+                DB::raw('COALESCE(payment_channel, payment_method_detail, payment_method) as payment_method'),
+                DB::raw('SUM(total_price) as revenue'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy(DB::raw('COALESCE(payment_channel, payment_method_detail, payment_method)'))
             ->orderByDesc('revenue')
             ->get();
     }
@@ -81,7 +85,7 @@ class FinancialReportService
     public function getByTicket($startDate, $endDate)
     {
         return TicketOrder::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'paid')
+            ->whereIn('status', ['paid', 'used'])
             ->with('ticket.place')
             ->select('ticket_id', DB::raw('SUM(total_price) as revenue'), DB::raw('SUM(quantity) as tickets_sold'))
             ->groupBy('ticket_id')

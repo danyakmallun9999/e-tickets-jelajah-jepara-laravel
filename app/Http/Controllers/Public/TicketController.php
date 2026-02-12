@@ -216,14 +216,18 @@ class TicketController extends Controller
         )->getMatrix();
 
         // Render using GD
-        $pixelSize = 10;
-        $borderSize = 4;
+        // Target approx 1000px
         $matrixWidth = $matrix->getWidth();
-        $imageWidth = ($matrixWidth + ($borderSize * 2)) * $pixelSize;
+        $borderSize = 10; // Increased padding modules (was 4)
+        $totalModules = $matrixWidth + ($borderSize * 2);
+        
+        // Calculate pixel size to get closest to 1000px
+        $pixelSize = (int) (1000 / $totalModules); 
+        $imageWidth = $totalModules * $pixelSize;
         
         $image = imagecreate($imageWidth, $imageWidth);
         $white = imagecolorallocate($image, 255, 255, 255);
-        $black = imagecolorallocate($image, 30, 41, 59); // Slate-800 color
+        $black = imagecolorallocate($image, 0, 0, 0); // Pure black for better contrast
 
         // Fill background
         imagefill($image, 0, 0, $white);
@@ -244,16 +248,16 @@ class TicketController extends Controller
             }
         }
 
-        // Capture output buffer
+        // Capture output buffer as JPG
         ob_start();
-        imagepng($image);
+        imagejpeg($image, null, 100); // 100% quality
         $imageData = ob_get_clean();
         imagedestroy($image);
 
         // Return as download
         return response($imageData)
-            ->header('Content-Type', 'image/png')
-            ->header('Content-Disposition', 'attachment; filename="ticket-' . $order->order_number . '.png"');
+            ->header('Content-Type', 'image/jpeg')
+            ->header('Content-Disposition', 'attachment; filename="ticket-' . $order->order_number . '.jpg"');
     }
 
     /**

@@ -434,8 +434,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // QR code for the visible confirmation page
     new QRCode(document.getElementById("qrcode"), {
         text: "{{ $order->order_number }}",
-        width: 200,
-        height: 200,
+        width: 800, // Reduced for more padding
+        height: 800,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
@@ -450,17 +450,44 @@ document.addEventListener('DOMContentLoaded', function() {
         colorLight : "#f5f5f4",
         correctLevel : QRCode.CorrectLevel.H
     });
+    
+    // Scale down visible QR via CSS
+    setTimeout(() => {
+        const qrc = document.getElementById("qrcode");
+        const canvas = qrc.querySelector('canvas');
+        const img = qrc.querySelector('img');
+        if(canvas) { canvas.style.width = '200px'; canvas.style.height = '200px'; }
+        if(img) { img.style.width = '200px'; img.style.height = '200px'; }
+    }, 100);
 });
 
 function downloadQR() {
-    const canvas = document.querySelector('#qrcode canvas');
-    if (canvas) {
-        const url = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'ticket-qr-{{ $order->order_number }}.png';
-        link.href = url;
-        link.click();
-    }
+    const sourceCanvas = document.querySelector('#qrcode canvas');
+    if (!sourceCanvas) return;
+
+    // Create a new canvas for the final image with padding
+    const padding = 100;
+    const size = sourceCanvas.width;
+    const newSize = size + (padding * 2);
+    
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = newSize;
+    finalCanvas.height = newSize;
+    const ctx = finalCanvas.getContext('2d');
+
+    // Fill with white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, newSize, newSize);
+
+    // Draw original QR code centered
+    ctx.drawImage(sourceCanvas, padding, padding);
+
+    // Export as JPG
+    const url = finalCanvas.toDataURL('image/jpeg', 1.0);
+    const link = document.createElement('a');
+    link.download = 'ticket-qr-{{ $order->order_number }}.jpg';
+    link.href = url;
+    link.click();
 }
 
 function downloadTicketImage() {

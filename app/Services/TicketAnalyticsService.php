@@ -17,15 +17,15 @@ class TicketAnalyticsService
         $today = Carbon::today();
 
         // Revenue today (paid orders only)
-        $revenue = TicketOrder::whereDate('payed_at', $today)
-            ->where('status', 'paid')
+        $revenue = TicketOrder::whereDate('paid_at', $today)
+            ->whereIn('status', ['paid', 'used'])
             ->sum('total_price');
 
         // Tickets sold today (paid + pending count as sold for occupancy? active tickets)
         // Usually revenue counts 'paid', but occupancy counts 'valid' tickets for today
         // Let's count sold = paid tickets created today
         $ticketsSold = TicketOrder::whereDate('created_at', $today)
-            ->where('status', 'paid')
+            ->whereIn('status', ['paid', 'used'])
             ->sum('quantity');
 
         // Active Visitors (checked in today)
@@ -54,12 +54,12 @@ class TicketAnalyticsService
         $startDate = Carbon::today()->subDays($days - 1);
 
         $sales = TicketOrder::select(
-            DB::raw('DATE(payed_at) as date'),
+            DB::raw('DATE(paid_at) as date'),
             DB::raw('SUM(total_price) as total_revenue'),
             DB::raw('SUM(quantity) as total_tickets')
         )
-            ->where('status', 'paid')
-            ->whereBetween('payed_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->whereIn('status', ['paid', 'used'])
+            ->whereBetween('paid_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->groupBy('date')
             ->orderBy('date')
             ->get()
@@ -96,13 +96,13 @@ class TicketAnalyticsService
         $startDate = Carbon::today()->startOfMonth()->subMonths($months - 1);
 
         $sales = TicketOrder::select(
-            DB::raw('YEAR(payed_at) as year'),
-            DB::raw('MONTH(payed_at) as month'),
+            DB::raw('YEAR(paid_at) as year'),
+            DB::raw('MONTH(paid_at) as month'),
             DB::raw('SUM(total_price) as total_revenue'),
             DB::raw('SUM(quantity) as total_tickets')
         )
-            ->where('status', 'paid')
-            ->whereBetween('payed_at', [$startDate, $endDate])
+            ->whereIn('status', ['paid', 'used'])
+            ->whereBetween('paid_at', [$startDate, $endDate])
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')
@@ -142,7 +142,7 @@ class TicketAnalyticsService
     {
         return TicketOrder::join('tickets', 'ticket_orders.ticket_id', '=', 'tickets.id')
             ->select('tickets.type', DB::raw('SUM(ticket_orders.quantity) as count'))
-            ->where('ticket_orders.status', 'paid')
+            ->whereIn('ticket_orders.status', ['paid', 'used'])
             ->groupBy('tickets.type')
             ->get();
     }
@@ -161,7 +161,7 @@ class TicketAnalyticsService
             ->join('tickets', 'ticket_orders.ticket_id', '=', 'tickets.id')
             ->join('places', 'tickets.place_id', '=', 'places.id')
             ->select('places.name', DB::raw('SUM(ticket_orders.quantity) as sold'))
-            ->where('ticket_orders.status', 'paid')
+            ->whereIn('ticket_orders.status', ['paid', 'used'])
             ->whereDate('ticket_orders.visit_date', $today)
             ->groupBy('places.name')
             ->orderByDesc('sold')

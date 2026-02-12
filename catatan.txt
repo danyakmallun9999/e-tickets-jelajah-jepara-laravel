@@ -36,3 +36,12 @@ wisatajepara
 4. buat fitur untuk retry payment
 5. buat fitur untuk cek status payment
 6. gunakan Direct API (API Integration)
+
+
+# Improvement
+1. halaman ticket orders pada kolom 'status' jangan ada dropdown. buat tombol refresh diatas tabel untuk refresh data tabel ( gunakan data realtime jika bisa ) (done)
+2. Pada halaman dashboard e-tiket, card pendapatan belum menampilkan data (done)
+3. Card Pendapatan dan Transaksi Tiket pada 2 halaman dashboard e-tiket dan halaman laporan keuangan belum menampilkan data (done)
+4. pada halaman laporan keuangan, card 'Metode Pembayaran' hanya menampilkan data untuk 1 entitas, yaitu hanya 'midtrans' harusnya (dana, gopay, etc) (done)
+5. pada halaman tiket orders, card 'Sudah Dibayar' dan 'Revenue' masih 0. (done)
+6. Improvisasi hasil gambar dari cr-code masuk wisata yang di hasilkan, kondisi gambar masih kurang bagus sehingga susah discan, jangan buat png tapi buat jpg dan buat lebih besar dengan padding yang cukup (done)
