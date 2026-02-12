@@ -46,13 +46,18 @@ Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
     Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
     Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
     Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])->name('tickets.retrieve');
+
+    // Payment management routes
+    Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'checkStatus'])->name('tickets.check-status');
+    Route::post('/cancel/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'cancelOrder'])->name('tickets.cancel');
+    Route::post('/retry-payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'retryPayment'])->name('tickets.retry-payment');
 });
 
 // E-Ticket detail (Public) - wildcard route MUST be last to avoid catching specific routes above
 Route::get('/e-tiket/{ticket}', [App\Http\Controllers\Public\TicketController::class, 'show'])->name('tickets.show');
 
 // Webhook route (no CSRF protection)
-Route::post('/webhooks/xendit', [App\Http\Controllers\WebhookController::class, 'handle'])->name('webhooks.xendit');
+Route::post('/webhooks/midtrans', [App\Http\Controllers\WebhookController::class, 'handle'])->name('webhooks.midtrans');
 
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

@@ -273,16 +273,70 @@
                 @endif
 
                 <!-- Action Buttons -->
-                <div class="space-y-3">
+                <div class="space-y-3" x-data="{ showCancelConfirm: false }">
                     @if($order->status == 'pending')
                         <a href="{{ route('tickets.payment', $order->order_number) }}" 
                            class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-credit-card"></i> Bayar Sekarang
                         </a>
+                        <div class="flex gap-3">
+                            <button onclick="
+                                this.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin\'></i> Mengecek...';
+                                this.disabled = true;
+                                const btn = this;
+                                fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                                    .then(r => r.json())
+                                    .then(d => {
+                                        if(d.status === 'paid') { window.location.reload(); }
+                                        else {
+                                            btn.innerHTML = '<i class=\'fa-solid fa-circle-info\'></i> ' + d.message;
+                                            setTimeout(() => { btn.innerHTML = '<i class=\'fa-solid fa-arrows-rotate\'></i> Cek Status'; btn.disabled = false; }, 3000);
+                                        }
+                                    })
+                                    .catch(() => { btn.innerHTML = '<i class=\'fa-solid fa-arrows-rotate\'></i> Cek Status'; btn.disabled = false; });
+                            " class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-sm">
+                                <i class="fa-solid fa-arrows-rotate"></i> Cek Status
+                            </button>
+                            <button @click="showCancelConfirm = true"
+                                class="flex-1 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 font-semibold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-sm border border-red-200 dark:border-red-800">
+                                <i class="fa-solid fa-xmark"></i> Batalkan
+                            </button>
+                        </div>
                         <a href="{{ route('tickets.my') }}" 
                            class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Tiket Saya
                         </a>
+
+                        {{-- Cancel Confirmation Modal --}}
+                        <div x-show="showCancelConfirm" x-cloak
+                             class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
+                                 @click.away="showCancelConfirm = false">
+                                <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Batalkan Pesanan?</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
+                                <div class="flex gap-3">
+                                    <button @click="showCancelConfirm = false"
+                                        class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
+                                        Kembali
+                                    </button>
+                                    <form action="{{ route('tickets.cancel', $order->order_number) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <button type="submit" class="w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm">
+                                            Ya, Batalkan
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <button onclick="downloadTicketImage()" 
                            class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2"

@@ -62,18 +62,21 @@
 
                 <!-- Action Buttons -->
                 <div class="space-y-3">
-                    <a href="{{ route('tickets.payment', $order->order_number) }}" 
-                       class="block w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-redo"></i>Coba Bayar Lagi
-                    </a>
+                    <form action="{{ route('tickets.retry-payment', $order->order_number) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                           class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-redo"></i> Coba Bayar Lagi
+                        </button>
+                    </form>
                     
                     <a href="{{ route('tickets.my') }}" 
-                       class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300">
+                       class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 text-center">
                         Lihat Pesanan Saya
                     </a>
                     
                     <a href="{{ route('tickets.index') }}" 
-                       class="block w-full text-slate-600 dark:text-slate-400 hover:text-primary font-medium py-2 transition-colors">
+                       class="block w-full text-slate-600 dark:text-slate-400 hover:text-primary font-medium py-2 transition-colors text-center">
                         Kembali ke Daftar Tiket
                     </a>
                 </div>

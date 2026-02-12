@@ -137,15 +137,70 @@
                                     </div>
 
                                     {{-- BOTTOM: Actions stub --}}
-                                    <div class="px-5 py-3 flex gap-2">
-                                        <a href="{{ route('tickets.payment', $order->order_number) }}" 
-                                           class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5">
-                                            <i class="fa-solid fa-credit-card text-xs"></i> Bayar
-                                        </a>
-                                        <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                                            <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
-                                        </a>
+                                    <div class="px-5 py-3" x-data="{ showCancelConfirm: false }">
+                                        <div class="flex gap-2 mb-2">
+                                            <a href="{{ route('tickets.payment', $order->order_number) }}" 
+                                               class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5">
+                                                <i class="fa-solid fa-credit-card text-xs"></i> Bayar
+                                            </a>
+                                            <button @click="
+                                                $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i> Cek...';
+                                                $el.disabled = true;
+                                                fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                                                    .then(r => r.json())
+                                                    .then(d => {
+                                                        if(d.status === 'paid') { window.location.reload(); }
+                                                        else { 
+                                                            $el.innerHTML = '<i class=\'fa-solid fa-circle-info text-xs\'></i> ' + d.message;
+                                                            setTimeout(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i> Cek Status'; $el.disabled = false; }, 3000);
+                                                        }
+                                                    })
+                                                    .catch(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i> Cek Status'; $el.disabled = false; });
+                                            " class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                                <i class="fa-solid fa-arrows-rotate text-xs"></i> Cek Status
+                                            </button>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                               class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                                <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                            </a>
+                                            <button @click="showCancelConfirm = true"
+                                                class="flex-1 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-800">
+                                                <i class="fa-solid fa-xmark text-xs"></i> Batalkan
+                                            </button>
+                                        </div>
+
+                                        {{-- Cancel Confirmation Modal --}}
+                                        <div x-show="showCancelConfirm" x-cloak
+                                             class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                                             x-transition:enter="transition ease-out duration-200"
+                                             x-transition:enter-start="opacity-0"
+                                             x-transition:enter-end="opacity-100"
+                                             x-transition:leave="transition ease-in duration-150"
+                                             x-transition:leave-start="opacity-100"
+                                             x-transition:leave-end="opacity-0">
+                                            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
+                                                 @click.away="showCancelConfirm = false">
+                                                <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+                                                </div>
+                                                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Batalkan Pesanan?</h3>
+                                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
+                                                <div class="flex gap-3">
+                                                    <button @click="showCancelConfirm = false"
+                                                        class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
+                                                        Kembali
+                                                    </button>
+                                                    <form action="{{ route('tickets.cancel', $order->order_number) }}" method="POST" class="flex-1">
+                                                        @csrf
+                                                        <button type="submit" class="w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm">
+                                                            Ya, Batalkan
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             @else

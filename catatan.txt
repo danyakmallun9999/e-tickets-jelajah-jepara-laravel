@@ -28,3 +28,11 @@ wisatajepara
 # 17. Tambahkan fitur laporan keuangan yang advance pada E-tiket (done)
 # 18. Kolom Media Sosial pada dashboard admin untuk tempat wisata (link sosial media dengan kolom dinamis) & hilangkan website URL ( done )
 
+# Problem midtrans
+
+1. Belum melakukan payment, tapi statusnya sudah berhasil
+2. buat fitur untuk ganti payment method
+3. buat fitur untuk cancel payment
+4. buat fitur untuk retry payment
+5. buat fitur untuk cek status payment
+6. gunakan Direct API (API Integration)

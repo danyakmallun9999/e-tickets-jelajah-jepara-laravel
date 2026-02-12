@@ -132,17 +132,36 @@
                     }
                 </style>
 
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">{{ __('Tickets.Success.Title') }}</h1>
-                <p class="text-slate-500 dark:text-slate-400 mb-8">{{ __('Tickets.Success.Subtitle') }}</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+                    @if($order->status === 'paid')
+                        {{ __('Tickets.Success.Title') }}
+                    @else
+                        Pembayaran Sedang Diproses
+                    @endif
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 mb-8">
+                    @if($order->status === 'paid')
+                        {{ __('Tickets.Success.Subtitle') }}
+                    @else
+                        Pembayaran Anda sedang diverifikasi. Status akan diperbarui otomatis.
+                    @endif
+                </p>
 
                 <!-- Order Info -->
                 <div class="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-5 mb-8 text-left">
                     <!-- Status Badge at Top -->
                     <div class="text-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-600">
-                        <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-bold rounded-xl">
-                            <i class="fa-solid fa-check-circle"></i>
-                            {{ $order->status_label }}
-                        </span>
+                        @if($order->status === 'paid')
+                            <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-bold rounded-xl">
+                                <i class="fa-solid fa-check-circle"></i>
+                                {{ $order->status_label }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-sm font-bold rounded-xl">
+                                <i class="fa-solid fa-clock"></i>
+                                Sedang Diproses
+                            </span>
+                        @endif
                     </div>
                     
                     <!-- Order Details - Stacked Layout -->
@@ -170,51 +189,95 @@
                     </div>
                 </div>
 
-                <!-- QR Code Section -->
-                <div class="bg-gradient-to-br from-primary/5 to-indigo-500/5 border border-primary/10 rounded-2xl p-6 mb-8">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-qrcode text-primary"></i> {{ __('Tickets.Success.QRCodeTitle') }}
-                    </h3>
-                    <div id="qrcode" class="flex justify-center mb-3"></div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Tickets.Success.QRCodeSubtitle') }}</p>
-                    <div class="mt-4">
-                        <button onclick="downloadQR()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
-                            <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadQR') }}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Next Steps -->
-                <div class="bg-primary/5 border border-primary/10 rounded-2xl p-5 mb-8 text-left">
-                    <div class="flex items-start">
-                        <i class="fa-solid fa-info-circle text-primary mt-0.5 mr-3"></i>
-                        <div class="text-sm text-slate-700 dark:text-slate-300">
-                            <p class="font-bold mb-2 text-slate-900 dark:text-white">{{ __('Tickets.Success.NextStepsTitle') }}</p>
-                            <ul class="list-disc list-inside space-y-1">
-                                <li>{{ __('Tickets.Success.NextSteps1') }} <strong>{{ $order->customer_email }}</strong></li>
-                                <li>{{ __('Tickets.Success.NextSteps2') }}</li>
-                                <li>{{ __('Tickets.Success.NextSteps3') }} {{ $order->ticket->place->name }}</li>
-                            </ul>
+                @if($order->status === 'paid')
+                    <!-- QR Code Section -->
+                    <div class="bg-gradient-to-br from-primary/5 to-indigo-500/5 border border-primary/10 rounded-2xl p-6 mb-8">
+                        <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-qrcode text-primary"></i> {{ __('Tickets.Success.QRCodeTitle') }}
+                        </h3>
+                        <div id="qrcode" class="flex justify-center mb-3"></div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Tickets.Success.QRCodeSubtitle') }}</p>
+                        <div class="mt-4">
+                            <button onclick="downloadQR()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadQR') }}
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Action Buttons -->
-                <div class="space-y-3">
-                    <a href="{{ route('tickets.download', $order->order_number) }}" 
-                       class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadTicket') }}
-                    </a>
-                    
-                    <a href="{{ route('tickets.my') }}" 
-                       class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300">
-                        @lang('tickets.my_tickets_button')
-                    </a>
-                </div>
+                    <!-- Next Steps -->
+                    <div class="bg-primary/5 border border-primary/10 rounded-2xl p-5 mb-8 text-left">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-info-circle text-primary mt-0.5 mr-3"></i>
+                            <div class="text-sm text-slate-700 dark:text-slate-300">
+                                <p class="font-bold mb-2 text-slate-900 dark:text-white">{{ __('Tickets.Success.NextStepsTitle') }}</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>{{ __('Tickets.Success.NextSteps1') }} <strong>{{ $order->customer_email }}</strong></li>
+                                    <li>{{ __('Tickets.Success.NextSteps2') }}</li>
+                                    <li>{{ __('Tickets.Success.NextSteps3') }} {{ $order->ticket->place->name }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <a href="{{ route('tickets.download', $order->order_number) }}" 
+                           class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadTicket') }}
+                        </a>
+                        
+                        <a href="{{ route('tickets.my') }}" 
+                           class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 text-center">
+                            @lang('tickets.my_tickets_button')
+                        </a>
+                    </div>
+                @else
+                    <!-- Pending/Processing State -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-5 mb-8 text-left">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-hourglass-half text-yellow-600 mt-0.5 mr-3"></i>
+                            <div class="text-sm text-yellow-800 dark:text-yellow-300">
+                                <p class="font-bold mb-2">Pembayaran Sedang Diverifikasi</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Status akan otomatis diperbarui setelah pembayaran dikonfirmasi</li>
+                                    <li>Tiket dan QR Code akan tersedia setelah pembayaran berhasil</li>
+                                    <li>Cek status terbaru dengan tombol di bawah</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons for Pending -->
+                    <div class="space-y-3">
+                        <button onclick="
+                            this.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin\'></i> Mengecek status...';
+                            this.disabled = true;
+                            const btn = this;
+                            fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                                .then(r => r.json())
+                                .then(d => {
+                                    if(d.status === 'paid') { window.location.reload(); }
+                                    else {
+                                        btn.innerHTML = '<i class=\'fa-solid fa-circle-info\'></i> ' + d.message;
+                                        setTimeout(() => { btn.innerHTML = '<i class=\'fa-solid fa-arrows-rotate\'></i> Cek Status Pembayaran'; btn.disabled = false; }, 3000);
+                                    }
+                                })
+                                .catch(() => { btn.innerHTML = '<i class=\'fa-solid fa-arrows-rotate\'></i> Cek Status Pembayaran'; btn.disabled = false; });
+                        " class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrows-rotate"></i> Cek Status Pembayaran
+                        </button>
+                        
+                        <a href="{{ route('tickets.my') }}" 
+                           class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 text-center">
+                            @lang('tickets.my_tickets_button')
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
+@if($order->status === 'paid')
 <!-- QRCode.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -242,4 +305,5 @@ function downloadQR() {
     }
 }
 </script>
+@endif
 </x-public-layout>

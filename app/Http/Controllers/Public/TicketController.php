@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketOrder;
-use App\Services\XenditService;
+use App\Services\MidtransService;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Encoder\Encoder;
 use Illuminate\Http\Request;
@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Log;
 
 class TicketController extends Controller
 {
-    protected $xenditService;
+    protected $midtransService;
 
-    public function __construct(XenditService $xenditService)
+    public function __construct(MidtransService $midtransService)
     {
-        $this->xenditService = $xenditService;
+        $this->midtransService = $midtransService;
     }
     /**
      * Display a listing of available tickets.
@@ -100,19 +100,19 @@ class TicketController extends Controller
         $validated['total_price'] = $pricePerTicket * $validated['quantity'];
         $validated['unit_price'] = $pricePerTicket;
         $validated['status'] = 'pending';
-        $validated['payment_method'] = 'xendit'; // Set default to xendit
+        $validated['payment_method'] = 'midtrans';
 
         // Create order
         $order = TicketOrder::create($validated);
 
-        // Create Xendit invoice for online payment
+        // Create Midtrans Snap transaction
         try {
-            $invoice = $this->xenditService->createInvoice($order);
+            $this->midtransService->createSnapTransaction($order);
             
             // Redirect to payment page with Snap checkout
             return redirect()->route('tickets.payment', $order->order_number);
         } catch (\Exception $e) {
-            // If invoice creation fails, still show confirmation but with manual payment
+            // If transaction creation fails, still show confirmation but with manual payment
             return redirect()->route('tickets.confirmation', $order->order_number)
                 ->with('warning', 'Pesanan dibuat, namun terjadi kesalahan pada sistem pembayaran. Silakan hubungi admin.');
         }
@@ -144,6 +144,36 @@ class TicketController extends Controller
             ->latest()
             ->get();
 
+        // Auto-sync pending orders with Midtrans
+        foreach ($orders->where('status', 'pending') as $order) {
+            if ($order->payment_gateway_id) {
+                try {
+                    $status = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
+                    $transactionStatus = $status->transaction_status ?? null;
+                    $fraudStatus = $status->fraud_status ?? 'accept';
+
+                    if ($transactionStatus === 'settlement' || 
+                        ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
+                        $order->update([
+                            'status' => 'paid',
+                            'paid_at' => now(),
+                            'payment_method_detail' => $status->payment_type ?? null,
+                            'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
+                        ]);
+                        $order->refresh();
+                    } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+                        $order->update(['status' => 'cancelled']);
+                        $order->refresh();
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to sync order status', [
+                        'order_number' => $order->order_number,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
+
         return view('user.tickets.my-tickets', compact('orders'));
     }
 
@@ -164,12 +194,6 @@ class TicketController extends Controller
         return view('user.tickets.my-tickets', compact('orders'));
     }
 
-    /**
-     * Download ticket as PDF.
-     */
-    /**
-     * Download ticket QR code as SVG.
-     */
     /**
      * Show ticket view (for printing/downloading).
      */
@@ -242,7 +266,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Show payment page with Xendit invoice
+     * Show payment page with Midtrans Snap
      */
     public function payment($orderNumber)
     {
@@ -258,24 +282,32 @@ class TicketController extends Controller
                 ->with('info', 'Pesanan ini sudah dibayar.');
         }
 
-        // If no invoice URL, create one
-        if (!$order->xendit_invoice_url) {
+        // If cancelled, redirect to failed page
+        if ($order->status === 'cancelled') {
+            return redirect()->route('tickets.payment.failed', $orderNumber);
+        }
+
+        // If no snap token, create one
+        if (!$order->snap_token) {
             try {
-                $this->xenditService->createInvoice($order);
+                $this->midtransService->createSnapTransaction($order);
                 $order->refresh();
             } catch (\Exception $e) {
                 return redirect()->route('tickets.confirmation', $orderNumber)
-                    ->with('error', 'Gagal membuat invoice pembayaran.');
+                    ->with('error', 'Gagal membuat transaksi pembayaran.');
             }
         }
 
-        return view('user.tickets.payment', compact('order'));
+        $clientKey = config('services.midtrans.client_key');
+        $isProduction = config('services.midtrans.is_production');
+
+        return view('user.tickets.payment', compact('order', 'clientKey', 'isProduction'));
     }
 
     /**
-     * Handle successful payment redirect
+     * Handle successful payment redirect — verify first, then show appropriate page
      */
-    public function paymentSuccess($orderNumber)
+    public function paymentSuccess(Request $request, $orderNumber)
     {
         $order = TicketOrder::with('ticket.place')
             ->where('order_number', $orderNumber)
@@ -283,24 +315,89 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        // Verify payment status with Xendit if still pending
-        if ($order->status === 'pending' && $order->xendit_invoice_id) {
+        // If already paid, show success page
+        if ($order->status === 'paid') {
+            return view('user.tickets.payment-success', compact('order'));
+        }
+
+        // If user comes from Snap callback, trust Snap and show success page
+        $fromSnap = $request->query('from') === 'snap';
+        $isPending = $request->query('pending') === '1';
+
+        if ($fromSnap && $order->status === 'pending') {
+            // Try to get latest status and payment details from Midtrans API
+            $paymentType = null;
+            $paymentChannel = null;
+            $midtransStatus = null;
+            
+            if ($order->payment_gateway_id) {
+                try {
+                    $status = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
+                    $midtransStatus = $status->transaction_status ?? null;
+                    $paymentType = $status->payment_type ?? null;
+                    $paymentChannel = $status->bank ?? $status->store ?? $status->payment_type ?? null;
+                } catch (\Exception $e) {
+                    Log::warning('Could not fetch payment details from Midtrans', [
+                        'order_number' => $orderNumber,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            // Mark as paid if: Midtrans confirms settlement/capture, OR onSuccess without pending flag
+            $shouldMarkPaid = false;
+            if (in_array($midtransStatus, ['settlement', 'capture'])) {
+                $shouldMarkPaid = true;
+            } elseif (!$isPending) {
+                // Snap onSuccess fired — payment truly succeeded even if API is delayed
+                $shouldMarkPaid = true;
+            }
+
+            if ($shouldMarkPaid) {
+                $order->update([
+                    'status' => 'paid',
+                    'paid_at' => now(),
+                    'payment_method_detail' => $paymentType,
+                    'payment_channel' => $paymentChannel,
+                ]);
+
+                Log::info('Payment marked as paid from Snap callback', [
+                    'order_number' => $orderNumber,
+                    'midtrans_status' => $midtransStatus,
+                ]);
+
+                $order->refresh();
+            }
+
+            // Always show success page when coming from Snap (paid or processing)
+            return view('user.tickets.payment-success', compact('order'));
+        }
+
+        // For non-Snap redirects, verify payment status with Midtrans API
+        if ($order->status === 'pending' && $order->payment_gateway_id) {
             try {
-                $invoice = $this->xenditService->getInvoice($order->xendit_invoice_id);
+                $status = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
                 
-                // Check if invoice is paid
-                if ($invoice['status'] === 'PAID') {
+                $transactionStatus = $status->transaction_status ?? null;
+                $fraudStatus = $status->fraud_status ?? 'accept';
+
+                if ($transactionStatus === 'settlement' || 
+                    ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
                     $order->update([
                         'status' => 'paid',
                         'paid_at' => now(),
-                        'xendit_payment_method' => $invoice['payment_method'] ?? null,
-                        'xendit_payment_channel' => $invoice['payment_channel'] ?? null,
+                        'payment_method_detail' => $status->payment_type ?? null,
+                        'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
                     ]);
-                    
-                    Log::info('Payment status updated manually', [
-                        'order_number' => $orderNumber,
-                        'invoice_id' => $order->xendit_invoice_id,
-                    ]);
+
+                    $order->refresh();
+                    return view('user.tickets.payment-success', compact('order'));
+                }
+
+                // If denied/cancelled/expired
+                if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+                    $order->update(['status' => 'cancelled']);
+                    return redirect()->route('tickets.payment.failed', $orderNumber);
                 }
             } catch (\Exception $e) {
                 Log::error('Failed to verify payment status', [
@@ -310,7 +407,9 @@ class TicketController extends Controller
             }
         }
 
-        return view('user.tickets.payment-success', compact('order'));
+        // If we couldn't verify, redirect to payment page
+        return redirect()->route('tickets.payment', $orderNumber)
+            ->with('info', 'Status pembayaran belum dapat dipastikan. Silakan coba bayar kembali.');
     }
 
     /**
@@ -325,5 +424,163 @@ class TicketController extends Controller
         $this->verifyOrderOwnership($order);
 
         return view('user.tickets.payment-failed', compact('order'));
+    }
+
+    /**
+     * Check payment status via Midtrans API (AJAX)
+     */
+    public function checkStatus($orderNumber)
+    {
+        $order = TicketOrder::with('ticket.place')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        $this->verifyOrderOwnership($order);
+
+        if ($order->status === 'paid') {
+            return response()->json([
+                'success' => true,
+                'status' => 'paid',
+                'message' => 'Pembayaran sudah diterima.',
+            ]);
+        }
+
+        if (!$order->payment_gateway_id) {
+            return response()->json([
+                'success' => false,
+                'status' => $order->status,
+                'message' => 'Belum ada transaksi pembayaran.',
+            ]);
+        }
+
+        try {
+            $status = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
+            $transactionStatus = $status->transaction_status ?? 'unknown';
+            $fraudStatus = $status->fraud_status ?? 'accept';
+
+            // Update order if payment settled
+            if ($transactionStatus === 'settlement' || 
+                ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
+                $order->update([
+                    'status' => 'paid',
+                    'paid_at' => now(),
+                    'payment_method_detail' => $status->payment_type ?? null,
+                    'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'status' => 'paid',
+                    'message' => 'Pembayaran berhasil dikonfirmasi!',
+                    'payment_type' => $status->payment_type ?? null,
+                ]);
+            }
+
+            if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+                $order->update(['status' => 'cancelled']);
+                return response()->json([
+                    'success' => true,
+                    'status' => 'cancelled',
+                    'message' => 'Transaksi dibatalkan/kedaluwarsa.',
+                ]);
+            }
+
+            $statusMessages = [
+                'pending' => 'Menunggu pembayaran...',
+                'unknown' => 'Status tidak diketahui.',
+            ];
+
+            return response()->json([
+                'success' => true,
+                'status' => $transactionStatus,
+                'message' => $statusMessages[$transactionStatus] ?? "Status: {$transactionStatus}",
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to check payment status', [
+                'order_number' => $orderNumber,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'status' => $order->status,
+                'message' => 'Gagal mengecek status pembayaran.',
+            ]);
+        }
+    }
+
+    /**
+     * Cancel a pending order
+     */
+    public function cancelOrder($orderNumber)
+    {
+        $order = TicketOrder::where('order_number', $orderNumber)->firstOrFail();
+
+        $this->verifyOrderOwnership($order);
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Hanya pesanan dengan status pending yang dapat dibatalkan.');
+        }
+
+        // Try to cancel in Midtrans
+        if ($order->payment_gateway_id) {
+            try {
+                $this->midtransService->cancelTransaction($order->payment_gateway_id);
+            } catch (\Exception $e) {
+                Log::warning('Failed to cancel Midtrans transaction (may already be cancelled)', [
+                    'order_number' => $orderNumber,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $order->update([
+            'status' => 'cancelled',
+            'snap_token' => null,
+        ]);
+
+        Log::info('Order cancelled by user', ['order_number' => $orderNumber]);
+
+        return redirect()->route('tickets.my')
+            ->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    /**
+     * Retry payment — regenerate snap token for a pending/cancelled order
+     */
+    public function retryPayment($orderNumber)
+    {
+        $order = TicketOrder::with('ticket.place')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        $this->verifyOrderOwnership($order);
+
+        // Only allow retry for pending or cancelled orders
+        if (!in_array($order->status, ['pending', 'cancelled'])) {
+            return back()->with('error', 'Pembayaran tidak dapat diulang untuk pesanan ini.');
+        }
+
+        // Reset to pending if cancelled
+        if ($order->status === 'cancelled') {
+            $order->update(['status' => 'pending']);
+        }
+
+        // Clear old snap token and regenerate
+        $order->update([
+            'snap_token' => null,
+            'payment_gateway_id' => null,
+            'payment_gateway_url' => null,
+        ]);
+
+        try {
+            $this->midtransService->createSnapTransaction($order);
+            $order->refresh();
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.confirmation', $orderNumber)
+                ->with('error', 'Gagal membuat ulang transaksi pembayaran. Silakan coba lagi.');
+        }
+
+        return redirect()->route('tickets.payment', $order->order_number);
     }
 }

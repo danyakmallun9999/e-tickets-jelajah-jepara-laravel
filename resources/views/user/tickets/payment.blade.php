@@ -58,6 +58,12 @@
                     </div>
                 </div>
 
+                <!-- Secure Payment Badge -->
+                <div class="flex items-center justify-center gap-2 mb-6 text-sm text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-shield-halved text-green-500"></i>
+                    <span>Pembayaran aman diproses oleh Midtrans</span>
+                </div>
+
                 <!-- Payment Button -->
                 <button id="pay-button" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 flex items-center justify-center gap-2 group">
                     <span>{{ __('Tickets.Payment.PayNowButton') }}</span>
@@ -73,25 +79,71 @@
         </div>
     </div>
 
-<!-- Xendit Snap.js Script -->
-<script src="https://js.xendit.co/v1/xendit.min.js"></script>
+<!-- Midtrans Snap.js -->
+@php
+    $snapUrl = $isProduction 
+        ? 'https://app.midtrans.com/snap/snap.js' 
+        : 'https://app.sandbox.midtrans.com/snap/snap.js';
+@endphp
+<script src="{{ $snapUrl }}" data-client-key="{{ $clientKey }}"></script>
 <script>
-    // Initialize Xendit with your public key
-    Xendit.setPublishableKey('{{ config('services.xendit.public_key') }}');
+    const checkStatusUrl = '{{ route("tickets.check-status", $order->order_number) }}';
+    const successUrl = '{{ route("tickets.payment.success", $order->order_number) }}';
+    const failedUrl = '{{ route("tickets.payment.failed", $order->order_number) }}';
+    const payBtnText = '<span>{{ __("Tickets.Payment.PayNowButton") }}</span><i class="fa-solid fa-arrow-right ml-2"></i>';
+    let statusCheckInterval = null;
+
+    function checkPaymentStatus(redirectOnPaid) {
+        return fetch(checkStatusUrl)
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'paid') {
+                    if (statusCheckInterval) clearInterval(statusCheckInterval);
+                    if (redirectOnPaid) window.location.href = successUrl + '?from=snap';
+                    return 'paid';
+                }
+                return d.status || 'pending';
+            })
+            .catch(() => 'error');
+    }
 
     document.getElementById('pay-button').addEventListener('click', function() {
-        // Open Xendit checkout
-        window.open('{{ $order->xendit_invoice_url }}', '_blank');
-        
-        // Optional: Show loading state
-        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Membuka halaman pembayaran...';
-        this.disabled = true;
-        
-        // Re-enable button after 3 seconds
-        setTimeout(() => {
-            this.innerHTML = '<i class="fa-solid fa-credit-card mr-2"></i>Bayar Sekarang';
-            this.disabled = false;
-        }, 3000);
+        const btn = this;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
+        btn.disabled = true;
+
+        window.snap.pay('{{ $order->snap_token }}', {
+            onSuccess: function(result) {
+                window.location.href = successUrl + '?from=snap';
+            },
+            onPending: function(result) {
+                window.location.href = successUrl + '?from=snap&pending=1';
+            },
+            onError: function(result) {
+                window.location.href = failedUrl;
+            },
+            onClose: function() {
+                // When popup closes, check if payment was actually completed
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mengecek status pembayaran...';
+
+                checkPaymentStatus(false).then(status => {
+                    if (status === 'paid') {
+                        window.location.href = successUrl + '?from=snap';
+                    } else {
+                        // Show status with option to recheck
+                        btn.innerHTML = payBtnText;
+                        btn.disabled = false;
+
+                        // Start polling every 5 seconds for async payment methods (VA, etc.)
+                        if (!statusCheckInterval) {
+                            statusCheckInterval = setInterval(() => {
+                                checkPaymentStatus(true);
+                            }, 5000);
+                        }
+                    }
+                });
+            }
+        });
     });
 </script>
 </x-public-layout>
