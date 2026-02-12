@@ -232,8 +232,8 @@
         </div>
 
         <!-- Audio Elements -->
-        <audio id="scan-success" src="https://cdn.freesound.org/previews/341/341695_5858296-lq.mp3"></audio>
-        <audio id="scan-error" src="https://cdn.freesound.org/previews/456/456561_6142149-lq.mp3"></audio>
+        <audio id="scan-success" src="{{ asset('audio/success.mp3') }}"></audio>
+        <audio id="scan-error" src="{{ asset('audio/error.mp3') }}"></audio>
 
     </div>
 
