@@ -43,6 +43,8 @@ Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
     Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
     Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
     Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
+    Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'processPayment'])->name('tickets.process-payment');
+    Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentStatus'])->name('tickets.payment.status');
     Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
     Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
     Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])->name('tickets.retrieve');

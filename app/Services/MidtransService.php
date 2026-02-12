@@ -6,9 +6,8 @@ use App\Models\TicketOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
-use Midtrans\Snap;
+use Midtrans\CoreApi;
 use Midtrans\Transaction;
-use Midtrans\Notification;
 
 class MidtransService
 {
@@ -22,14 +21,17 @@ class MidtransService
     }
 
     /**
-     * Create Midtrans Snap transaction for ticket order.
+     * Create a charge via Midtrans Core API.
      *
-     * @return object { token, redirect_url }
+     * @param TicketOrder $order
+     * @param string $paymentType  qris|gopay|shopeepay|bank_transfer|echannel
+     * @param string|null $bank    bca|bni|bri (for bank_transfer only)
+     * @return object  Midtrans charge response
      */
-    public function createSnapTransaction(TicketOrder $order)
+    public function createCoreCharge(TicketOrder $order, string $paymentType, ?string $bank = null): object
     {
         try {
-            $orderId = 'TICKET-' . $order->order_number;
+            $orderId = 'TICKET-' . $order->order_number . '-' . time();
 
             $params = [
                 'transaction_details' => [
@@ -41,7 +43,7 @@ class MidtransService
                         'id' => $order->ticket_id,
                         'price' => (int) ($order->total_price / $order->quantity),
                         'quantity' => $order->quantity,
-                        'name' => substr($order->ticket->name, 0, 50), // Midtrans max 50 chars
+                        'name' => substr($order->ticket->name, 0, 50),
                         'category' => 'Tiket Wisata',
                     ],
                 ],
@@ -50,38 +52,152 @@ class MidtransService
                     'email' => $order->customer_email,
                     'phone' => $order->customer_phone,
                 ],
-                'callbacks' => [
-                    'finish' => route('tickets.payment.success', $order->order_number) . '?from=snap',
-                ],
-                'expiry' => [
-                    'start_time' => now()->format('Y-m-d H:i:s O'),
-                    'unit' => 'hours',
-                    'duration' => 24,
-                ],
             ];
 
-            $snapResponse = Snap::createTransaction($params);
+            // Add payment-type-specific params
+            switch ($paymentType) {
+                case 'qris':
+                    $params['payment_type'] = 'qris';
+                    $params['qris'] = ['acquirer' => 'gopay'];
+                    break;
+
+                case 'gopay':
+                    $params['payment_type'] = 'gopay';
+                    $params['gopay'] = [
+                        'enable_callback' => true,
+                        'callback_url' => route('tickets.payment.success', $order->order_number),
+                    ];
+                    break;
+
+                case 'shopeepay':
+                    $params['payment_type'] = 'shopeepay';
+                    $params['shopeepay'] = [
+                        'callback_url' => route('tickets.payment.success', $order->order_number),
+                    ];
+                    break;
+
+                case 'bank_transfer':
+                    $params['payment_type'] = 'bank_transfer';
+                    $params['bank_transfer'] = ['bank' => $bank];
+                    break;
+
+                case 'echannel':
+                    $params['payment_type'] = 'echannel';
+                    $params['echannel'] = [
+                        'bill_info1' => 'Tiket Wisata',
+                        'bill_info2' => $order->order_number,
+                    ];
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException("Unsupported payment type: {$paymentType}");
+            }
+
+            // Add expiry
+            $params['custom_expiry'] = [
+                'expiry_duration' => 60,
+                'unit' => 'minute',
+            ];
+
+            $response = CoreApi::charge($params);
 
             // Update order with Midtrans data
             $order->update([
-                'snap_token' => $snapResponse->token,
                 'payment_gateway_id' => $orderId,
-                'payment_gateway_url' => $snapResponse->redirect_url,
+                'payment_method_detail' => $paymentType,
+                'payment_channel' => $bank ?? $paymentType,
             ]);
 
-            Log::info('Midtrans Snap transaction created', [
+            Log::info('Midtrans Core API charge created', [
                 'order_number' => $order->order_number,
-                'snap_token' => $snapResponse->token,
+                'payment_type' => $paymentType,
+                'bank' => $bank,
+                'transaction_id' => $response->transaction_id ?? null,
             ]);
 
-            return $snapResponse;
+            return $response;
         } catch (\Exception $e) {
-            Log::error('Failed to create Midtrans Snap transaction', [
+            Log::error('Failed to create Midtrans Core API charge', [
                 'order_number' => $order->order_number,
+                'payment_type' => $paymentType,
                 'error' => $e->getMessage(),
             ]);
             throw $e;
         }
+    }
+
+    /**
+     * Extract payment instructions from Midtrans charge response.
+     */
+    public function extractPaymentData(object $response, string $paymentType, ?string $bank = null): array
+    {
+        $data = [
+            'payment_type' => $paymentType,
+            'bank' => $bank,
+            'transaction_id' => $response->transaction_id ?? null,
+            'expiry_time' => $response->expiry_time ?? null,
+            'gross_amount' => $response->gross_amount ?? null,
+        ];
+
+        switch ($paymentType) {
+            case 'qris':
+                // QRIS returns actions array with QR URL
+                $actions = $response->actions ?? [];
+                foreach ($actions as $action) {
+                    if ($action->name === 'generate-qr-code') {
+                        $data['qr_url'] = $action->url;
+                    }
+                }
+                // Fallback to qr_string
+                if (empty($data['qr_url']) && !empty($response->qr_string)) {
+                    $data['qr_string'] = $response->qr_string;
+                }
+                break;
+
+            case 'gopay':
+                $actions = $response->actions ?? [];
+                foreach ($actions as $action) {
+                    if ($action->name === 'generate-qr-code') {
+                        $data['qr_url'] = $action->url;
+                    }
+                    if ($action->name === 'deeplink-redirect') {
+                        $data['deeplink'] = $action->url;
+                    }
+                    if ($action->name === 'get-status') {
+                        $data['status_url'] = $action->url;
+                    }
+                }
+                break;
+
+            case 'shopeepay':
+                $actions = $response->actions ?? [];
+                foreach ($actions as $action) {
+                    if ($action->name === 'deeplink-redirect') {
+                        $data['deeplink'] = $action->url;
+                    }
+                }
+                break;
+
+            case 'bank_transfer':
+                // VA number extraction depends on the bank
+                if (!empty($response->va_numbers) && count($response->va_numbers) > 0) {
+                    $data['va_number'] = $response->va_numbers[0]->va_number;
+                    $data['bank'] = $response->va_numbers[0]->bank;
+                }
+                // Permata returns differently
+                if (!empty($response->permata_va_number)) {
+                    $data['va_number'] = $response->permata_va_number;
+                    $data['bank'] = 'permata';
+                }
+                break;
+
+            case 'echannel':
+                $data['bill_key'] = $response->bill_key ?? null;
+                $data['biller_code'] = $response->biller_code ?? null;
+                break;
+        }
+
+        return $data;
     }
 
     /**
@@ -155,8 +271,12 @@ class MidtransService
             $fraudStatus = $notificationData['fraud_status'] ?? 'accept';
             $paymentType = $notificationData['payment_type'] ?? null;
 
-            // Extract order number from order_id (remove 'TICKET-' prefix)
-            $orderNumber = str_replace('TICKET-', '', $orderId);
+            // Extract order number from order_id (format: TICKET-{orderNumber}-{timestamp} or TICKET-{orderNumber})
+            if (preg_match('/^TICKET-(.+)-\d+$/', $orderId, $matches)) {
+                $orderNumber = $matches[1];
+            } else {
+                $orderNumber = str_replace('TICKET-', '', $orderId);
+            }
             $order = TicketOrder::where('order_number', $orderNumber)->first();
 
             if (!$order) {
@@ -172,7 +292,6 @@ class MidtransService
 
             // Determine outcome based on transaction_status
             if ($transactionStatus === 'capture' || $transactionStatus === 'settlement') {
-                // For 'capture': only accept if fraud_status is 'accept'
                 if ($transactionStatus === 'capture' && $fraudStatus !== 'accept') {
                     Log::warning('Transaction captured but fraud status is not accept', [
                         'order_number' => $orderNumber,
