@@ -298,13 +298,21 @@
                         if (response.ok) {
                             this.handleResult(true, result.message, result.data);
                         } else {
-                            this.handleResult(false, result.message + (result.detail ? ` (${result.detail.order_number})` : ''), { orderNumber: 'Invalid' });
+                            // Use data from backend if available
+                            const errorData = result.data || {};
+                            // Fallback for order number if not in data but in detail (backward compat)
+                            if (!errorData.order_number && result.detail?.order_number) {
+                                errorData.order_number = result.detail.order_number;
+                            }
+                            
+                            this.handleResult(false, result.message, errorData);
                         }
 
                     } catch (error) {
                         console.error("Validation Error:", error);
                         // Show specific error instead of generic "Network Error"
-                        this.handleResult(false, "System Error: " + error.message, {});
+                        // Pass scanned data so it appears in history
+                        this.handleResult(false, "System Error: " + error.message, { order_number: qrData });
                         
                         // Resume if paused
                         /*

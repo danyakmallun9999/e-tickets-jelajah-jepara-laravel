@@ -49,6 +49,7 @@ class ScanController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Format QR tidak dikenali!',
+                    'data' => ['order_number' => $inputData] // Return raw input
                 ], 400);
             }
 
@@ -62,8 +63,21 @@ class ScanController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket tidak ditemukan di sistem!',
+                    'data' => ['order_number' => $orderNumber] // Return scanned order number
                 ], 404);
             }
+
+            // Prepare common data for error responses involving valid orders
+            $orderData = [
+                'customer_name' => $order->customer_name,
+                'ticket_name' => $order->ticket->name,
+                'quantity' => $order->quantity,
+                'place_name' => $order->ticket->place->name,
+                'order_number' => $order->order_number,
+                'check_in_time' => $order->check_in_time ? $order->check_in_time->format('H:i:s') : null,
+                'visit_date' => $order->visit_date->format('d M Y'),
+                'status' => $order->status
+            ];
 
             // Check Payment Status
             if ($order->status !== 'paid') {
@@ -71,6 +85,7 @@ class ScanController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket belum dibayar! Status: ' . ucfirst($order->status),
+                    'data' => $orderData
                 ], 400);
             }
 
@@ -80,6 +95,7 @@ class ScanController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tanggal tiket tidak sesuai! Tiket untuk: ' . $order->visit_date->format('d M Y'),
+                    'data' => $orderData
                 ], 400);
             }
 
@@ -89,7 +105,8 @@ class ScanController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket SUDAH DIGUNAKAN pada ' . $order->check_in_time->format('H:i'),
-                    'detail' => $order,
+                    'detail' => $order, // Keep for backward compatibility if needed, but data is preferred
+                    'data' => $orderData
                 ], 400);
             }
 
@@ -119,6 +136,7 @@ class ScanController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage(),
+                'data' => ['order_number' => $request->qr_data ?? 'Unknown']
             ], 500);
         }
     }
