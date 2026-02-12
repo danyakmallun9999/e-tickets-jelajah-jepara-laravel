@@ -65,7 +65,7 @@
                          class="absolute inset-0 flex items-center justify-center bg-slate-900/95 z-30 rounded-[1.8rem] p-8 text-center backdrop-blur-sm">
                         <div class="max-w-xs">
                             <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/20">
-                                <i class="fa-solid fa-camera-slash text-2xl"></i>
+                                <i class="fa-solid fa-video-slash text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-bold text-white mb-2">Akses Kamera Bermasalah</h3>
                             <p class="text-slate-400 text-xs mb-6 leading-relaxed" x-text="cameraError"></p>
@@ -96,10 +96,10 @@
                             </form>
                             
                             <!-- Upload Button -->
-                            <div class="relative">
+                            <div class="relative w-full md:w-auto">
                                 <input type="file" id="qr-input-file" accept="image/*" class="hidden" @change="handleFileUpload">
-                                <label for="qr-input-file" class="bg-white border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-slate-600 hover:text-indigo-600 rounded-2xl px-5 cursor-pointer flex items-center justify-center gap-2 h-full font-semibold transition-all group shadow-sm text-sm">
-                                    <i class="fa-solid fa-image group-hover:scale-110 transition-transform text-slate-400 group-hover:text-indigo-500"></i> <span class="hidden sm:inline">Upload</span>
+                                <label for="qr-input-file" class="bg-white border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-slate-600 hover:text-indigo-600 rounded-2xl px-5 py-3 md:py-0 cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto h-full font-semibold transition-all group shadow-sm text-sm">
+                                    <i class="fa-solid fa-image group-hover:scale-110 transition-transform text-slate-400 group-hover:text-indigo-500"></i> <span class="whitespace-nowrap">Upload QR</span>
                                 </label>
                             </div>
                         </div>
