@@ -146,8 +146,8 @@
                 text: "{{ $order->order_number }}",
                 width: 120,
                 height: 120,
-                colorDark : "#292524", // stone-800
-                colorLight : "#f5f5f4", // stone-100 bg matches container
+                colorDark : "#000000", // Pure Black
+                colorLight : "#ffffff", // Pure White
                 correctLevel : QRCode.CorrectLevel.H
             });
 

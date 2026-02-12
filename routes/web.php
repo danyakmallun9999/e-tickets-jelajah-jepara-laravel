@@ -98,6 +98,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('ticket-orders/{order}/status', [\App\Http\Controllers\Admin\TicketController::class, 'updateOrderStatus'])->name('tickets.orders.updateStatus');
     Route::delete('ticket-orders/{order}', [\App\Http\Controllers\Admin\TicketController::class, 'destroyOrder'])->name('tickets.orders.destroy');
 
+    // QR Scan routes
+    Route::get('/scan', [App\Http\Controllers\Admin\ScanController::class, 'index'])->name('scan.index');
+    Route::post('/scan', [App\Http\Controllers\Admin\ScanController::class, 'store'])->name('scan.store');
+
     // Financial Reports
     Route::prefix('reports/financial')->name('reports.financial.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\FinancialReportController::class, 'index'])->name('index');
