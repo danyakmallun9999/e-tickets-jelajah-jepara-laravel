@@ -712,10 +712,13 @@
             </div>
             @endif
 
-            <!-- Admin Berita Enhanced Stats (Top Posts) -->
-            @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts']))
-            <div class="mt-6">
+
+
+
+            <!-- Row 5: Top Posts & Ticket Status (Side-by-Side) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <!-- Top Posts -->
+                @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts']))
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -743,12 +746,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            @endif
+                @endif
 
-            <!-- Ticket Orders Status (Admin Wisata Only) -->
-            @can('view all tickets')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Ticket Orders Status -->
+                @can('view all tickets')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -791,8 +792,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
             </div>
-            @endcan
 
             <!-- Content Grid 1: Chart & Upcoming Events -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
