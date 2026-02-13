@@ -87,7 +87,221 @@
                         <a href="#" class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-primary hover:text-white transition-colors">#Pariwisata</a>
                         <a href="#" class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-primary hover:text-white transition-colors">#{{ $post->type }}</a>
                     </div>
+                    <!-- Statistics Section -->
+                    <div class="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">analytics</span>
+                                Statistik Pembaca
+                            </h3>
+                            <span class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                                Real-time Data
+                            </span>
+                        </div>
+                        
+                        <!-- Post Stats Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <!-- Total Views -->
+                            <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900/30 transition-all hover:shadow-md">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-800/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <i class="fa-regular fa-eye text-xs"></i>
+                                    </div>
+                                    <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">Total Views</p>
+                                </div>
+                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['total_views']) }}</p>
+                            </div>
+                            
+                            <!-- Views Today -->
+                            <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-purple-100 dark:border-purple-900/30 transition-all hover:shadow-md">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-800/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                        <i class="fa-solid fa-chart-line text-xs"></i>
+                                    </div>
+                                    <p class="text-sm text-purple-600 dark:text-purple-400 font-medium">Hari Ini</p>
+                                </div>
+                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['views_today']) }}</p>
+                            </div>
+                            
+                            <!-- Unique Visitors -->
+                            <div class="p-6 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 transition-all hover:shadow-md">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-800/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                        <i class="fa-solid fa-users text-xs"></i>
+                                    </div>
+                                    <p class="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Unique Visitors</p>
+                                </div>
+                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['unique_visitors']) }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Article Views Chart -->
+                        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm mb-16">
+                            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">Grafik Kunjungan (30 Hari Terakhir)</h4>
+                            <div class="relative h-64 w-full">
+                                <canvas id="viewsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Tourism Stats Section -->
+                        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 p-8 md:p-12 text-white shadow-xl">
+                            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-primary/20 blur-3xl"></div>
+                            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl"></div>
+                            
+                            <div class="relative z-10">
+                                <h3 class="text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-yellow-400">tour</span>
+                                    Wisata Jepara {{ $tourismStats['year'] }}
+                                </h3>
+                                <p class="text-gray-400 mb-8 max-w-xl">Data statistik kunjungan wisatawan ke Kabupaten Jepara tahun ini. Mari dukung pariwisata lokal!</p>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                                    <!-- Total Visitors Card -->
+                                    <div class="lg:col-span-1 bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/10 text-center">
+                                        <p class="text-sm text-gray-300 font-medium mb-2 uppercase tracking-widest">Total Wisatawan</p>
+                                        <p class="text-5xl font-black text-yellow-400 tracking-tight my-4">{{ number_format($tourismStats['total_visitors']) }}</p>
+                                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-bold">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                            <span>Year to Date</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Monthly Chart -->
+                                    <div class="lg:col-span-2 bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/5">
+                                        <div class="relative h-64 w-full">
+                                            <canvas id="tourismChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration for charts
+            Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.scale.grid.color = 'rgba(148, 163, 184, 0.1)';
+
+            // 1. Article Views Chart (Line)
+            const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+            const viewsData = @json($viewsGraph);
+            
+            new Chart(viewsCtx, {
+                type: 'line',
+                data: {
+                    labels: viewsData.map(d => {
+                        const date = new Date(d.date);
+                        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                    }),
+                    datasets: [{
+                        label: 'Pembaca',
+                        data: viewsData.map(d => d.count),
+                        borderColor: '#0ea5e9', // Blue-500
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                            gradient.addColorStop(0, 'rgba(14, 165, 233, 0.2)');
+                            gradient.addColorStop(1, 'rgba(14, 165, 233, 0)');
+                            return gradient;
+                        },
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#0ea5e9',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#f8fafc',
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // 2. Tourism Stats Chart (Bar)
+            const tourismCtx = document.getElementById('tourismChart').getContext('2d');
+            const tourismData = @json($tourismStats['monthly_data']);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            
+            // Fill missing months with 0
+            const monthlyVisitors = new Array(12).fill(0);
+            tourismData.forEach(d => {
+                monthlyVisitors[d.month - 1] = d.visitors;
+            });
+
+            new Chart(tourismCtx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Wisatawan',
+                        data: monthlyVisitors,
+                        backgroundColor: '#facc15', // Yellow-400
+                        borderRadius: 4,
+                        hoverBackgroundColor: '#fbbf24',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#000000',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('id-ID').format(context.raw) + ' Wisatawan';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endpush
 
                 <!-- Sidebar (Right) -->
                 <div class="lg:col-span-4 space-y-12">

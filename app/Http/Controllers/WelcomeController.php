@@ -12,8 +12,11 @@ use App\Models\Post;
 use App\Repositories\Contracts\PlaceRepositoryInterface;
 use App\Services\GeoJsonService;
 use App\Services\StaticDataService;
+use App\Models\TourismStat;
+use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -228,7 +231,37 @@ class WelcomeController extends Controller
 
         $recommendedPlaces = $this->placeRepository->getPopular(3);
 
-        return view('public.posts.show', compact('post', 'relatedPosts', 'recommendedPlaces'));
+        // 1. Tracking: Record Visit
+        Visit::create([
+            'post_id' => $post->id,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        // 2. Statistics: Post Stats
+        $stats = [
+            'total_views' => $post->visits()->count(),
+            'views_today' => $post->visits()->whereDate('created_at', today())->count(),
+            'unique_visitors' => $post->visits()->distinct('ip_address')->count('ip_address'),
+        ];
+
+        // 3. Statistics: Post View Graph (Last 30 Days)
+        $viewsGraph = $post->visits()
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // 4. Statistics: Tourism Stats (Jepara)
+        $currentYear = now()->year;
+        $tourismStats = [
+            'total_visitors' => TourismStat::where('year', $currentYear)->sum('visitors'),
+            'monthly_data' => TourismStat::where('year', $currentYear)->orderBy('month')->get(),
+            'year' => $currentYear,
+        ];
+
+        return view('public.posts.show', compact('post', 'relatedPosts', 'recommendedPlaces', 'stats', 'viewsGraph', 'tourismStats'));
     }
 
     public function places(): View
