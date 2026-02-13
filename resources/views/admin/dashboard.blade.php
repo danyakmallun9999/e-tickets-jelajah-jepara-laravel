@@ -792,6 +792,7 @@
                         </div>
                     </div>
                 </div>
+                @endcan
             </div>
 
             <!-- Content Grid 1: Chart & Upcoming Events -->
