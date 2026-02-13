@@ -14,7 +14,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // First: Create roles and permissions
+        $this->call(RolePermissionSeeder::class);
+        
+        // Second: Create admin users and assign roles
         $this->call(AdminUserSeeder::class);
+        $this->call(SampleAdminSeeder::class);
+        
+        // Third: Create content
         $this->call(CategorySeeder::class);
         $this->call(PariwisataSeeder::class);
         $this->call(PostSeeder::class);
@@ -22,6 +29,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DestinasiImageSeeder::class);
         $this->call(JeparaEventSeeder::class);
         // $this->call(DummyTicketSeeder::class);
+
+        // Fourth: Assign ownership to existing content
+        $this->call(AssignOwnershipSeeder::class);
 
         // Fetch Categories
         $nature = \App\Models\Category::where('slug', 'wisata-alam')->first();

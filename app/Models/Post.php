@@ -21,6 +21,7 @@ class Post extends Model
         'image_credit',
         'title_en',
         'content_en',
+        'created_by',
     ];
 
     protected $casts = [
@@ -42,5 +43,21 @@ class Post extends Model
             return $this->content_en;
         }
         return $this->content;
+    }
+
+    /**
+     * Get the user who created this post.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    /**
+     * Scope a query to only include posts owned by a specific user.
+     */
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->where('created_by', $userId);
     }
 }

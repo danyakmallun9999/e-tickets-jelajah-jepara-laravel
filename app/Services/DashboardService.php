@@ -3,12 +3,14 @@
 namespace App\Services;
 
 
+
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Infrastructure;
 use App\Models\LandUse;
 use App\Models\Place;
 use App\Models\Post;
+use App\Models\TicketOrder;
 
 class DashboardService
 {
@@ -22,6 +24,7 @@ class DashboardService
             'infrastructures_count' => Infrastructure::count(),
             'land_uses_count' => LandUse::count(),
             'categories' => Category::withCount('places')->get(),
+            'top_categories' => Category::withCount('places')->orderBy('places_count', 'desc')->take(3)->get(),
             'infrastructure_types' => Infrastructure::selectRaw('type, COUNT(*) as count, SUM(length_meters) as total_length')
                 ->groupBy('type')
                 ->get(),
@@ -34,9 +37,58 @@ class DashboardService
             'recent_infrastructures' => Infrastructure::latest()->take(5)->get(),
             'recent_land_uses' => LandUse::latest()->take(5)->get(),
             'posts_count' => Post::count(),
+            'posts_published' => Post::where('is_published', true)->count(),
+            'posts_draft' => Post::where('is_published', false)->count(),
             'events_count' => Event::count(),
+            'events_upcoming' => Event::where('start_date', '>=', now())->count(),
+            'events_past' => Event::where('end_date', '<', now())->count(),
             'recent_posts' => Post::latest('published_at')->take(5)->get(),
             'upcoming_events' => Event::where('start_date', '>=', now())->orderBy('start_date')->take(5)->get(),
+            'ticket_orders_count' => TicketOrder::count(),
+            'ticket_orders_pending' => TicketOrder::where('status', 'pending')->count(),
+            'ticket_orders_paid' => TicketOrder::where('status', 'paid')->count(),
+            'ticket_revenue' => TicketOrder::where('status', 'paid')->sum('total_price'),
+            
+            // Visitor Analytics
+            'total_visitors' => TicketOrder::whereIn('status', ['paid', 'used'])->sum('quantity'),
+            'visitors_this_month' => TicketOrder::whereIn('status', ['paid', 'used'])
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('quantity'),
+            'visitors_last_month' => TicketOrder::whereIn('status', ['paid', 'used'])
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->whereYear('created_at', now()->subMonth()->year)
+                ->sum('quantity'),
+            
+            // Revenue Metrics
+            'revenue_this_month' => TicketOrder::where('status', 'paid')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('total_price'),
+            'revenue_last_month' => TicketOrder::where('status', 'paid')
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->whereYear('created_at', now()->subMonth()->year)
+                ->sum('total_price'),
+            'average_order_value' => TicketOrder::where('status', 'paid')->count() > 0 
+                ? TicketOrder::where('status', 'paid')->sum('total_price') / TicketOrder::where('status', 'paid')->count()
+                : 0,
+            
+            // Booking Trends (Last 7 days)
+            'bookings_last_7_days' => TicketOrder::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                ->where('created_at', '>=', now()->subDays(7))
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get(),
+            
+            // Top Destinations by ticket sales
+            'top_destinations' => Place::withCount(['tickets as total_sales' => function($query) {
+                $query->join('ticket_orders', 'tickets.id', '=', 'ticket_orders.ticket_id')
+                    ->whereIn('ticket_orders.status', ['paid', 'used']);
+            }])
+            ->with('category')
+            ->orderBy('total_sales', 'desc')
+            ->take(5)
+            ->get(),
         ];
     }
 }

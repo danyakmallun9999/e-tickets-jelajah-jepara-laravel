@@ -52,6 +52,7 @@ class Place extends Model
         'facilities',
         'social_media',
         'kecamatan',
+        'created_by',
     ];
 
     // Accessor for Translated Name
@@ -110,4 +111,20 @@ class Place extends Model
         'facilities' => 'array',
         'social_media' => 'array',
     ];
+
+    /**
+     * Get the user who created this place.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    /**
+     * Scope a query to only include places owned by a specific user.
+     */
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->where('created_by', $userId);
+    }
 }
