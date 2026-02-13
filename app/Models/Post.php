@@ -33,17 +33,19 @@ class Post extends Model
 
     public function getTranslatedTitleAttribute()
     {
-        if (app()->getLocale() == 'en' && !empty($this->title_en)) {
+        if (app()->getLocale() == 'en' && ! empty($this->title_en)) {
             return $this->title_en;
         }
+
         return $this->title;
     }
 
     public function getTranslatedContentAttribute()
     {
-        if (app()->getLocale() == 'en' && !empty($this->content_en)) {
+        if (app()->getLocale() == 'en' && ! empty($this->content_en)) {
             return $this->content_en;
         }
+
         return $this->content;
     }
 
@@ -68,6 +70,6 @@ class Post extends Model
      */
     public function visits(): HasMany
     {
-        return $this->hasMany(\App\Models\Visit::class);
+        return $this->hasMany(Visit::class);
     }
 }
