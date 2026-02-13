@@ -22,7 +22,14 @@ class EventController extends Controller
 
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Event::class);
+        
         $query = Event::query();
+
+        // Filter by ownership if user doesn't have global access
+        if (!auth()->user()->can('view all events')) {
+            $query->where('created_by', auth()->id());
+        }
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->search.'%')
@@ -32,23 +39,37 @@ class EventController extends Controller
         $events = $query->latest('start_date')->paginate(10);
 
         // Stats for the dashboard
-        $stats = [
-            'total' => Event::count(),
-            'published' => Event::where('is_published', true)->count(),
-            'upcoming' => Event::where('start_date', '>=', now())->count(),
-        ];
+        if (auth()->user()->can('view all events')) {
+            $stats = [
+                'total' => Event::count(),
+                'published' => Event::where('is_published', true)->count(),
+                'upcoming' => Event::where('start_date', '>=', now())->count(),
+            ];
+        } else {
+            // Show only user's own stats
+            $stats = [
+                'total' => Event::where('created_by', auth()->id())->count(),
+                'published' => Event::where('created_by', auth()->id())->where('is_published', true)->count(),
+                'upcoming' => Event::where('created_by', auth()->id())->where('start_date', '>=', now())->count(),
+            ];
+        }
 
         return view('admin.events.index', compact('events', 'stats'));
     }
 
     public function create(): View
     {
+        $this->authorize('create', Event::class);
+        
         return view('admin.events.create');
     }
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
+        $this->authorize('create', Event::class);
+        
         $validated = $request->validated();
+        $validated['created_by'] = auth()->id(); // Auto-assign ownership
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->fileService->upload($request->file('image'), 'events');
@@ -58,11 +79,6 @@ class EventController extends Controller
             $validated['is_published'] = false;
         }
 
-        // Handle checkbox specific behavior if needed (html checkboxes don't send anything if unchecked)
-        // Check if is_published is in request? The validation rule 'sometimes|boolean' handles it if present.
-        // If not checking specifically for presence here, it might be missed if unchecked in update?
-        // store method handles new creation, default false if not present is correct.
-
         Event::create($validated);
 
         return redirect()->route('admin.events.index')
@@ -71,11 +87,15 @@ class EventController extends Controller
 
     public function edit(Event $event): View
     {
+        $this->authorize('update', $event);
+        
         return view('admin.events.edit', compact('event'));
     }
 
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
+        $this->authorize('update', $event);
+        
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -93,6 +113,8 @@ class EventController extends Controller
 
     public function destroy(Event $event): RedirectResponse
     {
+        $this->authorize('delete', $event);
+        
         $this->fileService->delete($event->image);
 
         $event->delete();

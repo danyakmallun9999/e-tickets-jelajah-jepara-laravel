@@ -23,6 +23,7 @@ class Post extends Model
         'title_en',
         'view_count',
         'content_en',
+        'created_by',
     ];
 
     protected $casts = [
@@ -46,8 +47,19 @@ class Post extends Model
         return $this->content;
     }
 
-    public function visits(): HasMany
+    /**
+     * Get the user who created this post.
+     */
+    public function creator()
     {
-        return $this->hasMany(Visit::class);
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    /**
+     * Scope a query to only include posts owned by a specific user.
+     */
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->where('created_by', $userId);
     }
 }

@@ -22,7 +22,14 @@ class PostController extends Controller
 
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Post::class);
+        
         $query = Post::latest();
+
+        // Filter by ownership if user doesn't have global access
+        if (!auth()->user()->can('view all posts')) {
+            $query->where('created_by', auth()->id());
+        }
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->search.'%');
@@ -39,12 +46,17 @@ class PostController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Post::class);
+        
         return view('admin.posts.create');
     }
 
     public function store(StorePostRequest $request): RedirectResponse
     {
+        $this->authorize('create', Post::class);
+        
         $validated = $request->validated();
+        $validated['created_by'] = auth()->id(); // Auto-assign ownership
 
         $validated['slug'] = Str::slug($validated['title']).'-'.time();
         $validated['is_published'] = $request->has('is_published');
@@ -70,11 +82,15 @@ class PostController extends Controller
 
     public function edit(Post $post): View
     {
+        $this->authorize('update', $post);
+        
         return view('admin.posts.edit', compact('post'));
     }
 
     public function update(UpdatePostRequest $request, Post $post): RedirectResponse
     {
+        $this->authorize('update', $post);
+        
         $validated = $request->validated();
 
         if ($post->title !== $validated['title']) {
@@ -96,6 +112,8 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
+        $this->authorize('delete', $post);
+        
         $this->fileService->delete($post->image_path);
 
         $post->delete();

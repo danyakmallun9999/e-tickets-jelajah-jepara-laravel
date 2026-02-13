@@ -47,6 +47,7 @@
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @canany('create destinations')
                 <a href="{{ route('admin.places.create') }}" class="group bg-white p-1 rounded-[2.5rem] border border-gray-200 hover:border-blue-300 transition-colors">
                     <div class="flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full group-hover:bg-blue-50/30 transition-colors">
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 border border-blue-100">
@@ -55,7 +56,9 @@
                         <span class="font-bold text-gray-700 group-hover:text-blue-600 transition-colors text-center">Tambah Destinasi</span>
                     </div>
                 </a>
+                @endcanany
 
+                @canany('create posts')
                 <a href="{{ route('admin.posts.create') }}" class="group bg-white p-1 rounded-[2.5rem] border border-gray-200 hover:border-purple-300 transition-colors">
                     <div class="flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full group-hover:bg-purple-50/30 transition-colors">
                         <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 border border-purple-100">
@@ -64,7 +67,9 @@
                         <span class="font-bold text-gray-700 group-hover:text-purple-600 transition-colors text-center">Tulis Berita</span>
                     </div>
                 </a>
+                @endcanany
 
+                @canany('create events')
                 <a href="{{ route('admin.events.create') }}" class="group bg-white p-1 rounded-[2.5rem] border border-gray-200 hover:border-orange-300 transition-colors">
                     <div class="flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full group-hover:bg-orange-50/30 transition-colors">
                         <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl group-hover:bg-orange-600 group-hover:text-white transition-all duration-300 border border-orange-100">
@@ -73,8 +78,10 @@
                         <span class="font-bold text-gray-700 group-hover:text-orange-600 transition-colors text-center">Agenda Baru</span>
                     </div>
                 </a>
+                @endcanany
 
                 <!-- Check-in Scanner Shortcut -->
+                @canany('scan tickets')
                 <a href="{{ route('admin.scan.index') }}" class="group bg-white p-1 rounded-[2.5rem] border border-gray-200 hover:border-emerald-300 transition-colors">
                     <div class="flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full group-hover:bg-emerald-50/30 transition-colors">
                         <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 border border-emerald-100">
@@ -83,12 +90,101 @@
                         <span class="font-bold text-gray-700 group-hover:text-emerald-600 transition-colors text-center">Check-in Tiket</span>
                     </div>
                 </a>
+                @endcanany
             </div>
+
+            <!-- Admin Wisata Enhanced Dashboard -->
+            @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
+            <div class="space-y-6">
+                <!-- Key Metrics with Growth Indicators -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Total Visitors -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-1 rounded-[2.5rem] border border-blue-100">
+                        <div class="p-6 rounded-[2rem] bg-white/80 backdrop-blur-sm h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-blue-500/30">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                @php
+                                    $visitorGrowth = $stats['visitors_last_month'] > 0 
+                                        ? (($stats['visitors_this_month'] - $stats['visitors_last_month']) / $stats['visitors_last_month']) * 100 
+                                        : 0;
+                                @endphp
+                                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $visitorGrowth >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                    <i class="fa-solid fa-{{ $visitorGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
+                                    {{ number_format(abs($visitorGrowth), 1) }}%
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['total_visitors']) }}</h3>
+                            <p class="text-sm text-gray-600 font-medium">Total Pengunjung</p>
+                            <p class="text-xs text-gray-500 mt-2">{{ number_format($stats['visitors_this_month']) }} bulan ini</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Revenue -->
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-1 rounded-[2.5rem] border border-emerald-100">
+                        <div class="p-6 rounded-[2rem] bg-white/80 backdrop-blur-sm h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/30">
+                                    <i class="fa-solid fa-sack-dollar"></i>
+                                </div>
+                                @php
+                                    $revenueGrowth = $stats['revenue_last_month'] > 0 
+                                        ? (($stats['revenue_this_month'] - $stats['revenue_last_month']) / $stats['revenue_last_month']) * 100 
+                                        : 0;
+                                @endphp
+                                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $revenueGrowth >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                    <i class="fa-solid fa-{{ $revenueGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
+                                    {{ number_format(abs($revenueGrowth), 1) }}%
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">Rp {{ number_format($stats['ticket_revenue'] / 1000000, 1) }}M</h3>
+                            <p class="text-sm text-gray-600 font-medium">Total Pendapatan</p>
+                            <p class="text-xs text-gray-500 mt-2">Rp {{ number_format($stats['revenue_this_month'] / 1000, 0) }}K bulan ini</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Bookings -->
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-1 rounded-[2.5rem] border border-purple-100">
+                        <div class="p-6 rounded-[2rem] bg-white/80 backdrop-blur-sm h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-purple-500/30">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700">
+                                    {{ $stats['ticket_orders_count'] > 0 ? number_format(($stats['ticket_orders_paid'] / $stats['ticket_orders_count']) * 100, 0) : 0 }}% paid
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['ticket_orders_count']) }}</h3>
+                            <p class="text-sm text-gray-600 font-medium">Total Pesanan</p>
+                            <p class="text-xs text-gray-500 mt-2">{{ $stats['ticket_orders_pending'] }} menunggu pembayaran</p>
+                        </div>
+                    </div>
+
+                    <!-- Average Order Value -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-1 rounded-[2.5rem] border border-amber-100">
+                        <div class="p-6 rounded-[2rem] bg-white/80 backdrop-blur-sm h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-amber-500/30">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                                    <i class="fa-solid fa-star"></i> AVG
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">Rp {{ number_format($stats['average_order_value'] / 1000, 0) }}K</h3>
+                            <p class="text-sm text-gray-600 font-medium">Rata-rata Transaksi</p>
+                            <p class="text-xs text-gray-500 mt-2">Per pesanan tiket</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Main Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Places -->
-                <!-- Places -->
+                @canany('view all destinations', 'view own destinations')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-4">
@@ -101,9 +197,10 @@
                         <p class="text-sm text-gray-500 font-medium">Destinasi Wisata</p>
                     </div>
                 </div>
+                @endcanany
 
                 <!-- Posts -->
-                <!-- Posts -->
+                @canany('view all posts', 'view own posts')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-4">
@@ -116,9 +213,10 @@
                         <p class="text-sm text-gray-500 font-medium">Berita & Artikel</p>
                     </div>
                 </div>
+                @endcanany
 
                 <!-- Events -->
-                <!-- Events -->
+                @canany('view all events', 'view own events')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-4">
@@ -131,9 +229,10 @@
                         <p class="text-sm text-gray-500 font-medium">Agenda Kegiatan</p>
                     </div>
                 </div>
+                @endcanany
 
                 <!-- Categories -->
-                <!-- Categories -->
+                @canany('manage categories')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-4">
@@ -146,12 +245,192 @@
                         <p class="text-sm text-gray-500 font-medium">Kategori Wisata</p>
                     </div>
                 </div>
+                @endcanany
             </div>
+
+            <!-- Berita & Agenda Breakdown (Admin Berita Only) -->
+            @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts', 'view all events', 'view own events']))
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Post Status Breakdown -->
+                @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts']))
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Status Berita</h3>
+                            <a href="{{ route('admin.posts.index') }}" class="text-sm text-purple-600 hover:underline">Kelola</a>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-green-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center border border-green-100">
+                                        <i class="fa-solid fa-check-circle text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Published</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['posts_published'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['posts_count'] > 0 ? round(($stats['posts_published'] / $stats['posts_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-amber-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                                        <i class="fa-solid fa-file-pen text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Draft</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['posts_draft'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['posts_count'] > 0 ? round(($stats['posts_draft'] / $stats['posts_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Event Timeline Breakdown -->
+                @if(auth()->user()->hasAnyPermission(['view all events', 'view own events']))
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Timeline Agenda</h3>
+                            <a href="{{ route('admin.events.index') }}" class="text-sm text-orange-600 hover:underline">Kelola</a>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-blue-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                                        <i class="fa-solid fa-clock text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Upcoming</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['events_upcoming'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['events_count'] > 0 ? round(($stats['events_upcoming'] / $stats['events_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center border border-gray-100">
+                                        <i class="fa-solid fa-history text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Past Events</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['events_past'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['events_count'] > 0 ? round(($stats['events_past'] / $stats['events_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endif
+
+            <!-- Tourism Breakdown (Admin Wisata Only) -->
+            @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Recent Destinations -->
+                @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations']))
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Destinasi Terbaru</h3>
+                            <a href="{{ route('admin.places.index') }}" class="text-sm text-blue-600 hover:underline">Lihat Semua</a>
+                        </div>
+                        <div class="space-y-4">
+                            @forelse($stats['recent_places'] as $place)
+                            <div class="flex items-center gap-4 p-3 rounded-2xl hover:bg-white transition-colors group border border-transparent hover:border-gray-100">
+                                @if($place->image_path)
+                                    <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}" class="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform">
+                                @else
+                                    <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                @endif
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-gray-800 truncate">{{ $place->name }}</h4>
+                                    <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white border border-white/20 whitespace-nowrap" style="background-color: {{ $place->category->color }}">
+                                            {{ $place->category->name }}
+                                        </span>
+                                        <span class="whitespace-nowrap">• {{ $place->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('admin.places.edit', $place) }}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors bg-white rounded-lg border border-gray-100 opacity-0 group-hover:opacity-100">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            </div>
+                            @empty
+                                <p class="text-gray-500 text-sm italic">Belum ada data destinasi.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Ticket Orders Status -->
+                @can('view all tickets')
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Status Pesanan Tiket</h3>
+                            <a href="{{ route('admin.tickets.orders') }}" class="text-sm text-emerald-600 hover:underline">Lihat Semua</a>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-emerald-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                                        <i class="fa-solid fa-check-double text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Paid</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['ticket_orders_paid'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['ticket_orders_count'] > 0 ? round(($stats['ticket_orders_paid'] / $stats['ticket_orders_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-amber-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                                        <i class="fa-solid fa-clock text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Pending</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['ticket_orders_pending'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['ticket_orders_count'] > 0 ? round(($stats['ticket_orders_pending'] / $stats['ticket_orders_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-blue-50 border border-emerald-100">
+                                <p class="text-xs font-medium text-gray-500 mb-1">Total Revenue</p>
+                                <h4 class="text-2xl font-bold text-emerald-600">Rp {{ number_format($stats['ticket_revenue'], 0, ',', '.') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endcan
+            </div>
+            @endif
 
             <!-- Content Grid 1: Chart & Upcoming Events -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Statistics Chart -->
-                <!-- Statistics Chart -->
+                @canany('view all destinations', 'manage categories')
                 <div class="lg:col-span-2 bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -189,9 +468,10 @@
                         </div>
                     </div>
                 </div>
+                @endcanany
 
                 <!-- Upcoming Events Widget -->
-                <!-- Upcoming Events Widget -->
+                @canany('view all events', 'view own events')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -222,12 +502,13 @@
                         </div>
                     </div>
                 </div>
+                @endcanany
             </div>
 
             <!-- Content Grid 2: Recent Activity -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Recent Places -->
-                <!-- Recent Places -->
+                @canany('view all destinations', 'view own destinations')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -263,9 +544,10 @@
                         </div>
                     </div>
                 </div>
+                @endcanany
 
                 <!-- Recent Posts -->
-                <!-- Recent Posts -->
+                @canany('view all posts', 'view own posts')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
                         <div class="flex items-center justify-between mb-6">
@@ -297,6 +579,7 @@
                         </div>
                     </div>
                 </div>
+                @endcanany
             </div>
 
         </div>

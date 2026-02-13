@@ -64,9 +64,10 @@
             <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Manajemen Pariwisata</p>
             <div x-show="isSidebarMini" class="border-t border-gray-100 my-2"></div>
 
+            @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations']))
             <a href="{{ route('admin.places.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.places.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''>
                 <i class="fa-solid fa-map-location-dot w-5 text-center {{ request()->routeIs('admin.places.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
                 <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300">Destinasi Wisata</span>
                  <!-- Tooltip -->
@@ -77,12 +78,14 @@
                     Destinasi Wisata
                 </div>
             </a>
+            @endif
 
 
 
+            @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts']))
             <a href="{{ route('admin.posts.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.posts.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''>
                 <i class="fa-solid fa-newspaper w-5 text-center {{ request()->routeIs('admin.posts.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
                 <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300">Berita</span>
                  <!-- Tooltip -->
@@ -93,7 +96,9 @@
                     Berita
                 </div>
             </a>
+            @endif
 
+            @if(auth()->user()->hasAnyPermission(['view all events', 'view own events']))
             <a href="{{ route('admin.events.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.events.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
                :class="isSidebarMini ? 'justify-center' : ''">
@@ -107,8 +112,10 @@
                     Events
                 </div>
             </a>
+            @endif
 
             <!-- E-Tiket Parent (Static Expanded) -->
+            @can('view all tickets')
             <div class="relative">
                 <div class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600"
                     :class="isSidebarMini ? 'justify-center' : 'justify-between'">
@@ -146,16 +153,20 @@
                        <span class="{{ request()->routeIs('admin.tickets.orders') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pesanan Masuk</span>
                     </a>
 
+                    @if(auth()->user()->hasAnyPermission(['view all financial reports', 'view own financial reports']))
                     <a href="{{ route('admin.reports.financial.index') }}" 
                        class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.reports.financial.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
                        <span class="{{ request()->routeIs('admin.reports.financial.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Laporan Keuangan</span>
                     </a>
+                    @endif
                 </div>
             </div>
+            @endcan
 
+            @can('manage categories')
             <a href="{{ route('admin.categories.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.categories.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''>
                 <i class="fa-solid fa-tags w-5 text-center {{ request()->routeIs('admin.categories.*') ? 'text-blue-600' : 'text-gray-400' }} text-lg"></i>
                 <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300">Kategori</span>
                  <!-- Tooltip -->
@@ -166,6 +177,7 @@
                     Kategori
                 </div>
             </a>
+            @endcan
 
 
 

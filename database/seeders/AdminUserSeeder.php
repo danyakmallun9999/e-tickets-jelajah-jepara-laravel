@@ -13,11 +13,17 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        $admin = User::create([
             'name' => 'Admin Pariwisata',
             'email' => 'admin@jepara.go.id',
             'password' => Hash::make('adminwisata'),
             'email_verified_at' => now(),
+            'is_admin' => true, // Keep for backward compatibility
         ]);
+
+        // Assign super_admin role
+        $admin->assignRole('super_admin');
+
+        $this->command->info('Super Admin created: admin@jepara.go.id');
     }
 }

@@ -50,7 +50,14 @@ class AdminController extends Controller
 
     public function placesIndex(Request $request): View
     {
+        $this->authorize('viewAny', Place::class);
+        
         $query = Place::with('category')->latest();
+
+        // Filter by ownership if user doesn't have global access
+        if (!auth()->user()->can('view all destinations')) {
+            $query->where('created_by', auth()->id());
+        }
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%'.$request->search.'%')
@@ -61,17 +68,28 @@ class AdminController extends Controller
         $places = $query->paginate(10);
 
         // Stats for the dashboard - query database directly for accurate totals
-        $stats = [
-            'total' => Place::count(),
-            'avg_rating' => Place::avg('rating') ?? 0,
-            'with_photo' => Place::whereNotNull('image_path')->where('image_path', '!=', '')->count(),
-        ];
+        if (auth()->user()->can('view all destinations')) {
+            $stats = [
+                'total' => Place::count(),
+                'avg_rating' => Place::avg('rating') ?? 0,
+                'with_photo' => Place::whereNotNull('image_path')->where('image_path', '!=', '')->count(),
+            ];
+        } else {
+            // Show only user's own stats
+            $stats = [
+                'total' => Place::where('created_by', auth()->id())->count(),
+                'avg_rating' => Place::where('created_by', auth()->id())->avg('rating') ?? 0,
+                'with_photo' => Place::where('created_by', auth()->id())->whereNotNull('image_path')->where('image_path', '!=', '')->count(),
+            ];
+        }
 
         return view('admin.places.index', compact('places', 'stats'));
     }
 
     public function create(): View
     {
+        $this->authorize('create', Place::class);
+        
         $categories = Category::orderBy('name')->get();
         $place = new Place([
             'latitude' => -6.7289,
@@ -83,8 +101,11 @@ class AdminController extends Controller
 
     public function store(StorePlaceRequest $request): RedirectResponse|JsonResponse
     {
+        $this->authorize('create', Place::class);
+        
         $data = $request->validated();
         $data['rating'] = $data['rating'] ?? 0;
+        $data['created_by'] = auth()->id(); // Auto-assign ownership
 
         // Parse Rides and Facilities
         if (isset($data['rides'])) {
@@ -143,6 +164,8 @@ class AdminController extends Controller
 
     public function edit(Place $place): View
     {
+        $this->authorize('update', $place);
+        
         $categories = Category::orderBy('name')->get();
 
         return view('admin.places.edit', compact('categories', 'place'));
@@ -150,6 +173,8 @@ class AdminController extends Controller
 
     public function update(UpdatePlaceRequest $request, Place $place): RedirectResponse|JsonResponse
     {
+        $this->authorize('update', $place);
+        
         $data = $request->validated();
         $data['rating'] = $data['rating'] ?? 0;
 
@@ -204,6 +229,8 @@ class AdminController extends Controller
 
     public function destroy(Place $place): RedirectResponse|JsonResponse
     {
+        $this->authorize('delete', $place);
+        
         if ($place->image_path) {
             $this->placeService->deleteImage($place->image_path);
         }
