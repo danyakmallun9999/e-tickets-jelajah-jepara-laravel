@@ -771,6 +771,20 @@
                                     <span class="text-xs text-gray-400">{{ $stats['ticket_orders_count'] > 0 ? round(($stats['ticket_orders_paid'] / $stats['ticket_orders_count']) * 100) : 0 }}%</span>
                                 </div>
                             </div>
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-blue-200 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                                        <i class="fa-solid fa-ticket text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Used</p>
+                                        <h4 class="text-2xl font-bold text-gray-800">{{ $stats['ticket_orders_used'] }}</h4>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-400">{{ $stats['ticket_orders_count'] > 0 ? round(($stats['ticket_orders_used'] / $stats['ticket_orders_count']) * 100) : 0 }}%</span>
+                                </div>
+                            </div>
                             <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-amber-200 transition-colors">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">

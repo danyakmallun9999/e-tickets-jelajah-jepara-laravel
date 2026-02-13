@@ -114,7 +114,8 @@ class DashboardService
             'ticket_orders_count' => $ticketOrdersQuery->count(),
             'ticket_orders_pending' => (clone $ticketOrdersQuery)->where('status', 'pending')->count(),
             'ticket_orders_paid' => (clone $ticketOrdersQuery)->where('status', 'paid')->count(),
-            'ticket_revenue' => (clone $ticketOrdersQuery)->where('status', 'paid')->sum('total_price'),
+            'ticket_orders_used' => (clone $ticketOrdersQuery)->where('status', 'used')->count(),
+            'ticket_revenue' => (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])->sum('total_price'),
             
             // Visitor Analytics
             'total_visitors' => (clone $ticketOrdersQuery)->where('status', 'used')->sum('quantity'),
@@ -131,20 +132,21 @@ class DashboardService
                 ->sum('quantity'),
             
             // Revenue Metrics
-            'revenue_this_month' => (clone $ticketOrdersQuery)->where('status', 'paid')
+            // Revenue Metrics
+            'revenue_this_month' => (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->sum('total_price'),
-            'revenue_last_month' => (clone $ticketOrdersQuery)->where('status', 'paid')
+            'revenue_last_month' => (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])
                 ->whereMonth('created_at', now()->subMonth()->month)
                 ->whereYear('created_at', now()->subMonth()->year)
                 ->sum('total_price'),
-            'revenue_today' => (clone $ticketOrdersQuery)->where('status', 'paid')
+            'revenue_today' => (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])
                 ->whereDate('created_at', today())
                 ->sum('total_price'),
             
-            'average_order_value' => (clone $ticketOrdersQuery)->where('status', 'paid')->count() > 0 
-                ? (clone $ticketOrdersQuery)->where('status', 'paid')->sum('total_price') / (clone $ticketOrdersQuery)->where('status', 'paid')->count()
+            'average_order_value' => (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])->count() > 0 
+                ? (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])->sum('total_price') / (clone $ticketOrdersQuery)->whereIn('status', ['paid', 'used'])->count()
                 : 0,
 
             // Booking Trends (Last 7 days)
@@ -154,19 +156,7 @@ class DashboardService
                 ->orderBy('date')
                 ->get(),
 
-            // Top Destinations by ticket sales
-            // This requires a bit more complex query modification for filtering
-            'top_destinations' => Place::withCount(['tickets as total_sales' => function ($query) {
-                $query->join('ticket_orders', 'tickets.id', '=', 'ticket_orders.ticket_id')
-                    ->where('ticket_orders.status', 'used');
-            }])
-            ->when(!$viewAllPlaces, function($query) use ($userId) {
-                 return $query->where('created_by', $userId);
-            })
-            ->with('category')
-            ->orderBy('total_sales', 'desc')
-            ->take(5)
-            ->get(),
+
 
             'visitation_trends' => $this->getVisitationTrends($viewAllPlaces, $userId),
             'yearly_visitation_trends' => $this->getYearlyVisitationTrends($viewAllPlaces, $userId),
@@ -365,7 +355,7 @@ class DashboardService
             ->join('tickets', 'ticket_orders.ticket_id', '=', 'tickets.id')
             ->join('places', 'tickets.place_id', '=', 'places.id')
             ->where('ticket_orders.status', 'used')
-            ->whereYear('ticket_orders.created_at', '>=', now()->subYear()->year)
+            ->whereYear('ticket_orders.created_at', '>=', now()->subYears(4)->year)
             ->when(!$viewAllPlaces, function($q) use ($userId) {
                 $q->where('places.created_by', $userId);
             })
@@ -374,9 +364,9 @@ class DashboardService
             ->orderBy('year')
             ->get();
 
-        // Get years range (Last year to 5 years in future)
+        // Get years range (Last 5 years)
         $currentYear = now()->year;
-        $years = range($currentYear - 1, $currentYear + 5);
+        $years = range($currentYear - 4, $currentYear);
         
         // Organize by Place
         $placeData = [];
