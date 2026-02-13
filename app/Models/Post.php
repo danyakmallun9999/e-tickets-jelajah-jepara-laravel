@@ -20,6 +20,7 @@ class Post extends Model
         'author',
         'image_credit',
         'title_en',
+        'view_count',
         'content_en',
     ];
 
