@@ -223,6 +223,108 @@
 
 
 
+            <!-- Main Statistics (Moved) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Places -->
+                @canany('view all destinations', 'view own destinations')
+                    @php
+                        $isSinglePlaceManager = !auth()->user()->can('view all destinations') && $stats['places_count'] === 1;
+                    @endphp
+
+                    @if($isSinglePlaceManager)
+                        <!-- Single Place Manager View -->
+                        <a href="{{ route('admin.places.index') }}" class="group bg-blue-600 p-1 rounded-[2.5rem] border border-blue-500 hover:scale-[1.02] transition-transform duration-300">
+                            <div class="p-6 rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-600 to-indigo-700 h-full relative overflow-hidden">
+                                <!-- Decoration -->
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                                <div class="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -ml-12 -mb-12 blur-xl"></div>
+                                
+                                <div class="relative z-10 flex flex-col h-full justify-between">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl backdrop-blur-sm">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </div>
+                                        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/10">Lola Wisata</span>
+                                    </div>
+                                    
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-white mb-1">Kelola Wisata Saya</h3>
+                                        <p class="text-blue-100 text-sm">Update info, foto, dan tiket destinasi Anda satu pintu.</p>
+                                    </div>
+
+                                    <div class="mt-4 flex items-center gap-2 text-white/80 text-xs font-medium">
+                                        <span>Klik untuk edit</span>
+                                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    @else
+                        <!-- Standard View -->
+                        <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                            <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl border border-blue-200">
+                                        <i class="fa-solid fa-map-marked-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">+{{ $stats['places_count'] > 0 ? 'Active' : '0' }}</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-gray-800">{{ $stats['places_count'] }}</h3>
+                                <p class="text-sm text-gray-500 font-medium">Destinasi Wisata</p>
+                            </div>
+                        </div>
+                    @endif
+                @endcanany
+
+                <!-- Posts -->
+                @canany('view all posts', 'view own posts')
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl border border-purple-200">
+                                <i class="fa-solid fa-newspaper"></i>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-100">News</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800">{{ $stats['posts_count'] }}</h3>
+                        <p class="text-sm text-gray-500 font-medium">Berita & Artikel</p>
+                    </div>
+                </div>
+                @endcanany
+
+                <!-- Events -->
+                @canany('view all events', 'view own events')
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl border border-orange-200">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-100">Events</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800">{{ $stats['events_count'] }}</h3>
+                        <p class="text-sm text-gray-500 font-medium">Agenda Kegiatan</p>
+                    </div>
+                </div>
+                @endcanany
+
+                <!-- Categories -->
+                @canany('manage categories')
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
+                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl border border-pink-200">
+                                <i class="fa-solid fa-tags"></i>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 border border-pink-100">Types</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800">{{ \App\Models\Category::count() }}</h3>
+                        <p class="text-sm text-gray-500 font-medium">Kategori Wisata</p>
+                    </div>
+                </div>
+                @endcanany
+            </div>
+
             <!-- Admin Wisata Enhanced Dashboard -->
             @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
             <div class="space-y-6">
@@ -551,107 +653,7 @@
             </div>
             @endif
 
-            <!-- Main Statistics -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Places -->
-                @canany('view all destinations', 'view own destinations')
-                    @php
-                        $isSinglePlaceManager = !auth()->user()->can('view all destinations') && $stats['places_count'] === 1;
-                    @endphp
 
-                    @if($isSinglePlaceManager)
-                        <!-- Single Place Manager View -->
-                        <a href="{{ route('admin.places.index') }}" class="group bg-blue-600 p-1 rounded-[2.5rem] border border-blue-500 hover:scale-[1.02] transition-transform duration-300">
-                            <div class="p-6 rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-600 to-indigo-700 h-full relative overflow-hidden">
-                                <!-- Decoration -->
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                                <div class="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -ml-12 -mb-12 blur-xl"></div>
-                                
-                                <div class="relative z-10 flex flex-col h-full justify-between">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl backdrop-blur-sm">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </div>
-                                        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/10">Lola Wisata</span>
-                                    </div>
-                                    
-                                    <div>
-                                        <h3 class="text-2xl font-bold text-white mb-1">Kelola Wisata Saya</h3>
-                                        <p class="text-blue-100 text-sm">Update info, foto, dan tiket destinasi Anda satu pintu.</p>
-                                    </div>
-
-                                    <div class="mt-4 flex items-center gap-2 text-white/80 text-xs font-medium">
-                                        <span>Klik untuk edit</span>
-                                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    @else
-                        <!-- Standard View -->
-                        <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
-                            <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl border border-blue-200">
-                                        <i class="fa-solid fa-map-marked-alt"></i>
-                                    </div>
-                                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">+{{ $stats['places_count'] > 0 ? 'Active' : '0' }}</span>
-                                </div>
-                                <h3 class="text-3xl font-bold text-gray-800">{{ $stats['places_count'] }}</h3>
-                                <p class="text-sm text-gray-500 font-medium">Destinasi Wisata</p>
-                            </div>
-                        </div>
-                    @endif
-                @endcanany
-
-                <!-- Posts -->
-                @canany('view all posts', 'view own posts')
-                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
-                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl border border-purple-200">
-                                <i class="fa-solid fa-newspaper"></i>
-                            </div>
-                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-100">News</span>
-                        </div>
-                        <h3 class="text-3xl font-bold text-gray-800">{{ $stats['posts_count'] }}</h3>
-                        <p class="text-sm text-gray-500 font-medium">Berita & Artikel</p>
-                    </div>
-                </div>
-                @endcanany
-
-                <!-- Events -->
-                @canany('view all events', 'view own events')
-                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
-                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl border border-orange-200">
-                                <i class="fa-solid fa-calendar-days"></i>
-                            </div>
-                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-100">Events</span>
-                        </div>
-                        <h3 class="text-3xl font-bold text-gray-800">{{ $stats['events_count'] }}</h3>
-                        <p class="text-sm text-gray-500 font-medium">Agenda Kegiatan</p>
-                    </div>
-                </div>
-                @endcanany
-
-                <!-- Categories -->
-                @canany('manage categories')
-                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
-                    <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl border border-pink-200">
-                                <i class="fa-solid fa-tags"></i>
-                            </div>
-                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 border border-pink-100">Types</span>
-                        </div>
-                        <h3 class="text-3xl font-bold text-gray-800">{{ \App\Models\Category::count() }}</h3>
-                        <p class="text-sm text-gray-500 font-medium">Kategori Wisata</p>
-                    </div>
-                </div>
-                @endcanany
-            </div>
 
             <!-- Berita & Agenda Breakdown (Admin Berita Only) -->
             @if(auth()->user()->hasAnyPermission(['view all posts', 'view own posts', 'view all events', 'view own events']))
