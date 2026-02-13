@@ -204,7 +204,26 @@
 
             <!-- Admin Wisata Enhanced Dashboard -->
             @if(auth()->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
-            <div class="space-y-6">
+@php
+    $formatCurrency = function ($value) {
+        if (!is_numeric($value)) return 'Rp 0';
+        
+        if ($value < 1000) {
+            return 'Rp ' . number_format($value, 0, ',', '.');
+        } elseif ($value < 1000000) {
+            $formatted = number_format($value / 1000, 1, '.', ',');
+            return 'Rp ' . str_replace('.0', '', $formatted) . 'K';
+        } elseif ($value < 1000000000) {
+            $formatted = number_format($value / 1000000, 1, '.', ',');
+            return 'Rp ' . str_replace('.0', '', $formatted) . 'M';
+        } else {
+            $formatted = number_format($value / 1000000000, 2, '.', ',');
+            return 'Rp ' . str_replace('.00', '', $formatted) . 'B';
+        }
+    };
+@endphp
+
+            <div class="space-y-8">
                 <!-- Key Metrics with Growth Indicators -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Total Visitors -->
@@ -215,9 +234,12 @@
                                     <i class="fa-solid fa-users"></i>
                                 </div>
                                 @php
-                                    $visitorGrowth = $stats['visitors_last_month'] > 0 
-                                        ? (($stats['visitors_this_month'] - $stats['visitors_last_month']) / $stats['visitors_last_month']) * 100 
-                                        : 0;
+                                    $visitorGrowth = 0;
+                                    if ($stats['visitors_last_month'] > 0) {
+                                        $visitorGrowth = (($stats['visitors_this_month'] - $stats['visitors_last_month']) / $stats['visitors_last_month']) * 100;
+                                    } elseif ($stats['visitors_this_month'] > 0) {
+                                        $visitorGrowth = 100;
+                                    }
                                 @endphp
                                 <span class="px-3 py-1 rounded-full text-xs font-bold {{ $visitorGrowth >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                     <i class="fa-solid fa-{{ $visitorGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -238,18 +260,21 @@
                                     <i class="fa-solid fa-sack-dollar"></i>
                                 </div>
                                 @php
-                                    $revenueGrowth = $stats['revenue_last_month'] > 0 
-                                        ? (($stats['revenue_this_month'] - $stats['revenue_last_month']) / $stats['revenue_last_month']) * 100 
-                                        : 0;
+                                    $revenueGrowth = 0;
+                                    if ($stats['revenue_last_month'] > 0) {
+                                        $revenueGrowth = (($stats['revenue_this_month'] - $stats['revenue_last_month']) / $stats['revenue_last_month']) * 100;
+                                    } elseif ($stats['revenue_this_month'] > 0) {
+                                        $revenueGrowth = 100;
+                                    }
                                 @endphp
                                 <span class="px-3 py-1 rounded-full text-xs font-bold {{ $revenueGrowth >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                     <i class="fa-solid fa-{{ $revenueGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
                                     {{ number_format(abs($revenueGrowth), 1) }}%
                                 </span>
                             </div>
-                            <h3 class="text-3xl font-bold text-gray-800 mb-1">Rp {{ number_format($stats['ticket_revenue'] / 1000000, 1) }}M</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ $formatCurrency($stats['ticket_revenue']) }}</h3>
                             <p class="text-sm text-gray-600 font-medium">Total Pendapatan</p>
-                            <p class="text-xs text-gray-500 mt-2">Rp {{ number_format($stats['revenue_this_month'] / 1000, 0) }}K bulan ini</p>
+                            <p class="text-xs text-gray-500 mt-2">{{ $formatCurrency($stats['revenue_this_month']) }} bulan ini</p>
                         </div>
                     </div>
 
@@ -281,7 +306,7 @@
                                     <i class="fa-solid fa-star"></i> AVG
                                 </span>
                             </div>
-                            <h3 class="text-3xl font-bold text-gray-800 mb-1">Rp {{ number_format($stats['average_order_value'] / 1000, 0) }}K</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ $formatCurrency($stats['average_order_value']) }}</h3>
                             <p class="text-sm text-gray-600 font-medium">Rata-rata Transaksi</p>
                             <p class="text-xs text-gray-500 mt-2">Per pesanan tiket</p>
                         </div>
@@ -298,7 +323,7 @@
                                     Today
                                 </span>
                             </div>
-                            <h3 class="text-3xl font-bold text-gray-800 mb-1">Rp {{ number_format($stats['revenue_today'] / 1000, 0) }}K</h3>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ $formatCurrency($stats['revenue_today']) }}</h3>
                             <p class="text-sm text-gray-600 font-medium">Pendapatan Hari Ini</p>
                             <p class="text-xs text-cyan-500 mt-2">Total hari ini</p>
                         </div>
@@ -801,7 +826,7 @@
                             </div>
                             <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-blue-50 border border-emerald-100">
                                 <p class="text-xs font-medium text-gray-500 mb-1">Total Revenue</p>
-                                <h4 class="text-2xl font-bold text-emerald-600">Rp {{ number_format($stats['ticket_revenue'], 0, ',', '.') }}</h4>
+                                <h4 class="text-2xl font-bold text-emerald-600">{{ $formatCurrency($stats['ticket_revenue']) }}</h4>
                             </div>
                         </div>
                     </div>
