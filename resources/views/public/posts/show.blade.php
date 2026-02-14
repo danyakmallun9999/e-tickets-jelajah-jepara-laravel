@@ -1,4 +1,10 @@
 <x-public-layout>
+    {{-- Scrollbar-hide utility for mobile --}}
+    <style>
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+
     @push('seo')
         <x-seo 
             :title="$post->title . ' - Jelajah Jepara'"
@@ -7,12 +13,12 @@
             type="article"
         />
     @endpush
-    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-32">
+    <div class="bg-white dark:bg-background-dark min-h-screen -mt-20 pt-24 sm:pt-32">
         <!-- Main Container -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
             
             <!-- Breadcrumb -->
-            <nav class="flex justify-center text-xs md:text-sm text-gray-500 mb-6 space-x-2">
+            <nav class="flex justify-center text-[11px] sm:text-xs md:text-sm text-gray-500/80 sm:text-gray-500 mb-3 sm:mb-6 space-x-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Nav.Home') }}</a>
                 <span>/</span>
                 <a href="{{ route('posts.index') }}" class="text-gray-400 hover:text-primary transition-colors">{{ __('Nav.News') }}</a>
@@ -22,11 +28,11 @@
 
             <!-- Header Section -->
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-6 tracking-tight font-serif">
+                <h1 class="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight font-serif">
                     {{ $post->translated_title }}
                 </h1>
                 
-                <div class="flex flex-col md:flex-row items-center justify-center gap-6 border-b border-gray-100 dark:border-gray-800 pb-8 mb-8">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-3 sm:gap-6 border-b border-gray-100 dark:border-gray-800 pb-5 mb-5 sm:pb-8 sm:mb-8">
                     <!-- Author Info -->
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -58,7 +64,7 @@
             </div>
 
             <!-- Hero Image -->
-            <div class="relative w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden mb-12 shadow-2xl">
+            <div class="relative w-full aspect-video md:aspect-[21/9] rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-12 shadow-md sm:shadow-2xl">
                 <img src="{{ asset($post->image_path) }}" alt="{{ $post->translated_title }}" class="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                 <!-- Image Credit -->
@@ -69,7 +75,7 @@
                 @endif
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12">
                 <!-- Main Content (Left) -->
                 <div class="lg:col-span-8">
                     <!-- Intro Blockquote -->
@@ -81,75 +87,75 @@
                     </article>
 
                     <!-- Tags -->
-                    <div class="mt-12 flex flex-wrap gap-2">
+                    <div class="mt-8 sm:mt-12 flex flex-wrap gap-2">
                         <span class="text-sm font-bold text-gray-400 mr-2">Tags:</span>
                         <a href="#" class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-primary hover:text-white transition-colors">#Jepara</a>
                         <a href="#" class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-primary hover:text-white transition-colors">#Pariwisata</a>
                         <a href="#" class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full hover:bg-primary hover:text-white transition-colors">#{{ $post->type }}</a>
                     </div>
                     <!-- Statistics Section -->
-                    <div class="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
-                        <div class="flex items-center justify-between mb-8">
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <div class="mt-10 pt-6 sm:mt-16 sm:pt-8 border-t border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center justify-between mb-6 sm:mb-8">
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary">analytics</span>
                                 Statistik Pembaca
                             </h3>
-                            <span class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                            <span class="text-[10px] sm:text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 sm:px-3 py-1 rounded-full">
                                 Real-time Data
                             </span>
                         </div>
                         
                         <!-- Post Stats Cards -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
                             <!-- Total Views -->
-                            <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900/30 transition-all hover:shadow-md">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-800/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                        <i class="fa-regular fa-eye text-xs"></i>
+                            <div class="p-3 sm:p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl sm:rounded-2xl border border-blue-100 dark:border-blue-900/30 transition-all hover:shadow-md">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 mb-2">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-100 dark:bg-blue-800/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <i class="fa-regular fa-eye text-[10px] sm:text-xs"></i>
                                     </div>
-                                    <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">Total Views</p>
+                                    <p class="text-[10px] sm:text-sm text-blue-600 dark:text-blue-400 font-medium">Total Views</p>
                                 </div>
-                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['total_views']) }}</p>
+                                <p class="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['total_views']) }}</p>
                             </div>
                             
                             <!-- Views Today -->
-                            <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-purple-100 dark:border-purple-900/30 transition-all hover:shadow-md">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-800/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                                        <i class="fa-solid fa-chart-line text-xs"></i>
+                            <div class="p-3 sm:p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl sm:rounded-2xl border border-purple-100 dark:border-purple-900/30 transition-all hover:shadow-md">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 mb-2">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-100 dark:bg-purple-800/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                        <i class="fa-solid fa-chart-line text-[10px] sm:text-xs"></i>
                                     </div>
-                                    <p class="text-sm text-purple-600 dark:text-purple-400 font-medium">Hari Ini</p>
+                                    <p class="text-[10px] sm:text-sm text-purple-600 dark:text-purple-400 font-medium">Hari Ini</p>
                                 </div>
-                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['views_today']) }}</p>
+                                <p class="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['views_today']) }}</p>
                             </div>
                             
                             <!-- Unique Visitors -->
-                            <div class="p-6 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 transition-all hover:shadow-md">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-800/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                                        <i class="fa-solid fa-users text-xs"></i>
+                            <div class="p-3 sm:p-6 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl sm:rounded-2xl border border-emerald-100 dark:border-emerald-900/30 transition-all hover:shadow-md">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3 mb-2">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-100 dark:bg-emerald-800/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                        <i class="fa-solid fa-users text-[10px] sm:text-xs"></i>
                                     </div>
-                                    <p class="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Unique Visitors</p>
+                                    <p class="text-[10px] sm:text-sm text-emerald-600 dark:text-emerald-400 font-medium">Unique</p>
                                 </div>
-                                <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['unique_visitors']) }}</p>
+                                <p class="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($stats['unique_visitors']) }}</p>
                             </div>
                         </div>
 
                         <!-- Article Views Chart -->
-                        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm mb-16">
-                            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">Grafik Kunjungan (30 Hari Terakhir)</h4>
-                            <div class="relative h-64 w-full">
+                        <div class="bg-white dark:bg-surface-dark rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100 dark:border-gray-800 shadow-sm mb-10 sm:mb-16">
+                            <h4 class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 sm:mb-6">Grafik Kunjungan (30 Hari Terakhir)</h4>
+                            <div class="relative h-48 sm:h-64 w-full">
                                 <canvas id="viewsChart"></canvas>
                             </div>
                         </div>
 
                         <!-- Tourism Stats Section - Redesigned Minimalist -->
                         <!-- Tourism Stats Section - Redesigned Minimalist -->
-                        <div class="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden">
-                            <div class="p-8 md:p-10">
-                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl sm:rounded-3xl overflow-hidden">
+                            <div class="p-5 sm:p-8 md:p-10">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 sm:mb-8 gap-3 sm:gap-4">
                                     <div>
-                                        <h3 class="text-2xl font-serif font-bold text-gray-900 flex items-center gap-3">
+                                        <h3 class="text-xl sm:text-2xl font-serif font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
                                             <span class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
                                                 <i class="fa-solid fa-map-location-dot text-blue-600 text-sm"></i>
                                             </span>
@@ -163,22 +169,22 @@
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                <div class="grid grid-cols-2 gap-3 sm:gap-8 mb-5 sm:mb-8">
                                     <!-- Total Tiket Terjual -->
-                                    <div class="bg-gray-50/50 rounded-2xl p-6 border border-gray-100">
-                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Tiket Terjual</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-4xl font-black text-gray-900 tracking-tight">{{ number_format($tourismStats['total_sold']) }}</p>
-                                            <span class="text-sm text-gray-500 mb-1.5">tiket</span>
+                                    <div class="bg-gray-50/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100">
+                                        <p class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 sm:mb-2">Tiket Terjual</p>
+                                        <div class="flex items-end gap-1 sm:gap-2">
+                                            <p class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">{{ number_format($tourismStats['total_sold']) }}</p>
+                                            <span class="text-xs sm:text-sm text-gray-500 mb-0.5 sm:mb-1.5">tiket</span>
                                         </div>
                                     </div>
 
                                     <!-- Total Pengunjung (Check-in) -->
-                                    <div class="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
-                                        <p class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Total Pengunjung</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-4xl font-black text-blue-600 tracking-tight">{{ number_format($tourismStats['total_visitors']) }}</p>
-                                            <span class="text-sm text-blue-500 mb-1.5">orang</span>
+                                    <div class="bg-blue-50/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-blue-100">
+                                        <p class="text-[10px] sm:text-xs font-bold text-blue-400 uppercase tracking-wider mb-1 sm:mb-2">Total Pengunjung</p>
+                                        <div class="flex items-end gap-1 sm:gap-2">
+                                            <p class="text-2xl sm:text-4xl font-black text-blue-600 tracking-tight">{{ number_format($tourismStats['total_visitors']) }}</p>
+                                            <span class="text-xs sm:text-sm text-blue-500 mb-0.5 sm:mb-1.5">orang</span>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +194,7 @@
                                     <div class="flex items-center justify-between mb-6">
                                         <h4 class="text-sm font-bold text-gray-900">Tren Kunjungan Bulanan</h4>
                                     </div>
-                                    <div class="relative h-64 w-full">
+                                    <div class="relative h-48 sm:h-64 w-full">
                                         <canvas id="tourismChart"></canvas>
                                     </div>
                                 </div>
@@ -326,11 +332,11 @@
     @endpush
 
                 <!-- Sidebar (Right) -->
-                <div class="lg:col-span-4 space-y-12">
+                <div class="lg:col-span-4 space-y-6 sm:space-y-12">
                     
                     <!-- Related News Widget -->
-                    <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <div class="bg-white dark:bg-surface-dark rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100 dark:border-gray-800 shadow-sm">
+                        <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">feed</span>
                             {{ __('News.RelatedTitle') }}
                         </h3>
@@ -357,8 +363,8 @@
                     </div>
 
                     <!-- Must Visit Widget -->
-                    <div class="bg-blue-50 dark:bg-blue-900/10 rounded-2xl p-6 border border-blue-100 dark:border-blue-900/20">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <div class="bg-blue-50 dark:bg-blue-900/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-blue-100 dark:border-blue-900/20">
+                        <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
                             <span class="material-symbols-outlined text-blue-500">explore</span>
                             {{ __('News.MustVisitTitle') }}
                         </h3>
