@@ -105,37 +105,90 @@
                     </p>
                 </div>
 
-                {{-- Ticket-style CSS --}}
+                {{-- ═══════════════════════════════════════════════ --}}
+                {{-- TICKET CARD CSS — Premium physical ticket feel --}}
+                {{-- ═══════════════════════════════════════════════ --}}
                 <style>
-                    .ticket-punch {
+                    /* Perforated punch holes — semicircles at the tear line */
+                    .tkt-tear {
                         position: relative;
+                        height: 0;
                     }
-                    .ticket-punch::before,
-                    .ticket-punch::after {
+                    .tkt-tear::before,
+                    .tkt-tear::after {
                         content: '';
                         position: absolute;
-                        width: 20px;
-                        height: 20px;
-                        background: #f9fafb;
+                        width: 24px;
+                        height: 24px;
                         border-radius: 50%;
                         top: 50%;
                         transform: translateY(-50%);
                         z-index: 10;
+                        /* Match the outer container bg */
+                        background: #ffffff;
+                        box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
                     }
-                    .dark .ticket-punch::before,
-                    .dark .ticket-punch::after {
-                        background: var(--color-background-dark, #0f172a);
+                    .dark .tkt-tear::before,
+                    .dark .tkt-tear::after {
+                        background: #1e293b;
+                        box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
                     }
-                    .ticket-punch::before { left: -10px; }
-                    .ticket-punch::after { right: -10px; }
+                    .tkt-tear::before { left: -12px; }
+                    .tkt-tear::after  { right: -12px; }
+
+                    /* Dashed perforation line between the punch holes */
+                    .tkt-tear-line {
+                        border-top: 2px dashed;
+                        border-color: #e2e8f0;
+                        margin: 0 20px;
+                    }
+                    .dark .tkt-tear-line {
+                        border-color: #334155;
+                    }
+
+                    /* Left accent stripe — 4px colored bar */
+                    .tkt-accent {
+                        position: absolute;
+                        left: 0;
+                        top: 16px;
+                        bottom: 16px;
+                        width: 4px;
+                        border-radius: 0 4px 4px 0;
+                    }
+
+                    /* Card outer shell */
+                    .tkt-card {
+                        position: relative;
+                        border-radius: 20px;
+                        overflow: hidden;
+                        transition: box-shadow 0.2s ease, transform 0.15s ease;
+                    }
+                    .tkt-card:hover {
+                        box-shadow: 0 8px 30px -8px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+                        transform: translateY(-1px);
+                    }
+                    .dark .tkt-card:hover {
+                        box-shadow: 0 8px 30px -8px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2);
+                    }
+
+                    /* Scrollbar hide for tabs */
                     .scrollbar-hide::-webkit-scrollbar { display: none; }
                     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+                    /* Countdown shimmer animation */
+                    @keyframes countdown-pulse {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0.7; }
+                    }
+                    .countdown-pulse {
+                        animation: countdown-pulse 2s ease-in-out infinite;
+                    }
                 </style>
 
                 {{-- ════════════════════════════════════════ --}}
                 {{-- TICKET CARDS                            --}}
                 {{-- ════════════════════════════════════════ --}}
-                <div class="space-y-4">
+                <div class="space-y-5">
                     @foreach($orders as $order)
                         @php
                             $now = now();
@@ -149,7 +202,7 @@
                             {{-- ═══════════════════════════════════════ --}}
                             {{-- PENDING CARD                           --}}
                             {{-- ═══════════════════════════════════════ --}}
-                            <div class="ticket-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+                            <div class="ticket-card tkt-card bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
                                  data-status="{{ $cardStatus }}"
                                  data-order="{{ strtolower($order->order_number) }}"
                                  data-place="{{ strtolower($order->ticket->place->name ?? '') }}"
@@ -180,35 +233,65 @@
                                  }"
                                  x-init="init()">
                                 
-                                {{-- TOP: Main ticket section --}}
-                                <div class="p-5 pb-4">
-                                    {{-- Order number --}}
-                                    <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wide mb-2">{{ $order->order_number }}</p>
+                                {{-- Left accent stripe --}}
+                                <div class="tkt-accent {{ $isExpired ? 'bg-red-400' : 'bg-amber-400' }}"></div>
 
-                                    {{-- Header: Status & Countdown --}}
-                                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap 
-                                            {{ $isExpired ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' }}">
-                                            <i class="fa-solid {{ $isExpired ? 'fa-circle-exclamation' : 'fa-clock' }} text-[9px]"></i>
-                                            {{ $isExpired ? 'Kadaluwarsa' : $order->status_label }}
-                                        </span>
-                                        
-                                        <div x-show="remaining > 0" class="flex items-center gap-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-500">
-                                            <span>Sisa Waktu:</span>
-                                            <span class="font-mono font-bold bg-yellow-50 dark:bg-yellow-900/50 px-1.5 py-0.5 rounded" x-text="format(remaining)"></span>
+                                {{-- ▎HEADER — Order ID + Status + Timer --}}
+                                <div class="px-6 pt-5 pb-3">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wider mb-1.5 uppercase">{{ $order->order_number }}</p>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold
+                                                {{ $isExpired 
+                                                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 ring-1 ring-red-200/60 dark:ring-red-800/40' 
+                                                    : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-200/60 dark:ring-amber-800/40' }}">
+                                                <span class="w-1.5 h-1.5 rounded-full {{ $isExpired ? 'bg-red-500' : 'bg-amber-500 countdown-pulse' }}"></span>
+                                                {{ $isExpired ? 'Kadaluwarsa' : $order->status_label }}
+                                            </span>
+                                        </div>
+                                        {{-- Countdown timer (right-aligned) --}}
+                                        <div x-show="remaining > 0" x-cloak 
+                                             class="flex flex-col items-end shrink-0">
+                                            <span class="text-[10px] text-slate-400 dark:text-slate-500 mb-0.5 uppercase tracking-wider font-medium">Sisa Waktu</span>
+                                            <span class="font-mono text-base font-extrabold text-amber-600 dark:text-amber-400 tabular-nums" x-text="format(remaining)"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- ▎BODY — Destination + Details --}}
+                                <div class="px-6 pb-4">
+                                    {{-- Destination --}}
+                                    <div class="flex items-start gap-3 mb-4">
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center shrink-0 mt-0.5">
+                                            <i class="fa-solid fa-location-dot text-amber-500 dark:text-amber-400 text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-[15px] text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
+                                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
                                         </div>
                                     </div>
 
-                                    {{-- Destination name --}}
-                                    <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
+                                    {{-- Info chips row --}}
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/40 rounded-lg px-3 py-1.5">
+                                            <i class="fa-regular fa-calendar text-[10px] text-slate-400 dark:text-slate-500"></i>
+                                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $order->visit_date->translatedFormat('d M Y') }}</span>
+                                        </div>
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/40 rounded-lg px-3 py-1.5">
+                                            <i class="fa-solid fa-users text-[10px] text-slate-400 dark:text-slate-500"></i>
+                                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $order->quantity }} tiket</span>
+                                        </div>
+                                        <div class="inline-flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-1.5">
+                                            <span class="text-xs font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                                        </div>
+                                    </div>
 
-                                    {{-- Payment Method & Details --}}
+                                    {{-- Payment Method & Inline Details --}}
                                     @if($order->payment_method_detail && !$isExpired)
-                                    <div class="mb-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 border border-slate-100 dark:border-slate-700">
-                                        <div class="flex items-center justify-between mb-2">
+                                    <div class="bg-slate-50/80 dark:bg-slate-700/20 rounded-xl p-3.5 border border-slate-100 dark:border-slate-700/60">
+                                        <div class="flex items-center justify-between mb-2.5">
                                             <span class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Metode Pembayaran</span>
-                                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                            <span class="text-xs font-bold text-slate-600 dark:text-slate-300">
                                                 @if($order->payment_method_detail === 'bank_transfer')
                                                     Bank {{ strtoupper($order->payment_channel) }}
                                                 @else
@@ -217,62 +300,55 @@
                                             </span>
                                         </div>
 
-                                        {{-- INLINE PAYMENT DETAILS (VA / QR) --}}
                                         @if(isset($order->payment_info['va_number']))
-                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600 flex items-center justify-between gap-2">
-                                                <span class="font-mono text-base font-bold text-slate-800 dark:text-white tracking-wider truncate">{{ $order->payment_info['va_number'] }}</span>
-                                                <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['va_number'] }}'); this.innerHTML='<i class=\'fa-solid fa-check text-emerald-500\'></i>'; setTimeout(() => this.innerHTML='<i class=\'fa-solid fa-copy\'></i>', 1500)" class="text-primary hover:bg-slate-50 dark:hover:bg-slate-700 p-1.5 rounded-md transition-colors" title="Salin VA">
-                                                    <i class="fa-solid fa-copy"></i>
+                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200/80 dark:border-slate-600/60 flex items-center justify-between gap-2">
+                                                <div class="min-w-0">
+                                                    <p class="text-[10px] text-slate-400 dark:text-slate-500 mb-0.5">Nomor Virtual Account</p>
+                                                    <p class="font-mono text-[15px] font-bold text-slate-800 dark:text-white tracking-wider truncate">{{ $order->payment_info['va_number'] }}</p>
+                                                </div>
+                                                <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['va_number'] }}'); this.querySelector('i').className='fa-solid fa-check text-emerald-500'; setTimeout(() => this.querySelector('i').className='fa-regular fa-copy', 1500)" 
+                                                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-primary/5 dark:hover:bg-primary/10 text-slate-400 hover:text-primary transition-colors shrink-0" title="Salin VA">
+                                                    <i class="fa-regular fa-copy"></i>
                                                 </button>
                                             </div>
                                         @elseif(isset($order->payment_info['bill_key']))
-                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600">
-                                                <div class="flex items-center justify-between gap-2 mb-1">
-                                                    <span class="text-[10px] text-slate-400">Bill Key</span>
+                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200/80 dark:border-slate-600/60 space-y-2">
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <span class="text-[10px] text-slate-400 dark:text-slate-500">Bill Key</span>
                                                     <div class="flex items-center gap-2">
                                                         <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['bill_key'] }}</span>
-                                                        <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['bill_key'] }}')" class="text-primary text-xs"><i class="fa-solid fa-copy"></i></button>
+                                                        <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['bill_key'] }}')" class="text-slate-400 hover:text-primary text-xs transition-colors"><i class="fa-regular fa-copy"></i></button>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center justify-between gap-2">
-                                                    <span class="text-[10px] text-slate-400">Biller Code</span>
+                                                    <span class="text-[10px] text-slate-400 dark:text-slate-500">Biller Code</span>
                                                     <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['biller_code'] }}</span>
                                                 </div>
                                             </div>
                                         @elseif(isset($order->payment_info['qr_url']))
-                                            <div class="text-center pt-1">
-                                                <img src="{{ $order->payment_info['qr_url'] }}" alt="QR Code" class="h-32 w-32 object-contain mx-auto rounded-lg border border-slate-200 bg-white p-2">
-                                                <p class="text-[10px] text-slate-400 mt-1">Scan untuk membayar</p>
+                                            <div class="text-center py-1">
+                                                <div class="inline-block bg-white rounded-xl p-3 border border-slate-200/80">
+                                                    <img src="{{ $order->payment_info['qr_url'] }}" alt="QR Code" class="h-28 w-28 object-contain">
+                                                </div>
+                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5">Scan QR untuk membayar</p>
                                             </div>
                                         @endif
                                     </div>
                                     @endif
-
-                                    {{-- Details grid --}}
-                                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
-                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
-                                            <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
-                                        </div>
-                                    </div>
                                 </div>
 
-                                {{-- Perforated tear line --}}
-                                <div class="ticket-punch">
-                                    <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
+                                {{-- ▎TEAR LINE — Perforated separator --}}
+                                <div class="tkt-tear">
+                                    <div class="tkt-tear-line"></div>
                                 </div>
 
-                                {{-- BOTTOM: Actions --}}
-                                <div class="px-5 py-3" x-data="{ showCancelConfirm: false }">
+                                {{-- ▎FOOTER — Action buttons --}}
+                                <div class="px-6 py-4" x-data="{ showCancelConfirm: false }">
                                     @if(!$isExpired)
-                                        <div class="flex gap-2 mb-2">
+                                        <div class="flex gap-2.5 mb-2.5">
                                             <a href="{{ route('tickets.payment.status', $order->order_number) }}" 
-                                               class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-yellow-500/20">
-                                                <i class="fa-solid fa-credit-card text-xs"></i> Bayar Sekarang
+                                               class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-500/15 active:scale-[0.98]">
+                                                <i class="fa-solid fa-wallet text-xs"></i> Bayar Sekarang
                                             </a>
                                             <button @click="
                                                 $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i>';
@@ -282,39 +358,39 @@
                                                     .then(d => {
                                                         if(d.status === 'paid') { window.location.reload(); }
                                                         else { 
-                                                            $el.innerHTML = '<i class=\'fa-solid fa-check text-xs\'></i>';
+                                                            $el.innerHTML = '<i class=\'fa-solid fa-check text-emerald-500 text-xs\'></i>';
                                                             setTimeout(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i>'; $el.disabled = false; }, 2000);
                                                         }
                                                     })
                                                     .catch(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i>'; $el.disabled = false; });
-                                            " class="w-10 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center border border-slate-200 dark:border-slate-600" title="Cek Status">
+                                            " class="w-12 h-12 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 rounded-[14px] transition-all flex items-center justify-center border border-slate-200 dark:border-slate-600 active:scale-95 shrink-0" title="Cek Status Pembayaran">
                                                 <i class="fa-solid fa-arrows-rotate text-xs"></i>
                                             </button>
                                         </div>
                                     @else
-                                        <div class="mb-2">
-                                            <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                        <div class="mb-2.5">
+                                            <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600 active:scale-[0.98]">
                                                 <i class="fa-solid fa-redo text-xs"></i> Pesan Ulang
                                             </a>
                                         </div>
                                     @endif
 
-                                    <div class="flex gap-2">
+                                    <div class="flex gap-2.5">
                                         <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                                            <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
+                                            <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
                                         </a>
                                         @if(!$isExpired)
                                         <button @click="showCancelConfirm = true"
-                                            class="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-center font-semibold py-2.5 px-4 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-800">
-                                            <i class="fa-solid fa-xmark text-xs"></i>
+                                            class="w-12 h-auto bg-red-50 dark:bg-red-900/15 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 rounded-[14px] transition-all flex items-center justify-center border border-red-200/60 dark:border-red-800/40 active:scale-95 shrink-0">
+                                            <i class="fa-solid fa-xmark text-sm"></i>
                                         </button>
                                         @endif
                                     </div>
 
                                     {{-- Cancel Confirmation Modal --}}
                                     <div x-show="showCancelConfirm" x-cloak
-                                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
                                          x-transition:enter="transition ease-out duration-200"
                                          x-transition:enter-start="opacity-0"
                                          x-transition:enter-end="opacity-100"
@@ -322,12 +398,15 @@
                                          x-transition:leave-start="opacity-100"
                                          x-transition:leave-end="opacity-0">
                                         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
-                                             @click.away="showCancelConfirm = false">
-                                            <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                             @click.away="showCancelConfirm = false"
+                                             x-transition:enter="transition ease-out duration-200"
+                                             x-transition:enter-start="opacity-0 scale-95"
+                                             x-transition:enter-end="opacity-100 scale-100">
+                                            <div class="w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                                 <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
                                             </div>
                                             <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Batalkan Pesanan?</h3>
-                                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono text-slate-700 dark:text-slate-300">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
                                             <div class="flex gap-3">
                                                 <button @click="showCancelConfirm = false"
                                                     class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
@@ -344,11 +423,12 @@
                                     </div>
                                 </div>
                             </div>
+
                         @else
                             {{-- ═══════════════════════════════════════ --}}
                             {{-- PAID / USED / CANCELLED CARD           --}}
                             {{-- ═══════════════════════════════════════ --}}
-                            <div class="ticket-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+                            <div class="ticket-card tkt-card bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
                                  data-status="{{ $cardStatus }}"
                                  data-order="{{ strtolower($order->order_number) }}"
                                  data-place="{{ strtolower($order->ticket->place->name ?? '') }}"
@@ -356,67 +436,87 @@
                                  x-transition:enter="transition ease-out duration-200"
                                  x-transition:enter-start="opacity-0 translate-y-2"
                                  x-transition:enter-end="opacity-100 translate-y-0">
-                                {{-- TOP: Main ticket section --}}
-                                <div class="p-5 pb-4">
-                                    {{-- Order number --}}
-                                    <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wide mb-2">{{ $order->order_number }}</p>
 
-                                    {{-- Status badge --}}
-                                    <div class="mb-3">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap
-                                            {{ $order->status == 'paid' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : '' }}
-                                            {{ $order->status == 'used' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : '' }}
-                                            {{ $order->status == 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : '' }}">
-                                            @if($order->status == 'paid')
-                                                <i class="fa-solid fa-check-circle text-[9px]"></i>
-                                            @elseif($order->status == 'used')
-                                                <i class="fa-solid fa-ticket text-[9px]"></i>
-                                            @else
-                                                <i class="fa-solid fa-times-circle text-[9px]"></i>
-                                            @endif
-                                            {{ $order->status_label }}
-                                        </span>
+                                {{-- Left accent stripe --}}
+                                <div class="tkt-accent {{ $order->status == 'paid' ? 'bg-emerald-400' : ($order->status == 'used' ? 'bg-blue-400' : 'bg-red-400') }}"></div>
+
+                                {{-- ▎HEADER — Order ID + Status --}}
+                                <div class="px-6 pt-5 pb-3">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wider mb-1.5 uppercase">{{ $order->order_number }}</p>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold
+                                                {{ $order->status == 'paid' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-200/60 dark:ring-emerald-800/40' : '' }}
+                                                {{ $order->status == 'used' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 ring-1 ring-blue-200/60 dark:ring-blue-800/40' : '' }}
+                                                {{ $order->status == 'cancelled' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 ring-1 ring-red-200/60 dark:ring-red-800/40' : '' }}">
+                                                @if($order->status == 'paid')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                @elseif($order->status == 'used')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                                @else
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                                @endif
+                                                {{ $order->status_label }}
+                                            </span>
+                                        </div>
+                                        {{-- Ticket number badge (paid/used only) --}}
+                                        @if($order->ticket_number && in_array($order->status, ['paid', 'used']))
+                                        <div class="text-right shrink-0">
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-medium mb-0.5">No. Tiket</p>
+                                            <p class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wider">{{ $order->ticket_number }}</p>
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                {{-- ▎BODY — Destination + Details --}}
+                                <div class="px-6 pb-4">
+                                    <div class="flex items-start gap-3 mb-4">
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5
+                                            {{ $order->status == 'paid' ? 'bg-emerald-50 dark:bg-emerald-900/20' : '' }}
+                                            {{ $order->status == 'used' ? 'bg-blue-50 dark:bg-blue-900/20' : '' }}
+                                            {{ $order->status == 'cancelled' ? 'bg-red-50 dark:bg-red-900/20' : '' }}">
+                                            <i class="fa-solid fa-location-dot text-sm
+                                                {{ $order->status == 'paid' ? 'text-emerald-500 dark:text-emerald-400' : '' }}
+                                                {{ $order->status == 'used' ? 'text-blue-500 dark:text-blue-400' : '' }}
+                                                {{ $order->status == 'cancelled' ? 'text-red-400 dark:text-red-500' : '' }}"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-[15px] text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
+                                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
+                                        </div>
                                     </div>
 
-                                    {{-- Destination name --}}
-                                    <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
-
-                                    {{-- Details 2x2 grid --}}
-                                    <div class="grid grid-cols-2 gap-x-4 gap-y-3">
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
-                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
+                                    {{-- Info chips --}}
+                                    <div class="flex flex-wrap gap-2">
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/40 rounded-lg px-3 py-1.5">
+                                            <i class="fa-regular fa-calendar text-[10px] text-slate-400 dark:text-slate-500"></i>
+                                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $order->visit_date->translatedFormat('d M Y') }}</span>
                                         </div>
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Quantity') }}</p>
-                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/40 rounded-lg px-3 py-1.5">
+                                            <i class="fa-solid fa-users text-[10px] text-slate-400 dark:text-slate-500"></i>
+                                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $order->quantity }} tiket</span>
                                         </div>
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">No. Tiket</p>
-                                            <p class="font-mono text-[11px] text-slate-800 dark:text-white mt-0.5 tracking-wide break-all">{{ $order->ticket_number }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
-                                            <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                                        <div class="inline-flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-1.5">
+                                            <span class="text-xs font-bold text-primary">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Perforated tear line --}}
-                                <div class="ticket-punch">
-                                    <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
+                                {{-- ▎TEAR LINE --}}
+                                <div class="tkt-tear">
+                                    <div class="tkt-tear-line"></div>
                                 </div>
 
-                                {{-- BOTTOM: Actions --}}
-                                <div class="px-5 py-3 flex gap-2">
+                                {{-- ▎FOOTER — Actions --}}
+                                <div class="px-6 py-4 flex gap-2.5">
                                     <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                       class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20">
-                                        <i class="fa-solid fa-eye text-xs"></i> Detail
+                                       class="flex-1 bg-gradient-to-r {{ $order->status == 'paid' ? 'from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-emerald-500/15' : ($order->status == 'used' ? 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/15' : 'from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 shadow-slate-500/10') }} text-white text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 shadow-md active:scale-[0.98]">
+                                        <i class="fa-solid fa-receipt text-xs"></i> Detail
                                     </a>
                                     @if(in_array($order->status, ['paid', 'used']))
                                     <a href="{{ route('tickets.download', $order->order_number) }}" 
-                                       class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                       class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
                                         <i class="fa-solid fa-download text-xs"></i> Download
                                     </a>
                                     @endif
@@ -435,7 +535,6 @@
                      x-transition:enter-end="opacity-100 scale-100"
                      class="text-center py-14">
                     
-                    {{-- Dynamic icon --}}
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
                          :class="emptyState.bgClass">
                         <i :class="emptyState.icon + ' text-2xl ' + emptyState.iconClass"></i>
@@ -480,7 +579,6 @@
 @if($orders->count() > 0)
 <script>
 function ticketList() {
-    // Pre-compute counts from server data
     const statusCounts = {
         all: {{ $orders->count() }},
         active: {{ $orders->whereIn('status', ['pending', 'paid'])->count() }},
@@ -499,9 +597,7 @@ function ticketList() {
             { key: 'cancelled', label: 'Dibatalkan', icon: 'fa-solid fa-ban', count: statusCounts.cancelled },
         ],
 
-        // Determine whether a card should be visible based on tab + search
         isVisible(status, orderNum, placeName) {
-            // Tab filter
             const tabMatch = this.activeTab === 'all' ||
                 (this.activeTab === 'active' && (status === 'pending' || status === 'paid')) ||
                 (this.activeTab === 'history' && status === 'used') ||
@@ -509,7 +605,6 @@ function ticketList() {
             
             if (!tabMatch) return false;
 
-            // Search filter
             if (this.searchQuery.length > 0) {
                 const q = this.searchQuery.toLowerCase();
                 return orderNum.includes(q) || placeName.includes(q);
@@ -518,7 +613,6 @@ function ticketList() {
             return true;
         },
 
-        // Count visible cards (reactive)
         get visibleCount() {
             const cards = document.querySelectorAll('.ticket-card');
             let count = 0;
@@ -531,7 +625,6 @@ function ticketList() {
             return count;
         },
 
-        // Empty state content based on active tab
         get emptyState() {
             if (this.searchQuery.length > 0) {
                 return {
