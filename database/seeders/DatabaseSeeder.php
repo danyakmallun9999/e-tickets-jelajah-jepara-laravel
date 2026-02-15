@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SampleAdminSeeder::class);
 
         // Third: Create content
-        $this->call(CategorySeeder::class);
+        // $this->call(CategorySeeder::class); // Removed as logic moved to PariwisataSeeder
         $this->call(PariwisataSeeder::class);
         $this->call(PostSeeder::class);
         $this->call(BoundarySeeder::class);

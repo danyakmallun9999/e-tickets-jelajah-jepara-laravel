@@ -93,12 +93,41 @@ class PariwisataSeeder extends Seeder
                 $primaryCategoryName = trim($categories[0]);
                 $primaryCategoryName = Str::title(strtolower($primaryCategoryName));
 
-                $category = Category::firstOrCreate(
+                // Metadata for categories (moved from CategorySeeder)
+                $categoryMetadata = [
+                    'Wisata Alam' => [
+                        'icon_class' => 'fa-solid fa-tree',
+                        'color' => '#16a34a', // green-600
+                    ],
+                    'Wisata Buatan' => [
+                        'icon_class' => 'fa-solid fa-water',
+                        'color' => '#0ea5e9', // sky-500
+                    ],
+                    'Wisata Budaya' => [
+                        'icon_class' => 'fa-solid fa-monument',
+                        'color' => '#d97706', // amber-600
+                    ],
+                    'Wisata Religi' => [
+                        'icon_class' => 'fa-solid fa-mosque',
+                        'color' => '#8b5cf6', // violet-500
+                    ],
+                    'Wisata Kuliner' => [ // Adjusted name to match potential JSON content or fallback
+                        'icon_class' => 'fa-solid fa-utensils',
+                        'color' => '#ef4444', // red-500
+                    ],
+                ];
+
+                $meta = $categoryMetadata[$primaryCategoryName] ?? [
+                    'icon_class' => 'fa-solid fa-map-location-dot', // Default icon
+                    'color' => '#64748b', // Default color (slate-500)
+                ];
+
+                $category = Category::updateOrCreate(
                     ['name' => $primaryCategoryName],
                     [
                         'slug' => Str::slug($primaryCategoryName),
-                        'icon_class' => 'fa-solid fa-map-location-dot',
-                        'color' => '#0ea5e9',
+                        'icon_class' => $meta['icon_class'],
+                        'color' => $meta['color'],
                     ]
                 );
 

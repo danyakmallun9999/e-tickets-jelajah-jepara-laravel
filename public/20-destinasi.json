@@ -10,7 +10,7 @@
     {
       "no": 1,
       "nama_wisata": "Pantai Kartini",
-      "jenis_wisata": "Wisata Alam, Wisata Minat Khusus, Wisata Buatan, Wisata Edukasi",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Kelurahan Bulu, Kecamatan Jepara",
       "kecamatan": "Jepara",
       "latitude": -6.589444,
@@ -51,7 +51,7 @@
     {
       "no": 2,
       "nama_wisata": "Museum RA. Kartini",
-      "jenis_wisata": "Wisata Kerajinan, Wisata Budaya, Wisata Edukasi, Wisata Buatan",
+      "jenis_wisata": "Wisata Sejarah",
       "lokasi": "Sebelah Utara Alun - Alun 1 Jepara",
       "kecamatan": "Jepara",
       "latitude": -6.588813,
@@ -79,7 +79,7 @@
     {
       "no": 3,
       "nama_wisata": "Pantai Tirta Samudra (Bandengan)",
-      "jenis_wisata": "Wisata Alam, Wisata Minat Khusus, Wisata Buatan, Wisata Edukasi",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Bandengan, Kecamatan Jepara",
       "kecamatan": "Jepara",
       "latitude": -6.554675,
@@ -168,7 +168,7 @@
     {
       "no": 5,
       "nama_wisata": "Pantai Teluk Awur Jepara",
-      "jenis_wisata": "Wisata Alam, Wisata Minat Khusus",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Telukawur, Kecamatan Tahunan, Kabupaten Jepara",
       "kecamatan": "Tahunan",
       "latitude": -6.625556,
@@ -229,7 +229,7 @@
     {
       "no": 7,
       "nama_wisata": "Pulau Panjang",
-      "jenis_wisata": "Wisata Alam, Wisata Bahari, Wisata Religi",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Sebelah barat Pantai Kartini (± 2,5 km)",
       "kecamatan": "Jepara",
       "latitude": -6.575600,
@@ -263,7 +263,7 @@
     {
       "no": 8,
       "nama_wisata": "Benteng Portugis",
-      "jenis_wisata": "Wisata Alam, Wisata Sejarah, Wisata Edukasi, Wisata Buatan",
+      "jenis_wisata": "Wisata Sejarah",
       "lokasi": "Desa Banyumanis, Kecamatan Donorojo",
       "kecamatan": "Donorojo",
       "latitude": -6.403889,
@@ -293,7 +293,7 @@
     {
       "no": 9,
       "nama_wisata": "Gua Manik",
-      "jenis_wisata": "Wisata Alam, Wisata Sejarah",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Banyumanis, Kecamatan Donorojo, Kabupaten Jepara",
       "kecamatan": "Donorojo",
       "latitude": -6.405364,
@@ -370,7 +370,7 @@
     {
       "no": 12,
       "nama_wisata": "Gua Tritip",
-      "jenis_wisata": "Wisata Alam, Wisata Sejarah, Wisata Edukasi",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Ujungwatu, Kecamatan Donorojo",
       "kecamatan": "Donorojo",
       "latitude": -6.415000,
@@ -391,7 +391,7 @@
     {
       "no": 13,
       "nama_wisata": "Pulau Mandalika",
-      "jenis_wisata": "Wisata Religi, Wisata Alam, Wisata Minat Khusus",
+      "jenis_wisata": "Wisata Religi",
       "lokasi": "Sebelah utara Benteng Portugis (± 2 km)",
       "kecamatan": "Donorojo",
       "latitude": -6.366667,
@@ -443,7 +443,7 @@
     {
       "no": 15,
       "nama_wisata": "Wana Wisata Sreni Indah",
-      "jenis_wisata": "Wisata Alam, Wisata Minat Khusus",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Bategede, Kecamatan Nalumsari",
       "kecamatan": "Nalumsari",
       "latitude": -6.681944,
@@ -542,7 +542,7 @@
     {
       "no": 19,
       "nama_wisata": "Wisata Kali Ndayung",
-      "jenis_wisata": "Wisata Alam, Wisata Minat Khusus",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Desa Batealit, Kecamatan Batealit",
       "kecamatan": "Batealit",
       "latitude": -6.630000,
@@ -566,7 +566,7 @@
     {
       "no": 20,
       "nama_wisata": "Taman Nasional Karimunjawa",
-      "jenis_wisata": "Wisata Alam, Wisata Bahari, Wisata Minat Khusus",
+      "jenis_wisata": "Wisata Alam",
       "lokasi": "Kepulauan Karimunjawa, Kabupaten Jepara",
       "kecamatan": "Karimunjawa",
       "latitude": -5.876247,
