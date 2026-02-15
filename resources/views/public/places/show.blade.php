@@ -129,62 +129,60 @@
                     </div>
 
                     <!-- Lightbox Modal -->
-                    <template x-teleport="body">
-                        <div x-show="lightboxOpen" 
-                             x-transition:enter="transition ease-out duration-300"
-                             x-transition:enter-start="opacity-0"
-                             x-transition:enter-end="opacity-100"
-                             x-transition:leave="transition ease-in duration-200"
-                             x-transition:leave-start="opacity-100"
-                             x-transition:leave-end="opacity-0"
-                             class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
-                             @click.self="closeLightbox()">
-                            
-                            <!-- Close Button -->
-                            <button @click="closeLightbox()" 
-                                    class="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
-                                <span class="material-symbols-outlined text-2xl">close</span>
-                            </button>
+                    <div x-show="lightboxOpen" x-cloak
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="fixed inset-0 z-[9999] flex items-center justify-center"
+                         style="position: fixed;">
+                        
+                        <!-- Backdrop (click to close) -->
+                        <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" @click="closeLightbox()"></div>
+                        
+                        <!-- Close Button -->
+                        <button @click="closeLightbox()" 
+                                class="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                            <span class="material-symbols-outlined text-2xl">close</span>
+                        </button>
 
-                            <!-- Image Counter -->
-                            <div class="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 bg-white/10 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full">
-                                <span x-text="(lightboxIndex + 1) + ' / ' + images.length"></span>
-                            </div>
-
-                            <!-- Prev Button -->
-                            <button x-show="images.length > 1" @click.stop="lightboxPrev()" 
-                                    class="absolute left-2 sm:left-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
-                                <span class="material-symbols-outlined text-2xl">chevron_left</span>
-                            </button>
-
-                            <!-- Next Button -->
-                            <button x-show="images.length > 1" @click.stop="lightboxNext()" 
-                                    class="absolute right-2 sm:right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
-                                <span class="material-symbols-outlined text-2xl">chevron_right</span>
-                            </button>
-
-                            <!-- Lightbox Image -->
-                            <div class="max-w-[95vw] max-h-[85vh] sm:max-w-[90vw] sm:max-h-[90vh] flex items-center justify-center" @click.stop>
-                                <img :src="images[lightboxIndex]" 
-                                     :alt="'{{ $place->translated_name }} - Foto ' + (lightboxIndex + 1)"
-                                     class="max-w-full max-h-[85vh] sm:max-h-[90vh] object-contain rounded-lg shadow-2xl select-none"
-                                     x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 scale-95"
-                                     x-transition:enter-end="opacity-100 scale-100">
-                            </div>
-
-                            <!-- Thumbnail Strip -->
-                            <div x-show="images.length > 1" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-2xl p-2 max-w-[90vw] overflow-x-auto scrollbar-hide">
-                                <template x-for="(img, idx) in images" :key="idx">
-                                    <button @click.stop="lightboxIndex = idx" 
-                                            :class="lightboxIndex === idx ? 'ring-2 ring-white scale-110 opacity-100' : 'opacity-50 hover:opacity-80'"
-                                            class="w-14 h-10 sm:w-16 sm:h-11 flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200">
-                                        <img :src="img" class="w-full h-full object-cover">
-                                    </button>
-                                </template>
-                            </div>
+                        <!-- Image Counter -->
+                        <div class="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 bg-white/10 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full">
+                            <span x-text="(lightboxIndex + 1) + ' / ' + images.length"></span>
                         </div>
-                    </template>
+
+                        <!-- Prev Button -->
+                        <button x-show="images.length > 1" @click="lightboxPrev()" 
+                                class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                            <span class="material-symbols-outlined text-2xl">chevron_left</span>
+                        </button>
+
+                        <!-- Next Button -->
+                        <button x-show="images.length > 1" @click="lightboxNext()" 
+                                class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                            <span class="material-symbols-outlined text-2xl">chevron_right</span>
+                        </button>
+
+                        <!-- Lightbox Image -->
+                        <div class="relative z-10 max-w-[95vw] max-h-[85vh] sm:max-w-[90vw] sm:max-h-[90vh] flex items-center justify-center">
+                            <img :src="images[lightboxIndex]" 
+                                 :alt="'{{ $place->translated_name }} - Foto ' + (lightboxIndex + 1)"
+                                 class="max-w-full max-h-[85vh] sm:max-h-[90vh] object-contain rounded-lg shadow-2xl select-none">
+                        </div>
+
+                        <!-- Thumbnail Strip -->
+                        <div x-show="images.length > 1" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-2xl p-2 max-w-[90vw] overflow-x-auto scrollbar-hide">
+                            <template x-for="(img, idx) in images" :key="idx">
+                                <button @click="lightboxIndex = idx" 
+                                        :class="lightboxIndex === idx ? 'ring-2 ring-white scale-110 opacity-100' : 'opacity-50 hover:opacity-80'"
+                                        class="w-14 h-10 sm:w-16 sm:h-11 flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200">
+                                    <img :src="img" class="w-full h-full object-cover">
+                                </button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
     
                 <!-- Right Side: Scrollable Content (50%) -->
