@@ -5,6 +5,7 @@ return [
     'department' => 'TOURISM OFFICE',
     'header' => 'Tourism E-Ticket',
     'destination' => 'Tourist Destination',
+    'ticket_no' => 'Ticket No.',
     'order_code' => 'Order Code',
     'visit_date' => 'Visit Date',
     'visitors' => 'Visitors',

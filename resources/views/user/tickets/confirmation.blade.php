@@ -421,8 +421,8 @@
                     </div>
                 </div>
                 <div class="text-center mb-8">
-                    <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">@lang('tickets.order_code')</p>
-                    <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->order_number }}</p>
+                    <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">NO. TIKET / TICKET NO.</p>
+                    <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->ticket_number }}</p>
                     <div class="mt-2 inline-block px-4 py-1 border border-blue-100 bg-blue-50 rounded-full">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">
                             {{ $order->status_label }}
@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const qrcodeElement = document.getElementById("qrcode");
     if (qrcodeElement) {
         new QRCode(qrcodeElement, {
-            text: "{{ $order->order_number }}",
+            text: "{{ $order->ticket_number }}",
             width: 800, // Reduced for more padding
             height: 800,
             colorDark : "#000000",
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ticketQrcodeElement = document.getElementById("ticket-qrcode");
     if (ticketQrcodeElement) {
         new QRCode(ticketQrcodeElement, {
-            text: "{{ $order->order_number }}",
+            text: "{{ $order->ticket_number }}",
             width: 120, // 120px to match the container
             height: 120,
             colorDark : "#1e40af", // Blue-800 to match theme
@@ -552,7 +552,7 @@ function downloadQR() {
     // Export as JPG
     const url = finalCanvas.toDataURL('image/jpeg', 1.0);
     const link = document.createElement('a');
-    link.download = 'ticket-qr-{{ $order->order_number }}.jpg';
+    link.download = 'ticket-qr-{{ $order->ticket_number }}.jpg';
     link.href = url;
     link.click();
 }
@@ -571,7 +571,7 @@ function downloadTicketImage() {
         backgroundColor: '#ffffff'
     }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'E-Tiket-{{ $order->order_number }}.png';
+        link.download = 'E-Tiket-{{ $order->ticket_number }}.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
 

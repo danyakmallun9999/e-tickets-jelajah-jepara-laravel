@@ -242,8 +242,8 @@
                                                 <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
                                             </div>
                                             <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.OrderNumber') }}</p>
-                                                <p class="font-mono text-[11px] text-slate-800 dark:text-white mt-0.5 tracking-wide break-all">{{ $order->order_number }}</p>
+                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">No. Tiket</p>
+                                                <p class="font-mono text-[11px] text-slate-800 dark:text-white mt-0.5 tracking-wide break-all">{{ $order->ticket_number }}</p>
                                             </div>
                                             <div>
                                                 <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>

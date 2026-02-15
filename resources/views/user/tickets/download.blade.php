@@ -72,8 +72,8 @@
                     </div>
                 </div>
                 <div class="text-center mb-8">
-                    <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">@lang('tickets.order_code')</p>
-                    <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->order_number }}</p>
+                    <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">@lang('tickets.ticket_no')</p>
+                    <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->ticket_number }}</p>
                     <div class="mt-2 inline-block px-4 py-1 border border-blue-100 bg-blue-50 rounded-full">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">
                             {{ $order->status_label }}
@@ -143,7 +143,7 @@
         <script>
             // Generate QR Code
             new QRCode(document.getElementById("qrcode"), {
-                text: "{{ $order->order_number }}",
+                text: "{{ $order->ticket_number }}",
                 width: 120,
                 height: 120,
                 colorDark : "#000000", // Pure Black
@@ -160,7 +160,7 @@
                     backgroundColor: null
                 }).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = 'E-Tiket-{{ $order->order_number }}.png';
+                    link.download = 'E-Tiket-{{ $order->ticket_number }}.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 });

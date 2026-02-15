@@ -307,6 +307,9 @@ class MidtransService
                     'payment_channel' => $notificationData['bank'] ?? $notificationData['store'] ?? $paymentType,
                 ]);
 
+                // Generate Ticket Number
+                $order->generateTicketNumber();
+
                 Log::info('Order marked as paid via Midtrans', [
                     'order_number' => $orderNumber,
                     'payment_type' => $paymentType,

@@ -225,10 +225,18 @@ class DummyTicketSeeder extends Seeder
                 $paymentMethod = $paymentMethods[$pmIndex];
 
                 $orderNumber = 'TKT-'.$createdAt->format('Ymd').'-'.strtoupper(Str::random(6));
+                $ticketNumber = null;
+                $qrCode = $orderNumber; // Default to order number for pending/cancelled
+
+                if (in_array($status, ['paid', 'used'])) {
+                    $ticketNumber = 'TIX-' . strtoupper(Str::random(8));
+                    $qrCode = $ticketNumber;
+                }
 
                 $batch[] = [
                     'ticket_id' => $ticket->id,
                     'order_number' => $orderNumber,
+                    'ticket_number' => $ticketNumber,
                     'customer_name' => fake('id_ID')->name(),
                     'customer_email' => fake('id_ID')->safeEmail(),
                     'customer_phone' => fake('id_ID')->phoneNumber(),
@@ -242,7 +250,7 @@ class DummyTicketSeeder extends Seeder
                     'discount_amount' => 0,
                     'status' => $status,
                     'payment_method' => $paymentMethod,
-                    'qr_code' => json_encode(['order' => $orderNumber, 'ticket' => $ticket->id, 'qty' => $quantity]),
+                    'qr_code' => $qrCode,
                     'notes' => rand(1, 5) === 1 ? fake('id_ID')->sentence(6) : null,
                     'payed_at' => $payedAt,
                     'check_in_time' => $checkInTime,

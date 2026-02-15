@@ -171,6 +171,7 @@ class TicketController extends Controller
                             'payment_method_detail' => $status->payment_type ?? null,
                             'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
                         ]);
+                        $order->generateTicketNumber();
                         $order->refresh();
                     } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                         $order->update(['status' => 'cancelled']);
@@ -216,6 +217,10 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
+        if (!$order->ticket_number) {
+            abort(404, 'Tiket belum diterbitkan via pembayaran.');
+        }
+
         return view('user.tickets.download', compact('order'));
     }
 
@@ -228,9 +233,13 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        // Generate QR Code Matrix
+        if (!$order->ticket_number) {
+            abort(404, 'Tiket belum diterbitkan.');
+        }
+
+        // Generate QR Code Matrix from Ticket Number
         $matrix = Encoder::encode(
-            $order->order_number,
+            $order->ticket_number,
             ErrorCorrectionLevel::H(),
             'UTF-8'
         )->getMatrix();
@@ -277,7 +286,7 @@ class TicketController extends Controller
         // Return as download
         return response($imageData)
             ->header('Content-Type', 'image/jpeg')
-            ->header('Content-Disposition', 'attachment; filename="ticket-' . $order->order_number . '.jpg"');
+            ->header('Content-Disposition', 'attachment; filename="ticket-' . $order->ticket_number . '.jpg"');
     }
 
     /**
@@ -438,6 +447,7 @@ class TicketController extends Controller
                         'payment_method_detail' => $status->payment_type ?? null,
                         'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
                     ]);
+                    $order->generateTicketNumber();
                     $order->refresh();
                     return view('user.tickets.payment-success', compact('order'));
                 }
@@ -512,6 +522,7 @@ class TicketController extends Controller
                     'payment_method_detail' => $status->payment_type ?? null,
                     'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
                 ]);
+                $order->generateTicketNumber();
 
                 return response()->json([
                     'success' => true,

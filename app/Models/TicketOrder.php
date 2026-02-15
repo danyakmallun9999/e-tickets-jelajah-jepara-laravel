@@ -14,6 +14,7 @@ class TicketOrder extends Model
         'ticket_id',
         'user_id', // Added
         'order_number',
+        'ticket_number',
         'customer_name',
         'customer_email',
         'customer_phone',
@@ -70,9 +71,6 @@ class TicketOrder extends Model
             if (empty($order->order_number)) {
                 $order->order_number = $order->generateOrderNumber();
             }
-            if (empty($order->qr_code)) {
-                $order->qr_code = $order->generateQRCodeData();
-            }
         });
     }
 
@@ -106,10 +104,33 @@ class TicketOrder extends Model
     public function generateOrderNumber()
     {
         do {
-            $orderNumber = 'TKT-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+            $orderNumber = 'TKT-'.date('Ymd').'-'.strtoupper(Str::random(6));
         } while (self::where('order_number', $orderNumber)->exists());
 
         return $orderNumber;
+    }
+
+    /**
+     * Generate unique ticket number.
+     */
+    public function generateTicketNumber()
+    {
+        if ($this->ticket_number) {
+            return $this->ticket_number;
+        }
+
+        do {
+            // Format: TIX-{RandomString}-{CheckSum}
+            // Shorter than order number, optimized for scanning
+            $random = strtoupper(Str::random(8));
+            $ticketNumber = 'TIX-'.$random;
+        } while (self::where('ticket_number', $ticketNumber)->exists());
+
+        $this->ticket_number = $ticketNumber;
+        $this->qr_code = $ticketNumber; // QR Code now stores Ticket Number
+        $this->save();
+
+        return $ticketNumber;
     }
 
     /**
@@ -158,7 +179,7 @@ class TicketOrder extends Model
      */
     public function getStatusColorAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'yellow',
             'paid' => 'green',
             'used' => 'blue',
@@ -172,7 +193,7 @@ class TicketOrder extends Model
      */
     public function getStatusLabelAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'Menunggu Pembayaran',
             'paid' => 'Sudah Dibayar',
             'used' => 'Sudah Digunakan',

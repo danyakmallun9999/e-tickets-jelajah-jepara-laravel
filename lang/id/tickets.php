@@ -5,6 +5,7 @@ return [
     'department' => 'DINAS PARIWISATA',
     'header' => 'E-Tiket Wisata',
     'destination' => 'Destinasi Wisata',
+    'ticket_no' => 'No. Tiket',
     'order_code' => 'Kode Pesanan',
     'visit_date' => 'Tanggal Kunjungan',
     'visitors' => 'Jumlah Pengunjung',

@@ -39,31 +39,31 @@ class ScanController extends Controller
             if (json_last_error() === JSON_ERROR_NONE && is_array($qrJson) && isset($qrJson['order_number'])) {
                 $orderNumber = $qrJson['order_number'];
             } else {
-                // 2. Assume Plain Text (Order Number direct)
-                $orderNumber = trim($inputData, '"\' ');
+            // 2. Assume Plain Text (Ticket Number direct)
+                $ticketNumber = trim($inputData, '"\' ');
             }
             
-            \Illuminate\Support\Facades\Log::info('Parsed Order Number:', ['order_number' => $orderNumber]); // DEBUG LOG
+            \Illuminate\Support\Facades\Log::info('Parsed Ticket Number:', ['ticket_number' => $ticketNumber]); // DEBUG LOG
 
-            if (empty($orderNumber)) {
+            if (empty($ticketNumber)) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Format QR tidak dikenali!',
-                    'data' => ['order_number' => $inputData] // Return raw input
+                    'data' => ['ticket_number' => $inputData] // Return raw input
                 ], 400);
             }
 
-            // Find the order
+            // Find the order by TICKET NUMBER
             $order = TicketOrder::with('ticket.place')
-                ->where('order_number', $orderNumber)
+                ->where('ticket_number', $ticketNumber)
                 ->first();
 
             if (!$order) {
-                \Illuminate\Support\Facades\Log::warning('Scan Failed: Not Found', ['order_number' => $orderNumber]); // DEBUG LOG
+                \Illuminate\Support\Facades\Log::warning('Scan Failed: Not Found', ['ticket_number' => $ticketNumber]); // DEBUG LOG
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Tiket tidak ditemukan di sistem!',
-                    'data' => ['order_number' => $orderNumber] // Return scanned order number
+                    'data' => ['ticket_number' => $ticketNumber]
                 ], 404);
             }
 
