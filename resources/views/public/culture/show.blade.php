@@ -11,14 +11,34 @@
         
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
             
-            <!-- Back Button -->
-            <div class="mb-8">
-                <a href="{{ route('welcome') }}#culture" class="inline-flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium">
-                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:bg-primary hover:text-white transition-all">
-                        <span class="material-symbols-outlined text-lg">arrow_back</span>
-                    </div>
-                    <span>Kembali ke Beranda</span>
-                </a>
+            <!-- Breadcrumbs -->
+            <div class="mb-6">
+                <nav class="flex" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-lg mr-1">home</span>
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
+                                <a href="{{ route('welcome') }}#culture" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                    Budaya
+                                </a>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
+                                <span class="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 max-w-[150px] md:max-w-xs">
+                                    {{ $culture->name }}
+                                </span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
             </div>
 
             <!-- Header Section -->
