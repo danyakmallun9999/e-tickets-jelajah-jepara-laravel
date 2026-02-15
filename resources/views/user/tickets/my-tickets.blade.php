@@ -415,7 +415,7 @@
                                          x-transition:enter-start="opacity-0 translate-y-2"
                                          x-transition:enter-end="opacity-100 translate-y-0">
                                         <div class="mb-2.5">
-                                            <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600 active:scale-[0.98]">
+                                            <a href="{{ route('tickets.show', $order->ticket->id) }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600 active:scale-[0.98]">
                                                 <i class="fa-solid fa-redo text-xs"></i> Pesan Ulang
                                             </a>
                                         </div>
