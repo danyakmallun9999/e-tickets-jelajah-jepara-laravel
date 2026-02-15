@@ -212,6 +212,8 @@
                                  x-transition:enter-end="opacity-100 translate-y-0"
                                  x-data="{ 
                                     remaining: {{ $remainingMs }},
+                                    expired: {{ $isExpired ? 'true' : 'false' }},
+                                    showCancelConfirm: false,
                                     timer: null,
                                     format(ms) {
                                         if (ms <= 0) return '00:00:00';
@@ -221,36 +223,54 @@
                                         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
                                     },
                                     init() {
-                                        if (this.remaining > 0) {
+                                        if (this.remaining > 0 && !this.expired) {
                                             const endTime = new Date().getTime() + this.remaining;
                                             this.timer = setInterval(() => {
                                                 const now = new Date().getTime();
                                                 this.remaining = Math.max(0, endTime - now);
-                                                if (this.remaining <= 0) clearInterval(this.timer);
+                                                if (this.remaining <= 0) {
+                                                    clearInterval(this.timer);
+                                                    this.expired = true;
+                                                }
                                             }, 1000);
                                         }
                                     }
                                  }"
                                  x-init="init()">
                                 
-                                {{-- Left accent stripe --}}
-                                <div class="tkt-accent {{ $isExpired ? 'bg-red-400' : 'bg-amber-400' }}"></div>
+                                {{-- Left accent stripe — reactive color --}}
+                                <div class="tkt-accent transition-colors duration-500"
+                                     :class="expired ? 'bg-red-400' : 'bg-amber-400'"></div>
 
                                 {{-- ▎HEADER — Order ID + Status + Timer --}}
                                 <div class="px-6 pt-5 pb-3">
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="min-w-0">
                                             <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wider mb-1.5 uppercase">{{ $order->order_number }}</p>
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold
-                                                {{ $isExpired 
-                                                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 ring-1 ring-red-200/60 dark:ring-red-800/40' 
-                                                    : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-200/60 dark:ring-amber-800/40' }}">
-                                                <span class="w-1.5 h-1.5 rounded-full {{ $isExpired ? 'bg-red-500' : 'bg-amber-500 countdown-pulse' }}"></span>
-                                                {{ $isExpired ? 'Kadaluwarsa' : $order->status_label }}
+                                            {{-- Active status badge --}}
+                                            <span x-show="!expired"
+                                                  x-transition:leave="transition ease-in duration-200"
+                                                  x-transition:leave-start="opacity-100"
+                                                  x-transition:leave-end="opacity-0"
+                                                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-200/60 dark:ring-amber-800/40">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 countdown-pulse"></span>
+                                                {{ $order->status_label }}
+                                            </span>
+                                            {{-- Expired status badge --}}
+                                            <span x-show="expired" x-cloak
+                                                  x-transition:enter="transition ease-out duration-300"
+                                                  x-transition:enter-start="opacity-0 scale-90"
+                                                  x-transition:enter-end="opacity-100 scale-100"
+                                                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 ring-1 ring-red-200/60 dark:ring-red-800/40">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                                Kadaluwarsa
                                             </span>
                                         </div>
                                         {{-- Countdown timer (right-aligned) --}}
-                                        <div x-show="remaining > 0" x-cloak 
+                                        <div x-show="remaining > 0 && !expired" x-cloak 
+                                             x-transition:leave="transition ease-in duration-200"
+                                             x-transition:leave-start="opacity-100"
+                                             x-transition:leave-end="opacity-0"
                                              class="flex flex-col items-end shrink-0">
                                             <span class="text-[10px] text-slate-400 dark:text-slate-500 mb-0.5 uppercase tracking-wider font-medium">Sisa Waktu</span>
                                             <span class="font-mono text-base font-extrabold text-amber-600 dark:text-amber-400 tabular-nums" x-text="format(remaining)"></span>
@@ -260,10 +280,12 @@
 
                                 {{-- ▎BODY — Destination + Details --}}
                                 <div class="px-6 pb-4">
-                                    {{-- Destination --}}
+                                    {{-- Destination — icon color transitions --}}
                                     <div class="flex items-start gap-3 mb-4">
-                                        <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center shrink-0 mt-0.5">
-                                            <i class="fa-solid fa-location-dot text-amber-500 dark:text-amber-400 text-sm"></i>
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-colors duration-500"
+                                             :class="expired ? 'bg-red-50 dark:bg-red-900/20' : 'bg-amber-50 dark:bg-amber-900/20'">
+                                            <i class="fa-solid fa-location-dot text-sm transition-colors duration-500"
+                                               :class="expired ? 'text-red-400 dark:text-red-500' : 'text-amber-500 dark:text-amber-400'"></i>
                                         </div>
                                         <div class="min-w-0">
                                             <p class="font-bold text-[15px] text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
@@ -286,9 +308,13 @@
                                         </div>
                                     </div>
 
-                                    {{-- Payment Method & Inline Details --}}
-                                    @if($order->payment_method_detail && !$isExpired)
-                                    <div class="bg-slate-50/80 dark:bg-slate-700/20 rounded-xl p-3.5 border border-slate-100 dark:border-slate-700/60">
+                                    {{-- Payment Method & Inline Details — hides when expired --}}
+                                    @if($order->payment_method_detail)
+                                    <div x-show="!expired"
+                                         x-transition:leave="transition ease-in duration-300"
+                                         x-transition:leave-start="opacity-100 max-h-60"
+                                         x-transition:leave-end="opacity-0 max-h-0"
+                                         class="bg-slate-50/80 dark:bg-slate-700/20 rounded-xl p-3.5 border border-slate-100 dark:border-slate-700/60 overflow-hidden">
                                         <div class="flex items-center justify-between mb-2.5">
                                             <span class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Metode Pembayaran</span>
                                             <span class="text-xs font-bold text-slate-600 dark:text-slate-300">
@@ -342,9 +368,13 @@
                                     <div class="tkt-tear-line"></div>
                                 </div>
 
-                                {{-- ▎FOOTER — Action buttons --}}
-                                <div class="px-6 py-4" x-data="{ showCancelConfirm: false }">
-                                    @if(!$isExpired)
+                                {{-- ▎FOOTER — Action buttons (reactive) --}}
+                                <div class="px-6 py-4">
+                                    {{-- Active state buttons --}}
+                                    <div x-show="!expired"
+                                         x-transition:leave="transition ease-in duration-200"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0">
                                         <div class="flex gap-2.5 mb-2.5">
                                             <a href="{{ route('tickets.payment.status', $order->order_number) }}" 
                                                class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-500/15 active:scale-[0.98]">
@@ -367,25 +397,34 @@
                                                 <i class="fa-solid fa-arrows-rotate text-xs"></i>
                                             </button>
                                         </div>
-                                    @else
+                                        <div class="flex gap-2.5">
+                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                               class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
+                                                <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                            </a>
+                                            <button @click="showCancelConfirm = true"
+                                                class="w-12 h-auto bg-red-50 dark:bg-red-900/15 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 rounded-[14px] transition-all flex items-center justify-center border border-red-200/60 dark:border-red-800/40 active:scale-95 shrink-0">
+                                                <i class="fa-solid fa-xmark text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {{-- Expired state buttons --}}
+                                    <div x-show="expired" x-cloak
+                                         x-transition:enter="transition ease-out duration-300 delay-200"
+                                         x-transition:enter-start="opacity-0 translate-y-2"
+                                         x-transition:enter-end="opacity-100 translate-y-0">
                                         <div class="mb-2.5">
                                             <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600 active:scale-[0.98]">
                                                 <i class="fa-solid fa-redo text-xs"></i> Pesan Ulang
                                             </a>
                                         </div>
-                                    @endif
-
-                                    <div class="flex gap-2.5">
-                                        <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                           class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
-                                            <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
-                                        </a>
-                                        @if(!$isExpired)
-                                        <button @click="showCancelConfirm = true"
-                                            class="w-12 h-auto bg-red-50 dark:bg-red-900/15 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 rounded-[14px] transition-all flex items-center justify-center border border-red-200/60 dark:border-red-800/40 active:scale-95 shrink-0">
-                                            <i class="fa-solid fa-xmark text-sm"></i>
-                                        </button>
-                                        @endif
+                                        <div class="flex gap-2.5">
+                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                               class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
+                                                <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                            </a>
+                                        </div>
                                     </div>
 
                                     {{-- Cancel Confirmation Modal --}}
