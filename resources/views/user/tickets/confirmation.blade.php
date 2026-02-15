@@ -1,4 +1,28 @@
 <x-public-layout :hideFooter="true">
+    @push('styles')
+        <!-- Fonts: Poppins for Headings, Inter for UI text -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            .font-inter { font-family: 'Inter', sans-serif; }
+            h1, h2, h3, h4, .font-serif { font-family: 'Poppins', sans-serif; }
+            
+            @media print {
+                .no-print { display: none !important; }
+                body { background: white; -webkit-print-color-adjust: exact; }
+                .ticket-container { box-shadow: none; margin: 0; }
+                nav, footer, .pt-20 { padding-top: 0 !important; }
+            }
+            
+            /* Custom Pattern for White/Blue Theme */
+            .bg-luxury {
+                background-color: #eff6ff; /* blue-50 */
+                background-image: radial-gradient(#dbeafe 1px, transparent 1px);
+                background-size: 24px 24px;
+            }
+        </style>
+    @endpush
     <div class="bg-gray-50 dark:bg-background-dark min-h-screen -mt-20 pt-32 pb-24">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
@@ -222,7 +246,7 @@
                     </div>
                 </div>
 
-                @if($order->status !== 'pending')
+                @if(in_array($order->status, ['paid', 'used']))
                     <!-- QR Code Section (only for paid orders) -->
                     <div class="bg-gradient-to-br from-primary/5 to-indigo-500/5 border border-primary/10 rounded-2xl p-6 mb-6">
                         <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
@@ -251,7 +275,7 @@
                             </div>
                         </div>
                     </div>
-                @else
+                @elseif($order->status == 'pending')
                     <!-- Payment Instructions (only for pending orders) -->
                     <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-5 mb-8 text-left">
                         <div class="flex items-start">
@@ -338,11 +362,13 @@
                             </div>
                         </div>
                     @else
+                        @if(in_array($order->status, ['paid', 'used']))
                         <button onclick="downloadTicketImage()" 
                            class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
                            id="downloadBtn">
                             <i class="fa-solid fa-download"></i> Download Tiket
                         </button>
+                        @endif
                         <a href="{{ route('tickets.my') }}" 
                            class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Tiket Saya
@@ -354,106 +380,136 @@
     </div>
 
     <!-- Hidden Ticket Card for PNG Generation (off-screen) -->
-    <div style="position: fixed; left: -9999px; top: 0; z-index: -1;">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-        <div id="ticket-card" style="width: 400px; font-family: 'Inter', sans-serif; background: #fff; border: 1px solid #e7e5e4; overflow: hidden;">
-            <!-- Header -->
-            <div style="background: #1c1917; color: #fff; padding: 32px; text-align: center; position: relative; overflow: hidden;">
-                <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: #a8a29e; margin: 0 0 8px 0;">@lang('tickets.department')</p>
-                <h1 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; margin: 0; color: #fafaf9; letter-spacing: 0.05em;">@lang('tickets.header')</h1>
-                <div style="width: 64px; height: 1px; background: #44403c; margin: 16px auto 0;"></div>
+    @if(in_array($order->status, ['paid', 'used']))
+    <div style="position: fixed; left: -9999px; top: 0; z-index: -1;" class="font-inter text-slate-800">
+        <!-- Ticket Container -->
+        <div id="ticket-card" class="max-w-[400px] w-[400px] bg-white border border-blue-100 overflow-hidden relative ticket-card shadow-xl shadow-blue-100/50">
+            
+            <!-- Header / Brand Section -->
+            <div class="bg-blue-600 text-white p-8 text-center relative overflow-hidden">
+                <!-- Subtle Texture/Noise could go here -->
+                <div class="relative z-10">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-blue-100 mb-2">@lang('tickets.department')</p>
+                    <h1 class="text-3xl font-serif italic tracking-wide text-white">@lang('tickets.header')</h1>
+                    <div class="w-16 h-px bg-blue-400 mx-auto mt-4"></div>
+                </div>
+                
+                <!-- Abstract decorative circles for premium feel -->
+                <div class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
+                <div class="absolute bottom-0 right-0 w-48 h-48 bg-blue-800/20 rounded-full translate-x-1/3 translate-y-1/3 blur-xl"></div>
             </div>
 
             <!-- Ticket Body -->
-            <div style="padding: 32px; position: relative;">
-                <!-- Tear-off connectors -->
-                <div style="position: absolute; top: -16px; left: 0; width: 16px; height: 32px; background: #fff; border-radius: 0 9999px 9999px 0;"></div>
-                <div style="position: absolute; top: -16px; right: 0; width: 16px; height: 32px; background: #fff; border-radius: 9999px 0 0 9999px;"></div>
+            <div class="p-8 relative">
+                 <!-- Decorative connectors mimicking a physical ticket tear-off line -->
+                 <div class="absolute top-0 left-0 w-4 h-8 bg-blue-50 rounded-r-full -mt-4 z-20"></div>
+                 <div class="absolute top-0 right-0 w-4 h-8 bg-blue-50 rounded-l-full -mt-4 z-20"></div>
+                 
+                 <!-- Primary Info -->
+                 <div class="text-center mb-8">
+                     <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">@lang('tickets.destination')</p>
+                     <h2 class="text-2xl font-serif font-bold text-slate-900 leading-tight">
+                         {{ $order->ticket->place->name }}
+                     </h2>
+                 </div>
 
-                <!-- Destination -->
-                <div style="text-align: center; margin-bottom: 32px;">
-                    <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #78716c; margin: 0 0 4px 0;">@lang('tickets.destination')</p>
-                    <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: bold; color: #1c1917; margin: 0;">{{ $order->ticket->place->name }}</h2>
-                </div>
-
-                <!-- QR Code -->
-                <div style="display: flex; justify-content: center; margin-bottom: 32px;">
-                    <div style="padding: 16px; border: 1px solid #e7e5e4; background: #fafaf9;">
-                        <div id="ticket-qrcode"></div>
+                <!-- QR Code Section -->
+                <div class="flex justify-center mb-8">
+                    <div class="p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
+                        <!-- ID changed to ticket-qrcode for unique targeting -->
+                        <div id="ticket-qrcode" class="mix-blend-multiply opacity-90"></div>
                     </div>
                 </div>
-                <div style="text-align: center; margin-bottom: 32px;">
-                    <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.order_code')</p>
-                    <p style="font-family: monospace; font-size: 18px; font-weight: bold; color: #44403c; letter-spacing: 0.1em; margin: 0 0 8px 0;">{{ $order->order_number }}</p>
-                    <span style="display: inline-block; padding: 4px 16px; border: 1px solid #e7e5e4; border-radius: 9999px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; color: #78716c;">{{ $order->status_label }}</span>
+                <div class="text-center mb-8">
+                    <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">@lang('tickets.order_code')</p>
+                    <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->order_number }}</p>
+                    <div class="mt-2 inline-block px-4 py-1 border border-blue-100 bg-blue-50 rounded-full">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                            {{ $order->status_label }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Details Grid -->
-                <div style="border-top: 1px solid #f5f5f4; padding-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px 16px;">
+                <div class="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-slate-100 pt-6">
+                    
                     <div>
-                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.visit_date')</p>
-                        <p style="font-family: 'Playfair Display', serif; font-size: 18px; color: #292524; margin: 0;">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.visit_date')</p>
+                        <p class="font-serif text-lg text-slate-800">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
                     </div>
-                    <div style="text-align: right;">
-                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.visitors')</p>
-                        <p style="font-family: 'Playfair Display', serif; font-size: 18px; color: #292524; margin: 0;">{{ $order->quantity }} @lang('tickets.people')</p>
+
+                    <div class="text-right">
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.visitors')</p>
+                        <p class="font-serif text-lg text-slate-800">{{ $order->quantity }} @lang('tickets.people')</p>
                     </div>
-                    <div style="grid-column: span 2;">
-                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.ticket_type')</p>
-                        <p style="font-family: 'Playfair Display', serif; font-size: 18px; color: #292524; margin: 0; display: inline;">{{ $order->ticket->name }}</p>
-                        <span style="font-size: 12px; color: #78716c; font-style: italic; margin-left: 8px;">({{ ucfirst($order->ticket->type) }})</span>
+
+                    <div class="col-span-2">
+                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.ticket_type')</p>
+                         <div class="flex items-baseline gap-2">
+                            <span class="font-serif text-lg text-slate-800">{{ $order->ticket->name }}</span>
+                            <span class="text-xs text-slate-500 italic">({{ ucfirst($order->ticket->type) }})</span>
+                         </div>
                     </div>
                 </div>
 
-                <!-- Total -->
-                <div style="margin-top: 32px; padding-top: 24px; border-top: 2px dashed #d6d3d1; display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div>
-                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.customer')</p>
-                        <p style="font-size: 14px; font-weight: 600; color: #44403c; margin: 0;">{{ $order->customer_name }}</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 0 0 4px 0;">@lang('tickets.total_payment')</p>
-                        <p style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: bold; color: #1c1917; margin: 0;">RP {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                <!-- Total Section -->
+                <div class="mt-8 pt-6 border-t border-dashed border-slate-300">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.customer')</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ $order->customer_name }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.total_payment')</p>
+                            <p class="font-serif text-2xl font-bold text-blue-600">RP {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <div style="background: #fafaf9; padding: 16px; text-align: center; border-top: 1px solid #e7e5e4;">
-                <p style="font-size: 10px; color: #a8a29e; font-style: italic; font-family: 'Playfair Display', serif; margin: 0;">@lang('tickets.footer_thanks')</p>
+            
+            <!-- Footer / Decorative Bottom -->
+            <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
+                <p class="text-[10px] text-slate-400 italic font-serif">@lang('tickets.footer_thanks')</p>
             </div>
         </div>
     </div>
-
-<!-- QRCode.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+    @endif
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // QR code for the visible confirmation page
-    new QRCode(document.getElementById("qrcode"), {
-        text: "{{ $order->order_number }}",
-        width: 800, // Reduced for more padding
-        height: 800,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    const qrcodeElement = document.getElementById("qrcode");
+    if (qrcodeElement) {
+        new QRCode(qrcodeElement, {
+            text: "{{ $order->order_number }}",
+            width: 800, // Reduced for more padding
+            height: 800,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
 
     // QR code for the hidden ticket card (for PNG download)
-    new QRCode(document.getElementById("ticket-qrcode"), {
-        text: "{{ $order->order_number }}",
-        width: 120,
-        height: 120,
-        colorDark : "#292524",
-        colorLight : "#f5f5f4",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    const ticketQrcodeElement = document.getElementById("ticket-qrcode");
+    if (ticketQrcodeElement) {
+        new QRCode(ticketQrcodeElement, {
+            text: "{{ $order->order_number }}",
+            width: 120, // 120px to match the container
+            height: 120,
+            colorDark : "#1e40af", // Blue-800 to match theme
+            colorLight : "#eff6ff", // Blue-50 to match theme
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
     
     // Scale down visible QR via CSS
     const styleQR = () => {
         const qrc = document.getElementById("qrcode");
+        if (!qrc) return;
+        
         const canvas = qrc.querySelector('canvas');
         const img = qrc.querySelector('img');
         if(canvas) { 

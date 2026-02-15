@@ -263,10 +263,12 @@
                                            class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20">
                                             <i class="fa-solid fa-eye text-xs"></i> Detail
                                         </a>
+                                        @if(in_array($order->status, ['paid', 'used']))
                                         <a href="{{ route('tickets.download', $order->order_number) }}" 
                                            class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
                                             <i class="fa-solid fa-download text-xs"></i> Download
                                         </a>
+                                        @endif
                                     </div>
                                 </div>
                             @endif
