@@ -20,6 +20,7 @@ class PariwisataSeeder extends Seeder
 
         if (! File::exists($jsonPath)) {
             $this->command->error('File 20-destinasi.json not found in public directory.');
+
             return;
         }
 
@@ -28,6 +29,7 @@ class PariwisataSeeder extends Seeder
 
         if (! isset($data['data_wisata'])) {
             $this->command->error("Invalid JSON structure: key 'data_wisata' missing.");
+
             return;
         }
 
@@ -35,11 +37,11 @@ class PariwisataSeeder extends Seeder
         // Be careful with foreign keys if needed, but for seeder update usually we might want a fresh start or update.
         // Since updateOrCreate is used, we'll stick to that, but user said "kini hanya memilih 20", implying we might want to clean up old ones?
         // Let's assume we just update/create for now to be safe against deleting other potential data, unless user explicitly asked to "replace" all.
-        // But "kini hanya memilih 20" suggests the old set is obsolete. 
-        // For safe measure in this specific request context without explicit "delete all", we will updateOrCreate. 
-        
+        // But "kini hanya memilih 20" suggests the old set is obsolete.
+        // For safe measure in this specific request context without explicit "delete all", we will updateOrCreate.
+
         $items = $data['data_wisata'];
-        
+
         // Clear existing data to strictly follow "only choosing 20"
         // Disable FK checks to allow truncate/delete
         try {
@@ -54,26 +56,28 @@ class PariwisataSeeder extends Seeder
         $count = 0;
 
         // Image Mapping (Manual mapping based on available files)
-        $imageMapping = [
-            'Pantai Kartini' => 'images/destinasi/pantai kartini.jpg',
-            'Museum RA. Kartini' => 'images/destinasi/museum kartini.jpg',
-            'Pantai Tirta Samudra (Bandengan)' => 'images/destinasi/pantai bandengan.jpg',
-            'Jepara Ourland Park' => 'images/destinasi/jepara-ourland-waterpark.jpg',
-            'Pantai Teluk Awur Jepara' => 'images/destinasi/pantai-teluk-awur-jepara-sunset.jpg',
-            'Pantai Blebak' => 'images/destinasi/Aktivitas-Menarik-Pantai-Blebak.jpg',
-            'Pulau Panjang' => 'images/destinasi/Panjang-Island-Destination-4233181372.webp',
-            'Benteng Portugis' => 'images/destinasi/Benteng Portugis.jpg',
-            'Gua Manik' => 'images/destinasi/Pantai-Gua-Manik-1.jpg',
-            'Air Terjun Songgo Langit' => 'images/destinasi/Daya-Tarik-Air-Terjun-Songgo-Langit.jpg',
-            'Wisata Telaga Harun Somosari' => 'images/destinasi/TELAGA HARUNs.jpg',
-            'Gua Tritip' => 'images/destinasi/goa tririp.webp',
-            'Pulau Mandalika' => 'images/destinasi/Pulau-Mandalika-Jepara.jpg',
-            'Wisata Desa Tempur' => 'images/destinasi/Desa-tempur-957230617.webp',
-            'Wana Wisata Sreni Indah' => 'images/destinasi/wana-wisata-sreni-indah-jepara.jpg',
-            'Pasar Sore Karangrandu (PSK)' => 'images/destinasi/Pasar Sore Karangrandu Jepara.jpg',
-            'Tiara Park Waterboom' => 'images/destinasi/tiara park.jpg',
-            'Makam Mantingan' => 'images/destinasi/MANTINGAN01.jpg',
-            'Wisata Kali Ndayung' => 'images/destinasi/kali dayung.jpg',
+        // Folder Mapping (Manual mapping based on available folders)
+        $folderMapping = [
+            'Pantai Kartini' => 'pantai-kartini',
+            'Museum RA. Kartini' => 'museum-kartini',
+            'Pantai Tirta Samudra (Bandengan)' => 'pantai-bandengan',
+            'Jepara Ourland Park' => 'jepara-ourland-park',
+            'Pantai Teluk Awur Jepara' => 'panti-teluk-awur', // Note: folder typo 'panti' confirmed
+            'Pantai Blebak' => 'pantai-blebak',
+            'Pulau Panjang' => 'pulau-panjang',
+            'Benteng Portugis' => 'benteng-portugis',
+            'Gua Manik' => 'gua-manik',
+            'Air Terjun Songgo Langit' => 'songgo-langit',
+            'Wisata Telaga Harun Somosari' => 'telaga-harun-somorsari',
+            'Gua Tritip' => 'gua-tritip',
+            'Pulau Mandalika' => 'pulau-mandalika',
+            'Wisata Desa Tempur' => 'desa-tempur',
+            'Wana Wisata Sreni Indah' => 'sreni',
+            'Pasar Sore Karangrandu (PSK)' => 'pasar-karang-randu',
+            'Tiara Park Waterboom' => 'tiara-park',
+            'Makam Mantingan' => 'makam-mantingan',
+            'Wisata Kali Ndayung' => 'kali-dayung',
+            'Taman Nasional Karimunjawa' => 'karimun-jawa',
         ];
 
         foreach ($items as $item) {
@@ -93,36 +97,79 @@ class PariwisataSeeder extends Seeder
                     ['name' => $primaryCategoryName],
                     [
                         'slug' => Str::slug($primaryCategoryName),
-                        'icon_class' => 'fa-solid fa-map-location-dot', 
-                        'color' => '#0ea5e9', 
+                        'icon_class' => 'fa-solid fa-map-location-dot',
+                        'color' => '#0ea5e9',
                     ]
                 );
 
                 // 3. Prepare Data
                 // Use dynamic coordinates from JSON
-                $lat = $item['latitude'] ?? -6.581768; 
+                $lat = $item['latitude'] ?? -6.581768;
                 $lng = $item['longitude'] ?? 110.669896;
 
-                // Get image path from mapping
-                $imagePath = $imageMapping[$item['nama_wisata']] ?? null;
+                // Get folder path from mapping
+                $folderName = $folderMapping[$item['nama_wisata']] ?? null;
+                $imagePath = null;
+
+                if ($folderName) {
+                    $folderPath = public_path('images/destinasi/'.$folderName);
+
+                    if (File::exists($folderPath)) {
+                        $files = File::files($folderPath);
+                        $mainImage = null;
+
+                        // Priority 1: Check for 0.jpg, 0.png, 0.webp, 0.jpeg
+                        foreach ($files as $file) {
+                            $filename = $file->getFilename();
+                            // Check for files starting with "0." and having supported extensions
+                            if (preg_match('/^0\.(jpg|jpeg|png|webp)$/i', $filename)) {
+                                $mainImage = $filename;
+                                break;
+                            }
+                        }
+
+                        // Priority 2: Fallback to first available image if 0.* not found
+                        if (! $mainImage && count($files) > 0) {
+                            // Sort to ensure deterministic behavior (e.g. alphabetical)
+                            $filenames = array_map(fn ($f) => $f->getFilename(), $files);
+                            sort($filenames);
+
+                            // Filter for supported image extensions just in case
+                            foreach ($filenames as $fname) {
+                                if (preg_match('/\.(jpg|jpeg|png|webp)$/i', $fname)) {
+                                    $mainImage = $fname;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($mainImage) {
+                            $imagePath = 'images/destinasi/'.$folderName.'/'.$mainImage;
+                        } else {
+                            $this->command->warn("No valid images found in folder: $folderName");
+                        }
+                    } else {
+                        $this->command->warn("Folder not found: $folderName");
+                    }
+                }
 
                 // 4. Create or Update Place
                 $place = Place::updateOrCreate(
-                    ['name' => $item['nama_wisata']], 
+                    ['name' => $item['nama_wisata']],
                     [
                         'category_id' => $category->id,
-                        'slug' => Str::slug($item['nama_wisata']), 
+                        'slug' => Str::slug($item['nama_wisata']),
                         'image_path' => $imagePath,
                         'description' => $item['deskripsi'] ?? null,
                         'address' => $item['lokasi'] ?? null,
                         'opening_hours' => ($item['waktu_buka'] !== '-' ? $item['waktu_buka'] : null),
-                        'latitude' => $lat, 
+                        'latitude' => $lat,
                         'longitude' => $lng,
                         'google_maps_link' => $item['link_koordinat'] ?? null,
                         'ownership_status' => $item['status_kepemilikan'] ?? null,
                         'manager' => ($item['pengelola'] !== '-' ? $item['pengelola'] : null),
-                        'rides' => (!empty($item['wahana']) ? $item['wahana'] : null), // Already array
-                        'facilities' => (!empty($item['fasilitas']) ? $item['fasilitas'] : null), // Already array
+                        'rides' => (! empty($item['wahana']) ? $item['wahana'] : null), // Already array
+                        'facilities' => (! empty($item['fasilitas']) ? $item['fasilitas'] : null), // Already array
                         'social_media' => ($item['media_sosial'] !== '-' && $item['media_sosial'] !== '' ? $item['media_sosial'] : null),
                         'kecamatan' => $item['kecamatan'] ?? null,
                         'contact_info' => null,
@@ -130,87 +177,94 @@ class PariwisataSeeder extends Seeder
                 );
 
                 // 5. Create Tickets if price info exists
-                if ($item['harga_tiket'] !== '-' && !empty($item['harga_tiket'])) {
-                    // Cleanup existing tickets for this place to avoid duplicates on re-seed
-                    $place->tickets()->delete();
+                // if ($item['harga_tiket'] !== '-' && ! empty($item['harga_tiket'])) {
+                //     // Cleanup existing tickets for this place to avoid duplicates on re-seed
+                //     $place->tickets()->delete();
 
-                    $lines = explode("\n", $item['harga_tiket']);
-                    foreach($lines as $line) {
-                        $line = trim($line);
-                        if (empty($line)) continue;
+                //     $lines = explode("\n", $item['harga_tiket']);
+                //     foreach ($lines as $line) {
+                //         $line = trim($line);
+                //         if (empty($line)) {
+                //             continue;
+                //         }
 
-                        // Case 1: "Gratis" 
-                        if (stripos($line, 'Gratis') !== false) {
-                             \App\Models\Ticket::create([
-                                'place_id' => $place->id,
-                                'name' => 'Tiket Masuk',
-                                'description' => $line,
-                                'price' => 0,
-                                'quota' => null,
-                                'valid_days' => 1,
-                                'is_active' => true,
-                            ]);
-                            continue;
-                        }
+                //         // Case 1: "Gratis"
+                //         if (stripos($line, 'Gratis') !== false) {
+                //             \App\Models\Ticket::create([
+                //                 'place_id' => $place->id,
+                //                 'name' => 'Tiket Masuk',
+                //                 'description' => $line,
+                //                 'price' => 0,
+                //                 'quota' => null,
+                //                 'valid_days' => 1,
+                //                 'is_active' => true,
+                //             ]);
 
-                        // Case 2: Extract Price Pairs like "Dewasa Rp 10.000, Anak Rp 5.000"
-                        // Regex looks for: (Label text) (Rp) (Number with dots)
-                        if (preg_match_all('/(.*?)\s*Rp\.?\s*([\d\.]+)/iu', $line, $matches, PREG_SET_ORDER)) {
-                            foreach ($matches as $match) {
-                                $rawLabel = $match[1]; // e.g. "Hari Biasa: Dewasa" or ", Anak"
-                                $amountStr = $match[2]; // e.g. "10.000"
-                                
-                                $priceValue = (float) str_replace(['.', ','], '', $amountStr);
+                //             continue;
+                //         }
 
-                                // Clean up label
-                                // Remove leading/trailing punctuation (colon, comma, hyphen)
-                                $label = trim(preg_replace('/^[,\-:\s]+|[,\-:\s]+$/', '', $rawLabel));
-                                
-                                // Generate a sensible name
-                                $ticketName = "Tiket Masuk";
-                                if (!empty($label)) {
-                                    // If label is long (e.g. "Senin-Jumat"), use it.
-                                    // If label contains specific keywords, prioritize them?
-                                    // For now, just use the label if it's not too long, or fallback.
-                                    $ticketName = $label;
-                                }
+                //         // Case 2: Extract Price Pairs like "Dewasa Rp 10.000, Anak Rp 5.000"
+                //         // Regex looks for: (Label text) (Rp) (Number with dots)
+                //         if (preg_match_all('/(.*?)\s*Rp\.?\s*([\d\.]+)/iu', $line, $matches, PREG_SET_ORDER)) {
+                //             foreach ($matches as $match) {
+                //                 $rawLabel = $match[1]; // e.g. "Hari Biasa: Dewasa" or ", Anak"
+                //                 $amountStr = $match[2]; // e.g. "10.000"
 
-                                // Further refinement for very short labels like "Anak" -> "Tiket Anak"
-                                if (strtolower($ticketName) == 'anak') $ticketName = 'Tiket Anak';
-                                if (strtolower($ticketName) == 'dewasa') $ticketName = 'Tiket Dewasa';
+                //                 $priceValue = (float) str_replace(['.', ','], '', $amountStr);
 
-                                // Create Ticket
-                                \App\Models\Ticket::create([
-                                    'place_id' => $place->id,
-                                    'name' => Str::limit($ticketName, 50), // Ensure name fits
-                                    'description' => $line, // Use the full line as description for context
-                                    'price' => $priceValue,
-                                    'quota' => null,
-                                    'valid_days' => 1,
-                                    'is_active' => true,
-                                ]);
-                            }
-                        } else {
-                            // Case 3: Just a number found without Rp? Or simple text?
-                            // Try simplistic extraction as fallback if it's just one number
-                            // But avoid concatenating multiple numbers.
-                            // Only if we didn't find "Rp" pattern.
-                             $numbers = preg_replace('/[^0-9]/', '', $line);
-                             if (!empty($numbers) && strlen($numbers) < 9) { // Sanity check length to avoid overflow
-                                 $priceValue = (float) $numbers;
-                                 \App\Models\Ticket::create([
-                                    'place_id' => $place->id,
-                                    'name' => 'Tiket Masuk',
-                                    'description' => $line,
-                                    'price' => $priceValue,
-                                    'quota' => null,
-                                    'valid_days' => 1,
-                                    'is_active' => true,
-                                ]);
-                             }
-                        }
-                    }
-                }
+                //                 // Clean up label
+                //                 // Remove leading/trailing punctuation (colon, comma, hyphen)
+                //                 $label = trim(preg_replace('/^[,\-:\s]+|[,\-:\s]+$/', '', $rawLabel));
+
+                //                 // Generate a sensible name
+                //                 $ticketName = 'Tiket Masuk';
+                //                 if (! empty($label)) {
+                //                     // If label is long (e.g. "Senin-Jumat"), use it.
+                //                     // If label contains specific keywords, prioritize them?
+                //                     // For now, just use the label if it's not too long, or fallback.
+                //                     $ticketName = $label;
+                //                 }
+
+                //                 // Further refinement for very short labels like "Anak" -> "Tiket Anak"
+                //                 if (strtolower($ticketName) == 'anak') {
+                //                     $ticketName = 'Tiket Anak';
+                //                 }
+                //                 if (strtolower($ticketName) == 'dewasa') {
+                //                     $ticketName = 'Tiket Dewasa';
+                //                 }
+
+                //                 // Create Ticket
+                //                 \App\Models\Ticket::create([
+                //                     'place_id' => $place->id,
+                //                     'name' => Str::limit($ticketName, 50), // Ensure name fits
+                //                     'description' => $line, // Use the full line as description for context
+                //                     'price' => $priceValue,
+                //                     'quota' => null,
+                //                     'valid_days' => 1,
+                //                     'is_active' => true,
+                //                 ]);
+                //             }
+                //         } else {
+                //             // Case 3: Just a number found without Rp? Or simple text?
+                //             // Try simplistic extraction as fallback if it's just one number
+                //             // But avoid concatenating multiple numbers.
+                //             // Only if we didn't find "Rp" pattern.
+                //             $numbers = preg_replace('/[^0-9]/', '', $line);
+                //             if (! empty($numbers) && strlen($numbers) < 9) { // Sanity check length to avoid overflow
+                //                 $priceValue = (float) $numbers;
+                //                 \App\Models\Ticket::create([
+                //                     'place_id' => $place->id,
+                //                     'name' => 'Tiket Masuk',
+                //                     'description' => $line,
+                //                     'price' => $priceValue,
+                //                     'quota' => null,
+                //                     'valid_days' => 1,
+                //                     'is_active' => true,
+                //                 ]);
+                //             }
+                //         }
+                //     }
+                // }
 
                 $count++;
             } catch (\Throwable $e) {

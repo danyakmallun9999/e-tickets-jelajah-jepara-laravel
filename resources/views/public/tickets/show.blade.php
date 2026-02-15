@@ -125,7 +125,7 @@
 
                         @guest('web')
                         {{-- Login overlay for unauthenticated users --}}
-                        <div class="absolute inset-0 z-20 flex items-center justify-center" style="background: rgba(255,255,255,0.6); backdrop-filter: blur(2px);">
+                        <div class="absolute inset-0 z-20 flex items-start justify-center pt-16" style="background: rgba(255,255,255,0.6); backdrop-filter: blur(2px);">
                             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 mx-4 max-w-sm w-full text-center">
                                 <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                     <i class="fa-solid fa-lock text-primary text-xl"></i>

@@ -13,7 +13,7 @@
             <div class="flex flex-col lg:flex-row">
                 
                 <!-- Left Side: Sticky Visuals (50%) -->
-                <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative h-[60vh] bg-white dark:bg-slate-950 z-10 group flex flex-col p-4 lg:pl-16 lg:pr-8 lg:pt-24" 
+                <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative bg-white dark:bg-slate-950 z-10 group flex flex-col p-4 lg:pl-16 lg:pr-8 lg:pt-24" 
                      @php
                          $uniqueGalleryImages = collect([]);
                          if ($place->image_path) {
@@ -27,6 +27,8 @@
                      x-data="{ 
                         activeImage: '{{ $uniqueGalleryImages->first() ? asset($uniqueGalleryImages->first()) : '' }}',
                         isFlipping: false,
+                        lightboxOpen: false,
+                        lightboxIndex: 0,
                         images: [
                             @foreach($uniqueGalleryImages as $imgPath)
                                 '{{ asset($imgPath) }}',
@@ -39,8 +41,27 @@
                                 this.activeImage = url;
                                 this.isFlipping = false;
                             }, 300);
+                        },
+                        openLightbox(url) {
+                            this.lightboxIndex = this.images.indexOf(url);
+                            if (this.lightboxIndex === -1) this.lightboxIndex = 0;
+                            this.lightboxOpen = true;
+                            document.body.style.overflow = 'hidden';
+                        },
+                        closeLightbox() {
+                            this.lightboxOpen = false;
+                            document.body.style.overflow = '';
+                        },
+                        lightboxPrev() {
+                            this.lightboxIndex = (this.lightboxIndex - 1 + this.images.length) % this.images.length;
+                        },
+                        lightboxNext() {
+                            this.lightboxIndex = (this.lightboxIndex + 1) % this.images.length;
                         }
-                     }">
+                     }"
+                     @keydown.escape.window="if (lightboxOpen) closeLightbox()"
+                     @keydown.left.window="if (lightboxOpen) lightboxPrev()"
+                     @keydown.right.window="if (lightboxOpen) lightboxNext()">
                     
                     <!-- Breadcrumbs -->
                     <div class="mb-6">
@@ -73,8 +94,8 @@
                     </div>
     
                     <!-- Main Image Area -->
-                    <div class="flex-1 relative w-full flex items-start justify-start overflow-hidden perspective-[1000px]">
-                        <div class="relative w-full h-full rounded-3xl overflow-hidden text-transparent">
+                    <div class="relative w-full aspect-[4/3] overflow-hidden perspective-[1000px]">
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden text-transparent cursor-pointer" @click="openLightbox(activeImage)">
                             <template x-if="activeImage">
                                 <img :src="activeImage" 
                                      alt="{{ $place->translated_name }}" 
@@ -86,19 +107,84 @@
                                     <span class="material-symbols-outlined text-6xl">image</span>
                                 </div>
                             </template>
+                            <!-- Zoom hint overlay -->
+                            <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
+                                <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-full font-bold text-sm text-slate-700 shadow-lg opacity-0 hover:opacity-100 transition-opacity flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">zoom_in</span>
+                                    Lihat Detail
+                                </div>
+                            </div>
                         </div>
                     </div>
     
                     <!-- Thumbnails / Gallery List -->
-                    <div class="w-full px-4 lg:px-6 pb-6 pt-3 flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth">
+                    <div class="w-full px-4 lg:px-6 pb-6 pt-3 flex items-center gap-3 overflow-x-auto scrollbar-hide scroll-smooth">
                         @foreach($uniqueGalleryImages as $imgPath)
                             <button @click="changeImage('{{ asset($imgPath) }}')" 
                                     :class="activeImage === '{{ asset($imgPath) }}' ? 'ring-2 ring-primary scale-105' : 'opacity-70 hover:opacity-100'"
-                                    class="relative w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300">
+                                    class="relative w-20 h-14 lg:w-24 lg:h-16 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300">
                                 <img src="{{ asset($imgPath) }}" class="w-full h-full object-cover">
                             </button>
                         @endforeach
                     </div>
+
+                    <!-- Lightbox Modal -->
+                    <template x-teleport="body">
+                        <div x-show="lightboxOpen" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+                             @click.self="closeLightbox()">
+                            
+                            <!-- Close Button -->
+                            <button @click="closeLightbox()" 
+                                    class="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                                <span class="material-symbols-outlined text-2xl">close</span>
+                            </button>
+
+                            <!-- Image Counter -->
+                            <div class="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 bg-white/10 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full">
+                                <span x-text="(lightboxIndex + 1) + ' / ' + images.length"></span>
+                            </div>
+
+                            <!-- Prev Button -->
+                            <button x-show="images.length > 1" @click.stop="lightboxPrev()" 
+                                    class="absolute left-2 sm:left-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                                <span class="material-symbols-outlined text-2xl">chevron_left</span>
+                            </button>
+
+                            <!-- Next Button -->
+                            <button x-show="images.length > 1" @click.stop="lightboxNext()" 
+                                    class="absolute right-2 sm:right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 hover:scale-110">
+                                <span class="material-symbols-outlined text-2xl">chevron_right</span>
+                            </button>
+
+                            <!-- Lightbox Image -->
+                            <div class="max-w-[95vw] max-h-[85vh] sm:max-w-[90vw] sm:max-h-[90vh] flex items-center justify-center" @click.stop>
+                                <img :src="images[lightboxIndex]" 
+                                     :alt="'{{ $place->translated_name }} - Foto ' + (lightboxIndex + 1)"
+                                     class="max-w-full max-h-[85vh] sm:max-h-[90vh] object-contain rounded-lg shadow-2xl select-none"
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100">
+                            </div>
+
+                            <!-- Thumbnail Strip -->
+                            <div x-show="images.length > 1" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-2xl p-2 max-w-[90vw] overflow-x-auto scrollbar-hide">
+                                <template x-for="(img, idx) in images" :key="idx">
+                                    <button @click.stop="lightboxIndex = idx" 
+                                            :class="lightboxIndex === idx ? 'ring-2 ring-white scale-110 opacity-100' : 'opacity-50 hover:opacity-80'"
+                                            class="w-14 h-10 sm:w-16 sm:h-11 flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200">
+                                        <img :src="img" class="w-full h-full object-cover">
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
     
                 <!-- Right Side: Scrollable Content (50%) -->

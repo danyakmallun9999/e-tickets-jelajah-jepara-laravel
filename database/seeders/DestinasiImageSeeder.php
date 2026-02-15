@@ -32,75 +32,63 @@ class DestinasiImageSeeder extends Seeder
         foreach ($places as $place) {
             $matchedFiles = [];
 
-            // 1. Prepare Place Keywords
-            $placeSlug = Str::slug($place->name);
-            $placeWords = explode('-', $placeSlug);
-            $placeKeywords = array_diff($placeWords, $stopWords);
+            // 1. Get Folder Path from Mapping
+            // Mirroring the mapping from PariwisataSeeder for consistency
+            $folderMapping = [
+                'Pantai Kartini' => 'pantai-kartini',
+                'Museum RA. Kartini' => 'museum-kartini',
+                'Pantai Tirta Samudra (Bandengan)' => 'pantai-bandengan',
+                'Jepara Ourland Park' => 'jepara-ourland-park',
+                'Pantai Teluk Awur Jepara' => 'panti-teluk-awur', 
+                'Pantai Blebak' => 'pantai-blebak',
+                'Pulau Panjang' => 'pulau-panjang',
+                'Benteng Portugis' => 'benteng-portugis',
+                'Gua Manik' => 'gua-manik',
+                'Air Terjun Songgo Langit' => 'songgo-langit',
+                'Wisata Telaga Harun Somosari' => 'telaga-harun-somorsari',
+                'Gua Tritip' => 'gua-tritip',
+                'Pulau Mandalika' => 'pulau-mandalika',
+                'Wisata Desa Tempur' => 'desa-tempur',
+                'Wana Wisata Sreni Indah' => 'sreni',
+                'Pasar Sore Karangrandu (PSK)' => 'pasar-karang-randu',
+                'Tiara Park Waterboom' => 'tiara-park',
+                'Makam Mantingan' => 'makam-mantingan',
+                'Wisata Kali Ndayung' => 'kali-dayung',
+                'Taman Nasional Karimunjawa' => 'karimun-jawa',
+            ];
 
-            foreach ($files as $file) {
-                $filename = $file->getFilename();
-                $filenameLower = strtolower($filename);
-                $nameWithoutExt = pathinfo($filenameLower, PATHINFO_FILENAME);
+            $folderName = $folderMapping[$place->name] ?? null;
 
-                // 2. Prepare File Keywords
-                $fileSlug = Str::slug($nameWithoutExt);
-                $fileWords = explode('-', $fileSlug);
-                $fileKeywords = array_diff($fileWords, $stopWords);
+            if ($folderName) {
+                $folderPath = public_path('images/destinasi/' . $folderName);
+                
+                if (File::exists($folderPath)) {
+                    $files = File::files($folderPath);
+                    $place->images()->delete(); // Clear existing gallery
+                    
+                    // Sort files to have consistent order (e.g. 0.jpg, 1.jpg, ...)
+                    // Custom sort to handle numbers correctly if needed, but standard sort is usually fine for 0, 1, 2
+                    $filenames = [];
+                    foreach($files as $file) {
+                        $filenames[] = $file->getFilename();
+                    }
+                    sort($filenames, SORT_NATURAL);
 
-                // 3. Check for Intersection
-                // Finds words that exist in BOTH the place name and the filename
-                $intersection = array_intersect($placeKeywords, $fileKeywords);
-
-                // Quality Check:
-                // - If we have matched 'significant' words (not stop words)
-                // - Special case: If the ONLY word is a stop word (e.g. "Pantai Jepara"), we might fallback, but for now strict.
-
-                $isMatch = false;
-
-                // Rule A: Exact Slug Containment (Strongest)
-                // e.g. "benteng-portugis.jpg" in "benteng-portugis"
-                if (str_contains($placeSlug, $fileSlug) || str_contains($fileSlug, $placeSlug)) {
-                    $isMatch = true;
+                    foreach ($filenames as $filename) {
+                         // Filter for supported extensions
+                        if (preg_match('/\.(jpg|jpeg|png|webp)$/i', $filename)) {
+                            $place->images()->create([
+                                'image_path' => 'images/destinasi/' . $folderName . '/' . $filename,
+                            ]);
+                            $matchedFiles[] = $filename;
+                            $totalImages++;
+                        }
+                    }
+                } else {
+                     $this->command->warn("Folder not found for {$place->name}: $folderName");
                 }
-                // Rule B: Significant Keywork Match
-                // If we match at least 1 significant keyword (unique name identifier)
-                elseif (count($intersection) >= 1) {
-                    // Refinement: If the file only has 1 significant word, and it matches, it's a match.
-                    // e.g. place "Pantai Bandengan" (bandengan) -> file "bandengan.jpg" (bandengan) -> Match
-                    $isMatch = true;
-                }
-
-                if ($isMatch) {
-                    $matchedFiles[] = $filename;
-                }
-            }
-
-            if (! empty($matchedFiles)) {
-                $this->command->info('Found '.count($matchedFiles)." images for {$place->name}");
-
-                $place->images()->delete();
-
-                // Sort to be consistent
-                sort($matchedFiles);
-
-                // Set Main Image
-                $place->image_path = 'images/destinasi/'.$matchedFiles[0];
-                $place->save();
-
-                // Populate Gallery
-                foreach ($matchedFiles as $filename) {
-                    $place->images()->create([
-                        'image_path' => 'images/destinasi/'.$filename,
-                    ]);
-                    $totalImages++;
-                }
-
             } else {
-                // Try a desperate fallback: Check original slug start
-                // (In case users named files exactly after the OLD slugs)
-                // But most likely the keyword match covers this.
-
-                // $this->command->warn("No images found for {$place->name} (Keywords: " . implode(',', $placeKeywords) . ")");
+                // $this->command->warn("No folder mapping found for: {$place->name}");
             }
         }
 

@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         // First: Create roles and permissions
         $this->call(RolePermissionSeeder::class);
-        
+
         // Second: Create admin users and assign roles
         $this->call(AdminUserSeeder::class);
         $this->call(SampleAdminSeeder::class);
-        
+
         // Third: Create content
         $this->call(CategorySeeder::class);
         $this->call(PariwisataSeeder::class);
