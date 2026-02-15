@@ -122,7 +122,7 @@ class TicketController extends Controller
         $validated['unit_price'] = $pricePerTicket;
         $validated['status'] = 'pending';
         $validated['payment_method'] = 'midtrans';
-        $validated['expiry_time'] = now()->addMinutes(60); // Set default expiry for 60 mins matching Midtrans config
+        $validated['expiry_time'] = now()->addMinutes(2); // Set expiry to 2 mins for testing
 
         // Create order
         $order = TicketOrder::create($validated);
@@ -289,6 +289,65 @@ class TicketController extends Controller
         return response($imageData)
             ->header('Content-Type', 'image/jpeg')
             ->header('Content-Disposition', 'attachment; filename="ticket-'.$order->ticket_number.'.jpg"');
+    }
+
+    /**
+     * Show ticket QR code inline (for image src).
+     */
+    public function showQrCode($orderNumber)
+    {
+        $order = TicketOrder::where('order_number', $orderNumber)->firstOrFail();
+
+        $this->verifyOrderOwnership($order);
+
+        if (! $order->ticket_number) {
+            abort(404);
+        }
+
+        // Generate QR Code Matrix from Ticket Number
+        $matrix = Encoder::encode(
+            $order->ticket_number,
+            ErrorCorrectionLevel::H(),
+            'UTF-8'
+        )->getMatrix();
+
+        // Render using GD
+        // Target approx 500px for display
+        $matrixWidth = $matrix->getWidth();
+        $borderSize = 4; 
+        $totalModules = $matrixWidth + ($borderSize * 2);
+        
+        $pixelSize = (int) (500 / $totalModules);
+        $imageWidth = $totalModules * $pixelSize;
+
+        $image = imagecreate($imageWidth, $imageWidth);
+        $white = imagecolorallocate($image, 255, 255, 255);
+        $black = imagecolorallocate($image, 0, 0, 0);
+
+        imagefill($image, 0, 0, $white);
+
+        for ($y = 0; $y < $matrixWidth; $y++) {
+            for ($x = 0; $x < $matrixWidth; $x++) {
+                if ($matrix->get($x, $y) === 1) {
+                    imagefilledrectangle(
+                        $image,
+                        ($x + $borderSize) * $pixelSize,
+                        ($y + $borderSize) * $pixelSize,
+                        ($x + $borderSize + 1) * $pixelSize,
+                        ($y + $borderSize + 1) * $pixelSize,
+                        $black
+                    );
+                }
+            }
+        }
+
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_clean();
+        imagedestroy($image);
+
+        return response($imageData)
+            ->header('Content-Type', 'image/png');
     }
 
     /**

@@ -95,7 +95,7 @@ class MidtransService
 
             // Add expiry
             $params['custom_expiry'] = [
-                'expiry_duration' => 60,
+                'expiry_duration' => 2,
                 'unit' => 'minute',
             ];
 
@@ -110,7 +110,7 @@ class MidtransService
                 'payment_method_detail' => $paymentType,
                 'payment_channel' => $bank ?? $paymentType,
                 'payment_info' => $paymentData,
-                'expiry_time' => $response->expiry_time ?? now()->addMinutes(60),
+                'expiry_time' => $response->expiry_time ?? now()->addMinutes(2),
             ]);
 
             Log::info('Midtrans Core API charge created', [

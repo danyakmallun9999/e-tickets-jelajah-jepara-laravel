@@ -42,6 +42,7 @@ Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
     Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
     Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
     Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
+    Route::get('/show-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'showQrCode'])->name('tickets.show-qr');
     Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
     Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'processPayment'])->name('tickets.process-payment');
     Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentStatus'])->name('tickets.payment.status');

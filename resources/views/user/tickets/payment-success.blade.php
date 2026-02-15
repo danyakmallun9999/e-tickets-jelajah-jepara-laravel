@@ -195,12 +195,14 @@
                         <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-qrcode text-primary"></i> {{ __('Tickets.Success.QRCodeTitle') }}
                         </h3>
-                        <div id="qrcode" class="flex justify-center mb-3 mx-auto" style="width: 200px; height: 200px; overflow: hidden;"></div>
+                        <div class="flex justify-center mb-3 mx-auto">
+                            <img src="{{ route('tickets.show-qr', $order->order_number) }}" alt="Ticket QR Code" class="w-[200px] h-[200px] rounded-lg border border-slate-200">
+                        </div>
                         <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Tickets.Success.QRCodeSubtitle') }}</p>
                         <div class="mt-4">
-                            <button onclick="downloadQR()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
+                            <a href="{{ route('tickets.download-qr', $order->order_number) }}" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2 transition-all">
                                 <i class="fa-solid fa-download"></i>{{ __('Tickets.Success.DownloadQR') }}
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -277,70 +279,5 @@
         </div>
     </div>
 
-@if($order->status === 'paid')
-<!-- QRCode.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<script>
-// Generate QR code on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const qrContainer = document.getElementById("qrcode");
-    new QRCode(qrContainer, {
-        text: "{{ $order->order_number }}",
-        width: 800, // Reducded for padding
-        height: 800,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
-    
-    // Scale down for display
-    const styleQR = () => {
-        const canvas = qrContainer.querySelector('canvas');
-        const img = qrContainer.querySelector('img');
-        if(canvas) {
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-        }
-        if(img) {
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.display = 'block';
-        }
-    };
-
-    styleQR();
-    setTimeout(styleQR, 0);
-});
-
-function downloadQR() {
-    const sourceCanvas = document.querySelector('#qrcode canvas');
-    if (!sourceCanvas) return;
-
-    // Create a new canvas for the final image with padding
-    const padding = 100;
-    const size = sourceCanvas.width;
-    const newSize = size + (padding * 2);
-    
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = newSize;
-    finalCanvas.height = newSize;
-    const ctx = finalCanvas.getContext('2d');
-
-    // Fill with white background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, newSize, newSize);
-
-    // Draw original QR code centered
-    ctx.drawImage(sourceCanvas, padding, padding);
-
-    // Export as JPG
-    const url = finalCanvas.toDataURL('image/jpeg', 1.0);
-    const link = document.createElement('a');
-    link.download = 'ticket-qr-{{ $order->order_number }}.jpg';
-    link.href = url;
-    link.click();
-}
-</script>
-@endif
 </x-public-layout>
