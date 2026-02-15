@@ -48,318 +48,408 @@
             @endauth
 
             {{-- Main card --}}
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 md:p-8"
+                 x-data="ticketList()" x-cloak>
 
                 {{-- Page header --}}
-                <div class="text-center mb-8">
-                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">{{ __('Tickets.My.Title') }}</h1>
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-1">{{ __('Tickets.My.Title') }}</h1>
                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Tickets.My.Subtitle') }}</p>
                 </div>
 
                 @if($orders->count() > 0)
-                    {{-- Results count --}}
-                    <div class="flex items-center justify-between mb-4 px-1">
-                        <p class="text-sm text-slate-400">
-                            {!! __('Tickets.My.ShowingOrders', ['count' => $orders->count()]) !!}
-                        </p>
+
+                {{-- ════════════════════════════════════════ --}}
+                {{-- TABS                                    --}}
+                {{-- ════════════════════════════════════════ --}}
+                <div class="mb-4 -mx-5 md:-mx-8 px-5 md:px-8 border-b border-slate-100 dark:border-slate-700">
+                    <div class="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
+                        <template x-for="tab in tabs" :key="tab.key">
+                            <button @click="activeTab = tab.key"
+                                :class="activeTab === tab.key
+                                    ? 'border-primary text-primary font-bold'
+                                    : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'"
+                                class="relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap shrink-0">
+                                <i :class="tab.icon" class="text-[11px]"></i>
+                                <span x-text="tab.label"></span>
+                                <span x-show="tab.count > 0"
+                                      x-text="tab.count"
+                                      :class="activeTab === tab.key ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'"
+                                      class="ml-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-none"></span>
+                            </button>
+                        </template>
                     </div>
+                </div>
 
-                    {{-- Ticket-style CSS --}}
-                    <style>
-                        .ticket-punch {
-                            position: relative;
-                        }
-                        .ticket-punch::before,
-                        .ticket-punch::after {
-                            content: '';
-                            position: absolute;
-                            width: 20px;
-                            height: 20px;
-                            background: #f9fafb;
-                            border-radius: 50%;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            z-index: 10;
-                        }
-                        .dark .ticket-punch::before,
-                        .dark .ticket-punch::after {
-                            background: var(--color-background-dark, #0f172a);
-                        }
-                        .ticket-punch::before { left: -10px; }
-                        .ticket-punch::after { right: -10px; }
-                    </style>
+                {{-- ════════════════════════════════════════ --}}
+                {{-- SEARCH                                  --}}
+                {{-- ════════════════════════════════════════ --}}
+                <div class="mb-5">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 text-sm pointer-events-none"></i>
+                        <input type="text" x-model.debounce.200ms="searchQuery"
+                               placeholder="Cari order ID atau nama destinasi..."
+                               class="w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-xl text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+                        <button x-show="searchQuery.length > 0" x-cloak
+                                @click="searchQuery = ''"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                </div>
 
-                    <div class="space-y-5">
-                        @foreach($orders as $order)
-                            @php
-                                $now = now();
-                                $expiry = $order->expiry_time;
-                                $isExpired = $order->status === 'pending' && $expiry && $now->greaterThan($expiry);
-                                $remainingMs = $expiry && !$isExpired ? $now->diffInMilliseconds($expiry) : 0;
-                            @endphp
+                {{-- Results count --}}
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <p class="text-xs text-slate-400 dark:text-slate-500">
+                        <span x-text="visibleCount"></span> tiket ditampilkan
+                    </p>
+                </div>
 
-                            @if($order->status == 'pending')
-                                {{-- ═══════════════════════════════════════ --}}
-                                {{-- PENDING CARD: Minimalist ticket design --}}
-                                {{-- ═══════════════════════════════════════ --}}
-                                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                                     x-data="{ 
-                                        remaining: {{ $remainingMs }},
-                                        timer: null,
-                                        format(ms) {
-                                            if (ms <= 0) return '00:00:00';
-                                            const h = Math.floor(ms / 3600000);
-                                            const m = Math.floor((ms % 3600000) / 60000);
-                                            const s = Math.floor((ms % 60000) / 1000);
-                                            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                                        },
-                                        init() {
-                                            if (this.remaining > 0) {
-                                                const endTime = new Date().getTime() + this.remaining;
-                                                this.timer = setInterval(() => {
-                                                    const now = new Date().getTime();
-                                                    this.remaining = Math.max(0, endTime - now);
-                                                    if (this.remaining <= 0) clearInterval(this.timer);
-                                                }, 1000);
-                                            }
+                {{-- Ticket-style CSS --}}
+                <style>
+                    .ticket-punch {
+                        position: relative;
+                    }
+                    .ticket-punch::before,
+                    .ticket-punch::after {
+                        content: '';
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        background: #f9fafb;
+                        border-radius: 50%;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        z-index: 10;
+                    }
+                    .dark .ticket-punch::before,
+                    .dark .ticket-punch::after {
+                        background: var(--color-background-dark, #0f172a);
+                    }
+                    .ticket-punch::before { left: -10px; }
+                    .ticket-punch::after { right: -10px; }
+                    .scrollbar-hide::-webkit-scrollbar { display: none; }
+                    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+                </style>
+
+                {{-- ════════════════════════════════════════ --}}
+                {{-- TICKET CARDS                            --}}
+                {{-- ════════════════════════════════════════ --}}
+                <div class="space-y-4">
+                    @foreach($orders as $order)
+                        @php
+                            $now = now();
+                            $expiry = $order->expiry_time;
+                            $isExpired = $order->status === 'pending' && $expiry && $now->greaterThan($expiry);
+                            $remainingMs = $expiry && !$isExpired ? $now->diffInMilliseconds($expiry) : 0;
+                            $cardStatus = $order->status;
+                        @endphp
+
+                        @if($order->status == 'pending')
+                            {{-- ═══════════════════════════════════════ --}}
+                            {{-- PENDING CARD                           --}}
+                            {{-- ═══════════════════════════════════════ --}}
+                            <div class="ticket-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+                                 data-status="{{ $cardStatus }}"
+                                 data-order="{{ strtolower($order->order_number) }}"
+                                 data-place="{{ strtolower($order->ticket->place->name ?? '') }}"
+                                 x-show="isVisible('{{ $cardStatus }}', '{{ strtolower($order->order_number) }}', '{{ strtolower($order->ticket->place->name ?? '') }}')"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-2"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-data="{ 
+                                    remaining: {{ $remainingMs }},
+                                    timer: null,
+                                    format(ms) {
+                                        if (ms <= 0) return '00:00:00';
+                                        const h = Math.floor(ms / 3600000);
+                                        const m = Math.floor((ms % 3600000) / 60000);
+                                        const s = Math.floor((ms % 60000) / 1000);
+                                        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                                    },
+                                    init() {
+                                        if (this.remaining > 0) {
+                                            const endTime = new Date().getTime() + this.remaining;
+                                            this.timer = setInterval(() => {
+                                                const now = new Date().getTime();
+                                                this.remaining = Math.max(0, endTime - now);
+                                                if (this.remaining <= 0) clearInterval(this.timer);
+                                            }, 1000);
                                         }
-                                     }"
-                                     x-init="init()">
-                                    
-                                    {{-- TOP: Main ticket section --}}
-                                    <div class="p-5 pb-4">
-                                        {{-- Header: Status & Countdown --}}
-                                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap 
-                                                {{ $isExpired ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' }}">
-                                                <i class="fa-solid {{ $isExpired ? 'fa-circle-exclamation' : 'fa-clock' }} text-[9px]"></i>
-                                                {{ $isExpired ? 'Kadaluwarsa' : $order->status_label }}
+                                    }
+                                 }"
+                                 x-init="init()">
+                                
+                                {{-- TOP: Main ticket section --}}
+                                <div class="p-5 pb-4">
+                                    {{-- Order number --}}
+                                    <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wide mb-2">{{ $order->order_number }}</p>
+
+                                    {{-- Header: Status & Countdown --}}
+                                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap 
+                                            {{ $isExpired ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' }}">
+                                            <i class="fa-solid {{ $isExpired ? 'fa-circle-exclamation' : 'fa-clock' }} text-[9px]"></i>
+                                            {{ $isExpired ? 'Kadaluwarsa' : $order->status_label }}
+                                        </span>
+                                        
+                                        <div x-show="remaining > 0" class="flex items-center gap-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-500">
+                                            <span>Sisa Waktu:</span>
+                                            <span class="font-mono font-bold bg-yellow-50 dark:bg-yellow-900/50 px-1.5 py-0.5 rounded" x-text="format(remaining)"></span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Destination name --}}
+                                    <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
+
+                                    {{-- Payment Method & Details --}}
+                                    @if($order->payment_method_detail && !$isExpired)
+                                    <div class="mb-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 border border-slate-100 dark:border-slate-700">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Metode Pembayaran</span>
+                                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                @if($order->payment_method_detail === 'bank_transfer')
+                                                    Bank {{ strtoupper($order->payment_channel) }}
+                                                @else
+                                                    {{ ucfirst($order->payment_method_detail) }}
+                                                @endif
                                             </span>
-                                            
-                                            <div x-show="remaining > 0" class="flex items-center gap-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-500">
-                                                <span>Sisa Waktu:</span>
-                                                <span class="font-mono font-bold bg-yellow-50 dark:bg-yellow-900/50 px-1.5 py-0.5 rounded" x-text="format(remaining)"></span>
-                                            </div>
                                         </div>
 
-                                        {{-- Destination name --}}
-                                        <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
-
-                                        {{-- Payment Method & Details --}}
-                                        @if($order->payment_method_detail && !$isExpired)
-                                        <div class="mb-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 border border-slate-100 dark:border-slate-700">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <span class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">Metode Pembayaran</span>
-                                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                                    @if($order->payment_method_detail === 'bank_transfer')
-                                                        Bank {{ strtoupper($order->payment_channel) }}
-                                                    @else
-                                                        {{ ucfirst($order->payment_method_detail) }}
-                                                    @endif
-                                                </span>
-                                            </div>
-
-                                            {{-- INLINE PAYMENT DETAILS (VA / QR) --}}
-                                            @if(isset($order->payment_info['va_number']))
-                                                <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600 flex items-center justify-between gap-2">
-                                                    <span class="font-mono text-base font-bold text-slate-800 dark:text-white tracking-wider truncate">{{ $order->payment_info['va_number'] }}</span>
-                                                    <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['va_number'] }}'); alert('Nomor VA disalin!')" class="text-primary hover:bg-slate-50 p-1.5 rounded-md transition-colors" title="Salin VA">
-                                                        <i class="fa-solid fa-copy"></i>
-                                                    </button>
-                                                </div>
-                                            @elseif(isset($order->payment_info['bill_key']))
-                                                <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600 relative">
-                                                    <div class="flex items-center justify-between gap-2 mb-1">
-                                                        <span class="text-[10px] text-slate-400">Bill Key</span>
-                                                        <div class="flex items-center gap-2">
-                                                            <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['bill_key'] }}</span>
-                                                            <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['bill_key'] }}')" class="text-primary text-xs"><i class="fa-solid fa-copy"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-center justify-between gap-2">
-                                                        <span class="text-[10px] text-slate-400">Biller Code</span>
-                                                        <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['biller_code'] }}</span>
-                                                    </div>
-                                                </div>
-                                            @elseif(isset($order->payment_info['qr_url']))
-                                                <div class="text-center pt-1">
-                                                    <img src="{{ $order->payment_info['qr_url'] }}" alt="QR Code" class="h-32 w-32 object-contain mx-auto rounded-lg border border-slate-200 bg-white p-2">
-                                                    <p class="text-[10px] text-slate-400 mt-1">Scan untuk membayar</p>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        @endif
-
-                                        {{-- Details 2x2 grid --}}
-                                        <div class="grid grid-cols-2 gap-x-6 gap-y-3">
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
-                                                <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
-                                                <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Perforated tear line with punch holes --}}
-                                    <div class="ticket-punch">
-                                        <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
-                                    </div>
-
-                                    {{-- BOTTOM: Actions stub --}}
-                                    <div class="px-5 py-3" x-data="{ showCancelConfirm: false }">
-                                        @if(!$isExpired)
-                                            <div class="flex gap-2 mb-2">
-                                                <a href="{{ route('tickets.payment.status', $order->order_number) }}" 
-                                                   class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-yellow-500/20">
-                                                    <i class="fa-solid fa-credit-card text-xs"></i> Bayar Sekarang
-                                                </a>
-                                                <button @click="
-                                                    $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i> Cek...';
-                                                    $el.disabled = true;
-                                                    fetch('{{ route('tickets.check-status', $order->order_number) }}')
-                                                        .then(r => r.json())
-                                                        .then(d => {
-                                                            if(d.status === 'paid') { window.location.reload(); }
-                                                            else { 
-                                                                $el.innerHTML = '<i class=\'fa-solid fa-circle-info text-xs\'></i> ' + d.message;
-                                                                setTimeout(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i> Cek Status'; $el.disabled = false; }, 3000);
-                                                            }
-                                                        })
-                                                        .catch(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i> Cek Status'; $el.disabled = false; });
-                                                " class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600 w-1/3 max-w-[100px]">
-                                                    <i class="fa-solid fa-arrows-rotate text-xs"></i> Cek
+                                        {{-- INLINE PAYMENT DETAILS (VA / QR) --}}
+                                        @if(isset($order->payment_info['va_number']))
+                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600 flex items-center justify-between gap-2">
+                                                <span class="font-mono text-base font-bold text-slate-800 dark:text-white tracking-wider truncate">{{ $order->payment_info['va_number'] }}</span>
+                                                <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['va_number'] }}'); this.innerHTML='<i class=\'fa-solid fa-check text-emerald-500\'></i>'; setTimeout(() => this.innerHTML='<i class=\'fa-solid fa-copy\'></i>', 1500)" class="text-primary hover:bg-slate-50 dark:hover:bg-slate-700 p-1.5 rounded-md transition-colors" title="Salin VA">
+                                                    <i class="fa-solid fa-copy"></i>
                                                 </button>
                                             </div>
-                                        @else
-                                            <div class="mb-2">
-                                                <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                                                    <i class="fa-solid fa-redo text-xs"></i> Pesan Ulang
-                                                </a>
+                                        @elseif(isset($order->payment_info['bill_key']))
+                                            <div class="bg-white dark:bg-slate-800 rounded-lg p-2.5 border border-slate-200 dark:border-slate-600">
+                                                <div class="flex items-center justify-between gap-2 mb-1">
+                                                    <span class="text-[10px] text-slate-400">Bill Key</span>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['bill_key'] }}</span>
+                                                        <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['bill_key'] }}')" class="text-primary text-xs"><i class="fa-solid fa-copy"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <span class="text-[10px] text-slate-400">Biller Code</span>
+                                                    <span class="font-mono text-sm font-bold text-slate-800 dark:text-white">{{ $order->payment_info['biller_code'] }}</span>
+                                                </div>
+                                            </div>
+                                        @elseif(isset($order->payment_info['qr_url']))
+                                            <div class="text-center pt-1">
+                                                <img src="{{ $order->payment_info['qr_url'] }}" alt="QR Code" class="h-32 w-32 object-contain mx-auto rounded-lg border border-slate-200 bg-white p-2">
+                                                <p class="text-[10px] text-slate-400 mt-1">Scan untuk membayar</p>
                                             </div>
                                         @endif
+                                    </div>
+                                    @endif
 
-                                        <div class="flex gap-2">
-                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                               class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                                                <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
+                                    {{-- Details grid --}}
+                                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
+                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
+                                            <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Perforated tear line --}}
+                                <div class="ticket-punch">
+                                    <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
+                                </div>
+
+                                {{-- BOTTOM: Actions --}}
+                                <div class="px-5 py-3" x-data="{ showCancelConfirm: false }">
+                                    @if(!$isExpired)
+                                        <div class="flex gap-2 mb-2">
+                                            <a href="{{ route('tickets.payment.status', $order->order_number) }}" 
+                                               class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-yellow-500/20">
+                                                <i class="fa-solid fa-credit-card text-xs"></i> Bayar Sekarang
                                             </a>
-                                            @if(!$isExpired)
-                                            <button @click="showCancelConfirm = true"
-                                                class="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-center font-semibold py-2.5 px-4 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-800">
-                                                <i class="fa-solid fa-xmark text-xs"></i>
+                                            <button @click="
+                                                $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i>';
+                                                $el.disabled = true;
+                                                fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                                                    .then(r => r.json())
+                                                    .then(d => {
+                                                        if(d.status === 'paid') { window.location.reload(); }
+                                                        else { 
+                                                            $el.innerHTML = '<i class=\'fa-solid fa-check text-xs\'></i>';
+                                                            setTimeout(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i>'; $el.disabled = false; }, 2000);
+                                                        }
+                                                    })
+                                                    .catch(() => { $el.innerHTML = '<i class=\'fa-solid fa-arrows-rotate text-xs\'></i>'; $el.disabled = false; });
+                                            " class="w-10 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center border border-slate-200 dark:border-slate-600" title="Cek Status">
+                                                <i class="fa-solid fa-arrows-rotate text-xs"></i>
                                             </button>
-                                            @endif
                                         </div>
-
-                                        {{-- Cancel Confirmation Modal --}}
-                                        <div x-show="showCancelConfirm" x-cloak
-                                             class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-                                             x-transition:enter="transition ease-out duration-200"
-                                             x-transition:enter-start="opacity-0"
-                                             x-transition:enter-end="opacity-100"
-                                             x-transition:leave="transition ease-in duration-150"
-                                             x-transition:leave-start="opacity-100"
-                                             x-transition:leave-end="opacity-0">
-                                            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
-                                                 @click.away="showCancelConfirm = false">
-                                                <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
-                                                </div>
-                                                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Batalkan Pesanan?</h3>
-                                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
-                                                <div class="flex gap-3">
-                                                    <button @click="showCancelConfirm = false"
-                                                        class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
-                                                        Kembali
-                                                    </button>
-                                                    <form action="{{ route('tickets.cancel', $order->order_number) }}" method="POST" class="flex-1">
-                                                        @csrf
-                                                        <button type="submit" class="w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm">
-                                                            Ya, Batalkan
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                    @else
+                                        <div class="mb-2">
+                                            <a href="{{ route('tickets.show', $order->ticket->slug ?? 'id') }}" class="w-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                                <i class="fa-solid fa-redo text-xs"></i> Pesan Ulang
+                                            </a>
                                         </div>
-                                    </div>
-                                </div>
-                            @else
-                                {{-- ═══════════════════════════════════════ --}}
-                                {{-- PAID/USED CARD: Physical ticket design --}}
-                                {{-- ═══════════════════════════════════════ --}}
-                                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                                    {{-- TOP: Main ticket section --}}
-                                    <div class="p-5 pb-4">
-                                        {{-- Status badge on its own line --}}
-                                        <div class="mb-3">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap
-                                                {{ $order->status == 'paid' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : '' }}
-                                                {{ $order->status == 'used' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : '' }}
-                                                {{ $order->status == 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : '' }}">
-                                                @if($order->status == 'paid')
-                                                    <i class="fa-solid fa-check-circle text-[9px]"></i>
-                                                @elseif($order->status == 'used')
-                                                    <i class="fa-solid fa-ticket text-[9px]"></i>
-                                                @else
-                                                    <i class="fa-solid fa-times-circle text-[9px]"></i>
-                                                @endif
-                                                {{ $order->status_label }}
-                                            </span>
-                                        </div>
+                                    @endif
 
-                                        {{-- Destination name --}}
-                                        <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
-
-                                        {{-- Details 2x2 grid --}}
-                                        <div class="grid grid-cols-2 gap-x-4 gap-y-3">
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
-                                                <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Quantity') }}</p>
-                                                <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">No. Tiket</p>
-                                                <p class="font-mono text-[11px] text-slate-800 dark:text-white mt-0.5 tracking-wide break-all">{{ $order->ticket_number }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
-                                                <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Perforated tear line with punch holes --}}
-                                    <div class="ticket-punch">
-                                        <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
-                                    </div>
-
-                                    {{-- BOTTOM: Actions stub --}}
-                                    <div class="px-5 py-3 flex gap-2">
+                                    <div class="flex gap-2">
                                         <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
-                                           class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20">
-                                            <i class="fa-solid fa-eye text-xs"></i> Detail
-                                        </a>
-                                        @if(in_array($order->status, ['paid', 'used']))
-                                        <a href="{{ route('tickets.download', $order->order_number) }}" 
                                            class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                                            <i class="fa-solid fa-download text-xs"></i> Download
+                                            <i class="fa-solid fa-eye text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
                                         </a>
+                                        @if(!$isExpired)
+                                        <button @click="showCancelConfirm = true"
+                                            class="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-center font-semibold py-2.5 px-4 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-800">
+                                            <i class="fa-solid fa-xmark text-xs"></i>
+                                        </button>
                                         @endif
                                     </div>
+
+                                    {{-- Cancel Confirmation Modal --}}
+                                    <div x-show="showCancelConfirm" x-cloak
+                                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                                         x-transition:enter="transition ease-out duration-200"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition ease-in duration-150"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0">
+                                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
+                                             @click.away="showCancelConfirm = false">
+                                            <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                                <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+                                            </div>
+                                            <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Batalkan Pesanan?</h3>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Pesanan <strong class="font-mono">{{ $order->order_number }}</strong> akan dibatalkan secara permanen.</p>
+                                            <div class="flex gap-3">
+                                                <button @click="showCancelConfirm = false"
+                                                    class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
+                                                    Kembali
+                                                </button>
+                                                <form action="{{ route('tickets.cancel', $order->order_number) }}" method="POST" class="flex-1">
+                                                    @csrf
+                                                    <button type="submit" class="w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm">
+                                                        Ya, Batalkan
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            @endif
-                        @endforeach
+                            </div>
+                        @else
+                            {{-- ═══════════════════════════════════════ --}}
+                            {{-- PAID / USED / CANCELLED CARD           --}}
+                            {{-- ═══════════════════════════════════════ --}}
+                            <div class="ticket-card bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+                                 data-status="{{ $cardStatus }}"
+                                 data-order="{{ strtolower($order->order_number) }}"
+                                 data-place="{{ strtolower($order->ticket->place->name ?? '') }}"
+                                 x-show="isVisible('{{ $cardStatus }}', '{{ strtolower($order->order_number) }}', '{{ strtolower($order->ticket->place->name ?? '') }}')"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-2"
+                                 x-transition:enter-end="opacity-100 translate-y-0">
+                                {{-- TOP: Main ticket section --}}
+                                <div class="p-5 pb-4">
+                                    {{-- Order number --}}
+                                    <p class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tracking-wide mb-2">{{ $order->order_number }}</p>
+
+                                    {{-- Status badge --}}
+                                    <div class="mb-3">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap
+                                            {{ $order->status == 'paid' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : '' }}
+                                            {{ $order->status == 'used' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : '' }}
+                                            {{ $order->status == 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : '' }}">
+                                            @if($order->status == 'paid')
+                                                <i class="fa-solid fa-check-circle text-[9px]"></i>
+                                            @elseif($order->status == 'used')
+                                                <i class="fa-solid fa-ticket text-[9px]"></i>
+                                            @else
+                                                <i class="fa-solid fa-times-circle text-[9px]"></i>
+                                            @endif
+                                            {{ $order->status_label }}
+                                        </span>
+                                    </div>
+
+                                    {{-- Destination name --}}
+                                    <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
+
+                                    {{-- Details 2x2 grid --}}
+                                    <div class="grid grid-cols-2 gap-x-4 gap-y-3">
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
+                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Quantity') }}</p>
+                                            <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">No. Tiket</p>
+                                            <p class="font-mono text-[11px] text-slate-800 dark:text-white mt-0.5 tracking-wide break-all">{{ $order->ticket_number }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
+                                            <p class="font-bold text-sm text-primary mt-0.5">Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Perforated tear line --}}
+                                <div class="ticket-punch">
+                                    <div class="border-t-2 border-dashed border-slate-200 dark:border-slate-700 mx-5"></div>
+                                </div>
+
+                                {{-- BOTTOM: Actions --}}
+                                <div class="px-5 py-3 flex gap-2">
+                                    <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                       class="flex-1 bg-primary hover:bg-primary/90 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20">
+                                        <i class="fa-solid fa-eye text-xs"></i> Detail
+                                    </a>
+                                    @if(in_array($order->status, ['paid', 'used']))
+                                    <a href="{{ route('tickets.download', $order->order_number) }}" 
+                                       class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                                        <i class="fa-solid fa-download text-xs"></i> Download
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+
+                {{-- ════════════════════════════════════════ --}}
+                {{-- EMPTY STATE (per tab / search)          --}}
+                {{-- ════════════════════════════════════════ --}}
+                <div x-show="visibleCount === 0" x-cloak
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     class="text-center py-14">
+                    
+                    {{-- Dynamic icon --}}
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                         :class="emptyState.bgClass">
+                        <i :class="emptyState.icon + ' text-2xl ' + emptyState.iconClass"></i>
                     </div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1.5" x-text="emptyState.title"></h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto" x-text="emptyState.subtitle"></p>
+                    <a href="{{ route('tickets.index') }}" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors text-sm inline-flex items-center gap-2">
+                        <i class="fa-solid fa-store text-xs"></i>
+                        {{ __('Tickets.My.BuyNew') }}
+                    </a>
+                </div>
+
                 @else
-                    {{-- Empty state --}}
+                    {{-- Global empty state (no orders at all) --}}
                     <div class="text-center py-14">
                         <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <i class="fa-solid fa-ticket text-slate-300 dark:text-slate-500 text-2xl"></i>
@@ -386,4 +476,108 @@
             </div>
         </div>
     </div>
+
+@if($orders->count() > 0)
+<script>
+function ticketList() {
+    // Pre-compute counts from server data
+    const statusCounts = {
+        all: {{ $orders->count() }},
+        active: {{ $orders->whereIn('status', ['pending', 'paid'])->count() }},
+        history: {{ $orders->where('status', 'used')->count() }},
+        cancelled: {{ $orders->where('status', 'cancelled')->count() }},
+    };
+
+    return {
+        activeTab: 'all',
+        searchQuery: '',
+        
+        tabs: [
+            { key: 'all', label: 'Semua', icon: 'fa-solid fa-layer-group', count: statusCounts.all },
+            { key: 'active', label: 'Aktif', icon: 'fa-solid fa-bolt', count: statusCounts.active },
+            { key: 'history', label: 'Riwayat', icon: 'fa-solid fa-clock-rotate-left', count: statusCounts.history },
+            { key: 'cancelled', label: 'Dibatalkan', icon: 'fa-solid fa-ban', count: statusCounts.cancelled },
+        ],
+
+        // Determine whether a card should be visible based on tab + search
+        isVisible(status, orderNum, placeName) {
+            // Tab filter
+            const tabMatch = this.activeTab === 'all' ||
+                (this.activeTab === 'active' && (status === 'pending' || status === 'paid')) ||
+                (this.activeTab === 'history' && status === 'used') ||
+                (this.activeTab === 'cancelled' && status === 'cancelled');
+            
+            if (!tabMatch) return false;
+
+            // Search filter
+            if (this.searchQuery.length > 0) {
+                const q = this.searchQuery.toLowerCase();
+                return orderNum.includes(q) || placeName.includes(q);
+            }
+
+            return true;
+        },
+
+        // Count visible cards (reactive)
+        get visibleCount() {
+            const cards = document.querySelectorAll('.ticket-card');
+            let count = 0;
+            cards.forEach(card => {
+                const status = card.dataset.status;
+                const order = card.dataset.order;
+                const place = card.dataset.place;
+                if (this.isVisible(status, order, place)) count++;
+            });
+            return count;
+        },
+
+        // Empty state content based on active tab
+        get emptyState() {
+            if (this.searchQuery.length > 0) {
+                return {
+                    icon: 'fa-solid fa-magnifying-glass',
+                    bgClass: 'bg-slate-100 dark:bg-slate-700',
+                    iconClass: 'text-slate-300 dark:text-slate-500',
+                    title: 'Tidak ditemukan',
+                    subtitle: `Tidak ada tiket yang cocok dengan "${this.searchQuery}"`
+                };
+            }
+
+            const states = {
+                all: {
+                    icon: 'fa-solid fa-ticket',
+                    bgClass: 'bg-slate-100 dark:bg-slate-700',
+                    iconClass: 'text-slate-300 dark:text-slate-500',
+                    title: 'Belum ada transaksi',
+                    subtitle: 'Anda belum melakukan pemesanan tiket'
+                },
+                active: {
+                    icon: 'fa-solid fa-clock',
+                    bgClass: 'bg-yellow-50 dark:bg-yellow-900/20',
+                    iconClass: 'text-yellow-400 dark:text-yellow-600',
+                    title: 'Belum ada tiket aktif',
+                    subtitle: 'Tiket yang menunggu pembayaran atau sudah dibayar akan muncul di sini'
+                },
+                history: {
+                    icon: 'fa-solid fa-clock-rotate-left',
+                    bgClass: 'bg-blue-50 dark:bg-blue-900/20',
+                    iconClass: 'text-blue-400 dark:text-blue-600',
+                    title: 'Belum ada riwayat',
+                    subtitle: 'Tiket yang sudah digunakan akan muncul di sini'
+                },
+                cancelled: {
+                    icon: 'fa-solid fa-ban',
+                    bgClass: 'bg-red-50 dark:bg-red-900/20',
+                    iconClass: 'text-red-300 dark:text-red-600',
+                    title: 'Tidak ada tiket dibatalkan',
+                    subtitle: 'Tiket yang dibatalkan akan muncul di sini'
+                }
+            };
+
+            return states[this.activeTab] || states.all;
+        }
+    };
+}
+</script>
+@endif
 </x-public-layout>
