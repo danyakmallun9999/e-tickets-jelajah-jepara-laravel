@@ -97,32 +97,69 @@
                                 {{-- ═══════════════════════════════════════ --}}
                                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
                                     {{-- TOP: Main ticket section --}}
-                                    <div class="p-5 pb-4">
-                                        {{-- Status badge on its own line --}}
-                                        <div class="mb-3">
+                                    <div class="p-5 pb-4"
+                                         x-data="{ 
+                                            expiry: new Date('{{ $order->expiry_time ?? $order->created_at->addMinutes(60) }}').getTime(),
+                                            remaining: 0,
+                                            timer: null,
+                                            format(ms) {
+                                                if (ms <= 0) return '00:00:00';
+                                                const h = Math.floor(ms / 3600000);
+                                                const m = Math.floor((ms % 3600000) / 60000);
+                                                const s = Math.floor((ms % 60000) / 1000);
+                                                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                                            },
+                                            init() {
+                                                this.update();
+                                                this.timer = setInterval(() => this.update(), 1000);
+                                            },
+                                            update() {
+                                                const now = new Date().getTime();
+                                                this.remaining = this.expiry - now;
+                                                if (this.remaining <= 0) clearInterval(this.timer);
+                                            }
+                                         }"
+                                         x-init="init()">
+                                        
+                                        {{-- Header: Status & Countdown --}}
+                                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400">
                                                 <i class="fa-solid fa-clock text-[9px]"></i>
                                                 {{ $order->status_label }}
                                             </span>
+                                            <div class="flex items-center gap-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-500">
+                                                <span>Sisa Waktu:</span>
+                                                <span class="font-mono font-bold bg-yellow-50 dark:bg-yellow-900/50 px-1.5 py-0.5 rounded" x-text="format(remaining)"></span>
+                                            </div>
                                         </div>
 
                                         {{-- Destination name --}}
                                         <p class="font-bold text-base text-slate-900 dark:text-white leading-snug">{{ $order->ticket->place->name }}</p>
                                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 truncate">{{ $order->ticket->name }} · <span class="capitalize">{{ $order->ticket->type }}</span></p>
 
+                                        {{-- Payment Method (if persisted) --}}
+                                        @if($order->payment_method_detail)
+                                        <div class="mb-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg p-2.5 border border-slate-100 dark:border-slate-700">
+                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold mb-1">Metode Pembayaran</p>
+                                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                                @if($order->payment_method_detail === 'bank_transfer')
+                                                    <i class="fa-solid fa-building-columns text-slate-400"></i> Bank {{ strtoupper($order->payment_channel) }}
+                                                @elseif($order->payment_method_detail === 'gopay')
+                                                    <i class="fa-brands fa-google-pay text-slate-400"></i> GoPay
+                                                @elseif($order->payment_method_detail === 'qris')
+                                                    <i class="fa-solid fa-qrcode text-slate-400"></i> QRIS
+                                                @else
+                                                    <i class="fa-regular fa-credit-card text-slate-400"></i> {{ ucfirst($order->payment_method_detail) }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                        @endif
+
                                         {{-- Details 2x2 grid --}}
                                         <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                                             <div>
                                                 <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Date') }}</p>
                                                 <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Quantity') }}</p>
-                                                <p class="font-semibold text-sm text-slate-800 dark:text-white mt-0.5">{{ $order->quantity }} {{ __('Tickets.Card.Ticket') }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.OrderNumber') }}</p>
-                                                <p class="font-mono text-xs text-slate-800 dark:text-white mt-0.5 tracking-wide">{{ $order->order_number }}</p>
                                             </div>
                                             <div>
                                                 <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold">{{ __('Tickets.My.Total') }}</p>
@@ -139,10 +176,17 @@
                                     {{-- BOTTOM: Actions stub --}}
                                     <div class="px-5 py-3" x-data="{ showCancelConfirm: false }">
                                         <div class="flex gap-2 mb-2">
-                                            <a href="{{ route('tickets.payment', $order->order_number) }}" 
-                                               class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5">
-                                                <i class="fa-solid fa-credit-card text-xs"></i> Bayar
-                                            </a>
+                                            @if(isset($order->payment_info))
+                                                <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                                   class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-yellow-500/20">
+                                                    <i class="fa-solid fa-receipt text-xs"></i> Lihat Instruksi
+                                                </a>
+                                            @else
+                                                <a href="{{ route('tickets.payment', $order->order_number) }}" 
+                                                   class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center font-semibold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 shadow-sm shadow-yellow-500/20">
+                                                    <i class="fa-solid fa-credit-card text-xs"></i> Bayar
+                                                </a>
+                                            @endif
                                             <button @click="
                                                 $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i> Cek...';
                                                 $el.disabled = true;

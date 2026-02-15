@@ -201,21 +201,86 @@
                         </div>
                     </div>
                     @elseif($order->status === 'pending')
-                    <div class="rounded-xl p-4 mb-5 {{ $config['bg'] }} {{ $config['border'] }} border text-left">
-                        <div class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg>
-                            <div class="text-sm text-slate-600 dark:text-slate-300">
-                                <p class="font-bold mb-1.5 text-slate-800 dark:text-white text-xs uppercase tracking-wider">Instruksi Pembayaran</p>
-                                <p class="text-xs mb-1">Metode: <strong>{{ ucfirst($order->payment_method) }}</strong></p>
-                                @if($order->payment_method === 'transfer')
-                                    <p class="text-xs">Silakan transfer ke rekening berikut:</p>
-                                    <p class="font-mono bg-white dark:bg-slate-800 p-2.5 rounded-lg mt-1.5 text-xs text-slate-900 dark:text-white">Bank BCA: 1234567890<br>a.n. Dinas Pariwisata Jepara</p>
-                                @elseif($order->payment_method === 'cash')
-                                    <p class="text-xs">Pembayaran di lokasi wisata saat kunjungan.</p>
-                                @else
-                                    <p class="text-xs">Instruksi pembayaran akan dikirim ke email Anda.</p>
-                                @endif
+                    <div class="rounded-xl p-4 mb-5 {{ $config['bg'] }} {{ $config['border'] }} border text-left"
+                         x-data="{ 
+                            expiry: new Date('{{ $order->expiry_time ?? $order->created_at->addMinutes(60) }}').getTime(),
+                            remaining: 0,
+                            timer: null,
+                            format(ms) {
+                                if (ms <= 0) return '00:00:00';
+                                const h = Math.floor(ms / 3600000);
+                                const m = Math.floor((ms % 3600000) / 60000);
+                                const s = Math.floor((ms % 60000) / 1000);
+                                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                            },
+                            init() {
+                                this.update();
+                                this.timer = setInterval(() => this.update(), 1000);
+                            },
+                            update() {
+                                const now = new Date().getTime();
+                                this.remaining = this.expiry - now;
+                                if (this.remaining <= 0) clearInterval(this.timer);
+                            }
+                         }"
+                         x-init="init()">
+                        
+                        <div class="flex items-start gap-3 mb-4">
+                            <svg class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div class="text-sm text-slate-600 dark:text-slate-300 w-full">
+                                <div class="flex justify-between items-start">
+                                    <p class="font-bold mb-1 pt-0.5 text-slate-800 dark:text-white text-xs uppercase tracking-wider">Selesaikan Pembayaran Dalam</p>
+                                    <span class="font-mono text-lg font-bold text-yellow-600 bg-yellow-100 dark:bg-yellow-900/50 px-2 py-0.5 rounded" x-text="format(remaining)"></span>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800/50 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800/50">
+                            <p class="text-xs text-slate-500 mb-1 uppercase tracking-wide">Metode Pembayaran</p>
+                            <p class="font-bold text-slate-900 dark:text-white text-base mb-3 flex items-center gap-2">
+                                @if($order->payment_method_detail === 'bank_transfer')
+                                    Transfer Bank {{ strtoupper($order->payment_channel) }}
+                                @elseif($order->payment_method_detail === 'gopay')
+                                    GoPay
+                                @elseif($order->payment_method_detail === 'qris')
+                                    QRIS
+                                @elseif($order->payment_method_detail === 'echannel')
+                                    Mandiri Bill Payment
+                                @else
+                                    {{ ucfirst($order->payment_method_detail ?? 'Midtrans') }}
+                                @endif
+                            </p>
+
+                            {{-- Payment Details Handling --}}
+                            @if(isset($order->payment_info['va_number']))
+                                <div class="mb-3">
+                                    <p class="text-xs text-slate-500 mb-1">Nomor Virtual Account</p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="font-mono text-xl font-bold text-slate-800 dark:text-slate-200 tracking-wider select-all" id="va-number">{{ $order->payment_info['va_number'] }}</p>
+                                        <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['va_number'] }}'); alert('Disalin!');" class="text-primary hover:text-primary/80">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            @elseif(isset($order->payment_info['bill_key']))
+                                <div class="mb-3">
+                                    <p class="text-xs text-slate-500 mb-1">Kode Perusahaan</p>
+                                    <p class="font-mono text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">{{ $order->payment_info['biller_code'] }}</p>
+                                    
+                                    <p class="text-xs text-slate-500 mb-1">Kode Pembayaran</p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="font-mono text-xl font-bold text-slate-800 dark:text-slate-200 tracking-wider select-all">{{ $order->payment_info['bill_key'] }}</p>
+                                        <button onclick="navigator.clipboard.writeText('{{ $order->payment_info['bill_key'] }}'); alert('Disalin!');" class="text-primary hover:text-primary/80">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            @elseif(isset($order->payment_info['qr_url']))
+                                <div class="text-center mb-3">
+                                    <img src="{{ $order->payment_info['qr_url'] }}" alt="QR Code Payment" class="w-48 h-48 mx-auto border rounded-lg p-2 bg-white">
+                                    <p class="text-xs text-slate-500 mt-2">Scan QR untuk membayar</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     @elseif($order->status === 'cancelled')
@@ -254,7 +319,11 @@
                             <a href="{{ route('tickets.payment', $order->order_number) }}"
                                class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2 text-sm">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>
-                                Bayar Sekarang
+                                @if(isset($order->payment_info))
+                                    Instruksi / Ganti Metode
+                                @else
+                                    Bayar Sekarang
+                                @endif
                             </a>
                             <div class="flex gap-3">
                                 <button onclick="

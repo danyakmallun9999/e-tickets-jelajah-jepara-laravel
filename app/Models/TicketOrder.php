@@ -44,6 +44,8 @@ class TicketOrder extends Model
         'refund_status',
         'refund_amount', // Added
         'refunded_at', // Added
+        'expiry_time',
+        'payment_info',
     ];
 
     protected $casts = [
@@ -58,6 +60,8 @@ class TicketOrder extends Model
         'payed_at' => 'datetime',
         'refunded_at' => 'datetime',
         'check_in_time' => 'datetime',
+        'expiry_time' => 'datetime',
+        'payment_info' => 'array',
     ];
 
     /**
@@ -245,7 +249,7 @@ class TicketOrder extends Model
                 'iconColor' => 'text-blue-500',
                 'title' => 'Tiket Sudah Digunakan',
                 'subtitle' => $this->check_in_time
-                    ? 'Digunakan pada ' . $this->check_in_time->translatedFormat('d F Y, H:i')
+                    ? 'Digunakan pada '.$this->check_in_time->translatedFormat('d F Y, H:i')
                     : 'Tiket telah digunakan',
                 'showQr' => true,
                 'animation' => 'fade',

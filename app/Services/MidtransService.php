@@ -101,11 +101,16 @@ class MidtransService
 
             $response = CoreApi::charge($params);
 
+            // Extract payment info
+            $paymentData = $this->extractPaymentData($response, $paymentType, $bank);
+
             // Update order with Midtrans data
             $order->update([
                 'payment_gateway_id' => $orderId,
                 'payment_method_detail' => $paymentType,
                 'payment_channel' => $bank ?? $paymentType,
+                'payment_info' => $paymentData,
+                'expiry_time' => $response->expiry_time ?? now()->addMinutes(60),
             ]);
 
             Log::info('Midtrans Core API charge created', [
@@ -325,9 +330,19 @@ class MidtransService
                     'transaction_status' => $transactionStatus,
                 ]);
             } elseif ($transactionStatus === 'pending') {
-                Log::info('Order payment pending', [
+                $paymentData = $this->extractPaymentData((object) $notificationData, $paymentType, $notificationData['bank'] ?? null);
+                
+                $order->update([
+                    'payment_method_detail' => $paymentType,
+                    'payment_channel' => $notificationData['bank'] ?? $notificationData['store'] ?? $paymentType,
+                    'payment_info' => $paymentData,
+                    'expiry_time' => $notificationData['expiry_time'] ?? null,
+                ]);
+
+                Log::info('Order payment pending - details persisted', [
                     'order_number' => $orderNumber,
                     'transaction_status' => $transactionStatus,
+                    'payment_type' => $paymentType,
                 ]);
             }
 

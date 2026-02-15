@@ -20,14 +20,15 @@ class TicketController extends Controller
     {
         $this->midtransService = $midtransService;
     }
+
     /**
      * Display a listing of available tickets.
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Place::whereHas('tickets', function($q) {
+        $query = \App\Models\Place::whereHas('tickets', function ($q) {
             $q->active();
-        })->with(['tickets' => function($q) {
+        })->with(['tickets' => function ($q) {
             $q->active();
         }]);
 
@@ -46,12 +47,12 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        if (!$ticket->is_active) {
+        if (! $ticket->is_active) {
             abort(404, 'Tiket tidak tersedia');
         }
 
         $ticket->load('place');
-        
+
         return view('public.tickets.show', compact('ticket'));
     }
 
@@ -94,24 +95,24 @@ class TicketController extends Controller
 
         // Resolve Location Names if Indonesia
         if ($validated['customer_country'] === 'Indonesia') {
-            if (!empty($validated['customer_province'])) {
+            if (! empty($validated['customer_province'])) {
                 $province = \Laravolt\Indonesia\Models\Province::find($validated['customer_province']);
                 $validated['customer_province'] = $province ? $province->name : $validated['customer_province'];
             }
-            if (!empty($validated['customer_city'])) {
+            if (! empty($validated['customer_city'])) {
                 // Check if it's an ID (numeric) or "Lainnya" custom text
                 if (is_numeric($validated['customer_city'])) {
-                     $city = \Laravolt\Indonesia\Models\City::find($validated['customer_city']);
-                     $validated['customer_city'] = $city ? $city->name : $validated['customer_city'];
+                    $city = \Laravolt\Indonesia\Models\City::find($validated['customer_city']);
+                    $validated['customer_city'] = $city ? $city->name : $validated['customer_city'];
                 }
                 // If it's text (custom input), keep as is
             }
         }
 
         // Check if ticket is available
-        if (!$ticket->isAvailableOn($validated['visit_date'], $validated['quantity'])) {
+        if (! $ticket->isAvailableOn($validated['visit_date'], $validated['quantity'])) {
             return back()->withErrors([
-                'quantity' => 'Kuota tiket tidak mencukupi untuk tanggal yang dipilih.'
+                'quantity' => 'Kuota tiket tidak mencukupi untuk tanggal yang dipilih.',
             ])->withInput();
         }
 
@@ -121,6 +122,7 @@ class TicketController extends Controller
         $validated['unit_price'] = $pricePerTicket;
         $validated['status'] = 'pending';
         $validated['payment_method'] = 'midtrans';
+        $validated['expiry_time'] = now()->addMinutes(60); // Set default expiry for 60 mins matching Midtrans config
 
         // Create order
         $order = TicketOrder::create($validated);
@@ -163,7 +165,7 @@ class TicketController extends Controller
                     $transactionStatus = $status->transaction_status ?? null;
                     $fraudStatus = $status->fraud_status ?? 'accept';
 
-                    if ($transactionStatus === 'settlement' || 
+                    if ($transactionStatus === 'settlement' ||
                         ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
                         $order->update([
                             'status' => 'paid',
@@ -217,7 +219,7 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        if (!$order->ticket_number) {
+        if (! $order->ticket_number) {
             abort(404, 'Tiket belum diterbitkan via pembayaran.');
         }
 
@@ -233,7 +235,7 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        if (!$order->ticket_number) {
+        if (! $order->ticket_number) {
             abort(404, 'Tiket belum diterbitkan.');
         }
 
@@ -249,11 +251,11 @@ class TicketController extends Controller
         $matrixWidth = $matrix->getWidth();
         $borderSize = 10; // Increased padding modules (was 4)
         $totalModules = $matrixWidth + ($borderSize * 2);
-        
+
         // Calculate pixel size to get closest to 1000px
-        $pixelSize = (int) (1000 / $totalModules); 
+        $pixelSize = (int) (1000 / $totalModules);
         $imageWidth = $totalModules * $pixelSize;
-        
+
         $image = imagecreate($imageWidth, $imageWidth);
         $white = imagecolorallocate($image, 255, 255, 255);
         $black = imagecolorallocate($image, 0, 0, 0); // Pure black for better contrast
@@ -286,7 +288,7 @@ class TicketController extends Controller
         // Return as download
         return response($imageData)
             ->header('Content-Type', 'image/jpeg')
-            ->header('Content-Disposition', 'attachment; filename="ticket-' . $order->ticket_number . '.jpg"');
+            ->header('Content-Disposition', 'attachment; filename="ticket-'.$order->ticket_number.'.jpg"');
     }
 
     /**
@@ -364,6 +366,7 @@ class TicketController extends Controller
             session()->put("payment_data.{$orderNumber}", $paymentData);
 
             $order->refresh();
+
             return redirect()->route('tickets.payment.status', $orderNumber);
 
         } catch (\Exception $e) {
@@ -371,8 +374,9 @@ class TicketController extends Controller
                 'order_number' => $orderNumber,
                 'error' => $e->getMessage(),
             ]);
+
             return redirect()->route('tickets.payment', $orderNumber)
-                ->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+                ->with('error', 'Gagal memproses pembayaran: '.$e->getMessage());
         }
     }
 
@@ -392,23 +396,26 @@ class TicketController extends Controller
             return redirect()->route('tickets.payment.success', $orderNumber);
         }
 
-        // Get payment data from session
-        $paymentData = session("payment_data.{$orderNumber}");
+        // Get payment data from session or database
+        $paymentData = session("payment_data.{$orderNumber}") ?? $order->payment_info;
 
-        // If no payment data in session, try to get from Midtrans API
-        if (!$paymentData && $order->payment_gateway_id) {
+        // If no payment data, try to get from Midtrans API
+        if (! $paymentData && $order->payment_gateway_id) {
             try {
                 $status = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
                 $paymentType = $status->payment_type ?? $order->payment_method_detail;
                 $bank = $order->payment_channel;
                 $paymentData = $this->midtransService->extractPaymentData($status, $paymentType, $bank);
+
+                // Update order with latest info
+                $order->update(['payment_info' => $paymentData]);
             } catch (\Exception $e) {
                 return redirect()->route('tickets.payment', $orderNumber)
                     ->with('error', 'Sesi pembayaran expired. Silakan pilih metode pembayaran lagi.');
             }
         }
 
-        if (!$paymentData) {
+        if (! $paymentData) {
             return redirect()->route('tickets.payment', $orderNumber)
                 ->with('error', 'Silakan pilih metode pembayaran.');
         }
@@ -439,7 +446,7 @@ class TicketController extends Controller
                 $transactionStatus = $status->transaction_status ?? null;
                 $fraudStatus = $status->fraud_status ?? 'accept';
 
-                if ($transactionStatus === 'settlement' || 
+                if ($transactionStatus === 'settlement' ||
                     ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
                     $order->update([
                         'status' => 'paid',
@@ -449,11 +456,13 @@ class TicketController extends Controller
                     ]);
                     $order->generateTicketNumber();
                     $order->refresh();
+
                     return view('user.tickets.payment-success', compact('order'));
                 }
 
                 if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                     $order->update(['status' => 'cancelled']);
+
                     return redirect()->route('tickets.payment.failed', $orderNumber);
                 }
             } catch (\Exception $e) {
@@ -501,7 +510,7 @@ class TicketController extends Controller
             ]);
         }
 
-        if (!$order->payment_gateway_id) {
+        if (! $order->payment_gateway_id) {
             return response()->json([
                 'success' => false,
                 'status' => $order->status,
@@ -514,7 +523,7 @@ class TicketController extends Controller
             $transactionStatus = $status->transaction_status ?? 'unknown';
             $fraudStatus = $status->fraud_status ?? 'accept';
 
-            if ($transactionStatus === 'settlement' || 
+            if ($transactionStatus === 'settlement' ||
                 ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
                 $order->update([
                     'status' => 'paid',
@@ -533,6 +542,7 @@ class TicketController extends Controller
 
             if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                 $order->update(['status' => 'cancelled']);
+
                 return response()->json([
                     'success' => true,
                     'status' => 'cancelled',
@@ -602,7 +612,7 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
-        if (!in_array($order->status, ['pending', 'cancelled'])) {
+        if (! in_array($order->status, ['pending', 'cancelled'])) {
             return back()->with('error', 'Pembayaran tidak dapat diulang untuk pesanan ini.');
         }
 
