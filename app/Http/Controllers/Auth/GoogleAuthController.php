@@ -34,38 +34,48 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             
-            // MED-01: Prioritize google_id match first, separate from email match
-            // This prevents account takeover via email-based linking
-            $user = User::where('google_id', $googleUser->getId())->first();
+            // MED-03: Wrap in DB transaction with locks to prevent account linking race condition
+            $user = \Illuminate\Support\Facades\DB::transaction(function () use ($googleUser) {
+                // Prioritize google_id match first
+                $user = User::where('google_id', $googleUser->getId())->lockForUpdate()->first();
 
-            if (!$user) {
-                // Only link by email if the account has no Google ID yet
-                $existingUser = User::where('email', $googleUser->getEmail())
-                    ->whereNull('google_id')
-                    ->first();
+                if (!$user) {
+                    // Only link by email if the account has no Google ID yet
+                    $existingUser = User::where('email', $googleUser->getEmail())
+                        ->whereNull('google_id')
+                        ->lockForUpdate()
+                        ->first();
 
-                if ($existingUser) {
-                    // Block admin accounts from being linked via Google
-                    if ($existingUser->isAdmin()) {
-                        return redirect()->route('welcome')
-                            ->with('error', __('Admin users cannot login via Google. Please use the admin login page.'));
+                    if ($existingUser) {
+                        // Block admin accounts from being linked via Google
+                        if ($existingUser->isAdmin()) {
+                            return null; // Signal to redirect with error
+                        }
+
+                        $existingUser->update([
+                            'google_id' => $googleUser->getId(),
+                            'avatar' => $googleUser->getAvatar(),
+                        ]);
+                        $user = $existingUser;
+                    } else {
+                        // Create new public user
+                        $user = User::create([
+                            'name' => $googleUser->getName(),
+                            'email' => $googleUser->getEmail(),
+                            'google_id' => $googleUser->getId(),
+                            'avatar' => $googleUser->getAvatar(),
+                            'email_verified_at' => now(),
+                        ]);
                     }
-
-                    $existingUser->update([
-                        'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                    ]);
-                    $user = $existingUser;
-                } else {
-                    // Create new public user
-                    $user = User::create([
-                        'name' => $googleUser->getName(),
-                        'email' => $googleUser->getEmail(),
-                        'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                        'email_verified_at' => now(),
-                    ]);
                 }
+
+                return $user;
+            });
+
+            // Handle admin block signal from transaction
+            if ($user === null) {
+                return redirect()->route('welcome')
+                    ->with('error', __('Admin users cannot login via Google. Please use the admin login page.'));
             }
 
             // Ensure user is not an admin

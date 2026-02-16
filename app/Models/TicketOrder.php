@@ -37,25 +37,12 @@ class TicketOrder extends Model
         'payment_info',
     ];
 
-    /**
-     * Security-sensitive fields — only set explicitly, never from mass assignment.
-     * Prevents price manipulation, status tampering, and refund fraud.
-     */
-    protected $guarded = [
-        'total_price',
-        'unit_price',
-        'tax_amount',
-        'app_fee',
-        'discount_amount',
-        'status',
-        'paid_at',
-        'payed_at',
-        'refund_status',
-        'refund_amount',
-        'refunded_at',
-        'payment_gateway_ref',
-        'scanned_by',
-    ];
+    // Security note: The following fields are NOT in $fillable and are therefore
+    // automatically guarded from mass assignment:
+    // total_price, unit_price, tax_amount, app_fee, discount_amount,
+    // status, paid_at, payed_at, refund_status, refund_amount, refunded_at,
+    // payment_gateway_ref, scanned_by
+    // They must be set explicitly via $order->field = value.
 
     protected $casts = [
         'visit_date' => 'date',
@@ -171,8 +158,20 @@ class TicketOrder extends Model
      */
     public function generateQRCodeData()
     {
-        // Return simple string for better density/readability & scanning performance
-        return $this->order_number;
+        // Return ticket_number for consistency with ScanController
+        return $this->ticket_number;
+    }
+
+    /**
+     * CRIT-01: Cancel and invalidate ticket credentials.
+     * Clears ticket_number and qr_code to prevent reuse after cancellation.
+     */
+    public function cancelAndInvalidate(): void
+    {
+        $this->status = 'cancelled';
+        $this->ticket_number = null;
+        $this->qr_code = null;
+        $this->save();
     }
 
     /**
@@ -315,8 +314,8 @@ class TicketOrder extends Model
                         }
                     }
 
-                    $locked->status = 'cancelled';
-                    $locked->save();
+                    // CRIT-01: Use cancelAndInvalidate to clear ticket credentials
+                    $locked->cancelAndInvalidate();
                     $this->refresh();
                     return true;
                 }

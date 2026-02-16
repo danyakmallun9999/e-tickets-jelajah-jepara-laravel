@@ -196,9 +196,15 @@ class PaymentController extends Controller
         $order = TicketOrder::with('ticket.place')->where('order_number', $orderNumber)->firstOrFail();
         $this->authorize('view', $order);
 
+        // HIGH-06: Atomic cancel with DB lock to prevent race with webhook settlement
         if ($order->status === 'pending' && $order->expiry_time && now()->greaterThan($order->expiry_time)) {
-             $order->status = 'cancelled';
-             $order->save();
+            DB::transaction(function () use ($order) {
+                $locked = TicketOrder::lockForUpdate()->find($order->id);
+                if ($locked && $locked->status === 'pending') {
+                    $locked->cancelAndInvalidate();
+                }
+            });
+            $order->refresh();
         }
 
         return view('user.payment.failed', compact('order'));
@@ -264,8 +270,13 @@ class PaymentController extends Controller
             }
 
             if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-                $order->status = 'cancelled';
-                $order->save();
+                // MED-08: Atomic cancel with DB lock
+                DB::transaction(function () use ($order) {
+                    $locked = TicketOrder::lockForUpdate()->find($order->id);
+                    if ($locked && $locked->status === 'pending') {
+                        $locked->cancelAndInvalidate();
+                    }
+                });
                 return response()->json(['success' => true, 'status' => 'cancelled']);
             }
 
@@ -293,8 +304,8 @@ class PaymentController extends Controller
                          Log::warning('Midtrans cancel failed', ['order' => $orderNumber, 'error' => $e->getMessage()]);
                     }
                 }
-                $locked->status = 'cancelled';
-                $locked->save();
+                // CRIT-01: Use cancelAndInvalidate to clear ticket credentials
+                $locked->cancelAndInvalidate();
                 Log::info('Order cancelled by user', ['order' => $orderNumber]);
             }
         });

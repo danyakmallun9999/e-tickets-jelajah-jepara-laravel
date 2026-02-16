@@ -317,8 +317,8 @@ class MidtransService
                         return false;
                     }
                 } catch (\Exception $e) {
-                    // API might be temporarily unavailable — proceed with webhook data
-                    Log::warning('Midtrans API cross-verification failed, proceeding', [
+                    // HIGH-03: Escalate to alert level — potential forge if API is down
+                    Log::alert('Midtrans API cross-verification FAILED — proceeding with caution', [
                         'order_number' => $orderNumber,
                         'error' => $e->getMessage(),
                     ]);
@@ -327,13 +327,16 @@ class MidtransService
                 // HIGH-02: Atomic payment confirmation with DB transaction + lock
                 // SCAN-07: WebhookLog insert moved inside transaction for atomicity
                 DB::transaction(function () use ($orderNumber, $paymentType, $notificationData, $transactionStatus, $transactionId, $orderId) {
+                    // MED-05: Strip sensitive fields before storing
+                    $safePayload = collect($notificationData)->except(['signature_key'])->toArray();
+
                     // Log webhook inside transaction — rolls back if order update fails
                     if ($transactionId) {
                         WebhookLog::create([
                             'transaction_id' => $transactionId,
                             'order_id' => $orderId,
                             'transaction_status' => $transactionStatus,
-                            'payload' => $notificationData,
+                            'payload' => $safePayload,
                         ]);
                     }
 
@@ -371,13 +374,16 @@ class MidtransService
             } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                 // SCAN-02: Atomic cancel with lock — prevent overwriting 'paid' status
                 DB::transaction(function () use ($orderNumber, $transactionStatus, $transactionId, $orderId, $notificationData) {
+                    // MED-05: Strip sensitive fields before storing
+                    $safePayload = collect($notificationData)->except(['signature_key'])->toArray();
+
                     // SCAN-07: WebhookLog inside transaction
                     if ($transactionId) {
                         WebhookLog::create([
                             'transaction_id' => $transactionId,
                             'order_id' => $orderId,
                             'transaction_status' => $transactionStatus,
-                            'payload' => $notificationData,
+                            'payload' => $safePayload,
                         ]);
                     }
 
@@ -385,10 +391,9 @@ class MidtransService
                         ->lockForUpdate()
                         ->first();
 
-                    // Only cancel if still pending — never overwrite 'paid'
+                    // CRIT-01: Only cancel if still pending — never overwrite 'paid'
                     if ($order && $order->status === 'pending') {
-                        $order->status = 'cancelled';
-                        $order->save();
+                        $order->cancelAndInvalidate();
                         Log::info('Order cancelled via Midtrans', [
                             'order_number' => $orderNumber,
                             'transaction_status' => $transactionStatus,
@@ -402,12 +407,14 @@ class MidtransService
                 });
             } elseif ($transactionStatus === 'pending') {
                 // Log webhook for pending status
+                // MED-05: Strip sensitive fields from pending webhook log
                 if ($transactionId) {
+                    $safePayload = collect($notificationData)->except(['signature_key'])->toArray();
                     WebhookLog::create([
                         'transaction_id' => $transactionId,
                         'order_id' => $orderId,
                         'transaction_status' => $transactionStatus,
-                        'payload' => $notificationData,
+                        'payload' => $safePayload,
                     ]);
                 }
 

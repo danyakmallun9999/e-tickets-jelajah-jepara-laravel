@@ -12,7 +12,7 @@ class FileService
      * HIGH-04: Prevents upload of executable files (PHP, shell scripts, etc.).
      */
     private array $allowedExtensions = [
-        'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico',
+        'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'ico',
         'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv',
     ];
 

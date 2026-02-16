@@ -111,24 +111,28 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/events/calendar', [\App\Http\Controllers\Admin\EventController::class, 'calendar'])->name('events.calendar');
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
 
-    // Ticket routes
-    Route::get('/tickets/dashboard', [App\Http\Controllers\Admin\TicketDashboardController::class, 'index'])->name('tickets.dashboard');
-    Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
-    Route::get('ticket-orders', [\App\Http\Controllers\Admin\TicketController::class, 'orders'])->name('tickets.orders');
+    // Ticket routes — require ticket-related permissions
+    Route::middleware('permission:view all tickets')->group(function () {
+        Route::get('/tickets/dashboard', [App\Http\Controllers\Admin\TicketDashboardController::class, 'index'])->name('tickets.dashboard');
+        Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
+        Route::get('ticket-orders', [\App\Http\Controllers\Admin\TicketController::class, 'orders'])->name('tickets.orders');
+        Route::get('ticket-history', [\App\Http\Controllers\Admin\TicketController::class, 'history'])->name('tickets.history');
+    });
 
+    // HIGH-01: QR Scan routes — require explicit 'scan tickets' permission
+    Route::middleware('permission:scan tickets')->group(function () {
+        Route::get('/scan', [App\Http\Controllers\Admin\ScanController::class, 'index'])->name('scan.index');
+        Route::post('/scan', [App\Http\Controllers\Admin\ScanController::class, 'store'])
+            ->middleware('throttle:30,1')
+            ->name('scan.store');
+    });
 
-    Route::get('ticket-history', [\App\Http\Controllers\Admin\TicketController::class, 'history'])->name('tickets.history');
-
-    // QR Scan routes
-    Route::get('/scan', [App\Http\Controllers\Admin\ScanController::class, 'index'])->name('scan.index');
-    Route::post('/scan', [App\Http\Controllers\Admin\ScanController::class, 'store'])
-        ->middleware('throttle:30,1')
-        ->name('scan.store');
-
-    // Financial Reports
-    Route::prefix('reports/financial')->name('reports.financial.')->group(function () {
+    // HIGH-01: Financial Reports — require financial report permissions
+    Route::middleware('permission:view all financial reports|view own financial reports')->prefix('reports/financial')->name('reports.financial.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\FinancialReportController::class, 'index'])->name('index');
-        Route::get('/export', [\App\Http\Controllers\Admin\FinancialReportController::class, 'export'])->name('export');
+        Route::get('/export', [\App\Http\Controllers\Admin\FinancialReportController::class, 'export'])
+            ->middleware('permission:export financial reports')
+            ->name('export');
     });
 });
 

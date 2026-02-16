@@ -110,10 +110,15 @@ class BookingController extends Controller
                     throw new \Exception('Kuota tiket tidak mencukupi. Silakan pilih tanggal lain.');
                 }
 
-                // Create order — guarded fields (total_price, unit_price, status) set explicitly
+                // HIGH-02: Re-calculate price at checkout time from DB (not from session)
+                // This prevents price manipulation if admin changes price between booking and checkout
+                $pricePerTicket = $ticket->getPriceForDate($booking['visit_date']);
+                $totalPrice = $pricePerTicket * $booking['quantity'];
+
+                // Create order — guarded fields set explicitly
                 $order = TicketOrder::create($booking);
-                $order->total_price = $booking['total_price'];
-                $order->unit_price = $booking['unit_price'];
+                $order->total_price = $totalPrice;
+                $order->unit_price = $pricePerTicket;
                 $order->status = 'pending';
                 $order->save();
 
