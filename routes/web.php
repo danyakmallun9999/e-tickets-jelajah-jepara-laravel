@@ -38,9 +38,13 @@ Route::get('/e-tiket', [App\Http\Controllers\Public\TicketController::class, 'in
 // All user-specific ticket routes are grouped under /tiket-saya prefix
 Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
     Route::get('/', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
-    Route::post('/book', [App\Http\Controllers\Public\TicketController::class, 'book'])->name('tickets.book');
+    Route::post('/book', [App\Http\Controllers\Public\TicketController::class, 'book'])
+        ->middleware('throttle:10,1')
+        ->name('tickets.book');
     Route::get('/book/checkout', [App\Http\Controllers\Public\TicketController::class, 'checkout'])->name('tickets.checkout');
-    Route::post('/book/checkout', [App\Http\Controllers\Public\TicketController::class, 'processCheckout'])->name('tickets.process-checkout');
+    Route::post('/book/checkout', [App\Http\Controllers\Public\TicketController::class, 'processCheckout'])
+        ->middleware('throttle:5,1')
+        ->name('tickets.process-checkout');
     Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
     Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
     Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
@@ -50,7 +54,9 @@ Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
     Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentStatus'])->name('tickets.payment.status');
     Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
     Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
-    Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])->name('tickets.retrieve');
+    Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])
+        ->middleware('throttle:10,1')
+        ->name('tickets.retrieve');
 
     // Payment management routes
     Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'checkStatus'])->name('tickets.check-status');

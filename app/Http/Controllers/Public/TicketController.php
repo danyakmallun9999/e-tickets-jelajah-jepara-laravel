@@ -238,7 +238,7 @@ class TicketController extends Controller
             ->latest()
             ->get();
 
-        // Auto-sync pending orders with Midtrans
+        // Auto-sync pending orders with Midtrans (NEW-02: atomic updates)
         foreach ($orders->where('status', 'pending') as $order) {
             if ($order->payment_gateway_id) {
                 try {
@@ -248,13 +248,18 @@ class TicketController extends Controller
 
                     if ($transactionStatus === 'settlement' ||
                         ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
-                        $order->update([
-                            'status' => 'paid',
-                            'paid_at' => now(),
-                            'payment_method_detail' => $status->payment_type ?? null,
-                            'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
-                        ]);
-                        $order->generateTicketNumber();
+                        DB::transaction(function () use ($order, $status) {
+                            $lockedOrder = TicketOrder::lockForUpdate()->find($order->id);
+                            if ($lockedOrder && $lockedOrder->status !== 'paid') {
+                                $lockedOrder->update([
+                                    'status' => 'paid',
+                                    'paid_at' => now(),
+                                    'payment_method_detail' => $status->payment_type ?? null,
+                                    'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
+                                ]);
+                                $lockedOrder->generateTicketNumber();
+                            }
+                        });
                         $order->refresh();
                     } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                         $order->update(['status' => 'cancelled']);
@@ -274,15 +279,19 @@ class TicketController extends Controller
 
     /**
      * Retrieve tickets by email.
+     * NEW-01: Restricted to authenticated user's own email to prevent IDOR.
      */
     public function retrieveTickets(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required|email',
         ]);
 
+        $user = Auth::guard('web')->user();
+
+        // Only allow retrieving own tickets — prevents IDOR
         $orders = TicketOrder::with('ticket.place')
-            ->where('customer_email', $validated['email'])
+            ->where('customer_email', $user->email)
             ->latest()
             ->get();
 
@@ -565,6 +574,7 @@ class TicketController extends Controller
 
     /**
      * Handle successful payment — show success page
+     * NEW-02: Atomic payment status update with lockForUpdate.
      */
     public function paymentSuccess(Request $request, $orderNumber)
     {
@@ -588,13 +598,19 @@ class TicketController extends Controller
 
                 if ($transactionStatus === 'settlement' ||
                     ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
-                    $order->update([
-                        'status' => 'paid',
-                        'paid_at' => now(),
-                        'payment_method_detail' => $status->payment_type ?? null,
-                        'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
-                    ]);
-                    $order->generateTicketNumber();
+                    // Atomic update with lock to prevent race condition
+                    DB::transaction(function () use ($order, $status) {
+                        $lockedOrder = TicketOrder::lockForUpdate()->find($order->id);
+                        if ($lockedOrder && $lockedOrder->status !== 'paid') {
+                            $lockedOrder->update([
+                                'status' => 'paid',
+                                'paid_at' => now(),
+                                'payment_method_detail' => $status->payment_type ?? null,
+                                'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
+                            ]);
+                            $lockedOrder->generateTicketNumber();
+                        }
+                    });
                     $order->refresh();
 
                     return view('user.tickets.payment-success', compact('order'));
@@ -665,13 +681,19 @@ class TicketController extends Controller
 
             if ($transactionStatus === 'settlement' ||
                 ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
-                $order->update([
-                    'status' => 'paid',
-                    'paid_at' => now(),
-                    'payment_method_detail' => $status->payment_type ?? null,
-                    'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
-                ]);
-                $order->generateTicketNumber();
+                // NEW-02: Atomic update with lock to prevent race condition
+                DB::transaction(function () use ($order, $status) {
+                    $lockedOrder = TicketOrder::lockForUpdate()->find($order->id);
+                    if ($lockedOrder && $lockedOrder->status !== 'paid') {
+                        $lockedOrder->update([
+                            'status' => 'paid',
+                            'paid_at' => now(),
+                            'payment_method_detail' => $status->payment_type ?? null,
+                            'payment_channel' => $status->bank ?? $status->store ?? $status->payment_type ?? null,
+                        ]);
+                        $lockedOrder->generateTicketNumber();
+                    }
+                });
 
                 return response()->json([
                     'success' => true,
