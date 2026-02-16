@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -58,8 +59,12 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::guard('admin')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // AUTH-08: Never allow remember-me for admin guard
+        if (! Auth::guard('admin')->attempt($this->only('email', 'password'), false)) {
             RateLimiter::hit($this->throttleKey());
+
+            // AUTH-03: Hit global rate limit (per email only, no IP)
+            RateLimiter::hit($this->globalThrottleKey(), 900); // 15-min lockout
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -67,6 +72,7 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear($this->globalThrottleKey());
     }
 
     /**
@@ -76,20 +82,34 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+        // Per email+IP rate limit: 5 attempts
+        if (RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            event(new Lockout($this));
+
+            $seconds = RateLimiter::availableIn($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ]);
         }
 
-        event(new Lockout($this));
+        // AUTH-03: Global rate limit per email (across all IPs): 15 attempts, 15-min lockout
+        $globalKey = $this->globalThrottleKey();
+        if (RateLimiter::tooManyAttempts($globalKey, 15)) {
+            Log::warning('Global login rate limit hit', [
+                'email' => $this->string('email'),
+                'ip' => $this->ip(),
+            ]);
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+            $seconds = RateLimiter::availableIn($globalKey);
 
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+            throw ValidationException::withMessages([
+                'email' => 'Akun ini sementara dikunci karena terlalu banyak percobaan login. Coba lagi dalam ' . ceil($seconds / 60) . ' menit.',
+            ]);
+        }
     }
 
     /**
@@ -98,5 +118,13 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+    }
+
+    /**
+     * AUTH-03: Global throttle key — per email only (no IP).
+     */
+    public function globalThrottleKey(): string
+    {
+        return 'login-global:' . Str::transliterate(Str::lower($this->string('email')));
     }
 }
