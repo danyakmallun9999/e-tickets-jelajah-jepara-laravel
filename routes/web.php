@@ -37,31 +37,36 @@ Route::get('/e-tiket', [App\Http\Controllers\Public\TicketController::class, 'in
 // Protected E-Ticket routes - require Google authentication
 // All user-specific ticket routes are grouped under /tiket-saya prefix
 Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
+    // Ticket Management
     Route::get('/', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
-    Route::post('/book', [App\Http\Controllers\Public\TicketController::class, 'book'])
-        ->middleware('throttle:10,1')
-        ->name('tickets.book');
-    Route::get('/book/checkout', [App\Http\Controllers\Public\TicketController::class, 'checkout'])->name('tickets.checkout');
-    Route::post('/book/checkout', [App\Http\Controllers\Public\TicketController::class, 'processCheckout'])
-        ->middleware('throttle:5,1')
-        ->name('tickets.process-checkout');
-    Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'confirmation'])->name('tickets.confirmation');
-    Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
-    Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
-    Route::get('/show-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'showQrCode'])->name('tickets.show-qr');
-    Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'payment'])->name('tickets.payment');
-    Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'processPayment'])->name('tickets.process-payment');
-    Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentStatus'])->name('tickets.payment.status');
-    Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentSuccess'])->name('tickets.payment.success');
-    Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'paymentFailed'])->name('tickets.payment.failed');
     Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])
         ->middleware('throttle:10,1')
         ->name('tickets.retrieve');
+    Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
+    Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
+    Route::get('/show-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'showQrCode'])->name('tickets.show-qr');
 
-    // Payment management routes
-    Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'checkStatus'])->name('tickets.check-status');
-    Route::post('/cancel/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'cancelOrder'])->name('tickets.cancel');
-    Route::post('/retry-payment/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'retryPayment'])->name('tickets.retry-payment');
+    // Booking Routes
+    Route::post('/book', [App\Http\Controllers\Public\Ticket\BookingController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('booking.store');
+    Route::get('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'checkout'])->name('booking.checkout');
+    Route::post('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'process'])
+        ->middleware('throttle:5,1')
+        ->name('booking.process');
+    Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\Ticket\BookingController::class, 'confirmation'])->name('booking.confirmation');
+
+    // Payment Routes
+    Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'status'])->name('payment.status');
+    Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'failed'])->name('payment.failed');
+
+    // Payment Actions
+    Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'check'])->name('payment.check');
+    Route::post('/cancel/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::post('/retry-payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'retry'])->name('payment.retry');
 });
 
 // E-Ticket detail (Public) - wildcard route MUST be last to avoid catching specific routes above

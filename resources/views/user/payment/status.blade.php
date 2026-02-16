@@ -215,7 +215,7 @@
                         <span x-text="isChecking ? 'Mengecek...' : 'Cek Status Pembayaran'"></span>
                     </button>
 
-                    <a href="{{ route('tickets.payment', $order->order_number) }}"
+                    <a href="{{ route('payment.show', $order->order_number) }}"
                        class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i> Ganti Metode Pembayaran
                     </a>
@@ -283,7 +283,7 @@ function paymentStatusChecker() {
 
                     // Force redirect to failed page
                     setTimeout(() => {
-                        window.location.href = '{{ route("tickets.payment.failed", $order->order_number) }}';
+                        window.location.href = '{{ route("payment.failed", $order->order_number) }}';
                     }, 1500);
                     return;
                 }
@@ -308,7 +308,7 @@ function paymentStatusChecker() {
             this.isChecking = true;
 
             try {
-                const response = await fetch('{{ route("tickets.check-status", $order->order_number) }}');
+                const response = await fetch('{{ route("payment.check", $order->order_number) }}');
                 const data = await response.json();
 
                 if (data.status === 'paid') {
@@ -318,14 +318,14 @@ function paymentStatusChecker() {
                     clearInterval(this.countdownInterval);
 
                     setTimeout(() => {
-                        window.location.href = '{{ route("tickets.payment.success", $order->order_number) }}';
+                        window.location.href = '{{ route("payment.success", $order->order_number) }}';
                     }, 1500);
                 } else if (data.status === 'cancelled' || data.status === 'expire' || data.status === 'deny') {
                     clearInterval(this.interval);
                     clearInterval(this.countdownInterval);
                     this.statusMessage = data.message || 'Pembayaran dibatalkan';
                     setTimeout(() => {
-                        window.location.href = '{{ route("tickets.payment.failed", $order->order_number) }}';
+                        window.location.href = '{{ route("payment.failed", $order->order_number) }}';
                     }, 1500);
                 }
             } catch (e) {

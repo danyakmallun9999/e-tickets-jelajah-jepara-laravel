@@ -279,4 +279,43 @@ class TicketOrder extends Model
 
         return $base[$this->status] ?? $base['cancelled'];
     }
+
+    /**
+     * Check if order is expired and cancel it if necessary.
+     * returns true if order is/was cancelled.
+     */
+    public function checkAutoCancel(): bool
+    {
+        if ($this->status === 'cancelled') {
+            return true;
+        }
+
+        if ($this->status === 'pending' && $this->expiry_time && now()->greaterThan($this->expiry_time)) {
+            return DB::transaction(function () {
+                // Lock for update to prevent race conditions
+                $locked = static::lockForUpdate()->find($this->id);
+                
+                if ($locked->status === 'pending') {
+                    // Try to cancel payment gateway transaction if exists
+                    if ($locked->payment_gateway_id) {
+                        try {
+                            // We might need to inject service or handle event here
+                            // For simplicity, we just mark as cancelled locally first
+                            // Detailed cancellation logic is better handled via Jobs or Service
+                        } catch (\Exception $e) {
+                            // Ignore
+                        }
+                    }
+
+                    $locked->update(['status' => 'cancelled']);
+                    $this->refresh();
+                    return true;
+                }
+                
+                return $locked->status === 'cancelled';
+            });
+        }
+
+        return false;
+    }
 }

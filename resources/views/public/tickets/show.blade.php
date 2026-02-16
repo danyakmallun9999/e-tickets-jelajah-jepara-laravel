@@ -163,7 +163,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('tickets.book') }}" method="POST" id="bookingForm" 
+                        <form action="{{ route('booking.store') }}" method="POST" id="bookingForm" 
                             x-data="{ 
                                 quantity: {{ old('quantity', 1) }},
                                 open: false, 

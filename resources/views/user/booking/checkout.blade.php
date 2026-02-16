@@ -55,7 +55,7 @@
                 </div>
 
                 {{-- Payment Method Selection Form --}}
-                <form action="{{ route('tickets.process-checkout') }}" method="POST" id="payment-form" x-data="paymentSelector()" @submit="isSubmitting = true">
+                <form action="{{ route('booking.process') }}" method="POST" id="payment-form" x-data="paymentSelector()" @submit="isSubmitting = true">
                     @csrf
                     <input type="hidden" name="payment_type" x-model="paymentType">
                     <input type="hidden" name="bank" x-model="bank">

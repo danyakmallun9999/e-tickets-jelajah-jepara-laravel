@@ -255,7 +255,7 @@
                             this.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin\'></i> Mengecek status...';
                             this.disabled = true;
                             const btn = this;
-                            fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                            fetch('{{ route('payment.check', $order->order_number) }}')
                                 .then(r => r.json())
                                 .then(d => {
                                     if(d.status === 'paid') { window.location.reload(); }

@@ -376,14 +376,14 @@
                                          x-transition:leave-start="opacity-100"
                                          x-transition:leave-end="opacity-0">
                                         <div class="flex gap-2.5 mb-2.5">
-                                            <a href="{{ route('tickets.payment.status', $order->order_number) }}" 
+                                            <a href="{{ route('payment.status', $order->order_number) }}" 
                                                class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-500/15 active:scale-[0.98]">
                                                 <i class="fa-solid fa-wallet text-xs"></i> Bayar Sekarang
                                             </a>
                                             <button @click="
                                                 $el.innerHTML = '<i class=\'fa-solid fa-spinner fa-spin text-xs\'></i>';
                                                 $el.disabled = true;
-                                                fetch('{{ route('tickets.check-status', $order->order_number) }}')
+                                                fetch('{{ route('payment.check', $order->order_number) }}')
                                                     .then(r => r.json())
                                                     .then(d => {
                                                         if(d.status === 'paid') { window.location.reload(); }
@@ -398,7 +398,7 @@
                                             </button>
                                         </div>
                                         <div class="flex gap-2.5">
-                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                            <a href="{{ route('booking.confirmation', $order->order_number) }}" 
                                                class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
                                                 <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
                                             </a>
@@ -420,7 +420,7 @@
                                             </a>
                                         </div>
                                         <div class="flex gap-2.5">
-                                            <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                            <a href="{{ route('booking.confirmation', $order->order_number) }}" 
                                                class="flex-1 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 border border-slate-200/80 dark:border-slate-600 active:scale-[0.98]">
                                                 <i class="fa-solid fa-receipt text-xs"></i> {{ __('Tickets.My.ViewDetail') }}
                                             </a>
@@ -451,7 +451,7 @@
                                                     class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-colors text-sm">
                                                     Kembali
                                                 </button>
-                                                <form action="{{ route('tickets.cancel', $order->order_number) }}" method="POST" class="flex-1">
+                                                <form action="{{ route('payment.cancel', $order->order_number) }}" method="POST" class="flex-1">
                                                     @csrf
                                                     <button type="submit" class="w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm">
                                                         Ya, Batalkan
@@ -549,7 +549,7 @@
 
                                 {{-- ▎FOOTER — Actions --}}
                                 <div class="px-6 py-4 flex gap-2.5">
-                                    <a href="{{ route('tickets.confirmation', $order->order_number) }}" 
+                                    <a href="{{ route('booking.confirmation', $order->order_number) }}" 
                                        class="flex-1 bg-gradient-to-r {{ $order->status == 'paid' ? 'from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-emerald-500/15' : ($order->status == 'used' ? 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/15' : 'from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 shadow-slate-500/10') }} text-white text-center font-semibold py-3 rounded-[14px] transition-all text-sm flex items-center justify-center gap-2 shadow-md active:scale-[0.98]">
                                         <i class="fa-solid fa-receipt text-xs"></i> Detail
                                     </a>

@@ -61,7 +61,7 @@
                 </div>
 
                 {{-- Payment Method Selection Form --}}
-                <form action="{{ route('tickets.process-payment', $order->order_number) }}" method="POST" id="payment-form" x-data="paymentSelector()" @submit="isSubmitting = true">
+                <form action="{{ route('payment.process', $order->order_number) }}" method="POST" id="payment-form" x-data="paymentSelector()" @submit="isSubmitting = true">
                     @csrf
                     <input type="hidden" name="payment_type" x-model="paymentType">
                     <input type="hidden" name="bank" x-model="bank">

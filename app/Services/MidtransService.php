@@ -67,14 +67,14 @@ class MidtransService
                     $params['payment_type'] = 'gopay';
                     $params['gopay'] = [
                         'enable_callback' => true,
-                        'callback_url' => route('tickets.payment.success', $order->order_number),
+                        'callback_url' => route('payment.success', $order->order_number),
                     ];
                     break;
 
                 case 'shopeepay':
                     $params['payment_type'] = 'shopeepay';
                     $params['shopeepay'] = [
-                        'callback_url' => route('tickets.payment.success', $order->order_number),
+                        'callback_url' => route('payment.success', $order->order_number),
                     ];
                     break;
 
