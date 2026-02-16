@@ -24,17 +24,22 @@ import './charts/financial';
 // Ticket Dashboard — ApexCharts
 import './charts/dashboard';
 
-import Alpine from 'alpinejs';
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import intersect from '@alpinejs/intersect';
+import morph from '@alpinejs/morph';
 import CultureSection from './components/culture-section';
 
 Alpine.plugin(intersect);
+Alpine.plugin(morph);
 Alpine.data('cultureSection', CultureSection);
 
 // Register QR Scanner
 import registerQrScanner from './pages/admin/scan';
 registerQrScanner(Alpine);
 
+// Expose to window
 window.Alpine = Alpine;
+window.Livewire = Livewire;
 
-Alpine.start();
+// Start Livewire (which starts Alpine)
+Livewire.start();

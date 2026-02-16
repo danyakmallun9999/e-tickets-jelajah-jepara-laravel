@@ -28,8 +28,9 @@
                         </div>
                         <div>
                             <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Status</p>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs font-bold rounded-xl">
-                                <i class="fa-solid fa-clock"></i>
+                            @php $config = $order->status_config; @endphp
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 {{ $config['bg'] }} {{ $config['iconColor'] }} text-xs font-bold rounded-xl">
+                                <i class="fa-solid {{ $order->status === 'cancelled' ? 'fa-ban' : 'fa-clock' }}"></i>
                                 {{ $order->status_label }}
                             </span>
                         </div>
@@ -62,13 +63,10 @@
 
                 <!-- Action Buttons -->
                 <div class="space-y-3">
-                    <form action="{{ route('tickets.retry-payment', $order->order_number) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                           class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-redo"></i> Coba Bayar Lagi
-                        </button>
-                    </form>
+                    <a href="{{ route('tickets.show', $order->ticket->slug ?? $order->ticket->id) }}" 
+                       class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i> Pesan Tiket Baru
+                    </a>
                     
                     <a href="{{ route('tickets.my') }}" 
                        class="block w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-2xl transition-all duration-300 text-center">

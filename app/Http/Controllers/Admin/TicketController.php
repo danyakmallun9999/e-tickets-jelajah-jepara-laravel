@@ -170,56 +170,12 @@ class TicketController extends Controller
         return view('admin.tickets.orders', compact('orders'));
     }
 
-    /**
-     * Update order status.
-     */
-    public function updateOrderStatus(Request $request, TicketOrder $order)
-    {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,paid,used,cancelled',
-        ]);
 
-        // HIGH-05: Verify with payment gateway before marking as paid
-        if ($validated['status'] === 'paid' && $order->status !== 'paid') {
-            if ($order->payment_gateway_id) {
-                try {
-                    $midtransStatus = $this->midtransService->getTransactionStatus($order->payment_gateway_id);
-                    $txStatus = $midtransStatus->transaction_status ?? null;
-
-                    if (!in_array($txStatus, ['settlement', 'capture'])) {
-                        return back()->with('error', 'Pembayaran belum diverifikasi oleh payment gateway (status: ' . ($txStatus ?? 'unknown') . ')');
-                    }
-                } catch (\Exception $e) {
-                    Log::warning('Payment verification failed during admin status update', [
-                        'order' => $order->order_number,
-                        'error' => $e->getMessage(),
-                    ]);
-                    return back()->with('error', 'Gagal memverifikasi pembayaran. Silakan coba lagi.');
-                }
-            }
-
-            $order->update([
-                'status' => 'paid',
-                'paid_at' => now(),
-            ]);
-            $order->generateTicketNumber();
-        } else {
-            $order->update($validated);
-        }
-
-        return back()->with('success', 'Status pesanan berhasil diperbarui!');
-    }
 
     /**
      * Delete ticket order.
      */
-    public function destroyOrder(TicketOrder $order)
-    {
-        $orderNumber = $order->order_number;
-        $order->delete();
 
-        return back()->with('success', "Pesanan {$orderNumber} berhasil dihapus!");
-    }
 
     /**
      * Display ticket sales history (paid & used orders).

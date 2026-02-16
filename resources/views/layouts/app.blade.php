@@ -21,6 +21,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
         @stack('styles')
         <style>
             :root { --sidebar-width: 16rem; }
@@ -128,6 +129,7 @@
                 </main>
             </div>
         </div>
+        @livewireScriptConfig
         @stack('scripts')
         
         <!-- Global Notification Toast (Alpine.js) -->

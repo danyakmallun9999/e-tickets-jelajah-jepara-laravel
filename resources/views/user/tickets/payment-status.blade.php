@@ -277,9 +277,14 @@ function paymentStatusChecker() {
 
                 if (diff <= 0) {
                     this.countdownText = 'Waktu habis!';
-                    this.statusMessage = 'Waktu pembayaran telah habis';
+                    this.statusMessage = 'Waktu pembayaran telah habis. Mengalihkan...';
                     clearInterval(this.countdownInterval);
                     clearInterval(this.interval);
+
+                    // Force redirect to failed page
+                    setTimeout(() => {
+                        window.location.href = '{{ route("tickets.payment.failed", $order->order_number) }}';
+                    }, 1500);
                     return;
                 }
 

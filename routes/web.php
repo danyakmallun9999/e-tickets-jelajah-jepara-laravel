@@ -110,8 +110,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/tickets/dashboard', [App\Http\Controllers\Admin\TicketDashboardController::class, 'index'])->name('tickets.dashboard');
     Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
     Route::get('ticket-orders', [\App\Http\Controllers\Admin\TicketController::class, 'orders'])->name('tickets.orders');
-    Route::post('ticket-orders/{order}/status', [\App\Http\Controllers\Admin\TicketController::class, 'updateOrderStatus'])->name('tickets.orders.updateStatus');
-    Route::delete('ticket-orders/{order}', [\App\Http\Controllers\Admin\TicketController::class, 'destroyOrder'])->name('tickets.orders.destroy');
+
+
     Route::get('ticket-history', [\App\Http\Controllers\Admin\TicketController::class, 'history'])->name('tickets.history');
 
     // QR Scan routes

@@ -544,6 +544,12 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
+        // Check for expiration immediately (SCAN-EXPIRY)
+        if ($order->status === 'pending' && $order->expiry_time && now()->greaterThan($order->expiry_time)) {
+             $order->update(['status' => 'cancelled']);
+             return redirect()->route('tickets.payment.failed', $orderNumber);
+        }
+
         // If already paid, redirect to success
         if ($order->status === 'paid') {
             return redirect()->route('tickets.payment.success', $orderNumber);
@@ -648,6 +654,12 @@ class TicketController extends Controller
 
         $this->verifyOrderOwnership($order);
 
+        // FIX: Ensure status is updated if expired
+        if ($order->status === 'pending' && $order->expiry_time && now()->greaterThan($order->expiry_time)) {
+            $order->update(['status' => 'cancelled']);
+            $order->refresh();
+        }
+
         return view('user.tickets.payment-failed', compact('order'));
     }
 
@@ -661,6 +673,16 @@ class TicketController extends Controller
             ->firstOrFail();
 
         $this->verifyOrderOwnership($order);
+
+        // Check local expiry
+        if ($order->status === 'pending' && $order->expiry_time && now()->greaterThan($order->expiry_time)) {
+             $order->update(['status' => 'cancelled']);
+             return response()->json([
+                 'success' => true,
+                 'status' => 'cancelled',
+                 'message' => 'Waktu pembayaran habis.',
+             ]);
+        }
 
         if ($order->status === 'paid') {
             return response()->json([
@@ -795,11 +817,11 @@ class TicketController extends Controller
             return back()->with('error', 'Pembayaran tidak dapat diulang untuk pesanan ini.');
         }
 
-        if ($order->status === 'cancelled') {
-            $order->update([
-                'status' => 'pending',
-                'payment_gateway_id' => null,
-            ]);
+        // Check if order is invalid for retry (cancelled, paid, or expired)
+        if ($order->status === 'cancelled' || $order->status === 'paid' || 
+            ($order->status === 'pending' && $order->expiry_time && now()->greaterThan($order->expiry_time))) {
+            
+            return redirect()->route('tickets.index')->with('error', 'Pesanan ini sudah tidak berlaku. Silakan buat pesanan baru.');
         }
 
         return redirect()->route('tickets.payment', $order->order_number);
