@@ -19,6 +19,7 @@
     </div>
 
     <!-- QR Code Modal (Alpine.js controlled) -->
+    <style> [x-cloak] { display: none !important; } </style>
     <div x-data="{
             open: false,
             orderNumber: '',
@@ -35,7 +36,7 @@
                 // Generate QR after modal is visible
                 setTimeout(() => {
                     const container = document.getElementById('qrcode-container');
-                    if(container) {
+                    if(container && typeof QRCode !== 'undefined') {
                         container.innerHTML = '';
                         new QRCode(container, {
                             text: number,
@@ -52,6 +53,9 @@
                             canvas.style.width = '100%';
                             canvas.style.height = '100%';
                         }
+                    } else if (!typeof QRCode === 'undefined') {
+                        console.error('QRCode library not loaded');
+                        if(container) container.innerHTML = '<p class=\'text-red-500\'>Error: QR Library not loaded</p>';
                     }
                 }, 50);
             },
@@ -80,8 +84,8 @@
             }
         }"
         x-show="open" 
-        style="display: none; z-index: 9999;"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm"
+        x-cloak
+        class="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm"
         @keydown.escape.window="open = false">
         
         <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl transform transition-all"

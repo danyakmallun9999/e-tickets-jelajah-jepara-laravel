@@ -143,31 +143,7 @@ class TicketController extends Controller
      */
     public function orders(Request $request)
     {
-        $query = TicketOrder::with(['ticket.place']);
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by date
-        if ($request->filled('date')) {
-            $query->whereDate('visit_date', $request->date);
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('customer_email', 'like', "%{$search}%");
-            });
-        }
-
-        $orders = $query->latest()->paginate(20);
-
-        return view('admin.tickets.orders', compact('orders'));
+        return view('admin.tickets.orders');
     }
 
 

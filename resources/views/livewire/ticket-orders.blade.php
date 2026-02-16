@@ -236,6 +236,7 @@
                                     <i class="fa-solid fa-qrcode"></i> QR
                                 </button>
                             </div>
+                        </div>
                     @empty
                         <div class="text-center py-10">
                             <i class="fa-solid fa-inbox text-3xl text-gray-300 mb-3"></i>
