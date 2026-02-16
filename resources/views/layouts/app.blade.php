@@ -96,16 +96,24 @@
                                 </div>
                             </div>
 
-                            <!-- Header Content -->
-                            <header class="bg-white border-b border-gray-200 transition-all duration-300 origin-top md:h-20 md:!flex md:items-center md:!opacity-100 md:!visible"
-                                    x-show="mobileHeaderOpen"
-                                    x-collapse
-                                    style="display: none;"
-                                    :class="mobileHeaderOpen ? 'block' : 'hidden md:!flex'">
-                                <div class="w-full px-4 sm:px-6 lg:px-8 py-4 md:py-0">
+                            <!-- Header Content: Desktop (always visible) -->
+                            <header class="hidden md:flex bg-white border-b border-gray-200 h-20 items-center">
+                                <div class="w-full px-4 sm:px-6 lg:px-8">
                                     {{ $header }}
                                 </div>
                             </header>
+
+                            <!-- Header Content: Mobile (collapsible) -->
+                            <div class="md:hidden">
+                                <header x-show="mobileHeaderOpen"
+                                        x-collapse
+                                        style="display: none;"
+                                        class="bg-white border-b border-gray-200">
+                                    <div class="w-full px-4 py-4">
+                                        {{ $header }}
+                                    </div>
+                                </header>
+                            </div>
                         </div>
                     @endisset
 

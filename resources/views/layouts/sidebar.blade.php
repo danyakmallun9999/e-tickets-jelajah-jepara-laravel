@@ -89,7 +89,7 @@
             </a>
 
 
-            @role('super_admin')
+            @role('super_admin', 'admin')
             <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300">Manajemen User</p>
             <div x-show="isSidebarMini" class="border-t border-gray-100 my-2"></div>
 
