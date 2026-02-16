@@ -290,7 +290,7 @@ class TicketOrder extends Model
             return true;
         }
 
-        if ($this->status === 'pending' && $this->expiry_time && now()->greaterThan($this->expiry_time)) {
+        if ($this->status === 'pending' && $this->expiry_time && now()->greaterThanOrEqualTo($this->expiry_time)) {
             return DB::transaction(function () {
                 // Lock for update to prevent race conditions
                 $locked = static::lockForUpdate()->find($this->id);

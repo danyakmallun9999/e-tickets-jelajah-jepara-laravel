@@ -193,7 +193,7 @@
                         @php
                             $now = now();
                             $expiry = $order->expiry_time;
-                            $isExpired = $order->status === 'pending' && $expiry && $now->greaterThan($expiry);
+                            $isExpired = $order->status === 'pending' && $expiry && $now->greaterThanOrEqualTo($expiry);
                             $remainingMs = $expiry && !$isExpired ? $now->diffInMilliseconds($expiry) : 0;
                             $cardStatus = $order->status;
                         @endphp
