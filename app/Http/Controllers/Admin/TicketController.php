@@ -162,7 +162,7 @@ class TicketController extends Controller
 
         // Role-based filtering: Pengelola Wisata only sees orders for their places
         if (!auth('admin')->user()->can('view all tickets') && !auth('admin')->user()->hasRole('super_admin')) {
-            $query->whereHas('ticket', function ($q) {
+            $query->whereHas('ticket.place', function ($q) {
                 $q->where('created_by', auth('admin')->id());
             });
         }

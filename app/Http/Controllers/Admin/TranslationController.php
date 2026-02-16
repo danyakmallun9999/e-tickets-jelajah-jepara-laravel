@@ -69,7 +69,7 @@ class TranslationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'All translation providers failed: ' . $e->getMessage(),
+                'message' => 'Semua provider terjemahan gagal. Silakan coba lagi nanti.',
             ], 500);
         }
     }
