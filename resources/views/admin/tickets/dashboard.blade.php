@@ -450,17 +450,8 @@
                 }
             }
             
-            // Dispatch event after DOM is ready (works for both initial load and SPA navigation)
-            const dispatchReady = () => {
-                document.dispatchEvent(new CustomEvent('ticket-dashboard-data-ready'));
-            };
-            
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', dispatchReady);
-            } else {
-                // DOM already ready, but wait a tick to ensure all scripts are loaded
-                setTimeout(dispatchReady, 0);
-            }
+            // Dispatch event immediately (works for both initial load and SPA navigation)
+            document.dispatchEvent(new CustomEvent('ticket-dashboard-data-ready'));
         })();
     </script>
 </x-app-layout>

@@ -1046,30 +1046,12 @@
                 categoriesCount: window.__adminDashboardData.categories?.names?.length || 0
             });
             
-            // Dispatch event setelah DOM ready (untuk initial load)
-            const dispatchReady = () => {
-                // Tunggu sedikit untuk memastikan elemen chart sudah ada di DOM
-                setTimeout(() => {
-                    document.dispatchEvent(new CustomEvent('admin-dashboard-data-ready'));
-                    // Juga dispatch ke Livewire jika tersedia
-                    if (window.Livewire) {
-                        window.Livewire.dispatch('admin-dashboard-data-ready');
-                    }
-                }, 100);
-            };
-            
-            // Untuk initial load
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', dispatchReady);
-            } else {
-                // DOM sudah ready, tapi tunggu untuk memastikan semua script loaded
-                setTimeout(dispatchReady, 50);
+            // Dispatch event immediately (works for both initial load and SPA navigation)
+            document.dispatchEvent(new CustomEvent('admin-dashboard-data-ready'));
+            // Juga dispatch ke Livewire jika tersedia
+            if (window.Livewire) {
+                window.Livewire.dispatch('admin-dashboard-data-ready');
             }
-            
-            // Untuk SPA navigation (Livewire v4) - dispatch setelah script dieksekusi
-            setTimeout(() => {
-                document.dispatchEvent(new CustomEvent('admin-dashboard-data-ready'));
-            }, 200);
         })();
     </script>
 </x-app-layout>

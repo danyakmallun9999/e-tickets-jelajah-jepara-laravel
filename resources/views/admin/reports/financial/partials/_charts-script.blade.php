@@ -19,24 +19,7 @@
             monthlyTickets:  {!! json_encode($monthlySalesChartData['tickets']) !!},
         };
         
-        // Dispatch event after DOM is ready (works for both initial load and SPA navigation)
-        const dispatchReady = () => {
-            // Small delay to ensure charts module is ready
-            setTimeout(() => {
-                document.dispatchEvent(new CustomEvent('financial-dashboard-data-ready'));
-            }, 150);
-        };
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', dispatchReady);
-        } else {
-            // DOM already ready, but wait a tick to ensure all scripts are loaded
-            setTimeout(dispatchReady, 100);
-        }
-        
-        // Also dispatch after a longer delay for SPA navigation (Livewire v4)
-        setTimeout(() => {
-            document.dispatchEvent(new CustomEvent('financial-dashboard-data-ready'));
-        }, 300);
+        // Dispatch event immediately (works for both initial load and SPA navigation)
+        document.dispatchEvent(new CustomEvent('financial-dashboard-data-ready'));
     })();
 </script>

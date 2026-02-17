@@ -445,19 +445,6 @@ function boot(retryCount = 0) {
     }
 }
 
-// Helper function to try initialization
-const tryInitDashboard = () => {
-    setTimeout(() => {
-        boot();
-    }, 50);
-};
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tryInitDashboard);
-} else {
-    tryInitDashboard();
-}
-
 // Livewire SPA Support
 document.addEventListener('livewire:navigated', () => {
     // Destroy any existing charts first
@@ -465,15 +452,15 @@ document.addEventListener('livewire:navigated', () => {
     // Wait a bit for the new page's scripts to execute
     setTimeout(() => {
         boot();
-    }, 100);
+    }, 50);
+});
+
+// Listen for data-ready event (dispatched from ticket dashboard blade)
+document.addEventListener('ticket-dashboard-data-ready', () => {
+    boot();
 });
 
 document.addEventListener('livewire:navigating', () => {
     // Cleanup old charts before navigating away
     destroyDashboardCharts();
-});
-
-// Listen for data-ready event (dispatched from ticket dashboard blade)
-document.addEventListener('ticket-dashboard-data-ready', () => {
-    tryInitDashboard();
 });

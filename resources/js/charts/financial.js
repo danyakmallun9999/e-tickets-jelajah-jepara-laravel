@@ -116,7 +116,7 @@ export function initFinancialCharts() {
 
         // 3. Sparklines (Static based on date range)
         initSparklines(data);
-        
+
         console.log('Financial charts initialized successfully');
     } catch (error) {
         console.error('Error initializing financial charts:', error);
@@ -512,19 +512,6 @@ function boot(retryCount = 0) {
     }
 }
 
-// Helper function to try initialization
-const tryInitFinancial = () => {
-    setTimeout(() => {
-        boot();
-    }, 50);
-};
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tryInitFinancial);
-} else {
-    tryInitFinancial();
-}
-
 // Livewire SPA Support
 let navigationTimeout = null;
 document.addEventListener('livewire:navigated', () => {
@@ -532,16 +519,16 @@ document.addEventListener('livewire:navigated', () => {
     if (navigationTimeout) {
         clearTimeout(navigationTimeout);
     }
-    
+
     // Destroy any existing charts first
     destroyFinancialCharts();
     isInitializing = false; // Reset flag
-    
+
     // Wait a bit for the new page's scripts to execute
     navigationTimeout = setTimeout(() => {
         boot();
         navigationTimeout = null;
-    }, 150);
+    }, 50);
 });
 
 document.addEventListener('livewire:navigating', () => {
@@ -550,23 +537,13 @@ document.addEventListener('livewire:navigating', () => {
         clearTimeout(navigationTimeout);
         navigationTimeout = null;
     }
-    
+
     // Cleanup old charts before navigating away
     destroyFinancialCharts();
     isInitializing = false; // Reset flag
 });
 
 // Listen for data-ready event (dispatched from financial report blade)
-let dataReadyTimeout = null;
 document.addEventListener('financial-dashboard-data-ready', () => {
-    // Clear any pending initialization
-    if (dataReadyTimeout) {
-        clearTimeout(dataReadyTimeout);
-    }
-    
-    // Prevent duplicate calls
-    dataReadyTimeout = setTimeout(() => {
-        tryInitFinancial();
-        dataReadyTimeout = null;
-    }, 100);
+    boot();
 });

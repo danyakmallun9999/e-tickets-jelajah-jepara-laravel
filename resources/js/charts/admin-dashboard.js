@@ -355,29 +355,13 @@ const observeForCharts = () => {
 };
 
 // Event Listeners untuk berbagai skenario
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        observeForCharts();
-    });
-} else {
-    observeForCharts();
-}
-
-// Handle Livewire v4 SPA navigation - multiple event listeners untuk kompatibilitas
 document.addEventListener('livewire:navigated', () => {
     // Destroy any existing charts first
     destroyAdminDashboard();
     // Reset observer dan tunggu DOM baru
     setTimeout(() => {
         observeForCharts();
-    }, 150);
-});
-
-// Event untuk Livewire v4 (alternatif)
-document.addEventListener('livewire:load', () => {
-    setTimeout(() => {
-        observeForCharts();
-    }, 100);
+    }, 50);
 });
 
 document.addEventListener('livewire:navigating', () => {
@@ -391,30 +375,8 @@ document.addEventListener('livewire:navigating', () => {
 
 // Listen for data-ready event (dispatched from dashboard blade)
 document.addEventListener('admin-dashboard-data-ready', () => {
-    setTimeout(() => {
-        tryInitDashboard();
-    }, 50);
+    observeForCharts();
 });
-
-// Fallback: Check periodically if we're on dashboard page (untuk kasus edge case)
-let checkInterval = null;
-const startPeriodicCheck = () => {
-    if (checkInterval) return;
-
-    checkInterval = setInterval(() => {
-        const isDashboard = document.getElementById('revenueTrendChart') ||
-            document.getElementById('postViewsChart') ||
-            document.getElementById('categoriesChart');
-
-        if (isDashboard && window.__adminDashboardData) {
-            const hasCharts = window.revenueChart || window.postViewsChart || window.categoriesChart;
-            if (!hasCharts) {
-                console.log('Periodic check: Initializing charts...');
-                tryInitDashboard();
-            }
-        }
-    }, 2000);
-};
 
 // Start periodic check setelah delay
 setTimeout(() => {
