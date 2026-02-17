@@ -13,7 +13,7 @@
             <div class="flex flex-col lg:flex-row">
             
             <!-- Left Side: Sticky Visuals (50%) -->
-            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative bg-white dark:bg-slate-950 z-10 p-4 lg:pl-16 lg:pr-8 lg:pt-24 flex flex-col justify-start">
+            <div class="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 relative bg-white dark:bg-slate-950 z-10 p-4 lg:pl-16 lg:pr-8 lg:pt-12 flex flex-col justify-start">
                  
                  <!-- Breadcrumbs -->
                  <div class="mb-6">
@@ -57,7 +57,7 @@
 
             <!-- Right Side: Scrollable Content (50%) -->
             <div class="lg:w-1/2 relative bg-white dark:bg-slate-950">
-                <main class="max-w-2xl mx-auto px-5 sm:px-8 py-10 md:py-20 lg:px-16 lg:py-24 stagger-entry">
+                <main class="max-w-2xl mx-auto px-5 sm:px-8 py-10 md:py-20 lg:px-16 lg:pt-12 lg:pb-24 stagger-entry">
                     
                     <!-- Header Section -->
                     <div class="mb-10">

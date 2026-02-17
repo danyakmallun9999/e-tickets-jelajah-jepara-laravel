@@ -167,37 +167,58 @@
         </div>
     </div>
     <script>
+        document.addEventListener('livewire:navigated', () => {
+            initTourismAnimations();
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
+            initTourismAnimations();
+        });
+
+        function initTourismAnimations() {
             gsap.registerPlugin(ScrollTrigger);
             
-            // Header Animation
-            gsap.to(".tourism-header", {
-                scrollTrigger: {
-                    trigger: ".tourism-header",
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                ease: "power2.out"
+            // Kill ONLY existing ScrollTriggers for this section to prevent duplicates/conflicts
+            ScrollTrigger.getAll().forEach(st => {
+                // Check if the trigger element is part of this section
+                if (st.trigger && (st.trigger.classList.contains('tourism-header') || st.trigger.classList.contains('tourism-card'))) {
+                    st.kill();
+                }
             });
+
+            // Header Animation
+            gsap.fromTo(".tourism-header", 
+                { y: 50, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: ".tourism-header",
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out"
+                }
+            );
 
             // Cards Animation
             const tourismCards = document.querySelectorAll('.tourism-card');
-            
-            ScrollTrigger.batch(tourismCards, {
-                start: "top 85%",
-                onEnter: batch => {
-                    gsap.to(batch, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        stagger: 0.15,
-                        ease: "power2.out"
-                    });
-                }
-            });
-        });
+            if (tourismCards.length > 0) {
+                ScrollTrigger.batch(tourismCards, {
+                    start: "top 85%",
+                    onEnter: batch => {
+                        gsap.to(batch, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.8,
+                            stagger: 0.15,
+                            ease: "power2.out",
+                            overwrite: true
+                        });
+                    }
+                });
+            }
+        }
     </script>
     <!-- END SECTION: Tourism Potency -->
