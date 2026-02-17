@@ -21,8 +21,12 @@
 
     <!-- Page Content -->
     <main class="pt-20">
-        {{ $slot }}
+        <div class="page-entry" key="{{ request()->url() }}">
+            {{ $slot }}
+        </div>
     </main>
+
+
 
     <!-- Footer -->
     @unless($hideFooter ?? false)
