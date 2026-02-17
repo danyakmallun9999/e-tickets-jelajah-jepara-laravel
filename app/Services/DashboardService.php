@@ -190,18 +190,42 @@ class DashboardService
                 ->get(),
 
             // Top Visitor Origins (by City/Kecamatan)
-            'top_visitor_origins' => TicketOrder::select('customer_city', \DB::raw('SUM(quantity) as total_visitors'))
-                ->where('status', 'used')
+            // Include both 'paid' and 'used' status to get more complete data
+            'top_visitor_origins' => TicketOrder::select(
+                    \DB::raw('COALESCE(
+                        NULLIF(customer_city, \'\'), 
+                        NULLIF(customer_province, \'\'), 
+                        \'Lainnya\'
+                    ) as origin'),
+                    \DB::raw('SUM(quantity) as total_visitors')
+                )
+                ->whereIn('status', ['paid', 'used'])
                 ->when(!$viewAllTickets, function($q) use ($userId) {
                     $q->whereHas('ticket.place', function($subQ) use ($userId) {
                         $subQ->where('created_by', $userId);
                     });
                 })
-                ->whereNotNull('customer_city')
-                ->groupBy('customer_city')
+                ->where(function($q) {
+                    $q->whereNotNull('customer_city')
+                      ->where('customer_city', '!=', '')
+                      ->orWhere(function($subQ) {
+                          $subQ->whereNotNull('customer_province')
+                               ->where('customer_province', '!=', '');
+                      });
+                })
+                ->groupBy(\DB::raw('COALESCE(
+                    NULLIF(customer_city, \'\'), 
+                    NULLIF(customer_province, \'\'), 
+                    \'Lainnya\'
+                )'))
                 ->orderBy('total_visitors', 'desc')
                 ->take(5)
-                ->get(),
+                ->get()
+                ->map(function($item) {
+                    // Map back to customer_city for compatibility with blade template
+                    $item->customer_city = $item->origin;
+                    return $item;
+                }),
 
             // Weekly Revenue Trend (Last 7 Days)
             'weekly_revenue' => $this->getWeeklyRevenueTrend($viewAllTickets, $userId),

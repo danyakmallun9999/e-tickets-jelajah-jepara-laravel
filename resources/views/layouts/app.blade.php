@@ -24,8 +24,12 @@
         @livewireStyles
         @stack('styles')
         <style>
-            :root { --sidebar-width: 16rem; }
-            .sidebar-minimized { --sidebar-width: 5rem; }
+            :root { 
+                --sidebar-width: 16rem; 
+            }
+            html.sidebar-minimized { 
+                --sidebar-width: 5rem; 
+            }
             .preload * { transition: none !important; }
             
             /* Sidebar Toggle Logic */
@@ -33,14 +37,57 @@
                 .toggle-maximize { display: none !important; }
                 .toggle-minimize { display: flex !important; }
                 
-                .sidebar-minimized .toggle-maximize { display: flex !important; }
-                .sidebar-minimized .toggle-minimize { display: none !important; }
+                html.sidebar-minimized .toggle-maximize { display: flex !important; }
+                html.sidebar-minimized .toggle-minimize { display: none !important; }
+            }
+            
+            /* Ensure sidebar width is consistent */
+            aside {
+                width: var(--sidebar-width) !important;
+                min-width: var(--sidebar-width) !important;
+                max-width: var(--sidebar-width) !important;
+            }
+            
+            /* Prevent layout shift during navigation */
+            html.sidebar-minimized aside {
+                width: 5rem !important;
+                min-width: 5rem !important;
+                max-width: 5rem !important;
             }
         </style>
         <script>
-            if (localStorage.getItem('sidebarMinimized') === 'true') {
-                document.documentElement.classList.add('sidebar-minimized');
-            }
+            // Initialize sidebar state immediately to prevent flicker
+            (function() {
+                const isMinimized = localStorage.getItem('sidebarMinimized') === 'true';
+                if (isMinimized) {
+                    document.documentElement.classList.add('sidebar-minimized');
+                } else {
+                    document.documentElement.classList.remove('sidebar-minimized');
+                }
+                
+                // Sync state after Livewire navigation (for SPA)
+                if (window.Livewire) {
+                    document.addEventListener('livewire:navigated', function() {
+                        setTimeout(function() {
+                            const savedState = localStorage.getItem('sidebarMinimized') === 'true';
+                            const hasClass = document.documentElement.classList.contains('sidebar-minimized');
+                            
+                            if (savedState !== hasClass) {
+                                if (savedState) {
+                                    document.documentElement.classList.add('sidebar-minimized');
+                                } else {
+                                    document.documentElement.classList.remove('sidebar-minimized');
+                                }
+                            }
+                            
+                            // Trigger Alpine.js to sync if it's initialized
+                            if (window.Alpine && document.querySelector('[x-data]')) {
+                                window.Alpine.initTree(document.documentElement);
+                            }
+                        }, 100);
+                    });
+                }
+            })();
         </script>
     </head>
     <body class="font-sans antialiased text-gray-900 bg-gray-50 preload" 
@@ -49,14 +96,69 @@
               mobileSidebarOpen: false,
               screenWidth: window.innerWidth,
               get isDesktop() { return this.screenWidth >= 768; },
-              get isSidebarMini() { return this.sidebarMinimized && this.isDesktop; }
+              get isSidebarMini() { return this.sidebarMinimized && this.isDesktop; },
+              syncSidebarState() {
+                  // Sync state from localStorage and HTML class
+                  const savedState = localStorage.getItem('sidebarMinimized') === 'true';
+                  const hasClass = document.documentElement.classList.contains('sidebar-minimized');
+                  
+                  // Ensure consistency
+                  if (savedState !== hasClass) {
+                      if (savedState) {
+                          document.documentElement.classList.add('sidebar-minimized');
+                      } else {
+                          document.documentElement.classList.remove('sidebar-minimized');
+                      }
+                  }
+                  
+                  // Update Alpine state if different
+                  if (this.sidebarMinimized !== savedState) {
+                      this.sidebarMinimized = savedState;
+                  }
+              }
           }"
-          x-init="window.addEventListener('resize', () => screenWidth = window.innerWidth);
+          x-init="syncSidebarState();
+                  window.addEventListener('resize', () => screenWidth = window.innerWidth);
                   $watch('sidebarMinimized', value => {
                       localStorage.setItem('sidebarMinimized', value);
                       document.documentElement.classList.toggle('sidebar-minimized', value);
                   }); 
-                  window.addEventListener('load', () => document.body.classList.remove('preload'))"
+                  window.addEventListener('load', () => document.body.classList.remove('preload'));
+                  
+                  // Sync sidebar state on Livewire SPA navigation
+                  const syncOnNavigate = () => {
+                      setTimeout(() => {
+                          syncSidebarState();
+                          // Force re-evaluation of computed properties
+                          this.$nextTick(() => {
+                              syncSidebarState();
+                          });
+                      }, 100);
+                  };
+                  
+                  document.addEventListener('livewire:navigated', syncOnNavigate);
+                  document.addEventListener('livewire:navigating', () => {
+                      // Ensure state is saved before navigation
+                      const currentState = this.sidebarMinimized;
+                      localStorage.setItem('sidebarMinimized', currentState);
+                      document.documentElement.classList.toggle('sidebar-minimized', currentState);
+                  });
+                  
+                  // Ensure state is synced on page visibility change
+                  document.addEventListener('visibilitychange', () => {
+                      if (!document.hidden) {
+                          syncSidebarState();
+                      }
+                  });
+                  
+                  // Periodic sync check (fallback for edge cases) - only check every 5 seconds
+                  setInterval(() => {
+                      const savedState = localStorage.getItem('sidebarMinimized') === 'true';
+                      const hasClass = document.documentElement.classList.contains('sidebar-minimized');
+                      if (this.sidebarMinimized !== savedState || savedState !== hasClass) {
+                          syncSidebarState();
+                      }
+                  }, 5000);"
       :class="{'overflow-hidden': mobileSidebarOpen}">
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar -->
