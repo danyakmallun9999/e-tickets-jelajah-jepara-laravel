@@ -118,7 +118,7 @@
                 <!-- Tooltip -->
                 <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
                      x-show="isSidebarMini" 
-                     class="fixed left-[5.5rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
                      style="display: none;">
                     Dashboard
                 </div>
@@ -140,7 +140,7 @@
                  <!-- Tooltip -->
                 <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
                      x-show="isSidebarMini" 
-                     class="fixed left-[5.5rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
                      style="display: none;">
                     Kelola Admin
                 </div>
@@ -166,7 +166,7 @@
                 <!-- Floating Submenu (Minimized) -->
                 <div x-show="isSidebarMini"
                      x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
-                     class="fixed left-[5.5rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
+                     class="fixed left-[4.7rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
                      style="display: none;">
                     <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
                         Destinasi
@@ -219,7 +219,7 @@
                  <!-- Tooltip -->
                 <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
                      x-show="isSidebarMini" 
-                     class="fixed left-[5.5rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
                      style="display: none;">
                     Berita
                 </div>
@@ -243,7 +243,7 @@
                 <!-- Floating Submenu (Minimized) -->
                 <div x-show="isSidebarMini"
                      x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
-                     class="fixed left-[5.5rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
+                     class="fixed left-[4.7rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
                      style="display: none;">
                     <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
                         Events
@@ -286,7 +286,7 @@
                  <!-- Tooltip -->
                 <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
                      x-show="isSidebarMini" 
-                     class="fixed left-[5.5rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
                      style="display: none;">
                     Scan Barcode
                 </div>
@@ -313,7 +313,7 @@
                 <!-- Floating Submenu (Minimized) -->
                 <div x-show="isSidebarMini"
                      x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
-                     class="fixed left-[5.5rem] w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
+                     class="fixed left-[4.7rem] w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
                      style="display: none;">
                     <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
                         E-Tiket
@@ -412,7 +412,7 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 translate-y-2"
                      class="absolute bottom-full left-0 w-full mb-2 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50"
-                     :class="isSidebarMini ? 'w-48 left-full ml-2 bottom-0' : 'w-full'"
+                     :class="isSidebarMini ? 'w-48 left-[4.7rem] ml-0 bottom-0' : 'w-full'"
                      style="display: none;">
                     
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition" wire:navigate>
