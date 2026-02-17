@@ -451,3 +451,12 @@ if (document.readyState === 'loading') {
 } else {
     boot();
 }
+
+// Livewire SPA Support
+document.addEventListener('livewire:navigated', () => {
+    boot();
+});
+
+document.addEventListener('livewire:navigating', () => {
+    destroyFinancialCharts();
+});

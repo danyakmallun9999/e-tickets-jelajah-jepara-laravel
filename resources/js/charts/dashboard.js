@@ -435,3 +435,14 @@ if (document.readyState === 'loading') {
 } else {
     boot();
 }
+
+// Livewire SPA Support
+document.addEventListener('livewire:navigated', () => {
+    // Re-init charts if we landed on the dashboard
+    boot();
+});
+
+document.addEventListener('livewire:navigating', () => {
+    // Cleanup old charts before navigating away
+    destroyDashboardCharts();
+});

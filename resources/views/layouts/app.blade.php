@@ -74,7 +74,7 @@
                         </button>
                         <span class="font-bold text-gray-800 text-lg">Admin Panel</span>
                     </div>
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2" wire:navigate>
                          <img src="{{ asset('images/logo-kura.png') }}" alt="Logo" class="w-9 h-9 object-contain">
                     </a>
                 </header>

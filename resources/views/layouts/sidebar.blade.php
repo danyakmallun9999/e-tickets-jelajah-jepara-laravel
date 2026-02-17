@@ -68,7 +68,7 @@
         
         <!-- Logo -->
         <div class="flex items-center h-16 md:h-20 border-b border-gray-200 px-4 transition-all duration-300 sidebar-logo-container" :class="isSidebarMini ? 'justify-center' : 'justify-between'">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group" wire:navigate>
                 <img x-show="isSidebarMini" src="{{ asset('images/logo-kura.png') }}" class="w-10 h-10 object-contain transition flex-shrink-0 sidebar-logo-img" alt="Logo">
                 <div x-show="!isSidebarMini" class="flex flex-col justify-center transition-opacity duration-300 sidebar-logo-text">
                     @if($brandLabel === 'JelajahJepara')
@@ -108,7 +108,8 @@
             
             <a href="{{ route('admin.dashboard') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-gauge text-lg"></i>
                 </div>
@@ -130,7 +131,8 @@
 
             <a href="{{ route('admin.users.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.users.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-users-gear text-lg"></i>
                 </div>
@@ -150,7 +152,8 @@
             @if(auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations']))
             <a href="{{ route('admin.places.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.places.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-map-location-dot text-lg"></i>
                 </div>
@@ -170,7 +173,8 @@
             @if(auth('admin')->user()->hasAnyPermission(['view all posts', 'view own posts']))
             <a href="{{ route('admin.posts.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.posts.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-newspaper text-lg"></i>
                 </div>
@@ -207,10 +211,10 @@
                     <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
                         Events
                     </div>
-                    <a href="{{ route('admin.events.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.events.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Daftar Event
                     </a>
-                    <a href="{{ route('admin.events.calendar') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.events.calendar') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Kalender Tahunan
                     </a>
                 </div>
@@ -220,11 +224,13 @@
                      x-collapse
                      class="pl-4 pr-3 py-1 space-y-1 relative ml-2.5 border-l-2 border-gray-100 sidebar-nav-text">
                     <a href="{{ route('admin.events.index') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Daftar Event</span>
                     </a>
                     <a href="{{ route('admin.events.calendar') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.calendar') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.calendar') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.events.calendar') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Kalender Tahunan</span>
                     </a>
                 </div>
@@ -234,7 +240,8 @@
             @can('scan tickets')
             <a href="{{ route('admin.scan.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.scan.index') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-qrcode text-lg"></i>
                 </div>
@@ -275,25 +282,25 @@
                     </div>
                     
                     @can('view all tickets')
-                    <a href="{{ route('admin.tickets.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.tickets.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Dashboard
                     </a>
-                    <a href="{{ route('admin.tickets.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.tickets.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Kelola Tiket
                     </a>
-                    <a href="{{ route('admin.tickets.orders') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.tickets.orders') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Pesanan Masuk
                     </a>
                     @endcan
 
                     @if(auth('admin')->user()->hasAnyPermission(['view all tickets', 'view own destinations']))
-                    <a href="{{ route('admin.tickets.history') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.tickets.history') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Riwayat Penjualan
                     </a>
                     @endif
 
                     @if(auth('admin')->user()->hasAnyPermission(['view all financial reports', 'view own financial reports']))
-                    <a href="{{ route('admin.reports.financial.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('admin.reports.financial.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Laporan Keuangan
                     </a>
                     @endif
@@ -306,31 +313,36 @@
                     
                     @can('view all tickets')
                     <a href="{{ route('admin.tickets.dashboard') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.dashboard') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.dashboard') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.tickets.dashboard') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Dashboard</span>
                     </a>
                     
                     <a href="{{ route('admin.tickets.index') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.index') || request()->routeIs('admin.tickets.create') || request()->routeIs('admin.tickets.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.index') || request()->routeIs('admin.tickets.create') || request()->routeIs('admin.tickets.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.tickets.index') || request()->routeIs('admin.tickets.create') || request()->routeIs('admin.tickets.edit') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Kelola Tiket</span>
                     </a>
 
                     <a href="{{ route('admin.tickets.orders') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.orders') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.orders') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.tickets.orders') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pesanan Masuk</span>
                     </a>
                     @endcan
 
                     @if(auth('admin')->user()->hasAnyPermission(['view all tickets', 'view own destinations']))
                     <a href="{{ route('admin.tickets.history') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.history') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.tickets.history') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.tickets.history') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Riwayat Penjualan</span>
                     </a>
                     @endif
 
                     @if(auth('admin')->user()->hasAnyPermission(['view all financial reports', 'view own financial reports']))
                     <a href="{{ route('admin.reports.financial.index') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.reports.financial.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}">
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.reports.financial.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
                        <span class="{{ request()->routeIs('admin.reports.financial.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Laporan Keuangan</span>
                     </a>
                     @endif
@@ -341,7 +353,8 @@
             @can('manage categories')
             <a href="{{ route('admin.categories.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.categories.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''">
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
                 <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-tags text-lg"></i>
                 </div>
@@ -386,7 +399,7 @@
                      :class="isSidebarMini ? 'w-48 left-full ml-2 bottom-0' : 'w-full'"
                      style="display: none;">
                     
-                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition" wire:navigate>
                         <i class="fa-solid fa-user text-gray-400 w-5"></i>
                         Profile
                     </a>
