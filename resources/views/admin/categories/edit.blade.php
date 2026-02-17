@@ -1,61 +1,129 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Kategori') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.categories.index') }}" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" wire:navigate>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <p class="text-sm text-gray-500 mb-0.5">Kelola Kategori</p>
+                    <h2 class="font-bold text-2xl text-gray-900 leading-tight">
+                        Edit Kategori
+                    </h2>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200"
+            <form action="{{ route('admin.categories.update', $category) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" 
                      x-data="{ 
                         icon: '{{ old('icon_class', $category->icon_class) }}',
                         color: '{{ old('color', $category->color) }}'
                      }">
                     
-                    <form action="{{ route('admin.categories.update', $category) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        
-                        <!-- Name -->
-                        <div class="mb-4">
-                            <x-input-label for="name" :value="__('Nama Kategori')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name', $category->name)" required autofocus />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                        </div>
-
-                        <!-- Icon Class -->
-                        <div class="mb-4">
-                            <x-input-label for="icon_class" :value="__('Kelas Ikon (FontAwesome)')" />
-                            <div class="flex gap-2">
-                                <x-text-input id="icon_class" class="block mt-1 w-full" type="text" name="icon_class" x-model="icon" />
-                                <div class="mt-1 w-10 flex items-center justify-center bg-gray-100 rounded border border-gray-300">
-                                    <i class="text-gray-600" :class="icon || 'fa-solid fa-question'"></i>
+                    <!-- Left Column: Main Information -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Informasi Dasar</h3>
+                                        <p class="text-xs text-gray-500">Ubah detail utama kategori</p>
+                                    </div>
                                 </div>
                             </div>
-                            <x-input-error :messages="$errors->get('icon_class')" class="mt-2" />
-                        </div>
-
-                        <!-- Color -->
-                        <div class="mb-4">
-                            <x-input-label for="color" :value="__('Warna Penanda')" />
-                            <div class="flex items-center gap-2 mt-1">
-                                <input type="color" name="color" id="color" x-model="color" class="h-10 w-20 rounded border border-gray-300 p-1">
-                                <x-text-input type="text" id="color_text" class="block w-32" x-model="color" readonly />
+                            <div class="p-6 space-y-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Nama Kategori
+                                    </label>
+                                    <input type="text" 
+                                           id="name" 
+                                           name="name" 
+                                           value="{{ old('name', $category->name) }}"
+                                           class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 font-medium placeholder-gray-400 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all"
+                                           required 
+                                           autofocus>
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                </div>
                             </div>
-                            <x-input-error :messages="$errors->get('color')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Appearance & Actions -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Appearance Card -->
+                        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-5 py-4 bg-gray-50 border-b border-gray-100">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-palette text-purple-500"></i>
+                                    <h3 class="font-bold text-gray-900">Tampilan</h3>
+                                </div>
+                            </div>
+                            <div class="p-5 space-y-5">
+                                <!-- Preview -->
+                                <div class="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-2xl border border-gray-100 mb-4">
+                                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg mb-3 transition-all duration-300"
+                                         :style="'background-color: ' + color">
+                                        <i class="text-2xl" :class="icon || 'fa-solid fa-question'"></i>
+                                    </div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Preview Ikon</p>
+                                </div>
+
+                                <!-- Icon Class -->
+                                <div>
+                                    <label for="icon_class" class="block text-sm font-medium text-gray-700 mb-2 text-center">Kelas Ikon (FA 6)</label>
+                                    <input type="text" 
+                                           id="icon_class" 
+                                           name="icon_class" 
+                                           x-model="icon"
+                                           class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all text-sm font-mono"
+                                           placeholder="fa-solid fa-star">
+                                    <x-input-error :messages="$errors->get('icon_class')" class="mt-2" />
+                                </div>
+
+                                <!-- Color Picker -->
+                                <div>
+                                    <label for="color" class="block text-sm font-medium text-gray-700 mb-2 text-center">Warna Penanda</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" 
+                                               id="color" 
+                                               name="color" 
+                                               x-model="color"
+                                               class="h-10 w-16 bg-gray-50 border border-gray-200 rounded-lg p-1 cursor-pointer">
+                                        <input type="text" 
+                                               x-model="color"
+                                               class="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm font-mono focus:ring-0 pointer-events-none"
+                                               readonly>
+                                    </div>
+                                    <x-input-error :messages="$errors->get('color')" class="mt-2" />
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 mr-2" wire:navigate>
+                        <!-- Action Card -->
+                        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 space-y-3">
+                            <button type="submit" 
+                                    class="w-full inline-flex justify-center items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/25 active:scale-[0.98]">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Simpan Perubahan
+                            </button>
+                            <a href="{{ route('admin.categories.index') }}" 
+                               class="w-full inline-flex justify-center items-center gap-2 px-5 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all" wire:navigate>
                                 Batal
                             </a>
-                            <x-primary-button class="ml-4">
-                                {{ __('Simpan Perubahan') }}
-                            </x-primary-button>
                         </div>
-                    </form>
-
+                    </div>
                 </div>
+            </form>
+        </div>
+    </div>
 </x-app-layout>
