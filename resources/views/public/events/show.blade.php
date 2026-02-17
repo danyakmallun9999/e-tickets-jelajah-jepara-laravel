@@ -24,7 +24,7 @@
                         <nav class="flex" aria-label="Breadcrumb">
                             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                                 <li class="inline-flex items-center">
-                                    <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                    <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors" wire:navigate>
                                         <span class="material-symbols-outlined text-lg mr-1">home</span>
                                         Home
                                     </a>
@@ -32,7 +32,7 @@
                                 <li>
                                     <div class="flex items-center">
                                         <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
-                                        <a href="{{ route('events.public.index') }}" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                        <a href="{{ route('events.public.index') }}" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors" wire:navigate>
                                             Agenda
                                         </a>
                                     </div>

@@ -32,7 +32,8 @@
                 <!-- Logo (Hidden on mobile when menu open) -->
                 <a class="flex items-center gap-3 group relative transition-opacity duration-300" 
                    :class="{ 'opacity-0 pointer-events-none absolute': mobileMenuOpen, 'opacity-100 relative': !mobileMenuOpen }"
-                   href="{{ route('welcome') }}">
+                   href="{{ route('welcome') }}"
+                   wire:navigate>
                     <div class="relative transition-all duration-300 group-hover:scale-110 w-20 h-20">
                          <!-- Logo Image -->
                          <img src="{{ asset('images/logo-kura.png') }}" alt="Logo Kabupaten Jepara" class="w-full h-full object-contain filter">
@@ -55,7 +56,8 @@
                         ['label' => __('Nav.News'), 'route' => 'posts.index', 'active' => 'posts.*']
                     ] as $link)
                     <a href="{{ route($link['route']) }}" 
-                       class="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 group overflow-hidden {{ request()->routeIs($link['active']) ? 'text-primary dark:text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white' }}">
+                       class="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 group overflow-hidden {{ request()->routeIs($link['active']) ? 'text-primary dark:text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white' }}"
+                       {{ $link['route'] !== 'explore.map' ? 'wire:navigate' : '' }}>
                         <span class="relative z-10">{{ $link['label'] }}</span>
                         <!-- Hover Pill Effect -->
                         @unless(request()->routeIs($link['active']))
@@ -174,7 +176,7 @@
                                     <p class="font-bold text-slate-800 dark:text-white truncate">{{ Auth::guard('web')->user()->name }}</p>
                                 </div>
 
-                                <a href="{{ route('tickets.my') }}" class="block px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary transition-colors flex items-center gap-2">
+                                <a href="{{ route('tickets.my') }}" class="block px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary transition-colors flex items-center gap-2" wire:navigate>
                                     <i class="fa-solid fa-ticket text-slate-400"></i> {{ __('Tickets.My.Title') ?? 'Tiket Saya' }}
                                 </a>
 
@@ -232,7 +234,8 @@
                        class="text-lg font-bold flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800 group"
                        x-transition:enter="transition ease-out duration-300 delay-{{ $index * 75 }}ms"
                        x-transition:enter-start="opacity-0 translate-x-10"
-                       x-transition:enter-end="opacity-100 translate-x-0">
+                       x-transition:enter-end="opacity-100 translate-x-0"
+                       {{ $link['route'] !== 'explore.map' ? 'wire:navigate' : '' }}>
                         <span class="{{ request()->routeIs($link['active']) ? 'text-primary' : 'text-slate-800 dark:text-white' }} group-hover:text-primary transition-colors">{{ $link['label'] }}</span>
                         <span class="material-symbols-outlined text-sm text-slate-300 group-hover:text-primary transition-transform group-hover:translate-x-2">arrow_forward</span>
                     </a>
@@ -253,7 +256,7 @@
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <a href="{{ route('tickets.my') }}" class="flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-br from-primary/5 to-primary/10 text-primary rounded-xl text-center border border-primary/20 shadow-sm shadow-primary/10 active:scale-[0.97] transition-all duration-200">
+                                <a href="{{ route('tickets.my') }}" class="flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-br from-primary/5 to-primary/10 text-primary rounded-xl text-center border border-primary/20 shadow-sm shadow-primary/10 active:scale-[0.97] transition-all duration-200" wire:navigate>
                                     <span class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
                                         <i class="fa-solid fa-ticket text-xs"></i>
                                     </span>

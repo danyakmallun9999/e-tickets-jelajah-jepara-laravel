@@ -10,7 +10,7 @@
             
             <!-- Brand Column -->
             <div class="md:col-span-4 space-y-6">
-                <a href="{{ route('welcome') }}" class="block flex justify-center md:justify-start">
+                <a href="{{ route('welcome') }}" class="block flex justify-center md:justify-start" wire:navigate>
                     <img src="{{ asset('images/logo-kura.png') }}" alt="Logo Jepara" class="h-32 md:h-28 w-auto object-contain transition-transform hover:scale-105 duration-300">
                 </a>
                 <div class="space-y-4">
@@ -40,11 +40,11 @@
             <div class="md:col-start-7 md:col-span-2">
                 <h4 class="text-white font-medium text-sm mb-6">{{ __('Footer.Section.Explore') }}</h4>
                 <ul class="space-y-3 text-sm">
-                    <li><a href="{{ route('welcome') }}" class="text-white/50 hover:text-white transition-colors">{{ __('Nav.Home') }}</a></li>
-                    <li><a href="{{ route('places.index') }}" class="text-white/50 hover:text-white transition-colors">{{ __('Nav.Destinations') }}</a></li>
+                    <li><a href="{{ route('welcome') }}" class="text-white/50 hover:text-white transition-colors" wire:navigate>{{ __('Nav.Home') }}</a></li>
+                    <li><a href="{{ route('places.index') }}" class="text-white/50 hover:text-white transition-colors" wire:navigate>{{ __('Nav.Destinations') }}</a></li>
                     <li><a href="{{ route('explore.map') }}" class="text-white/50 hover:text-white transition-colors">{{ __('Nav.Map') }}</a></li>
-                    <li><a href="{{ route('events.public.index') }}" class="text-white/50 hover:text-white transition-colors">{{ __('Nav.Events') }}</a></li>
-                    <li><a href="{{ route('posts.index') }}" class="text-white/50 hover:text-white transition-colors">{{ __('Nav.News') }}</a></li>
+                    <li><a href="{{ route('events.public.index') }}" class="text-white/50 hover:text-white transition-colors" wire:navigate>{{ __('Nav.Events') }}</a></li>
+                    <li><a href="{{ route('posts.index') }}" class="text-white/50 hover:text-white transition-colors" wire:navigate>{{ __('Nav.News') }}</a></li>
                 </ul>
             </div>
 

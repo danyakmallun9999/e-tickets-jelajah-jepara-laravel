@@ -3,7 +3,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
-                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Nav.Home') }}</a>
+                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors" wire:navigate>{{ __('Nav.Home') }}</a>
                 <span>/</span>
                 <span class="text-gray-800 dark:text-gray-200 font-medium">{{ __('Nav.Events') }}</span>
             </nav>
@@ -207,6 +207,7 @@
                                x-transition:enter="transition ease-out duration-300"
                                x-transition:enter-start="opacity-0 scale-95"
                                x-transition:enter-end="opacity-100 scale-100"
+                               wire:navigate
                             >
                                 <div class="h-full flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
                                     

@@ -3,7 +3,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
             <nav class="flex text-xs md:text-sm text-gray-400 mb-6 space-x-2">
-                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Tickets.Breadcrumb.Home') }}</a>
+                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors" wire:navigate>{{ __('Tickets.Breadcrumb.Home') }}</a>
                 <span>/</span>
                 <span class="text-gray-800 dark:text-gray-200 font-medium">{{ __('Tickets.Breadcrumb.Index') }}</span>
             </nav>
@@ -75,7 +75,7 @@
                         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
                             {{ __('Tickets.Title') }} <span class="text-primary">{{ __('Tickets.TitleHighlight') }}</span>
                         </h1>
-                        <a href="{{ route('tickets.my') }}" class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-600 dark:text-slate-300 font-semibold text-sm hover:border-primary hover:text-primary transition-all whitespace-nowrap shrink-0">
+                        <a href="{{ route('tickets.my') }}" class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-600 dark:text-slate-300 font-semibold text-sm hover:border-primary hover:text-primary transition-all whitespace-nowrap shrink-0" wire:navigate>
                             <i class="fa-solid fa-ticket text-xs"></i>
                             <span class="hidden sm:inline">{{ __('Tickets.MyTicketsButton') }}</span>
                             <span class="sm:hidden">Tiket Saya</span>
@@ -291,6 +291,7 @@
                                                                 :href="`/e-tiket/${ticket.id}`" 
                                                                 @click.stop
                                                                 class="px-5 py-2 rounded-2xl bg-primary text-white font-semibold text-sm hover:bg-primary-dark transition-colors whitespace-nowrap"
+                                                                wire:navigate
                                                             >
                                                                 Beli Tiket
                                                             </a>

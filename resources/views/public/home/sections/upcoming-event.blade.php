@@ -128,7 +128,8 @@
 
                 <!-- CTA -->
                 <a href="{{ route('events.public.show', $upcomingEvent->slug) }}" 
-                    class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold transition-all shadow-lg shadow-primary/20">
+                    class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
+                    wire:navigate>
                     <span>Lihat Detail</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -159,7 +160,8 @@
                 <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0" x-ref="container">
                     @foreach($nextEvents as $event)
                     <a href="{{ route('events.public.show', $event->slug) }}" 
-                       class="block min-w-[280px] sm:min-w-[320px] snap-center bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                       class="block min-w-[280px] sm:min-w-[320px] snap-center bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                       wire:navigate>
                         
                         <!-- Image -->
                         <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
@@ -196,7 +198,7 @@
                 </div>
                 
                 <div class="text-center mt-4 lg:hidden">
-                     <a href="{{ route('events.public.index') }}" class="inline-flex items-center text-primary font-medium hover:text-primary-dark text-sm">
+                     <a href="{{ route('events.public.index') }}" class="inline-flex items-center text-primary font-medium hover:text-primary-dark text-sm" wire:navigate>
                         Lihat Semua Event <i class="fa-solid fa-arrow-right ml-1"></i>
                     </a>
                 </div>

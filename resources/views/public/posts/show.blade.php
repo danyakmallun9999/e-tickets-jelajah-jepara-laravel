@@ -19,9 +19,9 @@
             
             <!-- Breadcrumb -->
             <nav class="flex justify-center text-[11px] sm:text-xs md:text-sm text-gray-500/80 sm:text-gray-500 mb-3 sm:mb-6 space-x-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors">{{ __('Nav.Home') }}</a>
+                <a href="{{ route('welcome') }}" class="hover:text-primary transition-colors" wire:navigate>{{ __('Nav.Home') }}</a>
                 <span>/</span>
-                <a href="{{ route('posts.index') }}" class="text-gray-400 hover:text-primary transition-colors">{{ __('Nav.News') }}</a>
+                <a href="{{ route('posts.index') }}" class="text-gray-400 hover:text-primary transition-colors" wire:navigate>{{ __('Nav.News') }}</a>
                 <span>/</span>
                 <span class="text-gray-800 dark:text-gray-200 truncate max-w-[200px]">{{ $post->translated_title }}</span>
             </nav>
@@ -342,7 +342,7 @@
                         </h3>
                         <div class="space-y-6">
                             @foreach($relatedPosts as $related)
-                            <a href="{{ route('posts.show', $related) }}" class="group flex gap-4 items-start">
+                            <a href="{{ route('posts.show', $related) }}" class="group flex gap-4 items-start" wire:navigate>
                                 <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
                                     <img src="{{ asset($related->image_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                 </div>
@@ -379,7 +379,7 @@
                                     <h4 class="text-white font-bold text-lg leading-tight mb-0.5">{{ $place->name }}</h4>
                                     <p class="text-white/80 text-xs">{{ $place->category?->name }}</p>
                                 </div>
-                                <a href="{{ route('places.show', $place) }}" class="absolute inset-0 z-10"></a>
+                                <a href="{{ route('places.show', $place) }}" class="absolute inset-0 z-10" wire:navigate></a>
                             </div>
                             @endforeach
                         </div>
@@ -395,7 +395,7 @@
                          <div class="relative z-10">
                              <h4 class="text-white font-serif text-2xl font-bold mb-2">{{ __('News.CTA.Title') }}</h4>
                              <p class="text-white/80 text-sm mb-4">{{ __('News.CTA.Subtitle') }}</p>
-                             <a href="{{ route('places.index') }}" class="inline-block px-6 py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-primary hover:text-white transition-colors">
+                             <a href="{{ route('places.index') }}" class="inline-block px-6 py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-primary hover:text-white transition-colors" wire:navigate>
                                  {{ __('News.CTA.Button') }}
                              </a>
                          </div>

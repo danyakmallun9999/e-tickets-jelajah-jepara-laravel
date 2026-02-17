@@ -79,7 +79,8 @@
                 <div class="flex items-center gap-3 shrink-0">
                     <!-- View All Button -->
                     <a href="{{ route('places.index') }}" 
-                        class="text-primary font-bold hover:underline flex items-center gap-1">
+                        class="text-primary font-bold hover:underline flex items-center gap-1"
+                        wire:navigate>
                         {{ __('Tourism.Button.ViewAll') }} <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </a>
                     
@@ -104,7 +105,7 @@
                     @foreach($places as $place)
                     @if(!$place->slug) @continue @endif
                     <!-- Gallery Item -->
-                    <a href="{{ route('places.show', $place) }}" class="tourism-card block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5 opacity-0 translate-y-8">
+                    <a href="{{ route('places.show', $place) }}" class="tourism-card block min-w-[85%] sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center group relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-surface-light dark:bg-surface-dark border border-surface-light dark:border-white/5 opacity-0 translate-y-8" wire:navigate>
                         <!-- Image -->
                         <div class="absolute inset-0 bg-gray-200">
                             @if($place->image_path)

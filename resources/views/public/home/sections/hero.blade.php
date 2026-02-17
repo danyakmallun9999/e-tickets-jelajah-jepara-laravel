@@ -24,7 +24,8 @@
                         
                         <div class="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 opacity-0 transform translate-y-8">
                             <a class="group relative flex items-center justify-center h-14 px-8 rounded-full bg-primary text-white text-base font-bold overflow-hidden transition-all hover:-translate-y-1 shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40"
-                                href="{{ route('places.index') }}">
+                                href="{{ route('places.index') }}"
+                                wire:navigate>
                                 <span class="relative z-10">{{ __('Hero.Button') }}</span>
                                 <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                             </a>

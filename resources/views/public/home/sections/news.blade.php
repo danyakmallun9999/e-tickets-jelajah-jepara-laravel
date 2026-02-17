@@ -5,7 +5,8 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-8">
                 <h2 class="text-2xl md:text-3xl font-poppins font-bold text-text-light dark:text-text-dark">{{ __('News.Title') }}</h2>
                 <a class="text-primary font-bold hover:underline flex items-center gap-1 self-start md:self-auto"
-                    href="{{ route('posts.index') }}">
+                    href="{{ route('posts.index') }}"
+                    wire:navigate>
                     {{ __('View All') }} <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </a>
             </div>
@@ -33,7 +34,7 @@
                             {{ Str::limit(strip_tags($post->translated_content), 100) }}
                         </p>
                         <div class="mt-auto">
-                            <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}">{{ __('News.Button.ReadMore') }}</a>
+                            <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}" wire:navigate>{{ __('News.Button.ReadMore') }}</a>
                         </div>
                     </div>
                 </article>

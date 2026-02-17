@@ -68,7 +68,7 @@
                         <nav class="flex" aria-label="Breadcrumb">
                             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                                 <li class="inline-flex items-center">
-                                    <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                    <a href="{{ route('welcome') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors" wire:navigate>
                                         <span class="material-symbols-outlined text-lg mr-1">home</span>
                                         Home
                                     </a>
@@ -76,7 +76,7 @@
                                 <li>
                                     <div class="flex items-center">
                                         <span class="material-symbols-outlined text-slate-400 mx-1">chevron_right</span>
-                                        <a href="{{ route('places.index') }}" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors">
+                                        <a href="{{ route('places.index') }}" class="text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-white transition-colors" wire:navigate>
                                             Destinasi
                                         </a>
                                     </div>
@@ -316,7 +316,8 @@
                                                                     </div>
                                                                 </div>
                                                                 <a href="{{ route('tickets.show', $ticket->id) }}" 
-                                                                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-500 hover:from-primary/90 hover:to-sky-500/90 text-white font-bold text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+                                                                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-500 hover:from-primary/90 hover:to-sky-500/90 text-white font-bold text-xs shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300"
+                                                                   wire:navigate>
                                                                     <span class="material-symbols-outlined text-sm">shopping_cart</span>
                                                                     {{ __('Places.Ticket.Buy') }}
                                                                 </a>
