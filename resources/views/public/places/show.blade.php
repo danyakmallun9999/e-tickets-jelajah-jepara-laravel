@@ -7,7 +7,7 @@
             type="article"
         />
     @endpush
-    <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-4">
+    <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-24 lg:pt-20">
         
         <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
             <div class="flex flex-col lg:flex-row">
@@ -187,7 +187,7 @@
     
                 <!-- Right Side: Scrollable Content (50%) -->
                 <div class="lg:w-1/2 relative bg-white dark:bg-slate-950">
-                    <main class="max-w-3xl mx-auto px-6 py-12 md:py-16 lg:px-16 lg:py-24">
+                    <main class="max-w-3xl mx-auto px-5 sm:px-8 py-10 md:py-16 lg:px-16 lg:py-24">
                         
                         <!-- Top Meta: Category & Rating -->
                         <div class="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up">
@@ -204,7 +204,7 @@
     
                         <!-- Title & Address -->
                         <div class="mb-10 animate-fade-in-up delay-100">
-                            <h1 class="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
+                            <h1 class="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white leading-[1.2] md:leading-tight mb-6">
                                 {{ $place->translated_name }}
                             </h1>
                             <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-lg">
