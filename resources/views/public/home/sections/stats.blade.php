@@ -89,45 +89,50 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            gsap.registerPlugin(ScrollTrigger);
+        (function() {
+            const initStats = () => {
+                const statCards = document.querySelectorAll('.stat-card');
+                const statsSection = document.querySelector('.stats-section');
+                
+                if (!statsSection) return;
 
-            const statCards = document.querySelectorAll('.stat-card');
-            const statsSection = document.querySelector('.stats-section');
-            
-            // Set initial state via GSAP
-            gsap.set(statCards, { opacity: 0, y: 25 });
-            
-            ScrollTrigger.create({
-                trigger: statsSection,
-                start: "top bottom-=50",
-                onEnter: () => {
-                    gsap.to(statCards, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.35,
-                        stagger: 0.06,
-                        ease: "power1.out",
-                        onStart: () => {
-                            // Counting Animation - faster
-                            statCards.forEach(card => {
-                                const valueElement = card.querySelector('.stat-value');
-                                const target = parseInt(valueElement.getAttribute('data-target'));
-                                
-                                gsap.to(valueElement, {
-                                    innerText: target,
-                                    duration: 1,
-                                    snap: { innerText: 1 },
-                                    ease: "power1.out",
-                                    onUpdate: function() {
-                                        this.targets()[0].innerText = Math.ceil(this.targets()[0].innerText);
-                                    }
+                // Set initial state via GSAP
+                gsap.set(statCards, { opacity: 0, y: 25 });
+                
+                ScrollTrigger.create({
+                    trigger: statsSection,
+                    start: "top bottom-=50",
+                    onEnter: () => {
+                        gsap.to(statCards, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.35,
+                            stagger: 0.06,
+                            ease: "power1.out",
+                            onStart: () => {
+                                // Counting Animation - faster
+                                statCards.forEach(card => {
+                                    const valueElement = card.querySelector('.stat-value');
+                                    const target = parseInt(valueElement.getAttribute('data-target'));
+                                    
+                                    gsap.to(valueElement, {
+                                        innerText: target,
+                                        duration: 1,
+                                        snap: { innerText: 1 },
+                                        ease: "power1.out",
+                                        onUpdate: function() {
+                                            this.targets()[0].innerText = Math.ceil(this.targets()[0].innerText);
+                                        }
+                                    });
                                 });
-                            });
-                        }
-                    });
-                }
-            });
-        });
+                            }
+                        });
+                    }
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', initStats);
+            document.addEventListener('livewire:navigated', initStats);
+        })();
     </script>
     <!-- END SECTION: Stats -->

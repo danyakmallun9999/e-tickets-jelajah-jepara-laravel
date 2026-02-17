@@ -71,35 +71,38 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            gsap.registerPlugin(ScrollTrigger);
+        (function() {
+            const initProfile = () => {
+                // Left Column (Content) Slide In
+                gsap.to(".profile-content", {
+                    scrollTrigger: {
+                        trigger: ".profile-content",
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    },
+                    x: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out"
+                });
 
-            // Left Column (Content) Slide In
-            gsap.to(".profile-content", {
-                scrollTrigger: {
-                    trigger: ".profile-content",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                },
-                x: 0,
-                opacity: 1,
-                duration: 1,
-                ease: "power2.out"
-            });
+                // Right Column (Image) Slide In
+                gsap.to(".profile-image", {
+                    scrollTrigger: {
+                        trigger: ".profile-image",
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    },
+                    x: 0,
+                    opacity: 1,
+                    duration: 1,
+                    delay: 0.2, // Slight delay for staggering
+                    ease: "power2.out"
+                });
+            };
 
-            // Right Column (Image) Slide In
-            gsap.to(".profile-image", {
-                scrollTrigger: {
-                    trigger: ".profile-image",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                },
-                x: 0,
-                opacity: 1,
-                duration: 1,
-                delay: 0.2, // Slight delay for staggering
-                ease: "power2.out"
-            });
-        });
+            document.addEventListener('DOMContentLoaded', initProfile);
+            document.addEventListener('livewire:navigated', initProfile);
+        })();
     </script>
     <!-- END SECTION: Profile -->

@@ -36,128 +36,134 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-             // GSAP Hero Animation
-            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-            
-            tl.to(".hero-badge", { y: 0, opacity: 1, duration: 1, delay: 0.5 })
-              .to(".hero-title", { y: 0, opacity: 1, duration: 1 }, "-=0.6")
-              .to(".hero-subtitle", { y: 0, opacity: 1, duration: 1 }, "-=0.8")
-              .to(".hero-buttons", { y: 0, opacity: 1, duration: 1 }, "-=0.8");
+        (function() {
+            const initHero = () => {
+                // GSAP Hero Animation
+                const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+                tl.to(".hero-badge", { y: 0, opacity: 1, duration: 1, delay: 0.5 })
+                  .to(".hero-title", { y: 0, opacity: 1, duration: 1 }, "-=0.6")
+                  .to(".hero-subtitle", { y: 0, opacity: 1, duration: 1 }, "-=0.8")
+                  .to(".hero-buttons", { y: 0, opacity: 1, duration: 1 }, "-=0.8");
 
-            // Map setup
-            if (typeof maplibregl === 'undefined') {
-                console.error('MapLibre GL JS not loaded');
-                return;
-            }
-
-            const mapContainer = document.getElementById('hero-map');
-            const map = new maplibregl.Map({
-                container: 'hero-map',
-                style: {
-                    version: 8,
-                    sources: {
-                        'satellite': {
-                            type: 'raster',
-                            tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-                            tileSize: 256,
-                            attribution: '&copy; Esri'
-                        }
-                    },
-                    layers: [{
-                        id: 'satellite-layer',
-                        type: 'raster',
-                        source: 'satellite',
-                        paint: { 'raster-opacity': 1 }
-                    }]
-                },
-                center: [110.678, -6.589],
-                zoom: 9.5, 
-                minZoom: 9,
-                maxZoom: 12,
-                maxBounds: [[110.0, -7.0], [111.3, -5.9]],
-                renderWorldCopies: false,
-                pitch: 0,
-                attributionControl: false,
-                interactive: false
-            });
-
-            map.on('load', () => {
-                // Map fade in using GSAP for consistency
-                gsap.to(mapContainer, { opacity: 1, duration: 0.7, ease: "power2.out" });
-
-                map.addSource('boundaries', { type: 'geojson', data: '/boundaries.geojson' });
-
-                map.addLayer({
-                    'id': 'boundary-extrusion',
-                    'type': 'fill-extrusion',
-                    'source': 'boundaries',
-                    'paint': {
-                        'fill-extrusion-color': '#fbbf24',
-                        'fill-extrusion-height': 20,
-                        'fill-extrusion-base': 0,
-                        'fill-extrusion-opacity': 0.3
-                    }
-                });
-
-                map.addLayer({
-                    'id': 'boundary-line',
-                    'type': 'line',
-                    'source': 'boundaries',
-                    'layout': { 'line-join': 'round', 'line-cap': 'round' },
-                    'paint': {
-                        'line-color': '#ffffff',
-                        'line-width': 3,
-                        'line-opacity': 0.8
-                    }
-                });
-
-                // Fly animation
-                setTimeout(() => {
-                    const isMobile = window.innerWidth < 768;
-                    map.flyTo({
-                        center: [110.68, -6.59],
-                        zoom: isMobile ? 10 : 10.0,
-                        pitch: isMobile ? 45 : 60,
-                        bearing: 0,
-                        speed: 0.5,
-                        curve: 1.2,
-                        essential: true
-                    });
-                }, 500);
-
-                // Rotation Loop
-                let startTime;
-                let requestID;
-                const rotationsPerMinute = 0.5;
-
-                function rotateCamera(timestamp) {
-                    if (!startTime) startTime = timestamp;
-                    const progress = timestamp - startTime;
-                    const bearing = (progress / (60000 / rotationsPerMinute)) * 360;
-                    
-                    map.rotateTo(bearing % 360, { duration: 0 });
-                    requestID = requestAnimationFrame(rotateCamera);
+                // Map setup
+                if (typeof maplibregl === 'undefined') {
+                    console.error('MapLibre GL JS not loaded');
+                    return;
                 }
 
-                ScrollTrigger.create({
-                    trigger: mapContainer,
-                    start: "top bottom",
-                    end: "bottom top",
-                    onEnter: () => {
-                        if (!requestID) requestID = requestAnimationFrame(rotateCamera);
+                const mapContainer = document.getElementById('hero-map');
+                if (!mapContainer) return;
+
+                const map = new maplibregl.Map({
+                    container: 'hero-map',
+                    style: {
+                        version: 8,
+                        sources: {
+                            'satellite': {
+                                type: 'raster',
+                                tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                                tileSize: 256,
+                                attribution: '&copy; Esri'
+                            }
+                        },
+                        layers: [{
+                            id: 'satellite-layer',
+                            type: 'raster',
+                            source: 'satellite',
+                            paint: { 'raster-opacity': 1 }
+                        }]
                     },
-                    onLeave: () => {
-                        if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
-                    },
-                    onEnterBack: () => {
-                        if (!requestID) requestID = requestAnimationFrame(rotateCamera);
-                    },
-                    onLeaveBack: () => {
-                        if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
-                    }
+                    center: [110.678, -6.589],
+                    zoom: 9.5, 
+                    minZoom: 9,
+                    maxZoom: 12,
+                    maxBounds: [[110.0, -7.0], [111.3, -5.9]],
+                    renderWorldCopies: false,
+                    pitch: 0,
+                    attributionControl: false,
+                    interactive: false
                 });
-            });
-        });
+
+                map.on('load', () => {
+                    // Map fade in using GSAP for consistency
+                    gsap.to(mapContainer, { opacity: 1, duration: 0.7, ease: "power2.out" });
+
+                    map.addSource('boundaries', { type: 'geojson', data: '/boundaries.geojson' });
+
+                    map.addLayer({
+                        'id': 'boundary-extrusion',
+                        'type': 'fill-extrusion',
+                        'source': 'boundaries',
+                        'paint': {
+                            'fill-extrusion-color': '#fbbf24',
+                            'fill-extrusion-height': 20,
+                            'fill-extrusion-base': 0,
+                            'fill-extrusion-opacity': 0.3
+                        }
+                    });
+
+                    map.addLayer({
+                        'id': 'boundary-line',
+                        'type': 'line',
+                        'source': 'boundaries',
+                        'layout': { 'line-join': 'round', 'line-cap': 'round' },
+                        'paint': {
+                            'line-color': '#ffffff',
+                            'line-width': 3,
+                            'line-opacity': 0.8
+                        }
+                    });
+
+                    // Fly animation
+                    setTimeout(() => {
+                        const isMobile = window.innerWidth < 768;
+                        map.flyTo({
+                            center: [110.68, -6.59],
+                            zoom: isMobile ? 10 : 10.0,
+                            pitch: isMobile ? 45 : 60,
+                            bearing: 0,
+                            speed: 0.5,
+                            curve: 1.2,
+                            essential: true
+                        });
+                    }, 500);
+
+                    // Rotation Loop
+                    let startTime;
+                    let requestID;
+                    const rotationsPerMinute = 0.5;
+
+                    function rotateCamera(timestamp) {
+                        if (!startTime) startTime = timestamp;
+                        const progress = timestamp - startTime;
+                        const bearing = (progress / (60000 / rotationsPerMinute)) * 360;
+                        
+                        map.rotateTo(bearing % 360, { duration: 0 });
+                        requestID = requestAnimationFrame(rotateCamera);
+                    }
+
+                    ScrollTrigger.create({
+                        trigger: mapContainer,
+                        start: "top bottom",
+                        end: "bottom top",
+                        onEnter: () => {
+                            if (!requestID) requestID = requestAnimationFrame(rotateCamera);
+                        },
+                        onLeave: () => {
+                            if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
+                        },
+                        onEnterBack: () => {
+                            if (!requestID) requestID = requestAnimationFrame(rotateCamera);
+                        },
+                        onLeaveBack: () => {
+                            if (requestID) { cancelAnimationFrame(requestID); requestID = null; }
+                        }
+                    });
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', initHero);
+            document.addEventListener('livewire:navigated', initHero);
+        })();
     </script>
     <!-- END SECTION: Hero -->

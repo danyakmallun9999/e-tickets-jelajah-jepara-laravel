@@ -50,3 +50,10 @@ window.Livewire = Livewire;
 
 // Start Livewire (which starts Alpine)
 Livewire.start();
+
+// Refresh GSAP ScrollTrigger on Livewire navigation
+document.addEventListener('livewire:navigated', () => {
+    if (window.ScrollTrigger) {
+        window.ScrollTrigger.refresh();
+    }
+});

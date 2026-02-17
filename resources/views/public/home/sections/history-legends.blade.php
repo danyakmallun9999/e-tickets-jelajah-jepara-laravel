@@ -104,37 +104,40 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            gsap.registerPlugin(ScrollTrigger);
-            
-            // Header Animation
-            gsap.to(".history-header", {
-                scrollTrigger: {
-                    trigger: ".history-header",
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                ease: "power2.out"
-            });
+        (function() {
+            const initHistory = () => {
+                // Header Animation
+                gsap.to(".history-header", {
+                    scrollTrigger: {
+                        trigger: ".history-header",
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out"
+                });
 
-            // Cards Animation
-            const historyCards = document.querySelectorAll('.history-card');
-            
-            ScrollTrigger.batch(historyCards, {
-                start: "top 85%",
-                onEnter: batch => {
-                    gsap.to(batch, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        stagger: 0.15,
-                        ease: "power2.out"
-                    });
-                }
-            });
-        });
+                // Cards Animation
+                const historyCards = document.querySelectorAll('.history-card');
+                
+                ScrollTrigger.batch(historyCards, {
+                    start: "top 85%",
+                    onEnter: batch => {
+                        gsap.to(batch, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.8,
+                            stagger: 0.15,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', initHistory);
+            document.addEventListener('livewire:navigated', initHistory);
+        })();
     </script>
     <!-- END SECTION: History -->
