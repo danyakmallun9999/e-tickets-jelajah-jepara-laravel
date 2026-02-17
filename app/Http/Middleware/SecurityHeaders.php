@@ -31,10 +31,11 @@ class SecurityHeaders
 
         // Content-Security-Policy: Prevent XSS, clickjacking, data injection
         // Adjusted to allow TinyMCE editor and local Vite dev server to function properly
-        $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com";
+        $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com";
         $styleSrc = "'self' 'unsafe-inline' https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.googleapis.com";
-        $connectSrc = "'self' https://cdn.tiny.cloud https://api.mymemory.translated.net https://*.midtrans.com";
+        $connectSrc = "'self' https://cdn.tiny.cloud https://api.mymemory.translated.net https://*.midtrans.com https://server.arcgisonline.com";
         $fontSrc = "'self' data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.gstatic.com";
+        $imgSrc = "'self' data: https: blob: https://server.arcgisonline.com";
 
         if (app()->environment('local')) {
             $scriptSrc .= " http://localhost:5173 http://127.0.0.1:5173";
@@ -46,9 +47,11 @@ class SecurityHeaders
         $csp = "default-src 'self'; " .
                "script-src $scriptSrc; " .
                "style-src $styleSrc; " .
-               "img-src 'self' data: https: blob:; " .
+               "img-src $imgSrc; " .
                "font-src $fontSrc; " .
                "connect-src $connectSrc; " .
+               "worker-src 'self' blob:; " . // Required for MapLibre GL
+               "child-src 'self' blob:; " .  // Fallback for older browsers
                "frame-src 'self' https://cdn.tiny.cloud https://www.google.com; " .
                "object-src 'none'; " .
                "base-uri 'self'; " .
