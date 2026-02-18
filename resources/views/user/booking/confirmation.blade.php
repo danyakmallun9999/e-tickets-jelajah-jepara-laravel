@@ -410,77 +410,52 @@
          ═══════════════════════════════════════════════════════ --}}
     @if(in_array($order->status, ['paid', 'used']) && $order->ticket_number)
     <div style="position: fixed; left: -9999px; top: 0; z-index: -1;" class="font-inter text-slate-800">
-        <style>
-            .font-inter { font-family: 'Inter', sans-serif; }
-            .font-serif { font-family: 'Poppins', sans-serif; }
-        </style>
-        <div id="ticket-card" class="max-w-[400px] w-[400px] bg-white border border-blue-100 overflow-hidden relative ticket-card shadow-xl shadow-blue-100/50 rounded-none">
-            
-            <!-- Header / Brand Section -->
+        <div id="ticket-card" class="max-w-[400px] w-[400px] bg-white border border-blue-100 overflow-hidden relative ticket-card shadow-xl shadow-blue-100/50">
             <div class="bg-blue-600 text-white p-8 text-center relative overflow-hidden">
                 <div class="relative z-10">
                     <p class="text-[10px] uppercase tracking-[0.3em] text-blue-100 mb-2">@lang('tickets.department')</p>
                     <h1 class="text-3xl font-serif italic tracking-wide text-white">@lang('tickets.header')</h1>
                     <div class="w-16 h-px bg-blue-400 mx-auto mt-4"></div>
                 </div>
-                
-                <!-- Abstract decorative circles for premium feel -->
                 <div class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
                 <div class="absolute bottom-0 right-0 w-48 h-48 bg-blue-800/20 rounded-full translate-x-1/3 translate-y-1/3 blur-xl"></div>
             </div>
-
-            <!-- Ticket Body -->
             <div class="p-8 relative">
-                 <!-- Decorative connectors mimicking a physical ticket tear-off line -->
-                 <div class="absolute top-0 left-0 w-4 h-8 bg-blue-50 rounded-r-full -mt-4 z-20"></div>
-                 <div class="absolute top-0 right-0 w-4 h-8 bg-blue-50 rounded-l-full -mt-4 z-20"></div>
-                 
-                 <!-- Primary Info -->
-                 <div class="text-center mb-8">
-                     <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">@lang('tickets.destination')</p>
-                     <h2 class="text-2xl font-serif font-bold text-slate-900 leading-tight">
-                         {{ $order->ticket->place->name }}
-                     </h2>
-                 </div>
-
-                <!-- QR Code Section -->
+                <div class="absolute top-0 left-0 w-4 h-8 bg-blue-50 rounded-r-full -mt-4 z-20"></div>
+                <div class="absolute top-0 right-0 w-4 h-8 bg-blue-50 rounded-l-full -mt-4 z-20"></div>
+                <div class="text-center mb-8">
+                    <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">@lang('tickets.destination')</p>
+                    <h2 class="text-2xl font-serif font-bold text-slate-900 leading-tight">{{ $order->ticket->place->name }}</h2>
+                </div>
                 <div class="flex justify-center mb-8">
                     <div class="p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
-                        <div id="qrcode-image-hidden" class="mix-blend-multiply opacity-90"></div>
+                        <div id="ticket-qrcode" class="mix-blend-multiply opacity-90"></div>
                     </div>
                 </div>
                 <div class="text-center mb-8">
                     <p class="text-[10px] text-slate-400 tracking-widest uppercase mb-1">@lang('tickets.ticket_no')</p>
                     <p class="font-mono text-lg font-bold text-slate-700 tracking-wider">{{ $order->ticket_number }}</p>
                     <div class="mt-2 inline-block px-4 py-1 border border-blue-100 bg-blue-50 rounded-full">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">
-                            {{ $order->status_label }}
-                        </span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">{{ $order->status_label }}</span>
                     </div>
                 </div>
-
-                <!-- Details Grid -->
                 <div class="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-slate-100 pt-6">
                     <div>
                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.visit_date')</p>
                         <p class="font-serif text-lg text-slate-800">{{ $order->visit_date->translatedFormat('d M Y') }}</p>
                     </div>
-
                     <div class="text-right">
                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.visitors')</p>
                         <p class="font-serif text-lg text-slate-800">{{ $order->quantity }} @lang('tickets.people')</p>
                     </div>
-
                     <div class="col-span-2">
-                         <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.ticket_type')</p>
-                         <div class="flex items-baseline gap-2">
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">@lang('tickets.ticket_type')</p>
+                        <div class="flex items-baseline gap-2">
                             <span class="font-serif text-lg text-slate-800">{{ $order->ticket->name }}</span>
                             <span class="text-xs text-slate-500 italic">({{ ucfirst($order->ticket->type) }})</span>
-                         </div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Total Section -->
                 <div class="mt-8 pt-6 border-t border-dashed border-slate-300">
                     <div class="flex justify-between items-end">
                         <div>
@@ -494,8 +469,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Footer / Decorative Bottom -->
             <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
                 <p class="text-[10px] text-slate-400 italic font-serif">@lang('tickets.footer_thanks')</p>
             </div>
@@ -515,13 +488,13 @@
         }
         
         // For the hidden ticket card (Downloadable)
-        const hiddenQrElement = document.getElementById("qrcode-image-hidden");
+        const hiddenQrElement = document.getElementById("ticket-qrcode");
         if (hiddenQrElement) {
             new QRCode(hiddenQrElement, { 
                 text: "{{ $order->ticket_number }}", 
-                width: 400, 
-                height: 400, 
-                colorDark: "#000000", 
+                width: 150, // Reduced from 400
+                height: 150, // Reduced from 400
+                colorDark: "#2563eb", // Changed to blue-600
                 colorLight: "#ffffff", 
                 correctLevel: QRCode.CorrectLevel.H 
             });
