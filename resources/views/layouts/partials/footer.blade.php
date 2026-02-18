@@ -26,12 +26,12 @@
                         <a href="https://www.instagram.com/disparbudjepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-instagram text-lg"></i>
                         </a>
-                        <a href="https://www.youtube.com/@disparbud.jepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
+                        <!-- <a href="https://www.youtube.com/@disparbud.jepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-youtube text-lg"></i>
                         </a>
                         <a href="https://twitter.com/disparbudjepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-twitter text-lg"></i>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>
