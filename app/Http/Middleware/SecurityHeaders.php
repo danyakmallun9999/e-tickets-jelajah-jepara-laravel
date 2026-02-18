@@ -33,9 +33,9 @@ class SecurityHeaders
         // Adjusted to allow TinyMCE editor and local Vite dev server to function properly
         $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com";
         $styleSrc = "'self' 'unsafe-inline' https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.googleapis.com";
-        $connectSrc = "'self' https://cdn.tiny.cloud https://api.mymemory.translated.net https://*.midtrans.com https://server.arcgisonline.com";
+        $connectSrc = "'self' https://cdn.tiny.cloud https://api.mymemory.translated.net https://*.midtrans.com https://server.arcgisonline.com https://router.project-osrm.org";
         $fontSrc = "'self' data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.gstatic.com";
-        $imgSrc = "'self' data: https: blob: https://server.arcgisonline.com";
+        $imgSrc = "'self' data: https: blob: https://server.arcgisonline.com https://tiles.stadiamaps.com https://*.google.com";
 
         if (app()->environment('local')) {
             $scriptSrc .= " http://localhost:5173 http://127.0.0.1:5173";
@@ -61,7 +61,7 @@ class SecurityHeaders
         $response->headers->set('Content-Security-Policy', $csp);
 
         // Permissions-Policy: Control browser features
-        $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+        $response->headers->set('Permissions-Policy', 'geolocation=(self), microphone=(), camera=()');
 
         // Strict-Transport-Security (HSTS): Force HTTPS in production
         if (app()->environment('production') && $request->secure()) {
