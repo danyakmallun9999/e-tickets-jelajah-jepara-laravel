@@ -187,9 +187,11 @@ class PariwisataSeeder extends Seeder
                     ['name' => $item['nama_wisata']],
                     [
                         'category_id' => $category->id,
+                        'name_en' => $item['name_en'] ?? null,
                         'slug' => Str::slug($item['nama_wisata']),
                         'image_path' => $imagePath,
                         'description' => $item['deskripsi'] ?? null,
+                        'description_en' => $item['description_en'] ?? null,
                         'address' => $item['lokasi'] ?? null,
                         'opening_hours' => ($item['waktu_buka'] !== '-' ? $item['waktu_buka'] : null),
                         'latitude' => $lat,
