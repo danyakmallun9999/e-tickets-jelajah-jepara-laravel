@@ -48,6 +48,26 @@ Sistem memiliki manajemen hak akses yang detail untuk berbagai peran pengguna:
 | **Payment** | ![Midtrans](https://img.shields.io/badge/Midtrans-Payment-blue?style=flat-square) | Payment Gateway Indonesia. |
 | **Maps** | ![MapLibre](https://img.shields.io/badge/MapLibre-1A1E29?style=flat-square&logo=maplibre&logoColor=white) | Visualisasi peta 3D interaktif. |
 
+## 🚩 Feature Flag (Pengaturan Fitur)
+
+Aplikasi ini dilengkapi dengan fitur _toggles_ untuk mengaktifkan atau menonaktifkan fitur tertentu tanpa mengubah kode. Pengaturan ini dilakukan melalui file `.env`.
+
+### 1. E-Ticketing System
+Untuk mengaktifkan atau menonaktifkan seluruh sistem tiket (penjualan, laporan, menu tiket):
+```env
+FEATURE_E_TICKET=true   # Aktifkan fitur
+FEATURE_E_TICKET=false  # Nonaktifkan fitur
+```
+
+### 2. Google Login
+Untuk mengaktifkan atau menonaktifkan fitur login menggunakan akun Google:
+```env
+FEATURE_GOOGLE_LOGIN=true   # Aktifkan login Google
+FEATURE_GOOGLE_LOGIN=false  # Nonaktifkan login Google (tombol login hilang)
+```
+
+> **Catatan:** Setelah mengubah nilai di `.env`, jalankan perintah `php artisan config:clear` agar perubahan diterapkan.
+
 ## ⚙️ Prasyarat (Prerequisites)
 
 -   **PHP** >= 8.2
