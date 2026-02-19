@@ -266,46 +266,55 @@ class WelcomeController extends Controller
             ->orderBy('date')
             ->get();
 
-        // 4. Statistics: Tourism Stats (Jepara)
         // 4. Statistics: Tourism Stats (Jepara) - Real Data from Ticket Orders
-        $currentYear = now()->year;
-        
-        // Count TOTAL TICKETS SOLD (Paid + Used)
-        $totalSold = \App\Models\TicketOrder::whereIn('status', ['paid', 'used'])
-            ->whereYear('visit_date', $currentYear)
-            ->sum('quantity');
+        if (config('features.e_ticket_enabled')) {
+            // 4. Statistics: Tourism Stats (Jepara) - Real Data from Ticket Orders
+            $currentYear = now()->year;
+            
+            // Count TOTAL TICKETS SOLD (Paid + Used)
+            $totalSold = \App\Models\TicketOrder::whereIn('status', ['paid', 'used'])
+                ->whereYear('visit_date', $currentYear)
+                ->sum('quantity');
 
-        // Count REAL VISITORS (Used / Checked-in only)
-        $totalVisitors = \App\Models\TicketOrder::where('status', 'used')
-            ->whereYear('visit_date', $currentYear)
-            ->sum('quantity');
+            // Count REAL VISITORS (Used / Checked-in only)
+            $totalVisitors = \App\Models\TicketOrder::where('status', 'used')
+                ->whereYear('visit_date', $currentYear)
+                ->sum('quantity');
 
-        // Monthly data from ticket orders (Using SOLD count for trend)
-        $monthlyData = \App\Models\TicketOrder::select(
-                DB::raw('MONTH(visit_date) as month'), 
-                DB::raw('SUM(quantity) as visitors')
-            )
-            ->whereIn('status', ['paid', 'used'])
-            ->whereYear('visit_date', $currentYear)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+            // Monthly data from ticket orders (Using SOLD count for trend)
+            $monthlyData = \App\Models\TicketOrder::select(
+                    DB::raw('MONTH(visit_date) as month'), 
+                    DB::raw('SUM(quantity) as visitors')
+                )
+                ->whereIn('status', ['paid', 'used'])
+                ->whereYear('visit_date', $currentYear)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
 
-        // Fill missing months with 0
-        $fullMonthlyData = collect(range(1, 12))->map(function($month) use ($monthlyData) {
-            $data = $monthlyData->firstWhere('month', $month);
-            return [
-                'month' => $month,
-                'visitors' => $data ? $data->visitors : 0
+            // Fill missing months with 0
+            $fullMonthlyData = collect(range(1, 12))->map(function($month) use ($monthlyData) {
+                $data = $monthlyData->firstWhere('month', $month);
+                return [
+                    'month' => $month,
+                    'visitors' => $data ? $data->visitors : 0
+                ];
+            });
+
+            $tourismStats = [
+                'total_sold' => $totalSold,
+                'total_visitors' => $totalVisitors,
+                'monthly_data' => $fullMonthlyData,
+                'year' => $currentYear,
             ];
-        });
-
-        $tourismStats = [
-            'total_sold' => $totalSold,
-            'total_visitors' => $totalVisitors,
-            'monthly_data' => $fullMonthlyData,
-            'year' => $currentYear,
-        ];
+        } else {
+            $tourismStats = [
+                'total_sold' => 0,
+                'total_visitors' => 0,
+                'monthly_data' => collect(range(1, 12))->map(fn($m) => ['month' => $m, 'visitors' => 0]),
+                'year' => now()->year,
+            ];
+        }
 
         return view('public.posts.show', compact('post', 'relatedPosts', 'recommendedPlaces', 'stats', 'viewsGraph', 'tourismStats'));
     }

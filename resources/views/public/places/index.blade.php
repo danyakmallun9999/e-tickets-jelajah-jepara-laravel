@@ -247,8 +247,12 @@
                                     
                                     <!-- Price -->
                                     <div class="font-bold text-primary flex items-center gap-1">
+                                        @if(config('features.e_ticket_enabled'))
                                         <span class="material-symbols-outlined text-lg">payments</span>
                                         <span x-text="place.ticket_price === 'Gratis' || place.ticket_price === 'Free' ? '{{ __('Places.Ticket.Free') }}' : (place.ticket_price && place.ticket_price.length < 15 ? place.ticket_price : '{{ __('Places.Ticket.Entry') }}')"></span>
+                                        @else
+                                        <span class="text-sm font-medium text-primary">Lihat Detail <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

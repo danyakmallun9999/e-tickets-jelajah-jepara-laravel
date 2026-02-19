@@ -47,14 +47,14 @@
 
                 <!-- Desktop Navigation (Magnetic Pills) -->
                 <nav class="hidden lg:flex items-center gap-1">
-                    @foreach([
+                    @foreach(collect([
                         ['label' => __('Nav.Home'), 'route' => 'welcome', 'active' => 'welcome'],
                         ['label' => __('Nav.Map'), 'route' => 'explore.map', 'active' => 'explore.map'],
                         ['label' => __('Nav.Destinations'), 'route' => 'places.index', 'active' => 'places.*'],
-                        ['label' => __('Nav.Tickets'), 'route' => 'tickets.index', 'active' => 'tickets.*'],
+                        config('features.e_ticket_enabled') ? ['label' => __('Nav.Tickets'), 'route' => 'tickets.index', 'active' => 'tickets.*'] : null,
                         ['label' => __('Nav.Events'), 'route' => 'events.public.index', 'active' => 'events.public.*'],
                         ['label' => __('Nav.News'), 'route' => 'posts.index', 'active' => 'posts.*']
-                    ] as $link)
+                    ])->filter() as $link)
                     <a href="{{ route($link['route']) }}" 
                        class="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 group overflow-hidden {{ request()->routeIs($link['active']) ? 'text-primary dark:text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white' }}"
                        {{ $link['route'] !== 'explore.map' ? 'wire:navigate' : '' }}>
@@ -203,9 +203,11 @@
                                     <p class="font-bold text-slate-800 dark:text-white truncate">{{ Auth::guard('web')->user()->name }}</p>
                                 </div>
 
+                                @if(config('features.e_ticket_enabled'))
                                 <a href="{{ route('tickets.my') }}" class="block px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary transition-colors flex items-center gap-2" wire:navigate>
                                     <i class="fa-solid fa-ticket text-slate-400"></i> {{ __('Tickets.My.Title') ?? 'Tiket Saya' }}
                                 </a>
+                                @endif
 
                                 <form method="POST" action="{{ route('auth.user.logout') }}">
                                     @csrf
@@ -249,14 +251,14 @@
                 <!-- Language Switcher moved to Header -->
                 
                 <nav class="flex flex-col gap-1">
-                    @foreach([
+                    @foreach(collect([
                         ['label' => __('Nav.Home'), 'route' => 'welcome', 'active' => 'welcome'],
                         ['label' => __('Nav.Map'), 'route' => 'explore.map', 'active' => 'explore.map'],
                         ['label' => __('Nav.Destinations'), 'route' => 'places.index', 'active' => ['places.index', 'places.show']],
-                        ['label' => __('Nav.Tickets'), 'route' => 'tickets.index', 'active' => ['tickets.index', 'tickets.show', 'tickets.buy', 'tickets.my']],
+                        config('features.e_ticket_enabled') ? ['label' => __('Nav.Tickets'), 'route' => 'tickets.index', 'active' => ['tickets.index', 'tickets.show', 'tickets.buy', 'tickets.my']] : null,
                         ['label' => __('Nav.Events'), 'route' => 'events.public.index', 'active' => ['events.public.index', 'events.public.show']],
                         ['label' => __('Nav.News'), 'route' => 'posts.index', 'active' => ['posts.index', 'posts.show']]
-                    ] as $index => $link)
+                    ])->filter()->values() as $index => $link)
                     <a href="{{ route($link['route']) }}" 
                        class="text-lg font-bold flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800 group"
                        x-transition:enter="transition ease-out duration-300 delay-{{ $index * 75 }}ms"
@@ -283,12 +285,14 @@
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
+                                @if(config('features.e_ticket_enabled'))
                                 <a href="{{ route('tickets.my') }}" class="flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-br from-primary/5 to-primary/10 text-primary rounded-xl text-center border border-primary/20 shadow-sm shadow-primary/10 active:scale-[0.97] transition-all duration-200" wire:navigate>
                                     <span class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
                                         <i class="fa-solid fa-ticket text-xs"></i>
                                     </span>
                                     <span class="text-xs font-bold">Tiket Saya</span>
                                 </a>
+                                @endif
                                 <form method="POST" action="{{ route('auth.user.logout') }}" class="contents">
                                     @csrf
                                     <button type="submit" class="flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-br from-red-50 to-red-100/80 text-red-600 rounded-xl text-center border border-red-200/60 shadow-sm shadow-red-100/50 active:scale-[0.97] transition-all duration-200">
