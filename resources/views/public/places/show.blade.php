@@ -243,6 +243,7 @@
     
                             <!-- Key Information Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @if(config('features.e_ticket_enabled'))
                                 <!-- Ticket Section - Premium Design -->
                                 <div class="md:col-span-2 rounded-2xl bg-gradient-to-br from-primary/5 via-white to-sky-50/50 dark:from-primary/10 dark:via-slate-900 dark:to-slate-900 border border-primary/20 dark:border-primary/30 overflow-hidden">
                                     <!-- Header -->
@@ -337,6 +338,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                @endif
                                 <!-- Opening Hours -->
                                 <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors">
                                     <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">{{ __('Places.Hours') }}</div>

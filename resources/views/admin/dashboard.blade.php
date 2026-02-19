@@ -84,6 +84,7 @@
                 @endcanany
 
                 <!-- Check-in Scanner Shortcut (Hidden for Pengelola Wisata) -->
+                @if(config('features.e_ticket_enabled'))
                 @unlessrole('pengelola_wisata')
                 @canany('scan tickets')
                 <a href="{{ route('admin.scan.index') }}" class="group bg-white p-1 rounded-[2.5rem] border border-gray-200 hover:border-emerald-300 transition-colors" wire:navigate>
@@ -96,6 +97,7 @@
                 </a>
                 @endcanany
                 @endunlessrole
+                @endif
             </div>
 
 
@@ -206,7 +208,7 @@
             <textarea id="debug-stats-data" style="display:none;">{{ json_encode($stats) }}</textarea>
 
             <!-- Admin Wisata Enhanced Dashboard -->
-            @if(auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
+            @if(config('features.e_ticket_enabled') && auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'view all tickets']))
 @php
     $formatCurrency = function ($value) {
         if (!is_numeric($value)) return 'Rp 0';
@@ -783,6 +785,7 @@
                 @endif
 
                 <!-- Ticket Orders Status -->
+                @if(config('features.e_ticket_enabled'))
                 @can('view all tickets')
                 <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200">
                     <div class="p-6 rounded-[2rem] border border-gray-100 bg-gray-50/30 h-full">
@@ -841,6 +844,7 @@
                     </div>
                 </div>
                 @endcan
+                @endif
             </div>
 
             <!-- Content Grid 1: Chart & Upcoming Events -->

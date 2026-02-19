@@ -31,48 +31,52 @@ Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->n
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::post('/auth/logout', [GoogleAuthController::class, 'logout'])->name('auth.user.logout');
 
-// E-Ticket routes - listing (Public)
-Route::get('/e-tiket', [App\Http\Controllers\Public\TicketController::class, 'index'])->name('tickets.index');
+// E-Ticket Feature (conditionally enabled via config/features.php)
+if (config('features.e_ticket_enabled')) {
+    // E-Ticket routes - listing (Public)
+    Route::get('/e-tiket', [App\Http\Controllers\Public\TicketController::class, 'index'])->name('tickets.index');
 
-// Protected E-Ticket routes - require Google authentication
-// All user-specific ticket routes are grouped under /tiket-saya prefix
-Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
-    // Ticket Management
-    Route::get('/', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
-    Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])
-        ->middleware('throttle:10,1')
-        ->name('tickets.retrieve');
-    Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
-    Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
-    Route::get('/show-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'showQrCode'])->name('tickets.show-qr');
+    // Protected E-Ticket routes - require Google authentication
+    // All user-specific ticket routes are grouped under /tiket-saya prefix
+    Route::middleware('auth.user')->prefix('tiket-saya')->group(function () {
+        // Ticket Management
+        Route::get('/', [App\Http\Controllers\Public\TicketController::class, 'myTickets'])->name('tickets.my');
+        Route::post('/retrieve', [App\Http\Controllers\Public\TicketController::class, 'retrieveTickets'])
+            ->middleware('throttle:10,1')
+            ->name('tickets.retrieve');
+        Route::get('/download/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadTicket'])->name('tickets.download');
+        Route::get('/download-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'downloadQrCode'])->name('tickets.download-qr');
+        Route::get('/show-qr/{orderNumber}', [App\Http\Controllers\Public\TicketController::class, 'showQrCode'])->name('tickets.show-qr');
 
-    // Booking Routes
-    Route::post('/book', [App\Http\Controllers\Public\Ticket\BookingController::class, 'store'])
-        ->middleware('throttle:10,1')
-        ->name('booking.store');
-    Route::get('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'checkout'])->name('booking.checkout');
-    Route::post('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'process'])
-        ->middleware('throttle:5,1')
-        ->name('booking.process');
-    Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\Ticket\BookingController::class, 'confirmation'])->name('booking.confirmation');
+        // Booking Routes
+        Route::post('/book', [App\Http\Controllers\Public\Ticket\BookingController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('booking.store');
+        Route::get('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'checkout'])->name('booking.checkout');
+        Route::post('/book/checkout', [App\Http\Controllers\Public\Ticket\BookingController::class, 'process'])
+            ->middleware('throttle:5,1')
+            ->name('booking.process');
+        Route::get('/confirmation/{orderNumber}', [App\Http\Controllers\Public\Ticket\BookingController::class, 'confirmation'])->name('booking.confirmation');
 
-    // Payment Routes
-    Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'show'])->name('payment.show');
-    Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'process'])->name('payment.process');
-    Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'status'])->name('payment.status');
-    Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'success'])->name('payment.success');
-    Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'failed'])->name('payment.failed');
+        // Payment Routes
+        Route::get('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'show'])->name('payment.show');
+        Route::post('/payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'process'])->name('payment.process');
+        Route::get('/payment-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'status'])->name('payment.status');
+        Route::get('/payment-success/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment-failed/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'failed'])->name('payment.failed');
 
-    // Payment Actions
-    Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'check'])->name('payment.check');
-    Route::post('/cancel/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'cancel'])->name('payment.cancel');
-    Route::post('/retry-payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'retry'])->name('payment.retry');
-});
+        // Payment Actions
+        Route::get('/check-status/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'check'])->name('payment.check');
+        Route::post('/cancel/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'cancel'])->name('payment.cancel');
+        Route::post('/retry-payment/{orderNumber}', [App\Http\Controllers\Public\Ticket\PaymentController::class, 'retry'])->name('payment.retry');
+    });
 
-// E-Ticket detail (Public) - wildcard route MUST be last to avoid catching specific routes above
-Route::get('/e-tiket/{ticket}', [App\Http\Controllers\Public\TicketController::class, 'show'])->name('tickets.show');
+    // E-Ticket detail (Public) - wildcard route MUST be last to avoid catching specific routes above
+    Route::get('/e-tiket/{ticket}', [App\Http\Controllers\Public\TicketController::class, 'show'])->name('tickets.show');
 
-// Webhook route (no CSRF protection, rate-limited, IP-restricted in production)
+}
+
+// Webhook route (Always active to handle pending transactions even if feature is disabled)
 Route::post('/webhooks/midtrans', [App\Http\Controllers\WebhookController::class, 'handle'])
     ->middleware(['throttle:60,1', 'midtrans.ip'])
     ->name('webhooks.midtrans');
@@ -111,33 +115,36 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/events/calendar', [\App\Http\Controllers\Admin\EventController::class, 'calendar'])->name('events.calendar');
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
 
-    // Ticket routes — require ticket-related permissions
-    Route::middleware('permission:view all tickets')->group(function () {
-        Route::get('/tickets/dashboard', [App\Http\Controllers\Admin\TicketDashboardController::class, 'index'])->name('tickets.dashboard');
-        Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
-        Route::get('ticket-orders', [\App\Http\Controllers\Admin\TicketController::class, 'orders'])->name('tickets.orders');
-    });
+    // Ticket routes — conditionally enabled via config/features.php
+    if (config('features.e_ticket_enabled')) {
+        // Ticket routes — require ticket-related permissions
+        Route::middleware('permission:view all tickets')->group(function () {
+            Route::get('/tickets/dashboard', [App\Http\Controllers\Admin\TicketDashboardController::class, 'index'])->name('tickets.dashboard');
+            Route::resource('tickets', \App\Http\Controllers\Admin\TicketController::class);
+            Route::get('ticket-orders', [\App\Http\Controllers\Admin\TicketController::class, 'orders'])->name('tickets.orders');
+        });
 
-    // Riwayat Penjualan — accessible by users with view all tickets OR view own financial reports
-    Route::middleware('permission:view all tickets|view own financial reports')
-        ->get('ticket-history', [\App\Http\Controllers\Admin\TicketController::class, 'history'])
-        ->name('tickets.history');
+        // Riwayat Penjualan — accessible by users with view all tickets OR view own financial reports
+        Route::middleware('permission:view all tickets|view own financial reports')
+            ->get('ticket-history', [\App\Http\Controllers\Admin\TicketController::class, 'history'])
+            ->name('tickets.history');
 
-    // HIGH-01: QR Scan routes — require explicit 'scan tickets' permission
-    Route::middleware('permission:scan tickets')->group(function () {
-        Route::get('/scan', [App\Http\Controllers\Admin\ScanController::class, 'index'])->name('scan.index');
-        Route::post('/scan', [App\Http\Controllers\Admin\ScanController::class, 'store'])
-            ->middleware('throttle:30,1')
-            ->name('scan.store');
-    });
+        // HIGH-01: QR Scan routes — require explicit 'scan tickets' permission
+        Route::middleware('permission:scan tickets')->group(function () {
+            Route::get('/scan', [App\Http\Controllers\Admin\ScanController::class, 'index'])->name('scan.index');
+            Route::post('/scan', [App\Http\Controllers\Admin\ScanController::class, 'store'])
+                ->middleware('throttle:30,1')
+                ->name('scan.store');
+        });
 
-    // HIGH-01: Financial Reports — require financial report permissions
-    Route::middleware('permission:view all financial reports|view own financial reports')->prefix('reports/financial')->name('reports.financial.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\FinancialReportController::class, 'index'])->name('index');
-        Route::get('/export', [\App\Http\Controllers\Admin\FinancialReportController::class, 'export'])
-            ->middleware('permission:export financial reports')
-            ->name('export');
-    });
+        // HIGH-01: Financial Reports — require financial report permissions
+        Route::middleware('permission:view all financial reports|view own financial reports')->prefix('reports/financial')->name('reports.financial.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\FinancialReportController::class, 'index'])->name('index');
+            Route::get('/export', [\App\Http\Controllers\Admin\FinancialReportController::class, 'export'])
+                ->middleware('permission:export financial reports')
+                ->name('export');
+        });
+    }
 });
 
 Route::middleware('auth:admin')->group(function () {

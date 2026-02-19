@@ -1,3 +1,4 @@
+@if(config('features.e_ticket_enabled'))
 <x-public-layout>
     <div class="bg-gray-50 dark:bg-background-dark min-h-screen -mt-20 pt-28 pb-24">
         <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,3 +96,7 @@
         </div>
     </div>
 </x-public-layout>
+@else
+{{-- E-Ticket feature is disabled, redirect to home --}}
+<script>window.location.href = '{{ route('welcome') }}';</script>
+@endif

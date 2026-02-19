@@ -274,6 +274,7 @@
             </div>
             @endif
 
+            @if(config('features.e_ticket_enabled'))
             @can('scan tickets')
             <a href="{{ route('admin.scan.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.scan.index') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
@@ -292,9 +293,11 @@
                 </div>
             </a>
             @endcan
+            @endif
 
 
 
+            @if(config('features.e_ticket_enabled'))
             <!-- E-Tiket Parent (Standardized Dropdown) -->
             @if(auth('admin')->user()->can('view all tickets') || auth('admin')->user()->hasAnyPermission(['view all financial reports', 'view own financial reports', 'view own tickets']))
             <div x-data="{ ticketsOpen: {{ request()->routeIs('admin.tickets.*') || request()->routeIs('admin.reports.financial.*') ? 'true' : 'false' }} }" class="relative group">
@@ -382,6 +385,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             @endif
 
 
