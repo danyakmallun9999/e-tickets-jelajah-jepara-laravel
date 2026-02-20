@@ -95,6 +95,8 @@ class WelcomeController extends Controller
         $upcomingEvent = $upcomingEvents->first();
         $nextEvents = $upcomingEvents->skip(1);
 
+        $heroSetting = \App\Models\HeroSetting::first() ?? new \App\Models\HeroSetting(['type' => 'map']);
+
         return view('public.home.welcome', compact(
             'categories',
             'totalPlaces',
@@ -111,7 +113,8 @@ class WelcomeController extends Controller
             'cultures',
             'culinaries',
             'upcomingEvent',
-            'nextEvents'
+            'nextEvents',
+            'heroSetting'
         ));
     }
 
@@ -318,6 +321,8 @@ class WelcomeController extends Controller
 
         return view('public.posts.show', compact('post', 'relatedPosts', 'recommendedPlaces', 'stats', 'viewsGraph', 'tourismStats'));
     }
+
+
 
     public function places(): View
     {
