@@ -1,152 +1,205 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Tambah Budaya') }}
-        </h2>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.cultures.index') }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm" wire:navigate>
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <p class="text-sm text-gray-500 font-medium mb-0.5">Penambahan Data</p>
+                <h2 class="font-bold text-xl md:text-2xl text-gray-800 leading-tight">
+                    Tambah Budaya Baru
+                </h2>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('admin.cultures.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6"
-                          x-data="{
-                              selectedCategory: '{{ old('category', 'Kemahiran & Kerajinan Tradisional (Kriya)') }}',
-                              get showLocationTime() {
-                                  const hide = ['Kemahiran & Kerajinan Tradisional (Kriya)', 'Seni Pertunjukan', 'Kuliner Khas'];
-                                  return !hide.includes(this.selectedCategory);
-                              }
-                          }">
-                        @csrf
+    <div class="py-8">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <form action="{{ route('admin.cultures.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6"
+                  x-data="{
+                      selectedCategory: '{{ old('category', 'Kemahiran & Kerajinan Tradisional (Kriya)') }}',
+                      get showLocationTime() {
+                          const hide = ['Kemahiran & Kerajinan Tradisional (Kriya)', 'Seni Pertunjukan', 'Kuliner Khas'];
+                          return !hide.includes(this.selectedCategory);
+                      }
+                  }">
+                @csrf
 
-                        <!-- Name -->
+                <div class="bg-white p-1 rounded-[2.5rem] border border-gray-200 shadow-sm">
+                    <div class="p-6 md:p-8 rounded-[2rem] border border-gray-100 bg-white space-y-8">
+                        
+                        <!-- Informasi Umum -->
                         <div>
-                            <x-input-label for="name" :value="__('Nama Budaya')" />
-                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" required autofocus />
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                        </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-blue-500"></i> Informasi Umum
+                            </h3>
+                            <div class="grid grid-cols-1 gap-6">
+                                <!-- Name -->
+                                <div>
+                                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nama Budaya <span class="text-red-500">*</span></label>
+                                    <x-text-input id="name" name="name" type="text" class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm" :value="old('name')" required autofocus />
+                                    <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                                </div>
 
-                        <!-- Category -->
-                        <div>
-                            <x-input-label for="category" :value="__('Kategori')" />
-                            <select id="category" name="category" x-model="selectedCategory" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="Kemahiran & Kerajinan Tradisional (Kriya)">Kemahiran & Kerajinan Tradisional (Kriya)</option>
-                                <option value="Adat Istiadat, Ritus, & Perayaan Tradisional">Adat Istiadat, Ritus, & Perayaan Tradisional</option>
-                                <option value="Seni Pertunjukan">Seni Pertunjukan</option>
-                                <option value="Kawasan Cagar Budaya & Sejarah">Kawasan Cagar Budaya & Sejarah</option>
-                                <option value="Kuliner Khas">Kuliner Khas</option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('category')" />
-                        </div>
-
-                        <!-- Image Utama -->
-                        <div>
-                            <x-input-label for="image" :value="__('Foto Utama')" />
-                            <p class="text-xs text-gray-500 mb-1">Foto ini tampil sebagai gambar utama di halaman detail budaya.</p>
-                            <input id="image" name="image" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
-                            <x-input-error class="mt-2" :messages="$errors->get('image')" />
-                        </div>
-
-                        <!-- Foto Tambahan (Galeri) -->
-                        <div x-data="{
-                            previews: [],
-                            handleFiles(event) {
-                                this.previews = [];
-                                Array.from(event.target.files).forEach(file => {
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => this.previews.push(e.target.result);
-                                    reader.readAsDataURL(file);
-                                });
-                            }
-                        }">
-                            <x-input-label for="images" :value="__('Foto Tambahan (Galeri)')" />
-                            <p class="text-xs text-gray-500 mb-1">Pilih beberapa foto sekaligus untuk galeri. Tahan Ctrl/Cmd untuk pilih banyak.</p>
-                            <input id="images" name="images[]" type="file" accept="image/*" multiple
-                                   @change="handleFiles($event)"
-                                   class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
-                            @if($errors->has('images.*'))
-                                <p class="mt-2 text-sm text-red-600">{{ $errors->first('images.*') }}</p>
-                            @endif
-
-                            <!-- Preview grid -->
-                            <div x-show="previews.length > 0" x-transition class="mt-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                                <template x-for="(src, i) in previews" :key="i">
-                                    <div class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                                        <img :src="src" class="w-full h-full object-cover">
+                                <!-- Category Dropdown -->
+                                <div>
+                                    <label for="category" class="block text-sm font-semibold text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <input type="hidden" name="category" :value="selectedCategory">
+                                        <x-dropdown align="left" width="full" contentClasses="py-1 bg-white max-h-60 overflow-y-auto">
+                                            <x-slot name="trigger">
+                                                <button type="button" class="w-full flex items-center justify-between text-left px-4 py-3 border border-gray-300 rounded-xl bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors shadow-sm cursor-pointer">
+                                                    <span x-text="selectedCategory" class="block truncate font-medium"></span>
+                                                    <i class="fa-solid fa-chevron-down text-gray-400"></i>
+                                                </button>
+                                            </x-slot>
+                                            <x-slot name="content">
+                                                @foreach(['Kemahiran & Kerajinan Tradisional (Kriya)', 'Adat Istiadat, Ritus, & Perayaan Tradisional', 'Seni Pertunjukan', 'Kawasan Cagar Budaya & Sejarah', 'Kuliner Khas'] as $cat)
+                                                    <button type="button" @click="selectedCategory = '{{ $cat }}'" class="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors" :class="selectedCategory === '{{ $cat }}' ? 'font-bold text-blue-600 bg-blue-50/50' : 'text-gray-700'">
+                                                        {{ $cat }}
+                                                    </button>
+                                                @endforeach
+                                            </x-slot>
+                                        </x-dropdown>
                                     </div>
-                                </template>
-                            </div>
-                        </div>
-
-
-                        <!-- Description -->
-                        <div>
-                            <x-input-label for="description" :value="__('Deskripsi Singkat')" />
-                            <textarea id="description" name="description" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('description') }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                        </div>
-
-                        <!-- Content -->
-                        <div>
-                            <x-input-label for="content" :value="__('Konten Lengkap')" />
-                            <textarea id="content" name="content" rows="6" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('content') }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('content')" />
-                        </div>
-
-                        <!-- Location -->
-                        <div x-show="showLocationTime" x-transition x-cloak>
-                            <x-input-label for="location" :value="__('Lokasi')" />
-                            <x-text-input id="location" name="location" type="text" class="mt-1 block w-full" :value="old('location')" placeholder="Contoh: Kota Jepara, Jawa Tengah" />
-                            <x-input-error class="mt-2" :messages="$errors->get('location')" />
-                        </div>
-
-                        <!-- Time -->
-                        <div x-show="showLocationTime" x-transition x-cloak>
-                            <x-input-label for="time" :value="__('Waktu / Jadwal')" />
-                            <x-text-input id="time" name="time" type="text" class="mt-1 block w-full" :value="old('time')" placeholder="Contoh: Setiap hari, 08.00 - 17.00" />
-                            <x-input-error class="mt-2" :messages="$errors->get('time')" />
-                        </div>
-
-                        <!-- YouTube Embed URL -->
-                        <div x-data="{
-                            youtubeUrl: '{{ old('youtube_url') }}',
-                            get embedUrl() {
-                                if (!this.youtubeUrl) return null;
-                                let id = '';
-                                const url = this.youtubeUrl.trim();
-                                const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-                                if (match) id = match[1];
-                                return id ? 'https://www.youtube.com/embed/' + id : null;
-                            }
-                        }">
-                            <x-input-label for="youtube_url" :value="__('Link YouTube (Embed)')" />
-                            <x-text-input id="youtube_url" name="youtube_url" type="url"
-                                class="mt-1 block w-full"
-                                x-model="youtubeUrl"
-                                placeholder="Contoh: https://www.youtube.com/watch?v=xxx" />
-                            <p class="mt-1 text-xs text-gray-500">Masukkan link YouTube biasa, akan otomatis dikonversi ke embed.</p>
-                            <x-input-error class="mt-2" :messages="$errors->get('youtube_url')" />
-
-                            <!-- Preview -->
-                            <div x-show="embedUrl" x-transition class="mt-3">
-                                <p class="text-sm font-medium text-gray-700 mb-1">Preview:</p>
-                                <div class="relative w-full" style="padding-top: 56.25%">
-                                    <iframe :src="embedUrl"
-                                        class="absolute inset-0 w-full h-full rounded-lg shadow"
-                                        frameborder="0" allowfullscreen
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                                    </iframe>
+                                    <x-input-error class="mt-2" :messages="$errors->get('category')" />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
-                            <a href="{{ route('admin.cultures.index') }}" class="text-gray-600 hover:text-gray-900">{{ __('Batal') }}</a>
+                        <hr class="border-gray-100">
+
+                        <!-- Media & Deskripsi -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-images text-blue-500"></i> Media & Konten
+                            </h3>
+                            <div class="space-y-6">
+                                <!-- Image Utama -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Foto Utama</label>
+                                    <p class="text-[11px] text-gray-500 mb-2">Ditampilkan sebagai gambar rincian dan thumbnail daftar budaya.</p>
+                                    <input id="image" name="image" type="file" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('image')" />
+                                </div>
+
+                                <!-- Foto Tambahan (Galeri) -->
+                                <div x-data="{
+                                    previews: [],
+                                    handleFiles(event) {
+                                        this.previews = [];
+                                        Array.from(event.target.files).forEach(file => {
+                                            const reader = new FileReader();
+                                            reader.onload = (e) => this.previews.push(e.target.result);
+                                            reader.readAsDataURL(file);
+                                        });
+                                    }
+                                }">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Foto Tambahan (Galeri)</label>
+                                    <p class="text-[11px] text-gray-500 mb-2">Pilih beberapa foto sekaligus. Tahan Ctrl/Cmd untuk multi-select file.</p>
+                                    <input id="images" name="images[]" type="file" accept="image/*" multiple
+                                           @change="handleFiles($event)"
+                                           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors" />
+                                    @if($errors->has('images.*'))
+                                        <p class="mt-2 text-sm text-red-600">{{ $errors->first('images.*') }}</p>
+                                    @endif
+
+                                    <!-- Preview grid -->
+                                    <div x-show="previews.length > 0" x-transition class="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 p-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-300">
+                                        <template x-for="(src, i) in previews" :key="i">
+                                            <div class="relative aspect-square rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                                <img :src="src" class="w-full h-full object-cover">
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div>
+                                    <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat</label>
+                                    <textarea id="description" name="description" rows="3" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="Berikan ringkasan budaya ini...">{{ old('description') }}</textarea>
+                                    <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                                </div>
+
+                                <!-- Content -->
+                                <div>
+                                    <label for="content" class="block text-sm font-semibold text-gray-700 mb-1">Konten Lengkap</label>
+                                    <textarea id="content" name="content" rows="6" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="Tuliskan penjelasan detail di sini...">{{ old('content') }}</textarea>
+                                    <x-input-error class="mt-2" :messages="$errors->get('content')" />
+                                </div>
+                                
+                                <!-- YouTube Embed URL -->
+                                <div x-data="{
+                                    youtubeUrl: '{{ old('youtube_url') }}',
+                                    get embedUrl() {
+                                        if (!this.youtubeUrl) return null;
+                                        let id = '';
+                                        const url = this.youtubeUrl.trim();
+                                        const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+                                        if (match) id = match[1];
+                                        return id ? 'https://www.youtube.com/embed/' + id : null;
+                                    }
+                                }">
+                                    <label for="youtube_url" class="block text-sm font-semibold text-gray-700 mb-1">Link YouTube</label>
+                                    <div class="flex rounded-xl shadow-sm border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                                        <span class="inline-flex items-center px-4 bg-gray-50 text-gray-500 border-r border-gray-300">
+                                            <i class="fa-brands fa-youtube text-red-500 text-lg"></i>
+                                        </span>
+                                        <input id="youtube_url" name="youtube_url" type="url"
+                                            class="flex-1 block w-full border-0 px-3 py-2 sm:text-sm focus:ring-0"
+                                            x-model="youtubeUrl"
+                                            placeholder="https://youtube.com/watch?v=..." />
+                                    </div>
+                                    <x-input-error class="mt-2" :messages="$errors->get('youtube_url')" />
+
+                                    <!-- Preview -->
+                                    <div x-show="embedUrl" x-transition class="mt-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Video Preview</p>
+                                        <div class="relative w-full rounded-lg overflow-hidden shadow-sm border border-gray-300 bg-black" style="padding-top: 56.25%">
+                                            <iframe :src="embedUrl"
+                                                class="absolute inset-0 w-full h-full"
+                                                frameborder="0" allowfullscreen
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+
+                        <!-- Location & Time Details -->
+                        <div x-show="showLocationTime" x-transition x-cloak>
+                            <hr class="border-gray-100 my-8">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-location-dot text-blue-500"></i> Detail Acara / Tempat
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-50/30 p-5 rounded-2xl border border-blue-50">
+                                <!-- Location -->
+                                <div>
+                                    <label for="location" class="block text-sm font-semibold text-gray-700 mb-1">Lokasi</label>
+                                    <x-text-input id="location" name="location" type="text" class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500" :value="old('location')" placeholder="Cth: Alun-Alun Jepara" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('location')" />
+                                </div>
+
+                                <!-- Time -->
+                                <div>
+                                    <label for="time" class="block text-sm font-semibold text-gray-700 mb-1">Waktu / Jadwal</label>
+                                    <x-text-input id="time" name="time" type="text" class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500" :value="old('time')" placeholder="Cth: Minggu ke-2, Pukul 10:00 WIB" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('time')" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+
+                <div class="flex items-center justify-end gap-3 px-2">
+                    <a href="{{ route('admin.cultures.index') }}" class="px-5 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">Batal</a>
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl font-bold text-sm text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-save"></i> Simpan Budaya
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>
