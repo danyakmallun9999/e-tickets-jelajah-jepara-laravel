@@ -171,10 +171,6 @@
             initTourismAnimations();
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initTourismAnimations();
-        });
-
         function initTourismAnimations() {
             gsap.registerPlugin(ScrollTrigger);
             

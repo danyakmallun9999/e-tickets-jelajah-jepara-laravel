@@ -95,6 +95,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'edit'])->name('hero-settings.edit');
     Route::put('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
 
+    // Footer Settings routes
+    Route::get('footer-settings', [\App\Http\Controllers\Admin\FooterSettingController::class, 'edit'])->name('footer-settings.edit');
+    Route::put('footer-settings', [\App\Http\Controllers\Admin\FooterSettingController::class, 'update'])->name('footer-settings.update');
+
     // Users routes
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 

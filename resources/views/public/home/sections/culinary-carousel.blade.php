@@ -227,7 +227,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('livewire:navigated', () => {
             gsap.registerPlugin(ScrollTrigger);
             
             gsap.set(".culinary-header", { opacity: 0, y: 20 });

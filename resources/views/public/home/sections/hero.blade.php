@@ -229,7 +229,6 @@
                 });
             };
 
-            document.addEventListener('DOMContentLoaded', initHero);
             document.addEventListener('livewire:navigated', initHero);
         })();
     </script>

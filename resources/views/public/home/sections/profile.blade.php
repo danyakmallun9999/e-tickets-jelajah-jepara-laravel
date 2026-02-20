@@ -101,7 +101,6 @@
                 });
             };
 
-            document.addEventListener('DOMContentLoaded', initProfile);
             document.addEventListener('livewire:navigated', initProfile);
         })();
     </script>

@@ -136,7 +136,6 @@
                 });
             };
 
-            document.addEventListener('DOMContentLoaded', initHistory);
             document.addEventListener('livewire:navigated', initHistory);
         })();
     </script>

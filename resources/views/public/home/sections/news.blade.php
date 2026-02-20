@@ -50,7 +50,7 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('livewire:navigated', () => {
             gsap.registerPlugin(ScrollTrigger);
 
             const newsCards = document.querySelectorAll('.news-card');

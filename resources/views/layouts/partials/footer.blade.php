@@ -1,3 +1,18 @@
+@php
+    $footerSetting = \App\Models\FooterSetting::first();
+    $aboutText = app()->getLocale() === 'en' 
+        ? ($footerSetting->about_en ?? __('Footer.About')) 
+        : ($footerSetting->about_id ?? __('Footer.About'));
+        
+    $address = $footerSetting->address ?? 'Jl. Abdul Rahman Hakim. No. 51, Jepara';
+    $phone = $footerSetting->phone ?? '(0291) 591219';
+    $email = $footerSetting->email ?? 'disparbud@jepara.go.id';
+    
+    $fb = $footerSetting->facebook_link ?? 'https://www.facebook.com/disparbudjepara';
+    $ig = $footerSetting->instagram_link ?? 'https://www.instagram.com/disparbudjepara';
+    $yt = $footerSetting->youtube_link ?? ''; // initially commented out in static, default to empty
+    $tw = $footerSetting->twitter_link ?? ''; // initially commented out in static, default to empty
+@endphp
 <footer class="relative bg-[#1a1c23] text-white/80 pt-16 pb-8 border-t border-white/5 overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 z-0 opacity-10 pointer-events-none bg-no-repeat bg-contain bg-right-bottom md:bg-right" 
@@ -15,23 +30,31 @@
                 </a>
                 <div class="space-y-4">
                     <p class="text-sm leading-relaxed text-white/50 max-w-sm">
-                        {{ __('Footer.About') }}
+                        {{ $aboutText }}
                     </p>
                     
                     <!-- Simpler Social Icons -->
                     <div class="flex items-center gap-4">
-                        <a href="https://www.facebook.com/disparbudjepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
+                        @if($fb)
+                        <a href="{{ $fb }}" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-facebook-f text-lg"></i>
                         </a>
-                        <a href="https://www.instagram.com/disparbudjepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
+                        @endif
+                        @if($ig)
+                        <a href="{{ $ig }}" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-instagram text-lg"></i>
                         </a>
-                        <!-- <a href="https://www.youtube.com/@disparbud.jepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
+                        @endif
+                        @if($yt)
+                        <a href="{{ $yt }}" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
                             <i class="fa-brands fa-youtube text-lg"></i>
                         </a>
-                        <a href="https://twitter.com/disparbudjepara" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
-                            <i class="fa-brands fa-twitter text-lg"></i>
-                        </a> -->
+                        @endif
+                        @if($tw)
+                        <a href="{{ $tw }}" target="_blank" class="text-white/40 hover:text-white transition-colors duration-300">
+                            <i class="fa-brands fa-x-twitter text-lg"></i>
+                        </a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -64,16 +87,16 @@
                 <h4 class="text-white font-medium text-sm mb-6">{{ __('Footer.Section.Contact') }}</h4>
                 <ul class="space-y-4 text-sm">
                     <li class="flex gap-3 text-white/50">
-                        <i class="fa-solid fa-location-dot mt-1 text-white/30"></i>
-                        <span>Jl. Abdul Rahman Hakim. No. 51, Jepara</span>
+                        <i class="fa-solid fa-location-dot mt-1 text-white/30 truncate"></i>
+                        <span>{{ $address }}</span>
                     </li>
                     <li class="flex gap-3 text-white/50">
                         <i class="fa-solid fa-phone mt-1 text-white/30"></i>
-                        <span>(0291) 591219</span>
+                        <span>{{ $phone }}</span>
                     </li>
                     <li class="flex gap-3 text-white/50">
-                        <i class="fa-solid fa-envelope mt-1 text-white/30"></i>
-                        <span>disparbud@jepara.go.id</span>
+                        <i class="fa-solid fa-envelope mt-1 text-white/30 truncate"></i>
+                        <span class="break-all">{{ $email }}</span>
                     </li>
                 </ul>
             </div>

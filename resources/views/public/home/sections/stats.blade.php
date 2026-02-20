@@ -131,7 +131,6 @@
                 });
             };
 
-            document.addEventListener('DOMContentLoaded', initStats);
             document.addEventListener('livewire:navigated', initStats);
         })();
     </script>
