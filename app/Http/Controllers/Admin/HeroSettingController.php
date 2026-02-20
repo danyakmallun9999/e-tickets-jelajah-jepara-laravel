@@ -9,7 +9,21 @@ class HeroSettingController extends Controller
 {
     public function edit()
     {
-        $setting = \App\Models\HeroSetting::first() ?? new \App\Models\HeroSetting();
+        $setting = \App\Models\HeroSetting::first();
+        if (!$setting) {
+            $setting = new \App\Models\HeroSetting([
+                'type' => 'map',
+                'badge_id' => 'Jelajahi Jepara',
+                'badge_en' => 'Explore Jepara',
+                'title_id' => 'Temukan Pesona<br><span class="text-primary">Bumi Kartini</span>',
+                'title_en' => 'Discover the Magic of<br><span class="text-primary">Kartini\'s Land</span>',
+                'subtitle_id' => 'Dari keindahan bahari yang memukau hingga kekayaan seni ukir kelas dunia, Jepara menyimpan sejuta cerita yang menanti untuk Anda jelajahi.',
+                'subtitle_en' => 'From stunning maritime beauty to world-class carving art, Jepara holds a million stories waiting for you to explore.',
+                'button_text_id' => 'Mulai Penjelajahan',
+                'button_text_en' => 'Start Exploring',
+                'button_link' => '#explore'
+            ]);
+        }
         return view('admin.hero-settings.index', compact('setting'));
     }
 
