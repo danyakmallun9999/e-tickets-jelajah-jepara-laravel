@@ -366,156 +366,82 @@
                                  x-transition:leave="ease-in duration-200" 
                                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
                                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                                 class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-5xl border border-slate-100 dark:border-slate-800">
+                                 class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-2xl border border-slate-100 dark:border-slate-800">
                                 
-                                {{-- Header --}}
-                                <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 z-20">
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                                {{-- Close Button --}}
+                                <button @click="closeModal()" type="button" class="absolute top-4 right-4 z-30 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full p-1.5 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors backdrop-blur-sm" title="Tutup (Esc)">
+                                    <span class="material-symbols-outlined text-xl">close</span>
+                                </button>
+
+                                {{-- Header: Logo + Name + Badges --}}
+                                <div class="px-6 pt-6 pb-4">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
                                             <template x-if="activeAgency?.logo_path">
                                                 <img :src="activeAgency.logo_path.startsWith('http') ? activeAgency.logo_path : ('/' + activeAgency.logo_path)" class="w-full h-full object-cover">
                                             </template>
                                             <template x-if="!activeAgency?.logo_path">
-                                                <span class="material-symbols-outlined text-sm text-slate-400">store</span>
+                                                <span class="material-symbols-outlined text-2xl text-slate-400">store</span>
                                             </template>
                                         </div>
-                                        <div class="min-w-0">
-                                            <h3 class="text-xl font-bold text-slate-900 dark:text-white truncate" id="modal-title" x-text="activeAgency?.name"></h3>
-                                            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                                                <span class="material-symbols-outlined text-[10px]">verified</span> Terverifikasi
-                                            </span>
+                                        <div class="min-w-0 flex-1 pr-8">
+                                            <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-tight" id="modal-title" x-text="activeAgency?.name"></h3>
+                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                    <span class="material-symbols-outlined text-[10px]">verified</span> Terverifikasi
+                                                </span>
+                                                <template x-if="activeAgency?.business_type">
+                                                    <span class="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" x-text="activeAgency.business_type"></span>
+                                                </template>
+                                            </div>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" x-text="activeAgency?.description || 'Tidak ada deskripsi.'"></p>
                                         </div>
                                     </div>
-                                    <button @click="closeModal()" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none rounded-xl p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shrink-0 ml-4" title="Tutup (Esc)">
-                                        <span class="material-symbols-outlined">close</span>
-                                    </button>
                                 </div>
-                                
-                                {{-- Body --}}
-                                <div class="px-6 py-6">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                        {{-- Sidebar --}}
-                                        <div class="md:col-span-1 space-y-4">
-                                            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <h4 class="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                    <span class="material-symbols-outlined text-[18px]">info</span> Tentang Biro
-                                                </h4>
-                                                <p class="text-slate-600 dark:text-slate-400 text-sm whitespace-pre-line leading-relaxed" x-text="activeAgency?.description || 'Tidak ada deskripsi.'"></p>
-                                            </div>
 
-                                            {{-- Informasi Usaha --}}
-                                            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <h4 class="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                                                    <span class="material-symbols-outlined text-[18px]">badge</span> Informasi Usaha
-                                                </h4>
-                                                <div class="space-y-3">
-                                                    <template x-if="activeAgency?.owner_name">
-                                                        <div class="flex items-start gap-3">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm shrink-0">
-                                                                <span class="material-symbols-outlined text-[16px] text-slate-500">person</span>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">Pemilik</p>
-                                                                <p class="text-sm text-slate-700 dark:text-slate-300 font-medium" x-text="activeAgency.owner_name"></p>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="activeAgency?.business_type">
-                                                        <div class="flex items-start gap-3">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm shrink-0">
-                                                                <span class="material-symbols-outlined text-[16px] text-slate-500">business</span>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">Badan Usaha</p>
-                                                                <p class="text-sm text-slate-700 dark:text-slate-300 font-medium" x-text="activeAgency.business_type"></p>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="activeAgency?.nib">
-                                                        <div class="flex items-start gap-3">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm shrink-0">
-                                                                <span class="material-symbols-outlined text-[16px] text-slate-500">verified</span>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">NIB</p>
-                                                                <p class="text-sm text-slate-700 dark:text-slate-300 font-medium" x-text="activeAgency.nib"></p>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="activeAgency?.address">
-                                                        <div class="flex items-start gap-3">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm shrink-0">
-                                                                <span class="material-symbols-outlined text-[16px] text-slate-500">location_on</span>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">Alamat</p>
-                                                                <p class="text-sm text-slate-700 dark:text-slate-300 font-medium" x-text="activeAgency.address"></p>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </div>
+                                {{-- Info Grid --}}
+                                <div class="px-6 pb-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <template x-if="activeAgency?.owner_name">
+                                            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700">
+                                                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-0.5">Pemilik</p>
+                                                <p class="text-sm text-slate-800 dark:text-slate-200 font-medium truncate" x-text="activeAgency.owner_name"></p>
                                             </div>
-                                            
-                                            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <h4 class="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                                                    <span class="material-symbols-outlined text-[18px]">contact_support</span> Kontak
-                                                </h4>
-                                                <div class="space-y-4">
-                                                    <template x-if="activeAgency?.contact_wa">
-                                                        <a :href="'https://wa.me/' + activeAgency.contact_wa.replace(/\D/g,'')" target="_blank" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-emerald-500 transition-colors group">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/30">
-                                                                <i class="fa-brands fa-whatsapp text-emerald-500"></i>
-                                                            </div>
-                                                            <span x-text="activeAgency.contact_wa"></span>
-                                                        </a>
-                                                    </template>
-                                                    <template x-if="activeAgency?.instagram">
-                                                        <a :href="activeAgency.instagram.includes('http') ? activeAgency.instagram : 'https://instagram.com/' + activeAgency.instagram.replace('@','')" target="_blank" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-pink-500 transition-colors group">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm group-hover:bg-pink-100 dark:group-hover:bg-pink-900/30">
-                                                                <i class="fa-brands fa-instagram text-pink-500"></i>
-                                                            </div>
-                                                            <span x-text="activeAgency.instagram"></span>
-                                                        </a>
-                                                    </template>
-                                                    <template x-if="activeAgency?.website">
-                                                        <a :href="activeAgency.website" target="_blank" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors group">
-                                                            <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30">
-                                                                <span class="material-symbols-outlined text-[16px] text-blue-500">language</span>
-                                                            </div>
-                                                            <span class="line-clamp-1" x-text="new URL(activeAgency.website).hostname.replace('www.', '')"></span>
-                                                        </a>
-                                                    </template>
-                                                </div>
+                                        </template>
+                                        <template x-if="activeAgency?.nib">
+                                            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700">
+                                                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-0.5">NIB</p>
+                                                <p class="text-sm text-slate-800 dark:text-slate-200 font-medium font-mono truncate" x-text="activeAgency.nib"></p>
                                             </div>
-                                        </div>
-                                        
-                                        {{-- CTA: Hubungi Biro --}}
-                                        <div class="md:col-span-2">
-                                            <div class="text-center py-12 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                                                <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                                    <span class="material-symbols-outlined text-3xl text-primary">travel_explore</span>
-                                                </div>
-                                                <h5 class="text-slate-900 dark:text-white font-bold text-lg mb-2">Tertarik Berlibur?</h5>
-                                                <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-6">Untuk info paket wisata, harga, dan jadwal, hubungi biro ini langsung.</p>
-                                                <div class="flex flex-wrap justify-center gap-3">
-                                                    <template x-if="activeAgency?.contact_wa">
-                                                        <a :href="'https://wa.me/' + activeAgency.contact_wa.replace(/\D/g,'')" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm">
-                                                            <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp
-                                                        </a>
-                                                    </template>
-                                                    <template x-if="activeAgency?.website">
-                                                        <a :href="activeAgency.website" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm font-bold rounded-xl transition-colors border border-slate-200 dark:border-slate-600">
-                                                            <span class="material-symbols-outlined text-sm">language</span> Website
-                                                        </a>
-                                                    </template>
-                                                    <template x-if="activeAgency?.instagram">
-                                                        <a :href="activeAgency.instagram.includes('http') ? activeAgency.instagram : 'https://instagram.com/' + activeAgency.instagram.replace('@','')" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/20 dark:hover:bg-pink-900/30 text-pink-600 dark:text-pink-400 text-sm font-bold rounded-xl transition-colors border border-pink-200 dark:border-pink-800/50">
-                                                            <i class="fa-brands fa-instagram text-lg"></i> Instagram
-                                                        </a>
-                                                    </template>
-                                                </div>
+                                        </template>
+                                        <template x-if="activeAgency?.address">
+                                            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700 col-span-2">
+                                                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-0.5">Alamat Kantor</p>
+                                                <p class="text-sm text-slate-800 dark:text-slate-200 font-medium" x-text="activeAgency.address"></p>
                                             </div>
-                                        </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                {{-- Contact & CTA Footer --}}
+                                <div class="px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 mt-1">
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold mb-3">Hubungi Biro</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <template x-if="activeAgency?.contact_wa">
+                                            <a :href="'https://wa.me/' + activeAgency.contact_wa.replace(/\D/g,'')" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm">
+                                                <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
+                                            </a>
+                                        </template>
+                                        <template x-if="activeAgency?.website">
+                                            <a :href="activeAgency.website" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-xl transition-colors border border-slate-200 dark:border-slate-700">
+                                                <span class="material-symbols-outlined text-base">language</span> Website
+                                            </a>
+                                        </template>
+                                        <template x-if="activeAgency?.instagram">
+                                            <a :href="activeAgency.instagram.includes('http') ? activeAgency.instagram : 'https://instagram.com/' + activeAgency.instagram.replace('@','')" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/20 dark:hover:bg-pink-900/30 text-pink-600 dark:text-pink-400 text-sm font-bold rounded-xl transition-colors border border-pink-200 dark:border-pink-800/50">
+                                                <i class="fa-brands fa-instagram text-base"></i> Instagram
+                                            </a>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
