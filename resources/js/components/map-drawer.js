@@ -88,9 +88,9 @@ export default (config) => ({
 
         // Define icons using CDN to avoid build issues
         const iconDefault = L.icon({
-            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+            iconUrl: markerIcon,
+            iconRetinaUrl: markerIcon2x,
+            shadowUrl: markerShadow,
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [1, -34],
@@ -140,9 +140,9 @@ export default (config) => ({
     setMarker(latlng, icon = null) {
         if (!icon) {
             icon = L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                iconUrl: markerIcon,
+                iconRetinaUrl: markerIcon2x,
+                shadowUrl: markerShadow,
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34],

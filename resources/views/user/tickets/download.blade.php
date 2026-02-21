@@ -1,9 +1,6 @@
 <x-public-layout>
     @push('styles')
-        <!-- Fonts: Poppins for Headings, Inter for UI text -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+        {{-- Fonts: Inter & Poppins bundled via @fontsource in app.css --}}
         <style>
             .font-inter { font-family: 'Inter', sans-serif; }
             h1, h2, h3, h4, .font-serif { font-family: 'Poppins', sans-serif; }
@@ -138,8 +135,7 @@
     </div>
 
     @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        {{-- QRCode & html2canvas loaded globally via app.js --}}
         <script>
             // Generate QR Code
             new QRCode(document.getElementById("qrcode"), {

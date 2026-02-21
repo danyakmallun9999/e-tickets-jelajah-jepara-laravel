@@ -29,7 +29,14 @@
 @import "@fontsource/figtree/800.css";
 @import "material-symbols";
 @import "@fortawesome/fontawesome-free/css/all.css";
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+@import "@fontsource/caveat/400.css";
+@import "@fontsource/caveat/500.css";
+@import "@fontsource/caveat/600.css";
+@import "@fontsource/caveat/700.css";
+@import "@fontsource/noto-serif/400.css";
+@import "@fontsource/noto-serif/700.css";
+@import "@fontsource/noto-serif/900.css";
+@import "@fontsource/press-start-2p/400.css";
 
 /* 2. Tailwind Directives */
 @tailwind base;
