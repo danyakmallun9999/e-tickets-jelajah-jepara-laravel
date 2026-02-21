@@ -36,6 +36,128 @@
     {{-- Top Navigation --}}
     @include('layouts.partials.navbar')
 
+    {{-- Announcement Popup Carousel --}}
+    @if($announcements->isNotEmpty())
+    <div
+        x-data="{
+            open: false,
+            current: 0,
+            total: {{ $announcements->count() }},
+            ids: {{ Js::from($announcements->pluck('id')) }},
+            init() {
+                const allDismissed = this.ids.every(id =>
+                    sessionStorage.getItem('ann_dismissed_' + id)
+                );
+                if (!allDismissed) {
+                    setTimeout(() => { this.open = true; this.blurNavbar(true); }, 800);
+                }
+            },
+            blurNavbar(blur) {
+                const nav = document.getElementById('site-navbar');
+                if (!nav) return;
+                nav.style.transition = 'filter 0.4s ease';
+                nav.style.filter = blur ? 'blur(6px)' : '';
+            },
+            close() {
+                this.ids.forEach(id => sessionStorage.setItem('ann_dismissed_' + id, '1'));
+                this.blurNavbar(false);
+                this.open = false;
+            },
+            prev() { this.current = (this.current - 1 + this.total) % this.total; },
+            next() { this.current = (this.current + 1) % this.total; }
+        }"
+        x-show="open"
+        x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        style="display:none;"
+        class="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-md"
+        @click.self="close()"
+        role="dialog"
+        aria-modal="true"
+    >
+        {{-- Slides --}}
+        @foreach($announcements as $i => $ann)
+        @php
+            $fmt = $ann->image_format ?? 'landscape';
+            $modalStyle = match($fmt) {
+                'portrait' => 'aspect-ratio:9/16; max-height:95vh; max-width:min(700px,95vw);',
+                default    => 'aspect-ratio:16/9; max-height:95vh; max-width:min(1200px,98vw);',
+            };
+        @endphp
+        <div
+            x-show="current === {{ $i }}"
+            x-transition:enter="transition ease-out duration-400"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="relative rounded-3xl shadow-2xl overflow-hidden w-full"
+            style="{{ $modalStyle }}"
+        >
+            {{-- Close Button --}}
+            <button @click="close()"
+                class="absolute top-3 right-3 z-20 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 shadow-lg transition-all duration-200 hover:scale-110"
+                aria-label="Tutup">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+
+            @if($ann->image)
+            <img src="{{ Storage::url($ann->image) }}" alt="Pengumuman"
+                 class="absolute inset-0 w-full h-full object-cover">
+            @else
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400">
+                <div class="absolute -top-8 -right-8 w-36 h-36 bg-white/10 rounded-full"></div>
+                <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-white/10 rounded-full"></div>
+            </div>
+            @endif
+
+            {{-- Content Overlay --}}
+            <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6 z-10">
+
+
+                @if($ann->button_text && $ann->button_link)
+                <a href="{{ $ann->button_link }}"
+                   class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 transition-all duration-200 text-sm shadow-lg"
+                   @click="close()">
+                    {{ $ann->button_text }}
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+                @endif
+            </div>
+
+            {{-- Navigasi Panah (jika > 1 pengumuman) --}}
+            @if($announcements->count() > 1)
+            <button @click="prev()"
+                class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-all">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button @click="next()"
+                class="absolute right-14 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-all">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+            @endif
+        </div>
+        @endforeach
+
+        {{-- Dot Indicators --}}
+        @if($announcements->count() > 1)
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30">
+            @foreach($announcements as $i => $ann)
+            <button @click="current = {{ $i }}"
+                :class="current === {{ $i }} ? 'w-6 bg-white' : 'w-2 bg-white/50'"
+                class="h-2 rounded-full transition-all duration-300"></button>
+            @endforeach
+        </div>
+        @endif
+    </div>
+    @endif
+
+
     {{-- Hero Section --}}
     @include('public.home.sections.hero')
 

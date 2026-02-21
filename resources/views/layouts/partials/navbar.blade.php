@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-b border-slate-200/50 dark:border-slate-800 py-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md"
+<div id="site-navbar" class="fixed top-0 left-0 right-0 z-[10000] w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-b border-slate-200/50 dark:border-slate-800 py-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md"
     x-data="{ 
         mobileMenuOpen: false, 
         searchOpen: false,

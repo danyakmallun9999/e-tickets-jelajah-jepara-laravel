@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use App\Models\Boundary;
 use App\Models\Category;
 use App\Models\Culture;
@@ -112,6 +113,9 @@ class WelcomeController extends Controller
             ]);
         }
 
+        // Active Announcements untuk popup welcome (maks 4)
+        $announcements = Announcement::active()->latest()->take(4)->get();
+
         return view('public.home.welcome', compact(
             'categories',
             'totalPlaces',
@@ -129,7 +133,8 @@ class WelcomeController extends Controller
             'culinaries',
             'upcomingEvent',
             'nextEvents',
-            'heroSetting'
+            'heroSetting',
+            'announcements'
         ));
     }
 
