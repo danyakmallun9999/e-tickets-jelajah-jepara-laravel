@@ -3,11 +3,36 @@
         mobileMenuOpen: false, 
         searchOpen: false,
         isScrolled: false,
+        searchQuery: '',
+        searchResults: [],
+        isLoading: false,
         init() {
             this.isScrolled = window.pageYOffset > 10;
             window.addEventListener('scroll', () => {
                 this.isScrolled = window.pageYOffset > 10;
             });
+        },
+        performSearch() {
+            if (!this.searchQuery) {
+                this.searchResults = [];
+                return;
+            }
+            this.isLoading = true;
+            fetch(`/search/places?q=${encodeURIComponent(this.searchQuery)}`)
+                .then(res => res.json())
+                .then(data => {
+                    this.searchResults = data;
+                })
+                .catch(err => console.error('Search error:', err))
+                .finally(() => this.isLoading = false);
+        },
+        selectResult(result) {
+            if (result.url) {
+                window.location.href = result.url;
+            }
+            this.searchResults = [];
+            this.searchQuery = '';
+            this.searchOpen = false;
         }
     }">
     
@@ -73,7 +98,6 @@
             <div class="flex flex-1 items-center justify-end gap-3">
                 
                 <!-- Expanded Search Bar Island -->
-                @if(request()->routeIs('welcome'))
                 <div class="hidden md:flex relative transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
                      :class="searchOpen ? 'w-80' : 'w-10'"
                      @click.away="if(searchQuery === '') searchOpen = false">
@@ -84,27 +108,30 @@
                     <div class="relative w-full h-10 flex items-center">
                         <input type="text" x-model="searchQuery" 
                                class="w-full h-full bg-transparent border-none focus:ring-0 text-sm pl-10 pr-4 text-slate-800 dark:text-white placeholder-slate-400 transition-opacity duration-200"
-                               :class="searchOpen ? 'opacity-100 pointer-events-auto delay-100' : 'opacity-0 pointer-events-none'"
+                                :class="searchOpen ? 'opacity-100 pointer-events-auto delay-100' : 'opacity-0 pointer-events-none'"
                                placeholder="{{ __('Nav.SearchPlaceholder') }}"
                                x-ref="searchInput"
                                @keydown.escape="searchOpen = false"
-                               @input.debounce.300ms="performSearch()" 
-                               @keydown.enter="scrollToMap()">
+                               @input.debounce.300ms="performSearch()">
                         
                         <button @click="searchOpen = !searchOpen; if(searchOpen) $nextTick(() => $refs.searchInput.focus())" 
                                 class="absolute left-0 top-0 w-10 h-10 flex items-center justify-center text-slate-500 hover:text-primary transition-colors z-20">
                             <span class="material-symbols-outlined text-xl">search</span>
                         </button>
                         
-                        <button x-show="searchOpen && searchQuery" 
-                                @click="searchQuery = ''; performSearch()" 
+                        <button x-show="searchOpen && searchQuery && !isLoading" 
+                                @click="searchQuery = ''; searchResults = []" 
                                 class="absolute right-0 top-0 w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors z-20">
                             <span class="material-symbols-outlined text-sm">close</span>
                         </button>
+
+                        <div x-show="isLoading" class="absolute right-3 top-2.5">
+                            <span class="material-symbols-outlined text-primary text-lg animate-spin">progress_activity</span>
+                        </div>
                     </div>
 
                     <!-- Search Results Dropdown -->
-                     <div x-show="searchResults.length > 0" 
+                     <div x-show="searchOpen && (searchResults.length > 0 || (searchQuery.length > 2 && !isLoading && searchResults.length === 0))" 
                         class="absolute top-14 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-100 dark:border-blue-900 overflow-hidden z-[100] max-h-96 overflow-y-auto w-[120%] -ml-[10%]"
                         x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
@@ -115,12 +142,19 @@
                         @click.away="searchResults = []"
                         x-cloak>
                         
-                        <div class="px-4 py-3 text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-50 dark:border-blue-900/30">
-                            {{ __('Nav.SearchResults') }}
+                        <div class="px-4 py-3 text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-50 dark:border-blue-900/30 flex justify-between">
+                            <span>{{ __('Nav.SearchResults') }}</span>
+                            <span x-text="searchResults.length + ' found'"></span>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div x-show="searchResults.length === 0" class="p-8 text-center bg-slate-50/30 dark:bg-slate-800/20">
+                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2">sentiment_dissatisfied</span>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm italic">Maaf, tidak ada hasil yang ditemukan untuk <span class="font-bold" x-text="'\'' + searchQuery + '\''"></span></p>
                         </div>
                         
                         <template x-for="(result, index) in searchResults" :key="index">
-                            <button @click="selectFeature(result); if(result.type_key === 'location') scrollToMap(); searchResults = []"
+                            <button @click="selectResult(result)"
                                 class="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 border-b border-slate-50 dark:border-slate-800/50 last:border-0 transition-all flex items-center gap-4 group">
                                 
                                 <!-- Result Image or Icon -->
@@ -164,7 +198,6 @@
                         </template>
                     </div>
                 </div>
-                @endif
                 
                 <!-- Divider -->
                  <div class="hidden lg:block w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
@@ -243,6 +276,64 @@
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-95"
                 x-cloak>
+
+                <!-- Mobile Search -->
+                <div class="relative mb-6">
+                    <div class="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 px-4 h-12 shadow-inner group focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                        <span class="material-symbols-outlined text-slate-400 mr-2" :class="isLoading ? 'animate-spin text-primary' : ''" x-text="isLoading ? 'progress_activity' : 'search'"></span>
+                        <input type="text" x-model="searchQuery" 
+                               class="bg-transparent border-none focus:ring-0 text-sm flex-1 text-slate-800 dark:text-white placeholder-slate-400"
+                               placeholder="{{ __('Nav.SearchPlaceholder') }}"
+                               @input.debounce.300ms="performSearch()">
+                        <button x-show="searchQuery && !isLoading" @click="searchQuery = ''; searchResults = []" class="text-slate-400 p-1 hover:text-red-500 transition-colors">
+                            <span class="material-symbols-outlined text-sm font-bold">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Mobile Search Results -->
+                    <div x-show="searchQuery.length > 2 && (searchResults.length > 0 || !isLoading)" 
+                         class="mt-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl max-h-[60vh] overflow-y-auto overflow-hidden divide-y divide-slate-50 dark:divide-slate-800"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0">
+                        
+                        <!-- Mobile Empty State -->
+                        <div x-show="searchResults.length === 0" class="p-8 text-center">
+                            <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">search_off</span>
+                            <p class="text-xs text-slate-500">Hasil tidak ditemukan.</p>
+                        </div>
+
+                        <template x-for="(result, index) in searchResults" :key="index">
+                            <button @click="selectResult(result)" class="w-full text-left px-4 py-4 flex items-center gap-4 active:bg-slate-50 dark:active:bg-slate-800 transition-colors group">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50">
+                                    <template x-if="result.image_url">
+                                        <img :src="result.image_url" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!result.image_url">
+                                        <div class="w-full h-full flex items-center justify-center text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-900">
+                                            <span class="material-symbols-outlined text-xl" x-text="result.type_key === 'location' ? 'location_on' : (result.type_key === 'news' ? 'article' : (result.type_key === 'event' ? 'event' : (result.type_key === 'culture' ? 'theater_comedy' : 'restaurant')))"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="text-[8px] font-black px-1.5 py-0.5 rounded leading-none" 
+                                              :class="{
+                                                'bg-blue-100 text-blue-600': result.type_key === 'location',
+                                                'bg-emerald-100 text-emerald-600': result.type_key === 'news',
+                                                'bg-amber-100 text-amber-600': result.type_key === 'event',
+                                                'bg-purple-100 text-purple-600': result.type_key === 'culture',
+                                                'bg-rose-100 text-rose-600': result.type_key === 'culinary'
+                                              }" x-text="result.type"></span>
+                                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate" x-text="result.name"></p>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate" x-text="result.description"></p>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
 
                 <!-- Language Switcher moved to Header -->
                 

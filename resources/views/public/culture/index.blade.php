@@ -44,44 +44,18 @@
 
             <div x-data="{
                 activeCategory: null,
-                categories: [
-                    {
-                        id: 'Kemahiran & Kerajinan Tradisional (Kriya)',
-                        title: 'Kemahiran & Kerajinan Tradisional (Kriya)', 
-                        subtitle: 'Kriya',
-                        description: 'Jepara is known as the World Carving Center, featuring exquisite wood carving, Troso weaving, and batik.',
-                        image: '{{ asset("images/culture/ukir.jpg") }}'
-                    },
-                    {
-                        id: 'Adat Istiadat, Ritus, & Perayaan Tradisional',
-                        title: 'Adat Istiadat, Ritus, & Perayaan Tradisional',
-                        subtitle: 'Tradisi',
-                        description: 'Sacred traditions like Perang Obor and Pesta Lomban that celebrate the gratitude and history of Jepara.',
-                        image: '{{ asset("images/culture/obor.png") }}'
-                    },
-                    {
-                        id: 'Seni Pertunjukan',
-                        title: 'Seni Pertunjukan',
-                        subtitle: 'Seni',
-                        description: 'Experience the rhythm of Wayang Kulit, Kridhajati Dance, and the graceful movements of local arts.',
-                        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuByC0plW4kR_o3v4HYNa2r2JTW_CZ4SqENWKfWjQKnwCW8gPPQOpS2euCZuK2OeaH8SFfMje5m8x607ts6J8tZ42M2egKoBZTvB5clgNfHI5xXHqUtxtzoD10NZ3hyL9-pRo4f0VHA-HuDIJ4NhiN5nuu6Kw9KPyJTxnKYc4xGSBqWrEQtl9SMLfOGt81e8wCupxUP5mG3AHEQiOj0tgP8DQKYU30VyXmT50XUYr7I_IV3EzciVPLhNkG6oCYU44ENsU_B8-yM9MA'
-                    },
-
-                    {
-                        id: 'Kuliner Khas',
-                        title: 'Kuliner Khas Jepara',
-                        subtitle: 'Kuliner',
-                        description: 'A journey through spice and tradition, exploring the diverse flavors of Rendang, Satay, and the rich heritage of local ingredients.',
-                        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqBziuaRPIVdzVy6lqfQSsB1vBb-GOIriqfJv68H5uzzLAUP6poD5XP4FGglTwJaX3LPkeAVYOSVyEyjkH1Ci_b2WRORruNdhL1ugHYJ1HpMiTw2OjZYcC6UhsS1RyjaQLtpJOcndXvtAZiRea90NTMX6cNStTI40Wp2ql9UPdDTvP-MNpdm7kARbT4dh9eaLQM9DLE9TGujgtvbxjSnzbANWVaWMyVdOH60MHeE7J8OYDizNtb2aEGPvBqkX6FaHuR-28zuGNxA'
-                    }
-                ]
+                categories: @js($categoriesForAlpine)
             }">
                 
                 <!-- Interactive Category Grid -->
                 <section class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8 mb-16" x-show="!activeCategory" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
                     <template x-for="category in categories" :key="category.id">
                         <div class="culture-card w-full relative group overflow-hidden rounded-xl bg-slate-200 cursor-pointer aspect-video md:aspect-[4/3]" @click="activeCategory = category.id; window.scrollTo({top: 0, behavior: 'smooth'})">
-                            <div class="card-bg absolute inset-0 bg-cover bg-center" :style="`background-image: url('${category.image}');`"></div>
+                            <div class="card-bg absolute inset-0 bg-cover bg-center" :style="category.image ? `background-image: url('${category.image}');` : 'background-color: #cbd5e1;'">
+                                <div x-show="!category.image" class="w-full h-full flex items-center justify-center opacity-30">
+                                    <span class="material-symbols-outlined text-6xl">collections</span>
+                                </div>
+                            </div>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
                             <div class="absolute inset-0 p-4 md:p-6 lg:p-8 flex flex-col justify-end">
                                 <h3 class="text-white text-lg md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2 lg:mb-3 leading-tight" x-text="category.title"></h3>

@@ -12,14 +12,120 @@ class CultureSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure we load the ID language data
-        app()->setLocale('id');
-        $cultures = __('static_data.cultures');
-
-        if (!is_array($cultures)) {
-            $this->command->error('Static data not found or not an array.');
-            return;
-        }
+        $cultures = [
+            [
+                'name' => 'Seni Ukir Jepara',
+                'slug' => 'seni-ukir-jepara',
+                'category' => 'Kemahiran & Kerajinan Tradisional (Kriya)',
+                'description' => 'Seni ukir kelas dunia yang menjadi identitas utama Jepara "The World Carving Center".',
+                'image' => 'images/culture/ukir.jpg',
+                'full_description' => 'Jepara sangat terkenal dengan julukan "Kota Ukir", sehingga seni kerajinan menjadi identitas budaya yang paling melekat. Seni Ukir Jepara mencakup berbagai teknik dan gaya, mulai dari ukir relief, ukir kayu jati, hingga ukir kaligrafi. Salah satu mahakarya unik adalah "Macan Kurung", di mana pengrajin mengukir bentuk macan di dalam kurungan yang dibuat dari satu gelondong kayu utuh tanpa sambungan (one piece wood). Keahlian ini diwariskan turun-temurun dan telah diakui dunia internasional.',
+            ],
+            [
+                'name' => 'Kain Tradisional (Tenun & Batik)',
+                'slug' => 'kain-tradisional',
+                'category' => 'Kemahiran & Kerajinan Tradisional (Kriya)',
+                'description' => 'Pesona kain Tenun Ikat Troso dan Batik Jepara yang sarat makna dan sejarah.',
+                'image' => 'images/culture/tenun-troso.png',
+                'full_description' => 'Kain tradisional Jepara meliputi Tenun Ikat Troso dan Batik Jepara. Tenun Ikat Troso berasal dari Desa Troso, dibuat dengan teknik ikat ganda yang rumit menghasilkan motif etnik yang indah. Sementara Batik Jepara memiliki motif khas yang konon motif-motif awalnya diajarkan langsung oleh R.A. Kartini kepada pengrajin lokal untuk mengangkat derajat kaum wanita pada masanya. Batik Jepara sering mengangkat motif flora, fauna laut, dan ukiran.',
+            ],
+            [
+                'name' => 'Perang Obor',
+                'slug' => 'perang-obor',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Tradisi unik perang api menggunakan obor dari pelepah kelapa kering. Dilakukan sebagai bentuk syukur dan tolak bala.',
+                'image' => 'images/culture/obor.png',
+                'full_description' => 'Perang Obor adalah tradisi sakral masyarakat Desa Tegal Sambi yang dilaksanakan setahun sekali pada malam Senin Pahing bulan Dzulhijjah (Besar). Tradisi ini bermula dari kisah Ki Gemblong dan Ki Babadan. Dalam upacara ini, para pemuda desa saling serang menggunakan obor yang terbuat dari gulungan pelepah kelapa kering dan daun pisang. Meskipun terlihat berbahaya dan seringkali menimbulkan luka bakar, warga percaya bahwa luka tersebut akan sembuh dengan sendirinya atau dengan minyak khusus ramuan leluhur. Tradisi ini dimaknai sebagai ungkapan rasa syukur kepada Tuhan YME atas melimpahnya hasil bumi dan ternak, serta sebagai tolak bala atau penolak kesialan dan penyakit bagi warga desa.',
+            ],
+            [
+                'name' => 'Pesta Lomban',
+                'slug' => 'pesta-lomban',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Sedekah laut para nelayan yang telah melegenda. Dimeriahkan dengan larungan kepala kerbau dan perang laut.',
+                'image' => 'images/culture/lomban.JPG',
+                'full_description' => 'Pesta Lomban adalah "Lebaran"-nya masyarakat nelayan Jepara. Diadakan pada 8 Syawal (sepekan setelah Idul Fitri/Bodo Kupat), tradisi ini dimulai dengan pelarungan sesaji berupa kepala kerbau ke tengah lautan dari TPI Ujung Batu. Setelah prosesi pelarungan, ratusan kapal nelayan akan melakukan "perang laut" simbolis dengan saling melempar ketupat and air. Lomban bermakna "lomba-lomba" atau bersenang-senang merayakan kemenangan pasca puasa, sekaligus ungkapan syukur nelayan atas rezeki dari laut. Acara dilanjutkan dengan makan bersama dan hiburan rakyat di Pantai Kartini.',
+            ],
+            [
+                'name' => 'Festival Kupat Lepet',
+                'slug' => 'festival-kupat-lepet',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Tradisi gunungan kupat dan lepet yang menyemarakkan perayaan Syawalan. Simbol kebersamaan masyarakat pesisir.',
+                'image' => 'images/culture/festival-kupat-lepet.JPG',
+                'full_description' => 'Festival Kupat Lepet merupakan puncak perayaan tradisi Syawalan atau Lomban di Jepara, yang digelar seminggu setelah Hari Raya Idul Fitri (8 Syawal). Acara ini dipusatkan di kawasan Pantai Kartini. Gunungan raksasa yang terbuat dari ribuan ketupat dan lepet diarak dan kemudian diperebutkan oleh masyarakat. Kupat (Ketupat) menyimbolkan "Ngaku Lepat" (mengakui kesalahan), sedangkan Lepet menyimbolkan "Disilep ingkang Rapet" (kesalahan dikubur/ditutup rapat). Tradisi ini mengajarkan filosofi luhur tentang pentingnya saling memaafkan dan menjalin silaturahmi yang erat antar sesama.',
+            ],
+            [
+                'name' => 'Jembul Tulakan',
+                'slug' => 'jembul-tulakan',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Upacara adat sedekah bumi yang dilakukan masyarakat Desa Tulakan sebagai wujud syukur.',
+                'image' => null,
+                'full_description' => 'Jembul Tulakan adalah upacara adat sedekah bumi yang dilakukan secara turun-temurun oleh masyarakat Desa Tulakan, Kecamatan Donorojo. Inti dari ritual ini adalaha arak-arakan "Jembul", yaitu gunungan kecil berisi nasi dan lauk pauk serta anyaman janur. Tradisi ini merupakan ungkapan rasa syukur kepada Tuhan atas rezeki dan keselamatan, serta penghormatan kepada Ratu Kalinyamat yang konon pernah bertapa di wilayah tersebut (Pertapaan Sonder).',
+            ],
+            [
+                'name' => 'Kirab Buka Luwur',
+                'slug' => 'kirab-buka-luwur',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Prosesi sakral penggantian kain penutup makam Ratu Kalinyamat dan Sultan Hadlirin.',
+                'image' => 'images/culture/kirab-buka-luwur.JPG',
+                'full_description' => 'Kirab Buka Luwur adalah upacara adat penggantian kelambu (luwur) penutup makam Ratu Kalinyamat dan suaminya, Sultan Hadlirin, di kompleks Masjid dan Makam Mantingan. Dilaksanakan setiap tanggal 9 Apit/Dzulqa\'dah (namun seringkali disesuaikan dengan haul pada 19 Jumadil Akhir dalam konteks modern atau variasi lokal). Prosesi dimulai dengan kirab budaya yang menampilkan iring-iringan prajurit patang puluhan dan abdi dalem membawa luwur baru. Acara ini merupakan bentuk penghormatan tertinggi masyarakat Jepara kepada Ratu Kalinyamat, pahlawan nasional dan tokoh wanita legendaris yang membawa kejayaan maritim Jepara.',
+            ],
+            [
+                'name' => 'Festival Jondang Kawak',
+                'slug' => 'festival-jondang-kawak',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Arak-arakan kotak kayu (jondang) berisi hasil bumi sebagai wujud syukur.',
+                'image' => 'images/culture/jondang-kawak.JPG',
+                'full_description' => 'Festival Jondang di Desa Kawak adalah tradisi sedekah bumi yang unik. Jondang sendiri adalah kotak kayu kuno yang biasanya digunakan untuk menyimpan harta benda atau hantaran lamaran. Dalam festival ini, Jondang diisi dengan aneka hasil bumi, makanan tradisional, dan tumpeng, kemudian diarak keliling desa menuju punden leluhur. Tradisi ini merupakan wujud syukur masyarakat Desa Kawak atas hasil panen yang melimpah dan doa untuk keselamatan desa. Festival ini juga menjadi ajang pelestarian gotong royong dan kerukunan antar warga.',
+            ],
+            [
+                'name' => 'Barikan Kubro',
+                'slug' => 'barikan-kubro',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Ritual tolak bala dan syukur masyarakat Karimunjawa menjelang musim baratan.',
+                'image' => 'images/culture/barikan-kubro.JPG',
+                'full_description' => 'Barikan Kubro adalah tradisi besar masyarakat kepulauan Karimunjawa yang dilaksanakan di bulan Suro (Muharram), khususnya pada hari Kamis Wage atau Jumat Kliwon. "Barikan" bermakna barokah atau keselamatan. Ritual ini bertujuan memohon keselamatan kepada Tuhan YME dan menolak bala (bencana), terutama menghadapi musim angin baratan yang ombaknya besar. Masyarakat membuat tumpeng-tumpeng besar yang diarak menuju pelabuhan atau alun-alun untuk didoakan bersama, kemudian dimakan bersama-sama (kembul bujana). Sebagian sesaji juga dilarung ke laut sebagai simbol harmoni manusia dengan alam.',
+            ],
+            [
+                'name' => 'Baratan Kalinyamatan',
+                'slug' => 'baratan-kalinyamatan',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Arak-arakan lampion (impese) untuk menyambut malam Nisfu Syaban, mengenang Ratu Kalinyamat.',
+                'image' => null,
+                'full_description' => 'Pesta Baratan adalah tradisi menyambut malam Nisfu Syaban yang digelar di Kecamatan Kalinyamatan. Kata "Baratan" berasal dari "Barah" (keselamatan/pengampunan). Tradisi ini identik dengan pawai lampion warna-warni (Impese) dan arak-arakan tokoh Ratu Kalinyamat. Konon, tradisi ini juga mengenang peristiwa Ratu Kalinyamat yang membawa obor saat mencari jenazah suaminya, Sultan Hadlirin. Suasana malam menjadi sangat indah dengan ribuan cahaya lampion yang dibawa oleh masyarakat.',
+            ],
+            [
+                'name' => 'Memeden Gadhu',
+                'slug' => 'memeden-gadhu',
+                'category' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'description' => 'Ritual unik petani menjaga harmoni alam dengan membuat orang-orangan sawah (memeden).',
+                'image' => null,
+                'full_description' => 'Memeden Gadhu adalah tradisi unik petani di Desa Kepuk, Kecamatan Bangsri. "Memeden" berarti orang-orangan sawah, and "Gadhu" merujuk pada masa tanam musim kemarau (gadhu). Tradisi ini awalnya merupakan cara petani untuk mengusir hama burung dan tikus, namun berkembang menjadi festival budaya. Petani membuat memeden dengan berbagai kostum unik dan lucu, kemudian diarak keliling desa. Selain sebagai hiburan, ritual ini mengandung doa agar hasil panen melimpah dan alam tetap bersahabat.',
+            ],
+            [
+                'name' => 'Tari Kridhajati',
+                'slug' => 'tari-kridhajati',
+                'category' => 'Seni Pertunjukan & Tarian',
+                'description' => 'Tarian khas Jepara yang gerakannya menggambarkan proses pembuatan ukiran kayu.',
+                'image' => null,
+                'full_description' => 'Tari Kridhajati adalah tarian identitas Kabupaten Jepara. "Kridha" berarti karya/gerak, dan "Jati" merujuk pada kayu jati (bahan utama ukiran). Gerakan tarian ini sangat unik karena memvisualisasikan proses pembuatan ukiran Jepara, mulai dari memilih kayu, memahat (natah), hingga menghaluskan. Tarian ini diciptakan untuk mengangkat dan melestarikan semangat para pengrajin ukir Jepara yang tekun, teliti, dan berseni tinggi.',
+            ],
+            [
+                'name' => 'Kentrung & Emprak',
+                'slug' => 'kentrung-emprak',
+                'category' => 'Seni Pertunjukan & Tarian',
+                'description' => 'Kesenian bertutur (bercerita) yang kental dengan nilai-nilai dakwah Islam dan nasihat kehidupan.',
+                'image' => null,
+                'full_description' => 'Kentrung dan Emprak adalah seni pertunjukan rakyat yang bersifat teater tutur. Kentrung dimainkan oleh seorang dalang yang bercerita sambil menabuh rebana (terbang), biasanya membawakan kisah-kisah nabi sesepuh, atau legenda lokal dengan muatan dakwah Islam yang kuat. Sedangkan Emprak adalah kesenian yang menggabungkan unsur tari, musik, dan lawakan (banyol), seringkali berisi kritik sosial atau nasihat moral yang disampaikan dengan jenaka. Kedua kesenian ini merupakan media pendidikan moral bagi masyarakat Jepara pada masanya.',
+            ],
+            [
+                'name' => 'Wayang Golek Langkung & Barongan',
+                'slug' => 'wayang-barongan',
+                'category' => 'Seni Pertunjukan',
+                'description' => 'Seni pertunjukan rakyat khas Jepara yang menggabungkan unsur wayang dan topeng barongan.',
+                'image' => null,
+                'full_description' => 'Jepara memiliki varian seni pertunjukan Wayang Golek Langkung (khususnya daerah Bangsri) and Barongan Dencong. Wayang Golek Langkung ini unik karena bentuknya yang lebih sederhana dan sering dikaitkan dengan ritual pemanggilan hujan atau tolak bala. Barongan Dencong adalah seni barongan khas Jepara yang iringannya dinamis dan "dencong" (rancak). Kesenian ini sering tampil dalam arak-arakan desa atau hajatan warga sebagai sarana hiburan yang memupuk semangat kebersamaan.',
+            ],
+        ];
 
         foreach ($cultures as $item) {
             \App\Models\Culture::updateOrCreate(
@@ -28,29 +134,91 @@ class CultureSeeder extends Seeder
                     'name' => $item['name'],
                     'category' => $item['category'],
                     'description' => $item['description'],
-                    'content' => $item['full_description'] ?? $item['description'], // Fallback if full_description missing
+                    'content' => $item['full_description'] ?? $item['description'],
                     'image' => $item['image'] ?? null,
                 ]
             );
         }
 
-        // Seed Culinaries as 'Kuliner Khas'
-        $culinaries = __('static_data.culinaries');
-        if (is_array($culinaries)) {
-            foreach ($culinaries as $item) {
-                \App\Models\Culture::updateOrCreate(
-                    ['slug' => $item['slug']],
-                    [
-                        'name' => $item['name'],
-                        'category' => 'Kuliner Khas',
-                        'description' => $item['description'],
-                        'content' => $item['full_description'] ?? $item['description'],
-                        'image' => $item['image'] ?? null,
-                    ]
-                );
-            }
+        $culinaries = [
+            [
+                'name' => 'Pindang Serani',
+                'slug' => 'pindang-serani',
+                'description' => 'Sup ikan laut dengan kuah bening segar berbumbu belimbing wuluh dan rempah khas Jepara.',
+                'image' => 'images/kuliner-jppr/srani.png',
+                'full_description' => 'Pindang Serani adalah masakan khas Jepara berupa sup ikan laut. Rasanya merupakan perpaduan pedas, asam dan manis yang umumnya disajikan pada siang hari. Tidak seperti pindang ikan pada umumnya yang menggunakan kuah kecap, Pindang Serani memiliki kuah bening yang sangat segar. Bumbu utamanya adalah belimbing wuluh, daun kemangi, tomat, serai, dan cabai rawit.',
+            ],
+            [
+                'name' => 'Durian Jepara',
+                'slug' => 'durian-jepara',
+                'description' => 'Raja buah lokal Petruk dari Jepara dengan daging tebal manis dan aroma menggoda.',
+                'image' => 'images/kuliner-jppr/duren.png',
+                'full_description' => 'Jepara terkenal sebagai salah satu penghasil durian terbaik di Jawa Tengah, khususnya varietas Durian Petruk. Karakteristik durian Jepara adalah daging buahnya yang tebal, biji cenderung kecil (kempes), rasa manis legit dengan sedikit pahit alkohol yang pas, serta aroma yang sangat menyengat menggoda. Musim rayanya biasanya terjadi pada akhir tahun hingga awal tahun.',
+            ],
+            [
+                'name' => 'Adon-adon Coro',
+                'slug' => 'adon-adon-coro',
+                'description' => 'Minuman jamu tradisional hangat berbahan santan, jahe, gula merah, dan rempah pilihan.',
+                'image' => 'images/kuliner-jppr/adon-coro.png',
+                'full_description' => 'Adon-adon Coro adalah minuman tradisional khas Jepara yang sering disebut sebagai "Jamu"-nya orang Jepara. Minuman ini terbuat dari campuran rempah-rempah seperti jahe, kayu manis, cengkeh, lengkuas, merica bubuk, dan santan kelapa yang dimasak dengan gula merah. Rasanya hangat, pedas, dan manis, sangat cocok diminum saat cuaca dingin atau malam hari untuk menghangatkan badan.',
+            ],
+            [
+                'name' => 'Horog-horog',
+                'slug' => 'horog-horog',
+                'description' => 'Pengganti nasi unik bertekstur butiran kenyal, terbuat dari tepung pohon aren.',
+                'image' => 'images/kuliner-jppr/horog.png',
+                'full_description' => 'Horog-horog adalah makanan pengganti nasi yang hanya bisa ditemui di Jepara. Terbuat dari tepung aren yang diolah sedemikian rupa hingga berbentuk butiran-butiran kecil berwarna putih dan bertekstur kenyal. Biasanya disajikan with parutan kelapa, gula pasir, atau dimakan bersama sate kikil, pecel, and bakso. Makanan ini sangat legendaris dan menjadi identitas kuliner masyarakat Jepara.',
+            ],
+            [
+                'name' => 'Carang Madu',
+                'slug' => 'carang-madu',
+                'description' => 'Kue oleh-oleh renyah berbentuk sarang madu dengan siraman gula merah manis.',
+                'image' => 'images/kuliner-jppr/carang-madu.png',
+                'full_description' => 'Carang Madu adalah jajanan tradisional atau oleh-oleh khas Jepara khususnya dari daerah Welahan. Kue ini terbuat dari adonan tepung beras, santan, dan telur yang digoreng membentuk sarang yang tidak beraturan menyerupai ranting bambu (carang), kemudian disiram dengan gula merah cair di atasnya. Rasanya renyah dan manis legit, sangat cocok dijadikan buah tangan.',
+            ],
+            [
+                'name' => 'Es Gempol Pleret',
+                'slug' => 'es-gempol-pleret',
+                'description' => 'Minuman es segar berisi gempol beras dan pleret tepung, disiram kuah santan dan sirup.',
+                'image' => 'images/kuliner-jppr/gempol.png',
+                'full_description' => 'Es Gempol Pleret adalah minuman segar yang terdiri dari gempol (bulatan dari tepung beras) and pleret (adonanan tepung beras yang dipipihkan). Keduanya disajikan dalam mangkuk dengan kuah santan encer dan sirup gula merah atau sirup frambozen, serta es batu. Rasanya gurih santan berpadu dengan manisnya sirup, sangat menyegarkan di tengah panasnya udara pesisir Jepara.',
+            ],
+            [
+                'name' => 'Kopi Jeparanan',
+                'slug' => 'kopi-jeparanan',
+                'description' => 'Kopi robusta khas pegunungan Muria Jepara dengan aroma kuat dan cita rasa otentik.',
+                'image' => 'images/kuliner-jppr/kopi.png',
+                'full_description' => 'Kopi Jepara atau dikenal dengan Kopi Tempur dan Kopi Damarwulan berasal dari kawasan pegunungan Muria di wilayah Kabupaten Jepara. Kopi ini umumnya berjenis Robusta dengan aroma wangi yang khas, body yang tebal, and acidity yang rendah. Pengolahan tradisional yang masih dipertahankan petani lokal memberikan cita rasa otentik yang berbeda dari kopi daerah lain.',
+            ],
+            [
+                'name' => 'Kacang Listrik',
+                'slug' => 'kacang-listrik',
+                'description' => 'Kacang tanah sangrai unik yang dimatangkan dengan bantuan oven, gurih dan renyah.',
+                'image' => 'images/kuliner-jppr/kcang.png',
+                'full_description' => 'Kacang Listrik bukan berarti kacang yang bisa nyetrum, melainkan kacang tanah yang proses pematangannya menggunakan oven (tenaga listrik/pemanas) atau disangrai dengan pasir, bukan digoreng minyak. Hal ini membuat tekstur kacangnya sangat renyah, kering, tidak berminyak, and gurih alami. Ini adalah salah satu camilan wajib saat berkunjung ke Jepara.',
+            ],
+            [
+                'name' => 'Krupuk Ikan Tengiri',
+                'slug' => 'krupuk-ikan-tengiri',
+                'description' => 'Kerupuk gurih dengan rasa ikan tengiri asli yang kuat, oleh-oleh wajib khas pesisir.',
+                'image' => 'images/kuliner-jppr/krpktgr.png',
+                'full_description' => 'Sebagai daerah pesisir, Jepara terkenal with olahan hasil lautnya, salah satunya Krupuk Ikan Tengiri. Dibuat dari daging ikan tengiri asli yang dihaluskan dan dicampur tepung tapioka serta bumbu rempah. Rasanya sangat gurih dan terasa sekali ikannya, berbeda dengan kerupuk ikan biasa yang lebih banyak tepungnya. Sangat renyah dan cocok dijadikan pelengkap makan atau camilan.',
+            ],
+        ];
+
+        foreach ($culinaries as $item) {
+            \App\Models\Culture::updateOrCreate(
+                ['slug' => $item['slug']],
+                [
+                    'name' => $item['name'],
+                    'category' => 'Kuliner Khas',
+                    'description' => $item['description'],
+                    'content' => $item['full_description'] ?? $item['description'],
+                    'image' => $item['image'] ?? null,
+                ]
+            );
         }
-        
-        $this->command->info('Cultures seeded successfully.');
+
+        $this->command->info('Cultures and Culinaries seeded successfully.');
     }
 }

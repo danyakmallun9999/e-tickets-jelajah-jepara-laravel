@@ -167,7 +167,7 @@
                             <div class="relative overflow-hidden rounded-3xl transition-shadow duration-700"
                                  :class="currentIndex === {{ $index }} ? 'shadow-2xl cursor-pointer' : 'shadow-lg pointer-events-none'"
                                  @click="currentIndex === {{ $index }} && handleClick('{{ route('culinary.show', $culinary->slug) }}')">
-                                <img src="{{ asset($culinary->image) }}"
+                                <img src="{{ $culinary->image_url }}"
                                      alt="{{ $culinary->name }}"
                                      class="h-[280px] md:h-[420px] w-full object-cover rounded-3xl transition-transform duration-700"
                                      :class="currentIndex === {{ $index }} ? 'group-hover:scale-105' : ''">

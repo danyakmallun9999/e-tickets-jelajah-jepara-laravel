@@ -14,7 +14,6 @@ use App\Models\Place;
 use App\Models\Post;
 use App\Repositories\Contracts\PlaceRepositoryInterface;
 use App\Services\GeoJsonService;
-use App\Services\StaticDataService;
 use App\Models\TourismStat;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
@@ -26,18 +25,14 @@ use Illuminate\View\View;
 class WelcomeController extends Controller
 {
     protected $placeRepository;
-
-    protected $staticDataService;
-
+    
     protected $geoJsonService;
 
     public function __construct(
         PlaceRepositoryInterface $placeRepository,
-        StaticDataService $staticDataService,
         GeoJsonService $geoJsonService
     ) {
         $this->placeRepository = $placeRepository;
-        $this->staticDataService = $staticDataService;
         $this->geoJsonService = $geoJsonService;
     }
 
@@ -54,7 +49,7 @@ class WelcomeController extends Controller
         })->count();
 
         // Kuliner Count
-        $countKuliner = $this->staticDataService->getCulinaries()->count();
+        $countKuliner = Culture::where('category', 'Kuliner Khas')->count();
 
         // Event Count
         $countEvent = Event::count();
@@ -85,7 +80,7 @@ class WelcomeController extends Controller
         $posts = Post::where('is_published', true)->latest('published_at')->take(3)->get();
 
         // Fetch Data from Database (Migrated from Static)
-        $cultures = Culture::where('category', '!=', 'Kuliner Khas')->inRandomOrder()->take(5)->get();
+        $cultures = Culture::where('category', '!=', 'Kuliner Khas')->latest()->take(5)->get();
         $culinaries = Culture::where('category', 'Kuliner Khas')->get();
 
         // Upcoming Events
@@ -161,20 +156,74 @@ class WelcomeController extends Controller
     {
         $cultures = Culture::all();
         
-        $categoryOrder = [
-            'Kemahiran & Kerajinan Tradisional (Kriya)',
-            'Adat Istiadat, Ritus, & Perayaan Tradisional',
-            'Seni Pertunjukan',
-            'Kawasan Cagar Budaya & Sejarah',
-            'Kuliner Khas'
+        $databaseCategories = Culture::select('category')->distinct()->pluck('category')->toArray();
+
+        $curatedCategories = [
+            'Kemahiran & Kerajinan Tradisional (Kriya)' => [
+                'id' => 'Kemahiran & Kerajinan Tradisional (Kriya)',
+                'title' => 'Kemahiran & Kerajinan Tradisional (Kriya)', 
+                'subtitle' => 'Kriya',
+                'description' => 'Jepara is known as the World Carving Center, featuring exquisite wood carving, Troso weaving, and batik.',
+                'image' => asset('images/culture/ukir.jpg')
+            ],
+            'Adat Istiadat, Ritus, & Perayaan Tradisional' => [
+                'id' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'title' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+                'subtitle' => 'Tradisi',
+                'description' => 'Sacred traditions like Perang Obor and Pesta Lomban that celebrate the gratitude and history of Jepara.',
+                'image' => asset('images/culture/obor.png')
+            ],
+            'Seni Pertunjukan' => [
+                'id' => 'Seni Pertunjukan',
+                'title' => 'Seni Pertunjukan',
+                'subtitle' => 'Seni',
+                'description' => 'Experience the rhythm of Wayang Kulit, Kridhajati Dance, and the graceful movements of local arts.',
+                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuByC0plW4kR_o3v4HYNa2r2JTW_CZ4SqENWKfWjQKnwCW8gPPQOpS2euCZuK2OeaH8SFfMje5m8x607ts6J8tZ42M2egKoBZTvB5clgNfHI5xXHqUtxtzoD10NZ3hyL9-pRo4f0VHA-HuDIJ4NhiN5nuu6Kw9KPyJTxnKYc4xGSBqWrEQtl9SMLfOGt81e8wCupxUP5mG3AHEQiOj0tgP8DQKYU30VyXmT50XUYr7I_IV3EzciVPLhNkG6oCYU44ENsU_B8-yM9MA'
+            ],
+            'Kawasan Cagar Budaya & Sejarah' => [
+                'id' => 'Kawasan Cagar Budaya & Sejarah',
+                'title' => 'Kawasan Cagar Budaya & Sejarah',
+                'subtitle' => 'Sejarah',
+                'description' => 'Explore the historical sites and cultural heritage areas that define the rich past of Jepara.',
+                'image' => asset('images/culture/mantingan.jpg')
+            ],
+            'Kuliner Khas' => [
+                'id' => 'Kuliner Khas',
+                'title' => 'Kuliner Khas Jepara',
+                'subtitle' => 'Kuliner',
+                'description' => 'A journey through spice and tradition, exploring the diverse flavors of Jepara\'s legendary food.',
+                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqBziuaRPIVdzVy6lqfQSsB1vBb-GOIriqfJv68H5uzzLAUP6poD5XP4FGglTwJaX3LPkeAVYOSVyEyjkH1Ci_b2WRORruNdhL1ugHYJ1HpMiTw2OjZYcC6UhsS1RyjaQLtpJOcndXvtAZiRea90NTMX6cNStTI40Wp2ql9UPdDTvP-MNpdm7kARbT4dh9eaLQM9DLE9TGujgtvbxjSnzbANWVaWMyVdOH60MHeE7J8OYDizNtb2aEGPvBqkX6FaHuR-28zuGNxA'
+            ]
         ];
 
-        // Custom order for certain items if needed, or just let them be ordered by DB id/created_at
-        // If we want specific items first within category, we might need a 'sort_order' column, but for now just default.
-        
+        $categoriesForAlpine = [];
+        $categoryOrder = [];
+
+        // First, add curated ones if they exist in DB
+        foreach ($curatedCategories as $id => $data) {
+            if (in_array($id, $databaseCategories)) {
+                $categoriesForAlpine[] = $data;
+                $categoryOrder[] = $id;
+            }
+        }
+
+        // Then, add remaining categories from DB
+        foreach ($databaseCategories as $categoryName) {
+            if (!in_array($categoryName, $categoryOrder)) {
+                $categoriesForAlpine[] = [
+                    'id' => $categoryName,
+                    'title' => $categoryName,
+                    'subtitle' => 'Koleksi',
+                    'description' => 'Discover more of Jepara\'s rich cultural diversity in this collection.',
+                    'image' => null // Will have fallback in view
+                ];
+                $categoryOrder[] = $categoryName;
+            }
+        }
+
         $groupedCultures = $cultures->groupBy('category');
 
-        return view('public.culture.index', compact('cultures', 'groupedCultures', 'categoryOrder'));
+        return view('public.culture.index', compact('cultures', 'groupedCultures', 'categoryOrder', 'categoriesForAlpine'));
     }
 
     public function geoJson(): JsonResponse
@@ -435,40 +484,38 @@ class WelcomeController extends Controller
             });
 
         // Search Cultures (Budaya)
-        $cultures = $this->staticDataService->getCultures()
-            ->filter(function ($item) use ($query) {
-                return Str::contains(strtolower($item->name), strtolower($query));
-            })
+        $cultures = Culture::where('category', '!=', 'Kuliner Khas')
+            ->where('name', 'like', "%{$query}%")
             ->take(3)
+            ->get()
             ->map(function ($item) {
                 return [
-                    'id' => $item->slug,
+                    'id' => $item->id,
                     'name' => $item->name,
                     'description' => Str::limit($item->description, 50),
-                    'image_url' => asset($item->image),
+                    'image_url' => $item->image_url,
                     'type' => 'Budaya',
                     'type_key' => 'culture',
                     'url' => route('culture.show', $item->slug),
                 ];
-            })->values();
+            });
 
         // Search Culinaries (Kuliner)
-        $culinaries = $this->staticDataService->getCulinaries()
-            ->filter(function ($item) use ($query) {
-                return Str::contains(strtolower($item->name), strtolower($query));
-            })
+        $culinaries = Culture::where('category', 'Kuliner Khas')
+            ->where('name', 'like', "%{$query}%")
             ->take(3)
+            ->get()
             ->map(function ($item) {
                 return [
-                    'id' => $item->slug,
+                    'id' => $item->id,
                     'name' => $item->name,
                     'description' => Str::limit($item->description, 50),
-                    'image_url' => asset($item->image),
+                    'image_url' => $item->image_url,
                     'type' => 'Kuliner',
                     'type_key' => 'culinary',
                     'url' => route('culinary.show', $item->slug),
                 ];
-            })->values();
+            });
 
         // Merge all results
         $results = $places->merge($posts)->merge($events)->merge($cultures)->merge($culinaries);

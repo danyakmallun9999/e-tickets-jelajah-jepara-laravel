@@ -24,7 +24,7 @@
                      @click="setActive({{ $index }})">
                     
                     <!-- Background Image (Refactored to img tag for reliability) -->
-                    <img src="{{ asset($culture->image) }}" 
+                    <img src="{{ $culture->image_url }}" 
                          alt="{{ $culture->name }}"
                          class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000"
                          :class="active === {{ $index }} ? 'scale-100' : 'scale-110 group-hover:scale-105'">
