@@ -74,9 +74,9 @@ export function initEditorJs(holderId, options = {}) {
             header: {
                 class: Header,
                 config: {
-                    levels: [2, 3, 4],
+                    levels: [1, 2, 3, 4, 5, 6],
                     defaultLevel: 2,
-                    placeholder: 'Judul...',
+                    placeholder: 'Ketik judul di sini...',
                 },
                 inlineToolbar: true,
                 shortcut: 'CMD+SHIFT+H',

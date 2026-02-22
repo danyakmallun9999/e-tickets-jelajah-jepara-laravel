@@ -70,7 +70,7 @@ Stores output as JSON in a hidden input.
     
     {{-- Editor Container --}}
     <div :id="holderId" 
-         class="editorjs-container border border-gray-200 rounded-xl bg-white min-h-[400px] focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 transition-all overflow-hidden">
+         class="editorjs-container border border-gray-200 rounded-xl bg-white min-h-[400px] focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 transition-all">
     </div>
     
     {{-- Hidden inputs for form submission --}}
@@ -92,11 +92,11 @@ Stores output as JSON in a hidden input.
     .editorjs-container .codex-editor__redactor {
         padding-bottom: 200px !important;
     }
-    .editorjs-container .ce-block__content {
-        max-width: 100%;
-    }
+    .editorjs-container .ce-block__content,
     .editorjs-container .ce-toolbar__content {
-        max-width: 100%;
+        /* Keep tools inside the container and provide space for the left toolbar */
+        max-width: calc(100% - 100px) !important;
+        margin: 0 auto !important;
     }
     /* Clean look for the editor toolbar */
     .editorjs-container .ce-toolbar__plus,
@@ -135,10 +135,39 @@ Stores output as JSON in a hidden input.
         min-height: 100px;
     }
     /* Header placeholder */
+    .editorjs-container h1.ce-header[contenteditable=true][data-placeholder]:empty::before,
     .editorjs-container h2.ce-header[contenteditable=true][data-placeholder]:empty::before,
     .editorjs-container h3.ce-header[contenteditable=true][data-placeholder]:empty::before,
-    .editorjs-container h4.ce-header[contenteditable=true][data-placeholder]:empty::before {
+    .editorjs-container h4.ce-header[contenteditable=true][data-placeholder]:empty::before,
+    .editorjs-container h5.ce-header[contenteditable=true][data-placeholder]:empty::before,
+    .editorjs-container h6.ce-header[contenteditable=true][data-placeholder]:empty::before {
         color: #9ca3af;
     }
-</style>
+    
+    /* Z-Index fixes for toolbars to prevent overlapping blocks */
+    .editorjs-container .ce-toolbar { z-index: 10 !important; }
+    .editorjs-container .ce-inline-toolbar { z-index: 20 !important; }
+    .editorjs-container .ce-settings { z-index: 30 !important; }
+    
+    /* Typography Rendering inside Editor */
+    .editorjs-container h1.ce-header { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; margin-bottom: 1rem; margin-top: 2rem; color: #111827; }
+    .editorjs-container h2.ce-header { font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; margin-bottom: 1rem; margin-top: 1.5rem; color: #1f2937; }
+    .editorjs-container h3.ce-header { font-size: 1.5rem; line-height: 2rem; font-weight: 600; margin-bottom: 0.75rem; margin-top: 1.5rem; color: #374151; }
+    .editorjs-container h4.ce-header { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; margin-top: 1.25rem; color: #4b5563; }
+    .editorjs-container h5.ce-header { font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; margin-top: 1rem; color: #4b5563; }
+    .editorjs-container h6.ce-header { font-size: 1rem; line-height: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; margin-top: 1rem; color: #6b7280; }
+    
+    .editorjs-container .cdx-list { margin-top: 1rem; margin-bottom: 1rem; padding-left: 1.5rem; }
+    .editorjs-container .cdx-list--unordered { list-style-type: decimal; } /* Editor.js uses decimal for ordered, disc for unordered conceptually but class names are swapped in DOM sometimes */
+    ol.cdx-list { list-style-type: decimal; }
+    ul.cdx-list { list-style-type: disc; }
+    .editorjs-container .cdx-list__item { padding: 0.25rem 0; }
+    
+    .editorjs-container .cdx-quote { border-left: 4px solid #93c5fd; padding-left: 1.25rem; margin: 1.5rem 0; font-style: italic; color: #4b5563; }
+    .editorjs-container .cdx-quote__text { font-size: 1.125rem; line-height: 1.75rem; }
+    .editorjs-container .cdx-quote__caption { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; font-style: normal; }
+    .editorjs-container .cdx-quote__caption::before { content: "— "; }
+    
+    .editorjs-container mark.cdx-marker { background-color: #fef08a; padding: 0.125rem 0.25rem; border-radius: 0.25rem; }
+    .editorjs-container code.inline-code { background-color: #f3f4f6; color: #ef4444; padding: 0.125rem 0.375rem; border-radius: 0.375rem; font-size: 0.875em; font-family: 'JetBrains Mono', monospace; }
 @endPushOnce
