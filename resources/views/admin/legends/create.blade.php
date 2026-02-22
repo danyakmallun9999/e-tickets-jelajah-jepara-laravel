@@ -30,13 +30,7 @@
 
                             <div>
                                 <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Foto Tokoh</label>
-                                <input type="file" name="image" id="image" class="mt-1 block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-blue-50 file:text-blue-700
-                                    hover:file:bg-blue-100" />
-                                <p class="mt-1 text-xs text-gray-400">Rekomendasi: Aspek rasio 4:5 atau 1:1, Max 4MB.</p>
+                                <x-admin.gallery-picker name="image" label="Foto Tokoh" />
                                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>
 

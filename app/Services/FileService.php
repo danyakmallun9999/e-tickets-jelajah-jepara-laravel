@@ -73,6 +73,32 @@ class FileService
     }
 
     /**
+     * Upload a file and record it in the media gallery.
+     *
+     * @return string Full URL of the uploaded file
+     */
+    public function uploadAndRecord(UploadedFile $file, string $directory, string $source = 'gallery', string $disk = 'public'): string
+    {
+        $url = $this->upload($file, $directory, $disk);
+
+        // Extract relative path from URL
+        $baseUrl = Storage::disk($disk)->url('');
+        $relativePath = str_replace($baseUrl, '', $url);
+
+        \App\Models\Media::create([
+            'filename'    => $file->getClientOriginalName(),
+            'path'        => $relativePath,
+            'url'         => $url,
+            'mime_type'   => $file->getMimeType(),
+            'size'        => $file->getSize(),
+            'uploaded_by' => auth('admin')->id(),
+            'source'      => $source,
+        ]);
+
+        return $url;
+    }
+
+    /**
      * Delete a file from storage.
      *
      * @param  string|null  $path  Full URL or path

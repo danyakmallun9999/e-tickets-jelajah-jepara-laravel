@@ -36,7 +36,9 @@ class AnnouncementController extends Controller
         ]);
         $validated['image_format'] = $request->input('image_format', 'landscape');
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('announcements', 'public');
         }
 
@@ -71,7 +73,12 @@ class AnnouncementController extends Controller
         ]);
         $validated['image_format'] = $request->input('image_format', 'landscape');
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            if ($announcement->image) {
+                Storage::disk('public')->delete($announcement->image);
+            }
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             // Hapus gambar lama
             if ($announcement->image) {
                 Storage::disk('public')->delete($announcement->image);

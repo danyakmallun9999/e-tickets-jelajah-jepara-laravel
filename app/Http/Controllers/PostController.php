@@ -65,7 +65,9 @@ class PostController extends Controller
             $validated['published_at'] = now();
         }
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $validated['image_path'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $validated['image_path'] = $this->fileService->upload($request->file('image'), 'posts');
         }
 
@@ -99,7 +101,10 @@ class PostController extends Controller
 
         $validated['is_published'] = $request->has('is_published');
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $this->fileService->delete($post->image_path);
+            $validated['image_path'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $this->fileService->delete($post->image_path);
             $validated['image_path'] = $this->fileService->upload($request->file('image'), 'posts');
         }

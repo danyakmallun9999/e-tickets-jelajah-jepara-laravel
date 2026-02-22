@@ -29,28 +29,10 @@
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
-                            <div class="flex items-start gap-4">
-                                <div class="flex-shrink-0">
-                                    <p class="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Foto Saat Ini</p>
-                                    @if($legend->image)
-                                        <img src="{{ $legend->image_url }}" class="w-20 h-20 rounded-2xl object-cover border border-gray-100" />
-                                    @else
-                                        <div class="w-20 h-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200 flex items-center justify-center">
-                                            <i class="fa-solid fa-image text-gray-300 text-xl"></i>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="flex-1">
-                                    <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Ganti Foto</label>
-                                    <input type="file" name="image" id="image" class="mt-1 block w-full text-sm text-gray-500
-                                        file:mr-4 file:py-2 file:px-4
-                                        file:rounded-full file:border-0
-                                        file:text-sm file:font-semibold
-                                        file:bg-blue-50 file:text-blue-700
-                                        hover:file:bg-blue-100" />
-                                    <p class="mt-1 text-xs text-gray-400">Biarkan kosong jika tidak ingin mengubah foto. Rekomendasi: Aspek rasio 4:5 atau 1:1, Max 4MB.</p>
-                                    <x-input-error :messages="$errors->get('image')" class="mt-2" />
-                                </div>
+                            <div>
+                                <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Foto Tokoh</label>
+                                <x-admin.gallery-picker name="image" :value="$legend->image ? $legend->image_url : null" label="Foto Tokoh" />
+                                <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>
 
                             <div>

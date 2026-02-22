@@ -79,16 +79,7 @@
                                 <!-- Foto Utama -->
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-2">Foto Utama</label>
-                                    @if($culture->image)
-                                        <div class="mb-3 flex items-start gap-4 p-3 bg-gray-50 border border-gray-200 rounded-2xl w-fit shadow-sm">
-                                            <img src="{{ $culture->image_url }}" class="h-20 w-auto rounded-xl object-cover border border-gray-200 shadow-sm bg-white">
-                                            <div class="py-1">
-                                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 mb-1">Saat Ini</span>
-                                                <p class="text-[11px] text-gray-500">Upload file baru di bawah<br>untuk mengganti foto ini.</p>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    <input id="image" name="image" type="file" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors" />
+                                    <x-admin.gallery-picker name="image" :value="$culture->image ? $culture->image_url : null" label="Foto Utama" />
                                     <x-input-error class="mt-2" :messages="$errors->get('image')" />
                                 </div>
 

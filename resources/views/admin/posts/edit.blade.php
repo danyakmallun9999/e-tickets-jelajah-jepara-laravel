@@ -345,40 +345,8 @@
                                     <h3 class="font-bold text-gray-900">Gambar Utama</h3>
                                 </div>
                             </div>
-                            <div class="p-5" x-data="{ preview: '{{ $post->image_path ?? '' }}' }">
-                                <div class="relative w-full aspect-video bg-gray-100 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden hover:border-blue-400 hover:bg-blue-50/30 transition-all cursor-pointer group"
-                                     @click="$refs.fileInput.click()">
-                                    
-                                    <template x-if="!preview">
-                                        <div class="text-center p-4">
-                                            <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-100 transition-colors">
-                                                <i class="fa-solid fa-cloud-arrow-up text-gray-400 text-xl group-hover:text-blue-500 transition-colors"></i>
-                                            </div>
-                                            <p class="text-sm font-medium text-gray-600 group-hover:text-blue-600 transition-colors">Klik untuk upload</p>
-                                            <p class="text-xs text-gray-400 mt-1">PNG, JPG hingga 2MB</p>
-                                        </div>
-                                    </template>
-                                    
-                                    <template x-if="preview">
-                                        <div class="relative w-full h-full">
-                                            <img :src="preview" class="w-full h-full object-cover">
-                                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span class="text-white font-medium text-sm"><i class="fa-solid fa-pen mr-1"></i> Ganti</span>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-
-                                <input type="file" 
-                                       x-ref="fileInput" 
-                                       id="image" 
-                                       name="image" 
-                                       class="hidden" 
-                                       accept="image/*"
-                                       @change="const file = $event.target.files[0]; 
-                                                const reader = new FileReader(); 
-                                                reader.onload = (e) => preview = e.target.result; 
-                                                reader.readAsDataURL(file)">
+                            <div class="p-5">
+                                <x-admin.gallery-picker name="image" :value="$post->image_path ?? null" label="Gambar Utama" />
                                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>
                         </div>

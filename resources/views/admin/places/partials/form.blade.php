@@ -270,50 +270,9 @@
                     </h4>
                     
                     <!-- Main Photo -->
-                    <div x-data="{ photoName: null, photoPreview: null }">
-                        <input type="file" class="hidden" x-ref="photo" name="image"
-                            accept="image/*"
-                            @change="
-                                photoName = $refs.photo.files[0].name;
-                                const reader = new FileReader();
-                                reader.onload = (e) => {
-                                    photoPreview = e.target.result;
-                                };
-                                reader.readAsDataURL($refs.photo.files[0]);
-                            " />
-
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Foto Utama</label>
-
-                        <!-- Current Photo -->
-                        <div class="mb-3" x-show="!photoPreview">
-                            @if ($place->image_path)
-                                <div class="relative group rounded-lg overflow-hidden">
-                                    <img src="{{ asset($place->image_path) }}" alt="{{ $place->name }}"
-                                        class="w-full h-32 object-cover">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                        <span class="text-white text-sm font-medium">Klik untuk mengganti</span>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- New Photo Preview -->
-                        <div class="mb-3" x-show="photoPreview" style="display: none;">
-                            <div class="relative">
-                                <span class="block w-full h-32 rounded-lg bg-cover bg-no-repeat bg-center border-2 border-blue-300"
-                                    x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                                </span>
-                                <span class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                                    Baru
-                                </span>
-                            </div>
-                        </div>
-
-                        <div @click.prevent="$refs.photo.click()"
-                            class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-blue-400 transition-all">
-                            <i class="fa-solid fa-cloud-upload-alt text-lg text-gray-400 mb-1"></i>
-                            <p class="text-xs text-gray-500"><span class="font-semibold text-blue-600">Klik untuk upload</span> (MAX 2MB)</p>
-                        </div>
+                        <x-admin.gallery-picker name="image" :value="$place->image_path ? asset($place->image_path) : null" label="Foto Utama" />
                         <x-input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
 

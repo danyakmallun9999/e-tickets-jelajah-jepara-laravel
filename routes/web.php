@@ -98,6 +98,12 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'edit'])->name('hero-settings.edit');
     Route::put('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
 
+    // Media Gallery routes
+    Route::get('media/api', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])->name('media.api');
+    Route::get('media', [\App\Http\Controllers\Admin\MediaController::class, 'index'])->name('media.index');
+    Route::post('media', [\App\Http\Controllers\Admin\MediaController::class, 'store'])->name('media.store');
+    Route::delete('media/{media}', [\App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('media.destroy');
+
     // Footer Settings routes
     Route::get('footer-settings', [\App\Http\Controllers\Admin\FooterSettingController::class, 'edit'])->name('footer-settings.edit');
     Route::put('footer-settings', [\App\Http\Controllers\Admin\FooterSettingController::class, 'update'])->name('footer-settings.update');

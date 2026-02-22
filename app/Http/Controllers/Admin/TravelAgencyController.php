@@ -52,11 +52,14 @@ class TravelAgencyController extends Controller
             'website' => 'nullable|url|max:255',
             'instagram' => 'nullable|string|max:255',
             'logo' => 'nullable|image|max:2048',
+            'logo_gallery_url' => 'nullable|url|max:255',
             'places' => 'nullable|array',
             'places.*' => 'exists:places,id',
         ]);
 
-        if ($request->hasFile('logo')) {
+        if ($request->filled('logo_gallery_url')) {
+            $validated['logo_path'] = $request->input('logo_gallery_url');
+        } elseif ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('travel_agencies', 'public');
             $validated['logo_path'] = 'storage/' . $path;
         }
@@ -94,11 +97,19 @@ class TravelAgencyController extends Controller
             'website' => 'nullable|url|max:255',
             'instagram' => 'nullable|string|max:255',
             'logo' => 'nullable|image|max:2048',
+            'logo_gallery_url' => 'nullable|url|max:255',
             'places' => 'nullable|array',
             'places.*' => 'exists:places,id',
         ]);
 
-        if ($request->hasFile('logo')) {
+        if ($request->filled('logo_gallery_url')) {
+            // Delete old logo
+            if ($travelAgency->logo_path) {
+                $oldPath = str_replace('storage/', '', $travelAgency->logo_path);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $validated['logo_path'] = $request->input('logo_gallery_url');
+        } elseif ($request->hasFile('logo')) {
             // Delete old logo
             if ($travelAgency->logo_path) {
                 $oldPath = str_replace('storage/', '', $travelAgency->logo_path);

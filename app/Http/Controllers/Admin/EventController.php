@@ -91,7 +91,9 @@ class EventController extends Controller
         $validated = $request->validated();
         $validated['created_by'] = auth('admin')->id(); // Auto-assign ownership
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $validated['image'] = $this->fileService->upload($request->file('image'), 'events');
         }
 
@@ -118,7 +120,10 @@ class EventController extends Controller
         
         $validated = $request->validated();
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $this->fileService->delete($event->image);
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $this->fileService->delete($event->image);
             $validated['image'] = $this->fileService->upload($request->file('image'), 'events');
         }

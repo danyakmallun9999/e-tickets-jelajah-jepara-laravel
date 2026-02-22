@@ -147,7 +147,9 @@ class AdminController extends Controller
         $data['slug'] = $this->placeService->generateSlug($data['name']);
 
         // Handle Main Image
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $data['image_path'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $data['image_path'] = $this->placeService->uploadImage($request->file('image'), 'places');
         }
 
@@ -225,7 +227,10 @@ class AdminController extends Controller
         }
 
         // Handle Main Image
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $this->placeService->deleteImage($place->image_path);
+            $data['image_path'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $this->placeService->deleteImage($place->image_path);
             $data['image_path'] = $this->placeService->uploadImage($request->file('image'), 'places');
         }

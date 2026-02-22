@@ -127,30 +127,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Preview --}}
-                                <div class="mb-4 rounded-2xl overflow-hidden border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center transition-all"
-                                     :style="format === 'portrait'  ? 'aspect-ratio:9/16; max-height:280px;' :
-                                             format === 'square'    ? 'aspect-ratio:1/1;'  :
-                                             format === 'banner'    ? 'aspect-ratio:3/1;'  :
-                                                                      'aspect-ratio:16/9;'">
-                                    <template x-if="preview">
-                                        <img :src="preview" class="w-full h-full object-cover">
-                                    </template>
-                                    <template x-if="!preview">
-                                        <div class="text-center text-gray-400 py-8">
-                                            <i class="fa-solid fa-image text-3xl mb-2"></i>
-                                            <p class="text-xs">Belum ada gambar</p>
-                                        </div>
-                                    </template>
-                                </div>
-                                <label class="block w-full cursor-pointer">
-                                    <div class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
-                                        <i class="fa-solid fa-upload"></i>
-                                        Pilih Gambar
-                                    </div>
-                                    <input type="file" name="image" class="sr-only" accept="image/*" @change="handleImage($event)">
-                                </label>
-                                <p class="text-xs text-gray-400 text-center mt-1">JPG, PNG, WEBP. Maks 4MB</p>
+                                <x-admin.gallery-picker name="image" label="Gambar Banner" />
                                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>
                         </div>

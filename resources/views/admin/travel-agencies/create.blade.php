@@ -38,50 +38,7 @@
                         <!-- Logo Upload -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-900 mb-2">Logo Biro Wisata</label>
-                            <div class="mt-2 flex justify-center rounded-xl border border-dashed border-gray-300 px-6 py-10 hover:bg-gray-50 transition-colors"
-                                 x-data="{ imagePreview: null }"
-                                 @dragover.prevent="$el.classList.add('bg-blue-50', 'border-blue-400')"
-                                 @dragleave.prevent="$el.classList.remove('bg-blue-50', 'border-blue-400')"
-                                 @drop.prevent="
-                                     $el.classList.remove('bg-blue-50', 'border-blue-400');
-                                     const file = $event.dataTransfer.files[0];
-                                     if (file && file.type.startsWith('image/')) {
-                                         $refs.fileInput.files = $event.dataTransfer.files;
-                                         const reader = new FileReader();
-                                         reader.onload = (e) => imagePreview = e.target.result;
-                                         reader.readAsDataURL(file);
-                                     }
-                                 ">
-                                
-                                <div class="text-center" x-show="!imagePreview">
-                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-300 mb-3"></i>
-                                    <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
-                                        <label for="logo" class="relative cursor-pointer rounded-md bg-white font-semibold text-blue-600 focus-within:outline-none hover:text-blue-500">
-                                            <span>Upload a file</span>
-                                            <input id="logo" name="logo" type="file" class="sr-only" x-ref="fileInput" accept="image/*"
-                                                   @change="
-                                                       const file = $event.target.files[0];
-                                                       if (file) {
-                                                           const reader = new FileReader();
-                                                           reader.onload = (e) => imagePreview = e.target.result;
-                                                           reader.readAsDataURL(file);
-                                                       }
-                                                   ">
-                                        </label>
-                                        <p class="pl-1">or drag and drop</p>
-                                    </div>
-                                    <p class="text-xs leading-5 text-gray-500">PNG, JPG up to 2MB</p>
-                                </div>
-
-                                <div class="relative w-full max-w-sm mx-auto" x-show="imagePreview" style="display: none;">
-                                    <img :src="imagePreview" class="w-full h-48 object-contain rounded-lg">
-                                    <button type="button" 
-                                            @click="imagePreview = null; $refs.fileInput.value = ''" 
-                                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition shadow-lg">
-                                        <i class="fa-solid fa-xmark w-4 h-4 flex items-center justify-center"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            <x-admin.gallery-picker name="logo" label="Logo Biro Wisata" />
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

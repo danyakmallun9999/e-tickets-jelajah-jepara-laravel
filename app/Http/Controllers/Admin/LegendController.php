@@ -33,7 +33,9 @@ class LegendController extends Controller
             'is_active'      => 'nullable|boolean',
         ]);
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('legends', 'public');
         }
 
@@ -64,8 +66,13 @@ class LegendController extends Controller
             'is_active'      => 'nullable|boolean',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($legend->image && !str_starts_with($legend->image, 'images/')) {
+        if ($request->filled('image_gallery_url')) {
+            if ($legend->image && !str_starts_with($legend->image, 'images/') && !str_starts_with($legend->image, 'http')) {
+                Storage::disk('public')->delete($legend->image);
+            }
+            $validated['image'] = $request->input('image_gallery_url');
+        } elseif ($request->hasFile('image')) {
+            if ($legend->image && !str_starts_with($legend->image, 'images/') && !str_starts_with($legend->image, 'http')) {
                 Storage::disk('public')->delete($legend->image);
             }
             $validated['image'] = $request->file('image')->store('legends', 'public');

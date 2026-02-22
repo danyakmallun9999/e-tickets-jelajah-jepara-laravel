@@ -65,7 +65,16 @@ class CultureController extends Controller
         $data = $request->only(['name','category','description','content','location','time','youtube_url']);
         $data['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('image_gallery_url')) {
+            // Extract relative path if it's a full URL, assuming it's from the public disk
+            $fullUrl = $request->input('image_gallery_url');
+            $baseUrl = url('/');
+            if (Str::startsWith($fullUrl, $baseUrl)) {
+                $data['image'] = Str::after($fullUrl, $baseUrl . '/storage/');
+            } else {
+                $data['image'] = $fullUrl; // Store as is if not a local URL
+            }
+        } elseif ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('images/culture', 'public');
         }
 
@@ -120,8 +129,20 @@ class CultureController extends Controller
         $data = $request->only(['name','category','description','content','location','time','youtube_url']);
         $data['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
-            if ($culture->image) {
+        if ($request->filled('image_gallery_url')) {
+            if ($culture->image && !Str::startsWith($culture->image, 'http')) { // Only delete if it's a local file, not an external URL
+                Storage::disk('public')->delete($culture->image);
+            }
+            // Extract relative path if it's a full URL, assuming it's from the public disk
+            $fullUrl = $request->input('image_gallery_url');
+            $baseUrl = url('/');
+            if (Str::startsWith($fullUrl, $baseUrl)) {
+                $data['image'] = Str::after($fullUrl, $baseUrl . '/storage/');
+            } else {
+                $data['image'] = $fullUrl; // Store as is if not a local URL
+            }
+        } elseif ($request->hasFile('image')) {
+            if ($culture->image && !Str::startsWith($culture->image, 'http')) { // Only delete if it's a local file, not an external URL
                 Storage::disk('public')->delete($culture->image);
             }
             $data['image'] = $request->file('image')->store('images/culture', 'public');
