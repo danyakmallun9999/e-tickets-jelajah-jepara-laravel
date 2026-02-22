@@ -61,17 +61,18 @@ Props:
     </div>
 
     {{-- Gallery Modal --}}
-    <div x-show="isOpen" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         @click.self="isOpen = false"
-         @keydown.escape.window="isOpen = false"
-         class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-         style="display: none;">
+    <template x-teleport="body">
+        <div x-show="isOpen" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click.self="isOpen = false"
+             @keydown.escape.window="isOpen = false"
+             class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+             style="display: none;">
         <div x-show="isOpen"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
@@ -164,7 +165,7 @@ Props:
                 </div>
             </div>
         </div>
-    </div>
+    </template>
 </div>
 
 <script>
