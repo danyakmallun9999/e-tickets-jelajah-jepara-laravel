@@ -53,7 +53,7 @@
                                 </div>
 
                                 <!-- Description (Editor.js) -->
-                                <x-admin.editorjs name="description" label="Deskripsi Event" />
+                                <x-admin.editorjs-simple name="description" label="Deskripsi Event" />
                             </div>
                         </div>
 
@@ -91,7 +91,7 @@
                                 </div>
 
                                 <!-- Description EN (Editor.js) -->
-                                <x-admin.editorjs name="description_en" label="Description (English)" formatName="content_format" />
+                                <x-admin.editorjs-simple name="description_en" label="Description (English)" formatName="content_format" />
                             </div>
                         </div>
 
