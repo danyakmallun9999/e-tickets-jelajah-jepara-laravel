@@ -231,8 +231,12 @@
             <section class="mb-24 relative bg-[#ebf6f6] dark:bg-slate-900/80 overflow-hidden py-20 px-4 sm:px-6 lg:px-8 rounded-[2.5rem] border border-teal-50 dark:border-slate-800">
                 {{-- Decorative Horizontal Wavy Line Background --}}
                 <svg class="absolute w-[200%] sm:w-[150%] lg:w-full h-[60%] lg:h-[80%] top-[20%] lg:top-[10%] left-1/2 -translate-x-1/2 opacity-30 dark:opacity-15 pointer-events-none" viewBox="0 0 1000 200" preserveAspectRatio="none">
-                    <path d="M -250,100 Q -125,160 0,100 T 250,100 T 500,100 T 750,100 T 1000,100 T 1250,100" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="6 8" fill="none" />
-                    <path d="M -250,100 Q -125,40 0,100 T 250,100 T 500,100 T 750,100 T 1000,100 T 1250,100" stroke="#10b981" stroke-width="1" stroke-dasharray="4 6" fill="none" opacity="0.6"/>
+                    <path d="M -250,100 Q -125,160 0,100 T 250,100 T 500,100 T 750,100 T 1000,100 T 1250,100" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="6 8" fill="none">
+                        <animate attributeName="stroke-dashoffset" from="0" to="-28" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M -250,100 Q -125,40 0,100 T 250,100 T 500,100 T 750,100 T 1000,100 T 1250,100" stroke="#10b981" stroke-width="1" stroke-dasharray="4 6" fill="none" opacity="0.6">
+                        <animate attributeName="stroke-dashoffset" from="0" to="20" dur="3s" repeatCount="indefinite"/>
+                    </path>
                 </svg>
 
                 <div class="text-center w-full mx-auto mb-16 relative z-10 overflow-hidden px-2">
