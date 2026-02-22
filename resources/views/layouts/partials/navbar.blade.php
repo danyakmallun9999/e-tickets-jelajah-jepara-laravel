@@ -28,11 +28,19 @@
         },
         selectResult(result) {
             if (result.url) {
-                window.location.href = result.url;
+                if (typeof Livewire !== 'undefined') {
+                    Livewire.navigate(result.url);
+                } else {
+                    window.location.href = result.url;
+                }
             }
-            this.searchResults = [];
-            this.searchQuery = '';
             this.searchOpen = false;
+            
+            // Delay clearing the data so the fade-out transition is smooth
+            setTimeout(() => {
+                this.searchResults = [];
+                this.searchQuery = '';
+            }, 300);
         }
     }">
     
@@ -98,17 +106,17 @@
             <div class="flex flex-1 items-center justify-end gap-3">
                 
                 <!-- Expanded Search Bar Island -->
-                <div class="hidden md:flex relative transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                     :class="searchOpen ? 'w-80' : 'w-10'"
+                <div class="hidden md:flex relative w-10 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                     :class="searchOpen ? '!w-80' : ''"
                      @click.away="if(searchQuery === '') searchOpen = false">
                     
-                    <div class="absolute inset-0 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50 transition-all duration-300"
-                         :class="searchOpen ? 'opacity-100' : 'opacity-0 scale-90'"></div>
+                    <div class="absolute inset-0 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50 transition-all duration-300 opacity-0 scale-90"
+                         :class="searchOpen ? '!opacity-100 !scale-100' : ''"></div>
 
                     <div class="relative w-full h-10 flex items-center">
                         <input type="text" x-model="searchQuery" 
-                               class="w-full h-full bg-transparent border-none focus:ring-0 text-sm pl-10 pr-4 text-slate-800 dark:text-white placeholder-slate-400 transition-opacity duration-200"
-                                :class="searchOpen ? 'opacity-100 pointer-events-auto delay-100' : 'opacity-0 pointer-events-none'"
+                               class="w-full h-full bg-transparent border-none focus:ring-0 text-sm pl-10 pr-4 text-slate-800 dark:text-white placeholder-slate-400 transition-opacity duration-200 opacity-0 pointer-events-none"
+                                :class="searchOpen ? '!opacity-100 !pointer-events-auto delay-100' : ''"
                                placeholder="{{ __('Nav.SearchPlaceholder') }}"
                                x-ref="searchInput"
                                @keydown.escape="searchOpen = false"
@@ -119,13 +127,13 @@
                             <span class="material-symbols-outlined text-xl">search</span>
                         </button>
                         
-                        <button x-show="searchOpen && searchQuery && !isLoading" 
+                        <button x-cloak x-show="searchOpen && searchQuery && !isLoading" 
                                 @click="searchQuery = ''; searchResults = []" 
                                 class="absolute right-0 top-0 w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors z-20">
                             <span class="material-symbols-outlined text-sm">close</span>
                         </button>
 
-                        <div x-show="isLoading" class="absolute right-3 top-2.5">
+                        <div x-cloak x-show="isLoading" class="absolute right-3 top-2.5">
                             <span class="material-symbols-outlined text-primary text-lg animate-spin">progress_activity</span>
                         </div>
                     </div>
@@ -148,7 +156,7 @@
                         </div>
 
                         <!-- Empty State -->
-                        <div x-show="searchResults.length === 0" class="p-8 text-center bg-slate-50/30 dark:bg-slate-800/20">
+                        <div x-show="searchResults.length === 0 && searchQuery.length > 2 && !isLoading" class="p-8 text-center bg-slate-50/30 dark:bg-slate-800/20">
                             <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2">sentiment_dissatisfied</span>
                             <p class="text-slate-500 dark:text-slate-400 text-sm italic">Maaf, tidak ada hasil yang ditemukan untuk <span class="font-bold" x-text="'\'' + searchQuery + '\''"></span></p>
                         </div>
@@ -298,7 +306,7 @@
                          x-transition:enter-end="opacity-100 translate-y-0">
                         
                         <!-- Mobile Empty State -->
-                        <div x-show="searchResults.length === 0" class="p-8 text-center">
+                        <div x-show="searchResults.length === 0 && searchQuery.length > 2 && !isLoading" class="p-8 text-center">
                             <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">search_off</span>
                             <p class="text-xs text-slate-500">Hasil tidak ditemukan.</p>
                         </div>
