@@ -99,7 +99,7 @@ class WelcomeController extends Controller
                 'type' => 'map',
                 'badge_id' => 'Portal Resmi Pariwisata',
                 'badge_en' => 'Official Tourism Portal',
-                'title_id' => 'Jelajah Jepara. <br> Temukan pesona pantai tropis, kekayaan sejarah, dan mahakarya ukiran kayu kelas dunia.',
+                'title_id' => 'Jelajah Jepara. <br> Ukir Ceritamu Di Sini',
                 'title_en' => 'Explore Jepara. <br> Carve Your Story Here',
                 'subtitle_id' => 'Temukan pesona pantai tropis, kekayaan sejarah, dan mahakarya ukiran kayu kelas dunia.',
                 'subtitle_en' => 'Discover tropical beaches, rich history, and world-class wood carving masterpieces.',

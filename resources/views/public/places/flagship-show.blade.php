@@ -359,7 +359,7 @@
                 {{-- Section Header --}}
                 <div class="text-center max-w-2xl mx-auto mb-12">
                     <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Rencanakan Liburan Anda</span>
-                    <h2 class="font-playfair text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Direktori Biro Wisata</h2>
+                    <h2 class="font-playfair text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Jelajahi Biro Wisata</h2>
                     <p class="text-slate-500 dark:text-slate-400">Pilih dari puluhan operator wisata bersertifikat yang siap mengantarkan Anda menjelajah surga tersembunyi dengan aman dan nyaman.</p>
                 </div>
 
