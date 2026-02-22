@@ -37,5 +37,8 @@ class DatabaseSeeder extends Seeder
         // Fourth: Assign ownership to existing content
         $this->call(AssignOwnershipSeeder::class);
 
+        // limo: biro perjalanan
+        $this->call(FlagshipKarimunjawaSeeder::class);
+
     }
 }
