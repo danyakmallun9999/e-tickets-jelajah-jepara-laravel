@@ -60,7 +60,7 @@
                         {{ $upcomingEvent->translated_title }}
                     </h2>
                     <p class="text-base text-slate-600 leading-relaxed font-sans line-clamp-3">
-                        {{ Str::limit(strip_tags($upcomingEvent->translated_description), 150) }}
+                        {{ Str::limit(\App\Services\ContentRenderer::extractText($upcomingEvent->translated_description, $upcomingEvent->content_format ?? 'html'), 150) }}
                     </p>
                 </div>
 

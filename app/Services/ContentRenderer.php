@@ -24,6 +24,40 @@ class ContentRenderer
     }
 
     /**
+     * Extract plain text from content for excerpts/summaries.
+     */
+    public static function extractText(?string $content, string $format = 'html'): string
+    {
+        if (empty($content)) return '';
+
+        if ($format === 'editorjs') {
+            $data = json_decode($content, true);
+            if (!$data || !isset($data['blocks'])) return '';
+            
+            $text = '';
+            foreach ($data['blocks'] as $block) {
+                $type = $block['type'] ?? '';
+                $blockData = $block['data'] ?? [];
+                
+                if (in_array($type, ['paragraph', 'header', 'quote'])) {
+                    $text .= strip_tags($blockData['text'] ?? '') . ' ';
+                } elseif ($type === 'list') {
+                    $items = $blockData['items'] ?? [];
+                    foreach ($items as $item) {
+                        $contentItem = is_array($item) ? ($item['content'] ?? '') : $item;
+                        $text .= strip_tags($contentItem) . ' ';
+                    }
+                } elseif ($type === 'raw') {
+                    $text .= strip_tags($blockData['html'] ?? '') . ' ';
+                }
+            }
+            return trim(html_entity_decode($text));
+        }
+
+        return trim(html_entity_decode(strip_tags($content)));
+    }
+
+    /**
      * Parse Editor.js JSON and render to HTML.
      */
     private static function renderEditorJs(string $json): string

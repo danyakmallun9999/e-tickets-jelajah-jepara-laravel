@@ -31,7 +31,7 @@
                             {{ $post->translated_title }}
                         </h3>
                         <p class="text-text-light/70 dark:text-text-dark/70 text-sm mb-4 line-clamp-2">
-                            {{ Str::limit(strip_tags($post->translated_content), 100) }}
+                            {{ Str::limit(\App\Services\ContentRenderer::extractText($post->translated_content, $post->content_format ?? 'html'), 100) }}
                         </p>
                         <div class="mt-auto">
                             <a class="text-primary font-bold text-sm hover:underline" href="{{ route('posts.show', $post) }}" wire:navigate>{{ __('News.Button.ReadMore') }}</a>

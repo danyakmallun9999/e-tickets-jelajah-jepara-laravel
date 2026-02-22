@@ -137,7 +137,7 @@
                                                         </span>
                                                     @endif
                                                 </div>
-                                                <p class="text-xs text-gray-500 line-clamp-1 mt-0.5 max-w-xs">{{ Str::limit(strip_tags($event->description), 60) }}</p>
+                                                <p class="text-xs text-gray-500 line-clamp-1 mt-0.5 max-w-xs">{{ Str::limit(\App\Services\ContentRenderer::extractText($event->description, $event->content_format ?? 'html'), 60) }}</p>
                                             </div>
                                         </div>
                                     </td>

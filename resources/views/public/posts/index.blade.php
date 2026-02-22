@@ -37,7 +37,7 @@
                                 {{ $featuredPost->translated_title }}
                             </h2>
                             <p class="text-gray-200 text-sm md:text-xl line-clamp-2 mb-6 max-w-2xl">
-                                {{ Str::limit(strip_tags($featuredPost->translated_content), 150) }}
+                                {{ Str::limit(\App\Services\ContentRenderer::extractText($featuredPost->translated_content, $featuredPost->content_format ?? 'html'), 150) }}
                             </p>
                             
                             <div class="flex items-center gap-4 text-white/80 text-sm">
@@ -84,7 +84,7 @@
                         </h3>
                         
                         <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
-                            {{ Str::limit(strip_tags($post->translated_content), 120) }}
+                            {{ Str::limit(\App\Services\ContentRenderer::extractText($post->translated_content, $post->content_format ?? 'html'), 120) }}
                         </p>
                         
                         <a href="{{ route('posts.show', $post) }}" class="inline-flex items-center text-sm font-bold text-primary" wire:navigate>

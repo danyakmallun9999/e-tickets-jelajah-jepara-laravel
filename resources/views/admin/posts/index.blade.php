@@ -155,7 +155,7 @@
                                                             </span>
                                                         @endif
                                                     </div>
-                                                    <div class="text-xs text-gray-500 line-clamp-1 max-w-md">{{ Str::limit(strip_tags($post->content), 80) }}</div>
+                                                    <div class="text-xs text-gray-500 line-clamp-1 max-w-md">{{ Str::limit(\App\Services\ContentRenderer::extractText($post->content, $post->content_format ?? 'html'), 80) }}</div>
                                                     @if($post->author)
                                                         <div class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
                                                             <i class="fa-solid fa-user-pen"></i>
