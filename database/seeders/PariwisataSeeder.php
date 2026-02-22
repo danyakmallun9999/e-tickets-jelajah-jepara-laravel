@@ -200,6 +200,7 @@ class PariwisataSeeder extends Seeder
                         'ownership_status' => $item['status_kepemilikan'] ?? null,
                         'manager' => ($item['pengelola'] !== '-' ? $item['pengelola'] : null),
                         'is_flagship' => $item['is_flagship'] ?? false,
+                        'is_recommended' => $item['is_featured'] ?? false,
                         'rides' => (! empty($item['wahana']) ? $item['wahana'] : null), // Already array
                         'facilities' => (! empty($item['fasilitas']) ? $item['fasilitas'] : null), // Already array
                         'social_media' => ($item['media_sosial'] !== '-' && $item['media_sosial'] !== '' ? $item['media_sosial'] : null),
