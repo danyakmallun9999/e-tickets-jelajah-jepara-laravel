@@ -18,6 +18,9 @@ window.maplibregl = maplibregl;
 import Chart from 'chart.js/auto';
 window.Chart = Chart;
 
+// QRCode & html2canvas (replaces CDN-loaded libraries)
+import './qrcode-loader';
+
 // Financial Report — ApexCharts
 import './charts/financial';
 

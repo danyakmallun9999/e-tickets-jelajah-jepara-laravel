@@ -1,6 +1,6 @@
 <x-public-layout>
     @push('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    {{-- Fonts: Noto Serif & Noto Sans now bundled via @fontsource in app.css --}}
     <style>
         .culture-card:hover .card-description {
             opacity: 1;

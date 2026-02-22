@@ -204,7 +204,7 @@
                 </div>
 
     @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- Chart.js loaded globally via app.js --}}
     <script>
         document.addEventListener('livewire:navigated', () => {
             const viewsChartEl = document.getElementById('viewsChart');
