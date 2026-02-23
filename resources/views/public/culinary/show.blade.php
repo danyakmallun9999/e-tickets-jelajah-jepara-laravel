@@ -286,8 +286,6 @@
                     <!-- Section Header -->
                     <div class="max-w-3xl mx-auto text-center mb-12 animate-fade-in-up">
                         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 dark:bg-blue-900/30 text-primary dark:text-blue-400 mb-6 relative group overflow-hidden">
-                            <!-- Subtle ping animation behind icon -->
-                            <div class="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75"></div>
                             <span class="material-symbols-outlined text-3xl relative z-10">storefront</span>
                         </div>
                         <h2 class="font-playfair text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
@@ -300,15 +298,12 @@
                         <!-- Distance Filter Action -->
                         <div class="flex justify-center">
                             <button @click="calculateDistances()" 
-                                    class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-slate-700 dark:text-slate-200 font-semibold shadow-sm hover:shadow-lg hover:text-primary transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 group relative overflow-hidden"
+                                    class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-slate-700 dark:text-slate-200 font-semibold hover:text-primary transition-colors group relative overflow-hidden"
                                     :class="isCalculatingLocation ? 'opacity-70 cursor-wait' : ''">
                                 <!-- Loading Spinner inline -->
                                 <span x-show="isCalculatingLocation" class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
-                                <span x-show="!isCalculatingLocation" class="material-symbols-outlined text-xl transition-transform group-hover:scale-110">my_location</span>
+                                <span x-show="!isCalculatingLocation" class="material-symbols-outlined text-xl">my_location</span>
                                 <span x-text="isCalculatingLocation ? 'Mendeteksi Lokasi...' : (userLocation ? 'Perbarui Lokasi Saya' : 'Urutkan dari Terdekat')">Urutkan dari Terdekat</span>
-                                
-                                <!-- Shine effect -->
-                                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent group-hover:animate-shimmer"></div>
                             </button>
                         </div>
                     </div>
@@ -348,11 +343,11 @@
                              </div>
 
                              <!-- Modal Map Host -->
-                             <div id="modal-map-host" class="w-full flex-1 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl relative border border-white/10 bg-slate-800">
+                             <div id="modal-map-host" class="w-full flex-1 rounded-2xl sm:rounded-3xl overflow-hidden relative border border-white/10 bg-slate-800">
                                  <!-- Floating Close Button overlaid directly on Map -->
                                  <button @click.prevent.stop="toggleFullscreen()" 
-                                         class="absolute top-4 right-4 z-[400] flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur shadow-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-600 dark:hover:border-red-500 dark:hover:text-white transition-all group focus:outline-none">
-                                     <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">fullscreen_exit</span>
+                                         class="absolute top-4 right-4 z-[400] flex items-center gap-2 px-4 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-600 dark:hover:border-red-500 dark:hover:text-white transition-colors group focus:outline-none">
+                                     <span class="material-symbols-outlined text-xl">fullscreen_exit</span>
                                      <span class="font-bold text-sm">Kembali</span>
                                  </button>
 
@@ -363,7 +358,7 @@
 
                     <!-- Map (Left on Large Screens - Normal View) -->
                     @if($hasCoordinates)
-                        <div class="w-full lg:w-3/5 xl:w-2/3 h-[400px] lg:h-[600px] rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-xl relative group bg-white dark:bg-slate-800 animate-fade-in-up delay-100">
+                        <div class="w-full lg:w-3/5 xl:w-2/3 h-[400px] lg:h-[600px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative group bg-white dark:bg-slate-800 animate-fade-in-up delay-100">
                             
                             <!-- Inline Map Host -->
                             <div id="inline-map-host" class="w-full h-full relative z-0">
@@ -372,9 +367,9 @@
                             
                             <!-- Fullscreen Toggle Button (Apple HIG Float) -->
                             <button @click.prevent.stop="toggleFullscreen()" 
-                                    class="absolute top-4 right-4 z-[400] w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-lg border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all duration-300 hover:scale-105 active:scale-95 group/btn focus:outline-none"
+                                    class="absolute top-4 right-4 z-[400] w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white dark:hover:bg-primary transition-colors focus:outline-none"
                                     title="Peta Layar Penuh">
-                                <span class="material-symbols-outlined text-2xl transition-transform group-hover/btn:scale-110">fullscreen</span>
+                                <span class="material-symbols-outlined text-2xl">fullscreen</span>
                             </button>
 
                             <!-- Loading overlay -->
@@ -390,8 +385,8 @@
                     <!-- Locations Grid/List (Right on Large Screens) -->
                     <div class="w-full {{ $hasCoordinates ? 'lg:w-2/5 xl:w-1/3' : 'lg:w-full' }} flex flex-col h-[600px] animate-fade-in-up delay-200">
                         <!-- Fade Out Top/Bottom Effect Container -->
-                        <div class="relative flex-1 overflow-hidden rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
-                            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur z-10 flex items-center justify-between">
+                        <div class="relative flex-1 overflow-hidden rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col">
+                            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 z-10 flex items-center justify-between">
                                 <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                     <span class="w-1.5 h-5 bg-primary rounded-full"></span>
                                     Daftar Cabang (<span x-text="locations.length"></span>)
@@ -411,11 +406,11 @@
                                 <template x-for="(loc, index) in locations" :key="loc.id || index">
                                     <div :id="'card-' + index"
                                          @click="focusLocation(index)"
-                                         class="flex flex-col p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/30 transition-all hover:shadow-md cursor-pointer group"
-                                         :class="activeLocation === index ? 'ring-2 ring-primary border-transparent dark:border-transparent bg-primary/5 dark:bg-primary/10 scale-[1.02] shadow-md z-10' : 'hover:border-primary/50'">
+                                         class="flex flex-col p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 transition-colors cursor-pointer group"
+                                         :class="activeLocation === index ? 'border-primary dark:border-primary bg-primary/5 dark:bg-primary/10' : 'hover:border-primary/50'">
                                         <div class="flex items-start gap-4 mb-3">
-                                            <div class="mt-1 w-12 h-12 rounded-full flex flex-shrink-0 items-center justify-center transition-transform group-hover:scale-110"
-                                                 :class="activeLocation === index ? 'bg-primary text-white shadow-md' : 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary'">
+                                            <div class="mt-1 w-12 h-12 rounded-full flex flex-shrink-0 items-center justify-center transition-colors"
+                                                 :class="activeLocation === index ? 'bg-primary text-white' : 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary'">
                                                 <span class="material-symbols-outlined text-2xl">location_on</span>
                                             </div>
                                             <div class="flex-1 min-w-0">
@@ -493,7 +488,7 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    animation: markerDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                    animation: markerFade 0.3s ease-out forwards;
                 }
                 .apple-marker-icon {
                     width: 36px;
@@ -501,13 +496,12 @@
                     border-radius: 50%;
                     background-color: #0ea5e9; /* primary */
                     border: 3px solid white;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     color: white;
                     z-index: 2;
-                    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    transition: background-color 0.2s;
                 }
                 .apple-marker-pointer {
                     width: 0;
@@ -519,11 +513,11 @@
                     z-index: 1;
                 }
                 .apple-marker-container:hover .apple-marker-icon {
-                    transform: scale(1.15);
+                    background-color: #0284c7; /* darker primary on hover instead of scale */
                 }
-                @keyframes markerDrop {
-                    0% { opacity: 0; transform: translateY(-20px) scale(0.8); }
-                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                @keyframes markerFade {
+                    0% { opacity: 0; transform: translateY(-10px); }
+                    100% { opacity: 1; transform: translateY(0); }
                 }
                 
                 /* Custom MarkerCluster Styling (Apple HIG Theme) */
@@ -536,16 +530,14 @@
                     font-family: inherit;
                     font-weight: bold;
                     border: 3px solid white;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 }
                 
                 /* Sleek Popup */
                 .leaflet-popup-content-wrapper {
-                    border-radius: 16px;
-                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+                    border-radius: 12px;
+                    border: 1px solid rgba(0,0,0,0.1);
                     padding: 4px;
-                    background-color: rgba(255,255,255,0.98);
-                    backdrop-filter: blur(10px);
+                    background-color: #ffffff;
                 }
                 .dark .leaflet-popup-content-wrapper {
                     background-color: rgba(30,41,59,0.95);
