@@ -434,10 +434,12 @@
                                                             <span x-text="loc.distance + ' km'"></span>
                                                         </span>
                                                     </template>
-                                                    <template x-if="loc.is_open !== undefined">
+                                                    <template x-if="loc.is_open !== null">
                                                         <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md"
                                                               :class="loc.is_open ? 'bg-green-100 text-green-700 dark:bg-green-900/30' : 'bg-red-100 text-red-700 dark:bg-red-900/30'">
                                                             <span x-text="loc.is_open ? 'Buka' : 'Tutup'"></span>
+                                                            <!-- Optional: specific hours -->
+                                                            <span x-show="loc.open_time && loc.close_time" class="pl-1 ml-1 border-l border-current opacity-70" x-text="loc.open_time.substring(0,5) + '-' + loc.close_time.substring(0,5)"></span>
                                                         </span>
                                                     </template>
                                                 </div>
@@ -616,10 +618,9 @@
                                 txt.innerHTML = locationsJson;
                                 this.locations = JSON.parse(txt.value);
                                 
-                                // Randomize open/close status mockup for demonstration
-                                // since DB doesn't have it yet. (approx 70% open)
+                                // Calculate initial real-time open status
                                 this.locations.forEach(loc => {
-                                    loc.is_open = Math.random() > 0.3;
+                                    loc.is_open = this.checkIfOpen(loc.open_time, loc.close_time);
                                 });
                                 
                                 if (this.locations.length > 0) {
@@ -777,6 +778,29 @@
                             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
                             const d = R * c; 
                             return (Math.round(d * 10) / 10); // 1 decimal return
+                        },
+
+                        checkIfOpen(openTime, closeTime) {
+                            if (!openTime || !closeTime) return null; // Unknown/Not Set
+                            
+                            const now = new Date();
+                            const currentHour = now.getHours();
+                            const currentMinute = now.getMinutes();
+                            const currentTime = currentHour + (currentMinute / 60);
+
+                            const [openH, openM] = openTime.split(':').map(Number);
+                            const [closeH, closeM] = closeTime.split(':').map(Number);
+                            
+                            const openVal = openH + (openM / 60);
+                            const closeVal = closeH + (closeM / 60);
+                            
+                            // Handle past midnight (e.g., open 17:00, close 02:00)
+                            if (closeVal < openVal) {
+                                if (currentTime >= openVal || currentTime <= closeVal) return true;
+                                return false;
+                            }
+                            
+                            return currentTime >= openVal && currentTime <= closeVal;
                         },
                         
                         // Re-initialize markers when sorting changes
