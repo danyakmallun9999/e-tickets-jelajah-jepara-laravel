@@ -16,6 +16,8 @@ class CultureLocation extends Model
         'google_maps_url',
         'latitude',
         'longitude',
+        'open_time',
+        'close_time',
         'is_recommended',
     ];
 

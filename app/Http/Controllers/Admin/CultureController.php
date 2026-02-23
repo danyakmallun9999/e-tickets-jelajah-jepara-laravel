@@ -60,6 +60,8 @@ class CultureController extends Controller
             'locations.*.name' => 'required|string|max:255',
             'locations.*.address' => 'nullable|string|max:255',
             'locations.*.google_maps_url' => 'nullable|url|max:1000',
+            'locations.*.open_time' => 'nullable|date_format:H:i',
+            'locations.*.close_time' => 'nullable|date_format:H:i',
         ]);
 
         $data = $request->only(['name','category','description','content','location','time','youtube_url']);
@@ -124,6 +126,8 @@ class CultureController extends Controller
             'locations.*.name' => 'required|string|max:255',
             'locations.*.address' => 'nullable|string|max:255',
             'locations.*.google_maps_url' => 'nullable|url|max:1000',
+            'locations.*.open_time' => 'nullable|date_format:H:i',
+            'locations.*.close_time' => 'nullable|date_format:H:i',
         ]);
 
         $data = $request->only(['name','category','description','content','location','time','youtube_url']);

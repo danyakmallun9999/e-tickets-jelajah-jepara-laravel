@@ -193,13 +193,13 @@
                         <!-- Lokasi Rekomendasi (Khusus Kuliner) -->
                         <div x-show="selectedCategory === 'Kuliner Khas'" x-transition x-cloak
                              x-data="{ locations: @js(old('locations', [])) }" 
-                             x-init="if(locations.length === 0) locations.push({name: '', address: '', google_maps_url: ''})">
+                             x-init="if(locations.length === 0) locations.push({name: '', address: '', google_maps_url: '', open_time: '', close_time: ''})">
                             <hr class="border-gray-100 my-8">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                                     <i class="fa-solid fa-map-location-dot text-red-500"></i> Titik Lokasi Rekomendasi
                                 </h3>
-                                <button type="button" @click="locations.push({name: '', address: '', google_maps_url: ''})" 
+                                <button type="button" @click="locations.push({name: '', address: '', google_maps_url: '', open_time: '', close_time: ''})" 
                                         class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors border border-blue-200">
                                     <i class="fa-solid fa-plus"></i> Tambah Lokasi
                                 </button>
@@ -246,6 +246,16 @@
                                                 <input type="text" :name="`locations[${index}][longitude]`" x-model="loc.longitude" 
                                                        class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm"
                                                        placeholder="Cth: 110.678123">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Jam Buka</label>
+                                                <input type="time" :name="`locations[${index}][open_time]`" x-model="loc.open_time" 
+                                                       class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Jam Tutup</label>
+                                                <input type="time" :name="`locations[${index}][close_time]`" x-model="loc.close_time" 
+                                                       class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm">
                                             </div>
                                         </div>
                                     </div>
