@@ -74,8 +74,8 @@
                         @endif
                         
                         @if($title)
-                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl opacity-0 transform translate-y-8 selection:bg-primary/30">
-                            {!! $title !!}
+                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl opacity-0 transform translate-y-8 selection:bg-primary/30 whitespace-pre-line">
+                            {{ $title }}
                         </h1>
                         @endif
                         

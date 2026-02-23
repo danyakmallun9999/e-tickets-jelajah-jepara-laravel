@@ -188,11 +188,11 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Utama (ID)</label>
-                                        <input type="text" name="title_id" value="{{ old('title_id', $setting->title_id) }}" x-model="title_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Contoh: Temukan Keajaiban">
+                                        <textarea name="title_id" rows="2" x-model="title_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Contoh: Temukan Keajaiban">{{ old('title_id', $setting->title_id) }}</textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Utama (EN)</label>
-                                        <input type="text" name="title_en" value="{{ old('title_en', $setting->title_en) }}" x-model="title_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Discover Wonders">
+                                        <textarea name="title_en" rows="2" x-model="title_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Discover Wonders">{{ old('title_en', $setting->title_en) }}</textarea>
                                     </div>
                                 </div>
 
@@ -313,8 +313,8 @@
                                         <div class="h-auto min-h-[4rem] flex items-center justify-center">
                                             <h1 x-show="(previewLang === 'id' && title_id) || (previewLang === 'en' && title_en)" 
                                                 x-transition.opacity
-                                                x-html="previewLang === 'id' ? title_id : title_en" 
-                                                class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black leading-tight tracking-tight drop-shadow-2xl selection:bg-blue-500/30">
+                                                x-text="previewLang === 'id' ? title_id : title_en" 
+                                                class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black leading-tight tracking-tight drop-shadow-2xl selection:bg-blue-500/30 whitespace-pre-wrap">
                                             </h1>
                                         </div>
                                         
