@@ -174,28 +174,28 @@ class WelcomeController extends Controller
                 'title' => 'Kemahiran & Kerajinan Tradisional (Kriya)', 
                 'subtitle' => 'Kriya',
                 'description' => 'Jepara is known as the World Carving Center, featuring exquisite wood carving, Troso weaving, and batik.',
-                'image' => asset('images/culture/ukir.jpg')
+                'image' => asset('images/culture/kategori/kerajinan.png')
             ],
             'Adat Istiadat, Ritus, & Perayaan Tradisional' => [
                 'id' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
                 'title' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
                 'subtitle' => 'Tradisi',
                 'description' => 'Sacred traditions like Perang Obor and Pesta Lomban that celebrate the gratitude and history of Jepara.',
-                'image' => asset('images/culture/obor.png')
+                'image' => asset('images/culture/kategori/adat.png')
             ],
             'Seni Pertunjukan' => [
                 'id' => 'Seni Pertunjukan',
                 'title' => 'Seni Pertunjukan',
                 'subtitle' => 'Seni',
                 'description' => 'Experience the rhythm of Wayang Kulit, Kridhajati Dance, and the graceful movements of local arts.',
-                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuByC0plW4kR_o3v4HYNa2r2JTW_CZ4SqENWKfWjQKnwCW8gPPQOpS2euCZuK2OeaH8SFfMje5m8x607ts6J8tZ42M2egKoBZTvB5clgNfHI5xXHqUtxtzoD10NZ3hyL9-pRo4f0VHA-HuDIJ4NhiN5nuu6Kw9KPyJTxnKYc4xGSBqWrEQtl9SMLfOGt81e8wCupxUP5mG3AHEQiOj0tgP8DQKYU30VyXmT50XUYr7I_IV3EzciVPLhNkG6oCYU44ENsU_B8-yM9MA'
+                'image' => asset('images/culture/kategori/pertunjukan.png')
             ],
             'Kuliner Khas' => [
                 'id' => 'Kuliner Khas',
                 'title' => 'Kuliner Khas Jepara',
                 'subtitle' => 'Kuliner',
                 'description' => 'A journey through spice and tradition, exploring the diverse flavors of Jepara\'s legendary food.',
-                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqBziuaRPIVdzVy6lqfQSsB1vBb-GOIriqfJv68H5uzzLAUP6poD5XP4FGglTwJaX3LPkeAVYOSVyEyjkH1Ci_b2WRORruNdhL1ugHYJ1HpMiTw2OjZYcC6UhsS1RyjaQLtpJOcndXvtAZiRea90NTMX6cNStTI40Wp2ql9UPdDTvP-MNpdm7kARbT4dh9eaLQM9DLE9TGujgtvbxjSnzbANWVaWMyVdOH60MHeE7J8OYDizNtb2aEGPvBqkX6FaHuR-28zuGNxA'
+                'image' => asset('images/culture/kategori/kuliner.png')
             ]
         ];
 

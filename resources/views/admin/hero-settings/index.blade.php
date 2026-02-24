@@ -310,11 +310,11 @@
                                         </div>
                                         
                                         <!-- Title -->
-                                        <div class="h-auto min-h-[4rem] flex items-center justify-center">
+                                        <div class="h-auto min-h-[4rem] flex items-center justify-center w-full">
                                             <h1 x-show="(previewLang === 'id' && title_id) || (previewLang === 'en' && title_en)" 
                                                 x-transition.opacity
-                                                x-text="previewLang === 'id' ? title_id : title_en" 
-                                                class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black leading-tight tracking-tight drop-shadow-2xl selection:bg-blue-500/30 whitespace-pre-wrap">
+                                                x-html="(previewLang === 'id' ? title_id : title_en).replace(/\n/g, '<br>')" 
+                                                class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black leading-tight tracking-tight drop-shadow-2xl selection:bg-blue-500/30 text-center">
                                             </h1>
                                         </div>
                                         
@@ -322,8 +322,8 @@
                                         <div class="h-auto min-h-[3rem] flex items-center justify-center w-full">
                                             <p x-show="(previewLang === 'id' && subtitle_id) || (previewLang === 'en' && subtitle_en)" 
                                                x-transition.opacity
-                                               x-text="previewLang === 'id' ? subtitle_id : subtitle_en" 
-                                               class="text-slate-200 text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50">
+                                               x-html="(previewLang === 'id' ? subtitle_id : subtitle_en).replace(/\n/g, '<br>')" 
+                                               class="text-slate-200 text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50 text-center">
                                             </p>
                                         </div>
                                         

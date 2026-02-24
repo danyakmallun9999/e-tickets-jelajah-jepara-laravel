@@ -74,14 +74,14 @@
                         @endif
                         
                         @if($title)
-                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl opacity-0 transform translate-y-8 selection:bg-primary/30 whitespace-pre-line">
-                            {{ $title }}
+                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-2xl opacity-0 transform translate-y-8 selection:bg-primary/30 text-center">
+                            {!! nl2br(e($title)) !!}
                         </h1>
                         @endif
                         
                         @if($subtitle)
-                        <p class="hero-subtitle text-slate-200 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50 opacity-0 transform translate-y-8">
-                            {{ $subtitle }}
+                        <p class="hero-subtitle text-slate-200 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg shadow-black/50 opacity-0 transform translate-y-8 text-center">
+                            {!! nl2br(e($subtitle)) !!}
                         </p>
                         @endif
                         
