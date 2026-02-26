@@ -25,24 +25,33 @@ Props:
 
     {{-- Hidden Inputs --}}
     <template x-for="(url, index) in selectedUrls" :key="index">
-        <input type="hidden" :name="`${name}[]`" :value="url">
+        <input type="hidden" :name="`${name}_gallery_url[]`" :value="url">
     </template>
     
     {{-- Current Preview / Selected Images --}}
-    <div x-show="selectedUrls.length > 0 || hasFileSelected" class="flex flex-wrap gap-4 mt-2 mb-4">
-        <template x-for="(url, index) in selectedUrls" :key="index">
-            <template x-if="!hasFileSelected">
-                <div class="relative group">
-                    <img :src="url" class="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow-sm">
-                    <button type="button" @click="removeSelection(index)" 
-                            class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm opacity-0 group-hover:opacity-100">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                    <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-blue-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
-                        Galeri
-                    </div>
+    <div x-show="selectedUrls.length > 0 || filePreviews.length > 0" class="flex flex-wrap gap-4 mt-2 mb-4">
+        {{-- Gallery Selections --}}
+        <template x-for="(url, index) in selectedUrls" :key="'gallery-'+index">
+            <div class="relative group">
+                <img :src="url" class="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow-sm">
+                <button type="button" @click="removeSelection(index)" 
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm opacity-0 group-hover:opacity-100">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-blue-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
+                    Galeri
                 </div>
-            </template>
+            </div>
+        </template>
+
+        {{-- File Upload Previews --}}
+        <template x-for="(url, index) in filePreviews" :key="'file-'+index">
+            <div class="relative group">
+                <img :src="url" class="w-24 h-24 object-cover rounded-xl border border-blue-200 shadow-sm ring-2 ring-blue-100">
+                <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-green-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
+                    Baru
+                </div>
+            </div>
         </template>
     </div>
 
@@ -53,7 +62,7 @@ Props:
             <i class="fa-solid fa-upload text-gray-400"></i>
             Upload Baru
             <input type="file" :name="`${name}[]`" multiple accept="image/*" class="hidden" 
-                   @change="hasFileSelected = $event.target.files.length > 0; if(hasFileSelected) selectedUrls = [];">
+                   @change="handleFileChange($event)">
         </label>
 
         {{-- Pick from Gallery --}}
@@ -61,6 +70,10 @@ Props:
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition border border-blue-100">
             <i class="fa-solid fa-photo-film"></i>
             Pilih dari Galeri
+        </button>
+        
+        <button x-show="selectedUrls.length > 0 || filePreviews.length > 0" type="button" @click="clearSelection()" class="text-xs text-red-600 font-semibold hover:underline">
+            Bersihkan Semua
         </button>
     </div>
 
@@ -185,6 +198,7 @@ function galleryPicker_{{ Str::camel($name) }}() {
         name: '{{ $name }}',
         isOpen: false,
         selectedUrls: @json($values ?? []),
+        filePreviews: [],
         hasFileSelected: false,
         galleryItems: [],
         galleryLoading: false,
@@ -240,24 +254,60 @@ function galleryPicker_{{ Str::camel($name) }}() {
             }
         },
 
+        handleFileChange(event) {
+            const files = event.target.files;
+            this.hasFileSelected = files.length > 0;
+            this.filePreviews = [];
+            if (this.hasFileSelected) {
+                for (let i = 0; i < files.length; i++) {
+                    this.filePreviews.push(URL.createObjectURL(files[i]));
+                }
+            }
+            this.$dispatch('gallery-picker-updated', { 
+                name: this.name, 
+                urls: this.selectedUrls,
+                filePreviews: this.filePreviews
+            });
+        },
+
         confirmSelection() {
             if (this.tempSelected.length === 0) return;
             
-            this.selectedUrls = this.tempSelected.map(i => i.url);
-            this.hasFileSelected = false;
-            // Clear file input
-            const fileInput = this.$el.querySelector('input[type="file"]');
-            if (fileInput) fileInput.value = '';
+            const newUrls = this.tempSelected.map(i => i.url);
+            newUrls.forEach(url => {
+                if (!this.selectedUrls.includes(url)) {
+                    this.selectedUrls.push(url);
+                }
+            });
+            
             this.isOpen = false;
+            this.$dispatch('gallery-picker-updated', { 
+                name: this.name, 
+                urls: this.selectedUrls,
+                filePreviews: this.filePreviews
+            });
         },
 
         removeSelection(index) {
             this.selectedUrls.splice(index, 1);
+            this.$dispatch('gallery-picker-updated', { 
+                name: this.name, 
+                urls: this.selectedUrls,
+                filePreviews: this.filePreviews
+            });
         },
 
         clearSelection() {
             this.selectedUrls = [];
+            this.filePreviews = [];
             this.tempSelected = [];
+            const fileInput = this.$el.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+            this.$dispatch('gallery-picker-updated', { 
+                name: this.name, 
+                urls: this.selectedUrls,
+                filePreviews: this.filePreviews
+            });
         },
     }
 }

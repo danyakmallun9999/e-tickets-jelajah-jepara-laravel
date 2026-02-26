@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HeroSettingController extends Controller
 {
@@ -61,44 +62,52 @@ class HeroSettingController extends Controller
         $setting->button_link = $validated['button_link'] ?? null;
 
         $mediaPaths = $setting->media_paths ?? [];
+        $newGalleryPaths = [];
+        
+        if ($validated['type'] === 'image' && $request->has('image_files_gallery_url')) {
+            foreach($request->input('image_files_gallery_url') as $url) {
+                // Extract relative path from URL
+                // We need to be careful with the leading slash
+                $baseUrl = rtrim(Storage::url(''), '/');
+                $path = str_replace($baseUrl, '', $url);
+                $path = ltrim($path, '/');
+                if (!empty($path)) {
+                    $newGalleryPaths[] = $path;
+                }
+            }
+        }
 
-        // Handle media removal if changing types or explicit delete
+        // Handle media removal
         if ($request->boolean('remove_media') || $setting->isDirty('type')) {
              if (is_array($mediaPaths)) {
                   foreach($mediaPaths as $path) {
-                       \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                       Storage::disk('public')->delete($path);
                   }
              }
              $mediaPaths = [];
         } else {
-             // Keep selected existing media (for images)
-             $existingMedia = $request->input('existing_media', []);
-             $retainedMedia = [];
-             foreach($mediaPaths as $path) {
-                  if (in_array($path, $existingMedia)) {
-                       $retainedMedia[] = $path;
-                  } else {
-                       \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-                  }
+             // If type is image, we sync with newGalleryPaths
+             if ($validated['type'] === 'image') {
+                 // Identify which existing files to delete (those NOT in newGalleryPaths)
+                 foreach($mediaPaths as $oldPath) {
+                     if (!in_array($oldPath, $newGalleryPaths)) {
+                         Storage::disk('public')->delete($oldPath);
+                     }
+                 }
+                 $mediaPaths = $newGalleryPaths;
+             } elseif ($validated['type'] === 'video' && $request->hasFile('video_file')) {
+                 // If uploading new video, delete old video
+                 foreach($mediaPaths as $oldPath) {
+                     Storage::disk('public')->delete($oldPath);
+                 }
+                 $mediaPaths = [];
              }
-             $mediaPaths = $retainedMedia;
         }
 
         if ($validated['type'] === 'video' && $request->hasFile('video_file')) {
              $path = $request->file('video_file')->store('hero', 'public');
              $mediaPaths = [$path];
         } elseif ($validated['type'] === 'image') {
-             // Handle newly selected gallery images
-             if ($request->has('image_files_gallery_url')) {
-                 foreach($request->input('image_files_gallery_url') as $url) {
-                     // Extract relative path from URL
-                     $path = str_replace(Storage::url(''), '', $url);
-                     if (!in_array($path, $mediaPaths)) {
-                         $mediaPaths[] = $path;
-                     }
-                 }
-             }
-             
              // Handle newly uploaded files
              if ($request->hasFile('image_files')) {
                  foreach($request->file('image_files') as $file) {

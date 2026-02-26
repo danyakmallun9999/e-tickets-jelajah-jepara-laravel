@@ -69,17 +69,14 @@
                       },
                       
                       updatePreviewImages(event) {
-                          // This will be called when the hidden inputs change
-                          // Let's grab all the hidden inputs named image_files_gallery_url[]
-                          setTimeout(() => {
-                              const inputs = document.querySelectorAll(`input[name='image_files_gallery_url[]']`);
-                              if (inputs.length > 0) {
-                                  this.previewImages = Array.from(inputs).map(input => input.value);
-                                  this.currentSlide = 0;
-                              }
-                          }, 100);
+                          // This will be called when the gallery-picker-updated event is dispatched
+                          if (event && event.detail) {
+                              this.previewImages = [...event.detail.urls, ...event.detail.filePreviews];
+                              this.currentSlide = 0;
+                          }
                       }
                   }" 
+                  @gallery-picker-updated="updatePreviewImages"
                   class="space-y-6">
                 @csrf
                 @method('PUT')
@@ -150,7 +147,7 @@
                                 </div>
 
                                 <!-- Image Target -->
-                                <div x-show="type === 'image'" @change="updatePreviewImages">
+                                <div x-show="type === 'image'">
                                     <x-admin.gallery-picker-multiple 
                                         name="image_files" 
                                         :values="isset($setting->media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->media_paths) : []" 
