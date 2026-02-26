@@ -158,10 +158,8 @@ class WelcomeController extends Controller
         return view('public.culinary.show', compact('culinary'));
     }
 
-    public function culture(): View
+    private function getCultureCategories(): array
     {
-        $cultures = Culture::all();
-        
         $databaseCategories = Culture::select('category')
             ->distinct()
             ->pluck('category')
@@ -224,9 +222,49 @@ class WelcomeController extends Controller
             }
         }
 
-        $groupedCultures = $cultures->groupBy('category');
+        return [
+            'databaseCategories' => $databaseCategories,
+            'categoriesForAlpine' => $categoriesForAlpine,
+            'categoryOrder' => $categoryOrder
+        ];
+    }
 
-        return view('public.culture.index', compact('cultures', 'groupedCultures', 'categoryOrder', 'categoriesForAlpine'));
+    public function showCultureCategory(string $slug): View
+    {
+        $categoriesData = $this->getCultureCategories();
+        $allCategories = $categoriesData['categoriesForAlpine'];
+        
+        $matchedCategory = null;
+        
+        foreach ($allCategories as $category) {
+            if (Str::slug($category['title']) === $slug) {
+                $matchedCategory = $category;
+                break;
+            }
+        }
+
+        if (!$matchedCategory) {
+            abort(404);
+        }
+
+        // Fetch cultures for this category
+        $query = Culture::where('category', $matchedCategory['id']);
+        
+        // Handle special case where 'Traditional Architecture' can act as generic Adat/Kemahiran
+        if ($matchedCategory['id'] === 'Adat Istiadat & Ritus') {
+            $query->orWhere('category', 'Kemahiran & Kerajinan Tradisional');
+        }
+        
+        $cultures = $query->paginate(9);
+
+        return view('public.culture.category', compact('matchedCategory', 'cultures'));
+    }
+
+    public function culture(): View
+    {
+        $categoriesData = $this->getCultureCategories();
+        $categoriesForAlpine = $categoriesData['categoriesForAlpine'];
+        return view('public.culture.index', compact('categoriesForAlpine'));
     }
 
     public function geoJson(): JsonResponse

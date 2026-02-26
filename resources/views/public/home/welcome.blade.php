@@ -96,8 +96,7 @@
             x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95"
-            class="relative rounded-3xl shadow-2xl overflow-hidden w-full flex flex-col md:block bg-white dark:bg-slate-900 mx-4 md:mx-0 w-[calc(100%-2rem)] md:w-full"
+            class="relative rounded-2xl md:rounded-3xl border border-slate-100 dark:border-white/10 overflow-hidden w-full flex flex-col md:block bg-white dark:bg-slate-900 mx-4 md:mx-0 w-[calc(100%-2rem)] md:w-full"
         >
             {{-- Desktop style injection for fixed aspect ratio --}}
             <style>
@@ -110,7 +109,7 @@
 
             {{-- Close Button --}}
             <button @click="close()"
-                class="absolute top-3 right-3 z-20 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 shadow-lg transition-all duration-200 hover:scale-110"
+                class="absolute top-3 right-3 z-20 w-10 h-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-all duration-200"
                 aria-label="Tutup">
                 <i class="fa-solid fa-xmark text-base"></i>
             </button>
@@ -133,7 +132,7 @@
 
                 @if($ann->button_text && $ann->button_link)
                 <a href="{{ $ann->button_link }}"
-                   class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white md:bg-white md:text-gray-900 font-bold rounded-xl hover:bg-primary-600 md:hover:bg-gray-100 transition-all duration-200 text-sm shadow-lg w-full md:w-auto text-center"
+                   class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white md:bg-white md:text-gray-900 font-bold rounded-xl hover:bg-primary-600 md:hover:bg-gray-100 transition-colors duration-200 text-sm w-full md:w-auto text-center border border-transparent md:border-gray-200"
                    @click="close()">
                     {{ $ann->button_text }}
                     <i class="fa-solid fa-arrow-right text-xs"></i>
