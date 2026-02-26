@@ -129,116 +129,124 @@
             <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300 sidebar-nav-text">Manajemen Web</p>
             <div x-show="isSidebarMini" class="border-t border-gray-100 my-2 sidebar-divider-mini"></div>
             
-            <a href="{{ route('admin.hero-settings.edit') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.hero-settings.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-image text-lg"></i>
-                </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Pengaturan Hero</span>
-                 <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Pengaturan Hero
-                </div>
-            </a>
+            <div x-data="{ cmsOpen: {{ request()->routeIs('admin.hero-settings.*') || request()->routeIs('admin.footer-settings.*') || request()->routeIs('admin.media.*') || request()->routeIs('admin.announcements.*') ? 'true' : 'false' }} }" class="relative group">
+                <button @click="if(!isSidebarMini) cmsOpen = !cmsOpen" 
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition relative {{ request()->routeIs('admin.hero-settings.*') || request()->routeIs('admin.footer-settings.*') || request()->routeIs('admin.media.*') || request()->routeIs('admin.announcements.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+                        :class="isSidebarMini ? 'justify-center' : ''">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-display text-lg"></i>
+                        </div>
+                        <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">CMS</span>
+                    </div>
+                    <i x-show="!isSidebarMini" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300 sidebar-nav-chevron" :class="cmsOpen ? 'rotate-180' : ''"></i>
+                </button>
 
-            <a href="{{ route('admin.footer-settings.edit') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.footer-settings.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-layer-group text-lg"></i>
-                </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Pengaturan Footer</span>
-                 <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                <!-- Floating Submenu (Minimized) -->
+                <div x-show="isSidebarMini"
+                     x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
+                     class="fixed left-[4.7rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
                      style="display: none;">
-                    Pengaturan Footer
+                    <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
+                        CMS
+                    </div>
+                    <a href="{{ route('admin.hero-settings.edit') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.hero-settings.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
+                        Pengaturan Hero
+                    </a>
+                    <a href="{{ route('admin.footer-settings.edit') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.footer-settings.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
+                        Pengaturan Footer
+                    </a>
+                    <a href="{{ route('admin.media.index') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.media.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
+                        Galeri Foto
+                    </a>
+                    @role('super_admin')
+                    <a href="{{ route('admin.announcements.index') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.announcements.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
+                        Pengumuman
+                    </a>
+                    @endrole
                 </div>
-            </a>
 
-            <a href="{{ route('admin.media.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.media.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-photo-film text-lg"></i>
+                <!-- Accordion Submenu (Expanded) -->
+                <div x-show="cmsOpen && !isSidebarMini" 
+                     x-collapse
+                     class="pl-4 pr-3 py-1 space-y-1 relative ml-2.5 border-l-2 border-gray-100 sidebar-nav-text">
+                    <a href="{{ route('admin.hero-settings.edit') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.hero-settings.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.hero-settings.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pengaturan Hero</span>
+                    </a>
+                    <a href="{{ route('admin.footer-settings.edit') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.footer-settings.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.footer-settings.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pengaturan Footer</span>
+                    </a>
+                    <a href="{{ route('admin.media.index') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.media.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.media.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Galeri Foto</span>
+                    </a>
+                    @role('super_admin')
+                    <a href="{{ route('admin.announcements.index') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.announcements.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.announcements.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pengumuman</span>
+                    </a>
+                    @endrole
                 </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Galeri Foto</span>
-                 <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Galeri Foto
-                </div>
-            </a>
+            </div>
 
-            <!-- Pengumuman & Legenda (Super Admin only) -->
-            @role('super_admin')
-            <a href="{{ route('admin.announcements.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.announcements.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-bullhorn text-lg"></i>
-                </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Pengumuman</span>
-                <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Pengumuman
-                </div>
-            </a>
 
-            <a href="{{ route('admin.legends.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.legends.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-landmark text-lg"></i>
-                </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Tokoh & Sejarah</span>
-                <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Tokoh & Sejarah
-                </div>
-            </a>
-            @endrole
-
-            <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300 sidebar-nav-text">Manajemen User</p>
-            <div x-show="isSidebarMini" class="border-t border-gray-100 my-2 sidebar-divider-mini"></div>
-
-            <a href="{{ route('admin.users.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.users.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-               :class="isSidebarMini ? 'justify-center' : ''"
-               wire:navigate>
-                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-users-gear text-lg"></i>
-                </div>
-                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Admin</span>
-                 <!-- Tooltip -->
-                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
-                     x-show="isSidebarMini" 
-                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
-                     style="display: none;">
-                    Kelola Admin
-                </div>
-            </a>
             @endrole
             <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300 sidebar-nav-text">Manajemen Pariwisata</p>
             <div x-show="isSidebarMini" class="border-t border-gray-100 my-2 sidebar-divider-mini"></div>
+
+            @if(auth('admin')->user()->hasAnyPermission(['view all events', 'view own events']))
+            <div x-data="{ eventsOpen: {{ request()->routeIs('admin.events.*') ? 'true' : 'false' }} }" class="relative group">
+                <button @click="if(!isSidebarMini) eventsOpen = !eventsOpen" 
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition relative {{ request()->routeIs('admin.events.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+                        :class="isSidebarMini ? 'justify-center' : ''">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-calendar-days text-lg"></i>
+                        </div>
+                        <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Events</span>
+                    </div>
+                    <i x-show="!isSidebarMini" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300 sidebar-nav-chevron" :class="eventsOpen ? 'rotate-180' : ''"></i>
+                </button>
+
+                <!-- Floating Submenu (Minimized) -->
+                <div x-show="isSidebarMini"
+                     x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
+                     class="fixed left-[4.7rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
+                     style="display: none;">
+                    <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
+                        Events
+                    </div>
+                    <a href="{{ route('admin.events.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
+                        Daftar Event
+                    </a>
+                    <a href="{{ route('admin.events.calendar') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
+                        Kalender Tahunan
+                    </a>
+                </div>
+
+                <!-- Accordion Submenu (Expanded) -->
+                <div x-show="eventsOpen && !isSidebarMini" 
+                     x-collapse
+                     class="pl-4 pr-3 py-1 space-y-1 relative ml-2.5 border-l-2 border-gray-100 sidebar-nav-text">
+                    <a href="{{ route('admin.events.index') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Daftar Event</span>
+                    </a>
+                    <a href="{{ route('admin.events.calendar') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.calendar') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.events.calendar') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Kalender Tahunan</span>
+                    </a>
+                </div>
+            </div>
+            @endif
 
             @if(auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'manage categories']))
             <div x-data="{ placesOpen: {{ request()->routeIs('admin.places.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.travel-agencies.*') ? 'true' : 'false' }} }" class="relative group">
@@ -308,6 +316,25 @@
             </div>
             @endif
 
+            @role('super_admin')
+            <a href="{{ route('admin.legends.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.legends.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
+                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-landmark text-lg"></i>
+                </div>
+                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Tokoh & Sejarah</span>
+                <!-- Tooltip -->
+                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
+                     x-show="isSidebarMini" 
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     style="display: none;">
+                    Tokoh & Sejarah
+                </div>
+            </a>
+            @endrole
+
             @can('manage culture')
             <a href="{{ route('admin.cultures.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.cultures.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
@@ -348,53 +375,7 @@
             </a>
             @endif
 
-            @if(auth('admin')->user()->hasAnyPermission(['view all events', 'view own events']))
-            <div x-data="{ eventsOpen: {{ request()->routeIs('admin.events.*') ? 'true' : 'false' }} }" class="relative group">
-                <button @click="if(!isSidebarMini) eventsOpen = !eventsOpen" 
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition relative {{ request()->routeIs('admin.events.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
-                        :class="isSidebarMini ? 'justify-center' : ''">
-                    <div class="flex items-center gap-3">
-                        <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-calendar-days text-lg"></i>
-                        </div>
-                        <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Events</span>
-                    </div>
-                    <i x-show="!isSidebarMini" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300 sidebar-nav-chevron" :class="eventsOpen ? 'rotate-180' : ''"></i>
-                </button>
 
-                <!-- Floating Submenu (Minimized) -->
-                <div x-show="isSidebarMini"
-                     x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top) + 'px' })"
-                     class="fixed left-[4.7rem] w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-[9999] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
-                     style="display: none;">
-                    <div class="px-3 py-2 border-b border-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 rounded-t-lg">
-                        Events
-                    </div>
-                    <a href="{{ route('admin.events.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
-                        Daftar Event
-                    </a>
-                    <a href="{{ route('admin.events.calendar') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
-                        Kalender Tahunan
-                    </a>
-                </div>
-
-                <!-- Accordion Submenu (Expanded) -->
-                <div x-show="eventsOpen && !isSidebarMini" 
-                     x-collapse
-                     class="pl-4 pr-3 py-1 space-y-1 relative ml-2.5 border-l-2 border-gray-100 sidebar-nav-text">
-                    <a href="{{ route('admin.events.index') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
-                       wire:navigate>
-                       <span class="{{ request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.edit') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Daftar Event</span>
-                    </a>
-                    <a href="{{ route('admin.events.calendar') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.events.calendar') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
-                       wire:navigate>
-                       <span class="{{ request()->routeIs('admin.events.calendar') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Kalender Tahunan</span>
-                    </a>
-                </div>
-            </div>
-            @endif
 
             @if(config('features.e_ticket_enabled'))
             @can('scan tickets')
@@ -510,7 +491,27 @@
             @endif
             @endif
 
+            @role('super_admin', 'admin')
+            <p x-show="!isSidebarMini" class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-2 transition-opacity duration-300 sidebar-nav-text">Manajemen User</p>
+            <div x-show="isSidebarMini" class="border-t border-gray-100 my-2 sidebar-divider-mini"></div>
 
+            <a href="{{ route('admin.users.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.users.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
+                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-users-gear text-lg"></i>
+                </div>
+                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Admin</span>
+                 <!-- Tooltip -->
+                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
+                     x-show="isSidebarMini" 
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     style="display: none;">
+                    Kelola Admin
+                </div>
+            </a>
+            @endrole
 
         </div>
 
