@@ -270,6 +270,37 @@ class WelcomeController extends Controller
         ]);
     }
 
+    public function culinariesGeoJson(): JsonResponse
+    {
+        $locations = \App\Models\CultureLocation::whereHas('culture', function ($q) {
+            $q->where('category', 'Kuliner Khas');
+        })->with('culture')->get();
+
+        $features = $locations->map(function ($location) {
+            return [
+                'type' => 'Feature',
+                'properties' => [
+                    'id' => $location->id,
+                    'name' => $location->name ?? $location->culture->name,
+                    'culture_slug' => $location->culture->slug,
+                    'address' => $location->address,
+                    'open_time' => $location->open_time,
+                    'close_time' => $location->close_time,
+                    'image_url' => $location->culture->image_url,
+                ],
+                'geometry' => [
+                    'type' => 'Point',
+                    'coordinates' => [(float) $location->longitude, (float) $location->latitude],
+                ],
+            ];
+        });
+
+        return response()->json([
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        ]);
+    }
+
     public function landUsesGeoJson(): JsonResponse
     {
         $landUses = LandUse::all();
@@ -474,6 +505,10 @@ class WelcomeController extends Controller
 
         // Merge all results
         $results = $places->merge($posts)->merge($events)->merge($cultures)->merge($culinaries);
+
+        if ($results->isEmpty()) {
+            abort(404);
+        }
 
         return response()->json($results);
     }
