@@ -74,6 +74,50 @@
                               this.previewImages = [...event.detail.urls, ...event.detail.filePreviews];
                               this.currentSlide = 0;
                           }
+                      },
+                      
+                      isTranslating: false,
+                      async autoTranslate() {
+                          this.isTranslating = true;
+                          const translateUrl = '{{ route('admin.posts.translate') }}';
+                          
+                          const translateText = async (text, targetKey) => {
+                              if (!text) return;
+                              try {
+                                  const response = await fetch(translateUrl, {
+                                      method: 'POST',
+                                      headers: {
+                                          'Content-Type': 'application/json',
+                                          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                          'Accept': 'application/json' 
+                                      },
+                                      body: JSON.stringify({
+                                          text: text,
+                                          source: 'id',
+                                          target: 'en'
+                                      })
+                                  });
+
+                                  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                  const data = await response.json();
+                                  
+                                  if (data.success) {
+                                      this[targetKey] = data.translation;
+                                  }
+                              } catch (e) {
+                                  console.error('Translation error:', e);
+                              }
+                          };
+
+                          await Promise.all([
+                              translateText(this.badge_id, 'badge_en'),
+                              translateText(this.title_id, 'title_en'),
+                              translateText(this.subtitle_id, 'subtitle_en'),
+                              translateText(this.btn_id, 'btn_en')
+                          ]);
+
+                          this.isTranslating = false;
+                          window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Terjemahan berhasil!', type: 'success' } }));
                       }
                   }" 
                   @gallery-picker-updated="updatePreviewImages"
@@ -161,10 +205,23 @@
                     <!-- Right Column: Content Texts -->
                     <div class="lg:col-span-2 space-y-6">
                         <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <i class="fa-solid fa-font text-blue-500"></i>
-                                Konten Teks (Opsional)
-                            </h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-font text-blue-500"></i>
+                                    Konten Teks (Opsional)
+                                </h3>
+                                <button type="button" 
+                                        @click="autoTranslate()"
+                                        :disabled="isTranslating"
+                                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0">
+                                    <template x-if="!isTranslating">
+                                        <div class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Terjemahkan Otomatis</div>
+                                    </template>
+                                     <template x-if="isTranslating">
+                                        <div class="flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Translating...</div>
+                                    </template>
+                                </button>
+                            </div>
                             <div class="space-y-6">
                                 <div class="bg-blue-50 text-blue-800 text-xs p-4 rounded-2xl flex gap-3 border border-blue-100">
                                      <i class="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
@@ -178,7 +235,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Badge (EN)</label>
-                                        <input type="text" name="badge_en" value="{{ old('badge_en', $setting->badge_en) }}" x-model="badge_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Explore Jepara">
+                                        <input type="text" name="badge_en" value="{{ old('badge_en', $setting->badge_en) }}" x-model="badge_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Explore Jepara">
                                     </div>
                                 </div>
 
@@ -189,7 +246,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Utama (EN)</label>
-                                        <textarea name="title_en" rows="2" x-model="title_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Discover Wonders">{{ old('title_en', $setting->title_en) }}</textarea>
+                                        <textarea name="title_en" rows="2" x-model="title_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Discover Wonders">{{ old('title_en', $setting->title_en) }}</textarea>
                                     </div>
                                 </div>
 
@@ -200,7 +257,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Subjudul (EN)</label>
-                                        <textarea name="subtitle_en" rows="3" x-model="subtitle_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Short description...">{{ old('subtitle_en', $setting->subtitle_en) }}</textarea>
+                                        <textarea name="subtitle_en" rows="3" x-model="subtitle_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Short description...">{{ old('subtitle_en', $setting->subtitle_en) }}</textarea>
                                     </div>
                                 </div>
 
@@ -211,7 +268,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Teks Tombol (EN)</label>
-                                        <input type="text" name="button_text_en" value="{{ old('button_text_en', $setting->button_text_en) }}" x-model="btn_en" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Start Adventure">
+                                        <input type="text" name="button_text_en" value="{{ old('button_text_en', $setting->button_text_en) }}" x-model="btn_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Start Adventure">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">URL / Link Tombol</label>

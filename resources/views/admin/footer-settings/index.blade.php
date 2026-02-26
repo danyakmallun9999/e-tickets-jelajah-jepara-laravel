@@ -35,7 +35,50 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.footer-settings.update') }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.footer-settings.update') }}" method="POST" class="space-y-6"
+                  x-data="{
+                      isTranslating: false,
+                      about_id: {{ \Illuminate\Support\Js::from(old('about_id', $setting->about_id ?? '')) }},
+                      about_en: {{ \Illuminate\Support\Js::from(old('about_en', $setting->about_en ?? '')) }},
+                      
+                      async autoTranslate() {
+                          this.isTranslating = true;
+                          const translateUrl = '{{ route('admin.posts.translate') }}';
+                          
+                          if (!this.about_id) {
+                              this.isTranslating = false;
+                              return;
+                          }
+                          
+                          try {
+                              const response = await fetch(translateUrl, {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json',
+                                      'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                      'Accept': 'application/json' 
+                                  },
+                                  body: JSON.stringify({
+                                      text: this.about_id,
+                                      source: 'id',
+                                      target: 'en'
+                                  })
+                              });
+
+                              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                              const data = await response.json();
+                              
+                              if (data.success) {
+                                  this.about_en = data.translation;
+                                  window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Terjemahan berhasil!', type: 'success' } }));
+                              }
+                          } catch (e) {
+                              console.error('Translation error:', e);
+                          } finally {
+                              this.isTranslating = false;
+                          }
+                      }
+                  }">
                 @csrf
                 @method('PUT')
 
@@ -43,18 +86,31 @@
                     <!-- Informasi Umum -->
                     <div class="space-y-6">
                         <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info text-blue-500"></i>
-                                Informasi Umum
-                            </h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-info text-blue-500"></i>
+                                    Informasi Umum
+                                </h3>
+                                <button type="button" 
+                                        @click="autoTranslate()"
+                                        :disabled="isTranslating"
+                                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0">
+                                    <template x-if="!isTranslating">
+                                        <div class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Terjemahkan Otomatis</div>
+                                    </template>
+                                     <template x-if="isTranslating">
+                                        <div class="flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Translating...</div>
+                                    </template>
+                                </button>
+                            </div>
                             <div class="space-y-6">
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Tentang (ID)</label>
-                                    <textarea name="about_id" rows="3" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm">{{ old('about_id', $setting->about_id) }}</textarea>
+                                    <textarea name="about_id" x-model="about_id" rows="3" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm">{{ old('about_id', $setting->about_id) }}</textarea>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Tentang (EN)</label>
-                                    <textarea name="about_en" rows="3" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm">{{ old('about_en', $setting->about_en) }}</textarea>
+                                    <textarea name="about_en" x-model="about_en" rows="3" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm">{{ old('about_en', $setting->about_en) }}</textarea>
                                 </div>
                             </div>
                         </div>

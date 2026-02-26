@@ -21,6 +21,50 @@
                       get showLocationTime() {
                           const hide = ['Kemahiran & Kerajinan Tradisional (Kriya)', 'Seni Pertunjukan', 'Kuliner Khas'];
                           return !hide.includes(this.selectedCategory);
+                      },
+                      isTranslating: false,
+
+                      async autoTranslate() {
+                          this.isTranslating = true;
+                          const translateUrl = '{{ route('admin.posts.translate') }}';
+                          
+                          const translateText = async (text, targetRef) => {
+                              if (!text) return;
+                              try {
+                                  const response = await fetch(translateUrl, {
+                                      method: 'POST',
+                                      headers: {
+                                          'Content-Type': 'application/json',
+                                          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                          'Accept': 'application/json' 
+                                      },
+                                      body: JSON.stringify({
+                                          text: text,
+                                          source: 'id',
+                                          target: 'en'
+                                      })
+                                  });
+
+                                  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                  const data = await response.json();
+                                  
+                                  if (data.success) {
+                                      if (this.$refs[targetRef]) {
+                                          this.$refs[targetRef].value = data.translation;
+                                      }
+                                  }
+                              } catch (e) {
+                                  console.error('Translation error:', e);
+                              }
+                          };
+
+                          await Promise.all([
+                              translateText(this.$refs.description_id.value, 'description_en'),
+                              translateText(this.$refs.content_id.value, 'content_en')
+                          ]);
+
+                          this.isTranslating = false;
+                          window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Terjemahan berhasil!', type: 'success' } }));
                       }
                   }">
                 @csrf
@@ -141,18 +185,57 @@
                                     </div>
                                 </div>
 
-                                <!-- Description -->
-                                <div>
-                                    <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat</label>
-                                    <textarea id="description" name="description" rows="3" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm">{{ old('description', $culture->description) }}</textarea>
-                                    <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                                </div>
+                                <!-- Description & Content with Translation -->
+                                <div class="bg-gray-50/50 p-6 rounded-2xl border border-gray-200">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h4 class="text-md font-bold text-gray-800 flex items-center gap-2">
+                                            <i class="fa-solid fa-language text-indigo-500"></i>
+                                            Teks Deskripsi & Konten
+                                        </h4>
+                                        <button type="button" 
+                                                @click="autoTranslate()"
+                                                :disabled="isTranslating"
+                                                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0">
+                                            <template x-if="!isTranslating">
+                                                <div class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Terjemahkan Otomatis</div>
+                                            </template>
+                                             <template x-if="isTranslating">
+                                                <div class="flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Translating...</div>
+                                            </template>
+                                        </button>
+                                    </div>
 
-                                <!-- Content -->
-                                <div>
-                                    <label for="content" class="block text-sm font-semibold text-gray-700 mb-1">Konten Lengkap</label>
-                                    <textarea id="content" name="content" rows="6" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm">{{ old('content', $culture->content) }}</textarea>
-                                    <x-input-error class="mt-2" :messages="$errors->get('content')" />
+                                    <div class="space-y-6">
+                                        <!-- Deskripsi Singkat -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat (ID) <span class="text-red-500">*</span></label>
+                                                <textarea id="description" name="description" x-ref="description_id" rows="3" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="Berikan ringkasan budaya ini...">{{ old('description', $culture->description) }}</textarea>
+                                                <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                                            </div>
+                                            <div>
+                                                <label for="description_en" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat (EN)</label>
+                                                <textarea id="description_en" name="description_en" x-ref="description_en" rows="3" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm bg-indigo-50/30" placeholder="Short description in English...">{{ old('description_en', $culture->description_en) }}</textarea>
+                                                <x-input-error class="mt-2" :messages="$errors->get('description_en')" />
+                                            </div>
+                                        </div>
+
+                                        <hr class="border-gray-200 border-dashed">
+
+                                        <!-- Konten Lengkap -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label for="content" class="block text-sm font-semibold text-gray-700 mb-1">Konten Lengkap (ID)</label>
+                                                <textarea id="content" name="content" x-ref="content_id" rows="6" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm" placeholder="Tuliskan penjelasan detail di sini...">{{ old('content', $culture->content) }}</textarea>
+                                                <x-input-error class="mt-2" :messages="$errors->get('content')" />
+                                            </div>
+                                            <div>
+                                                <label for="content_en" class="block text-sm font-semibold text-gray-700 mb-1">Konten Lengkap (EN)</label>
+                                                <textarea id="content_en" name="content_en" x-ref="content_en" rows="6" class="block w-full border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 shadow-sm bg-indigo-50/30" placeholder="Full details in English...">{{ old('content_en', $culture->content_en) }}</textarea>
+                                                <x-input-error class="mt-2" :messages="$errors->get('content_en')" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- YouTube Embed URL -->

@@ -53,7 +53,9 @@ class CultureController extends Controller
             'image'       => 'nullable|image|max:4096',
             'images.*'    => 'nullable|image|max:4096',
             'description' => 'required|string',
+            'description_en' => 'nullable|string',
             'content'     => 'nullable|string',
+            'content_en'  => 'nullable|string',
             'location'    => 'nullable|string|max:255',
             'time'        => 'nullable|string|max:255',
             'youtube_url' => 'nullable|url|max:500',
@@ -64,7 +66,7 @@ class CultureController extends Controller
             'locations.*.close_time' => 'nullable|date_format:H:i',
         ]);
 
-        $data = $request->only(['name','category','description','content','location','time','youtube_url']);
+        $data = $request->only(['name','category','description','description_en','content','content_en','location','time','youtube_url']);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->filled('image_gallery_url')) {
@@ -119,7 +121,9 @@ class CultureController extends Controller
             'image'       => 'nullable|image|max:4096',
             'images.*'    => 'nullable|image|max:4096',
             'description' => 'required|string',
+            'description_en' => 'nullable|string',
             'content'     => 'nullable|string',
+            'content_en'  => 'nullable|string',
             'location'    => 'nullable|string|max:255',
             'time'        => 'nullable|string|max:255',
             'youtube_url' => 'nullable|url|max:500',
@@ -130,7 +134,7 @@ class CultureController extends Controller
             'locations.*.close_time' => 'nullable|date_format:H:i',
         ]);
 
-        $data = $request->only(['name','category','description','content','location','time','youtube_url']);
+        $data = $request->only(['name','category','description','description_en','content','content_en','location','time','youtube_url']);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->filled('image_gallery_url')) {

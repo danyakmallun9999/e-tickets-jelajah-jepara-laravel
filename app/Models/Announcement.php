@@ -9,7 +9,9 @@ class Announcement extends Model
 {
     protected $fillable = [
         'title',
+        'title_en',
         'content',
+        'content_en',
         'image',
         'image_format',
         'button_text',
