@@ -8,6 +8,15 @@
         />
     @endpush
 
+    @php
+        $youtubeId = null;
+        if ($culinary->youtube_url) {
+            preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/', $culinary->youtube_url, $m);
+            $youtubeId = $m[1] ?? null;
+        }
+        $embedUrl = $youtubeId ? 'https://www.youtube.com/embed/' . $youtubeId . '?rel=0&modestbranding=1' : null;
+    @endphp
+
     <div class="bg-white dark:bg-slate-950 min-h-screen font-sans -mt-20 pt-24 lg:pt-20">
         
         <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
@@ -254,6 +263,23 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- YouTube Video -->
+                        @if($embedUrl)
+                        <section class="mt-8">
+                            <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-red-500 rounded-full"></span>
+                                Video
+                            </h3>
+                            <div class="relative w-full h-0 rounded-2xl overflow-hidden bg-black shadow-md" style="padding-bottom: 56.25%;">
+                                <iframe src="{{ $embedUrl }}"
+                                        class="absolute inset-0 w-full h-full"
+                                        frameborder="0" allowfullscreen
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                                </iframe>
+                            </div>
+                        </section>
+                        @endif
 
                     </div>
 
