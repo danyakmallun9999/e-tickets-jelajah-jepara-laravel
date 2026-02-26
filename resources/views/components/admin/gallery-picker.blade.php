@@ -27,7 +27,8 @@ Props:
     <input type="hidden" name="{{ $name }}_gallery_url" :value="selectedUrl" x-ref="galleryInput">
     
     {{-- Current Preview / Selected Image --}}
-    <div x-show="selectedUrl || hasFileSelected" class="relative inline-block">
+    <div x-show="selectedUrl || hasFileSelected" class="relative inline-block mb-3">
+        {{-- Selected from Gallery Preview --}}
         <template x-if="selectedUrl && !hasFileSelected">
             <div class="relative group">
                 <img :src="selectedUrl" class="w-40 h-40 object-cover rounded-xl border border-gray-200 shadow-sm">
@@ -40,6 +41,20 @@ Props:
                 </div>
             </div>
         </template>
+
+        {{-- Newly Uploaded File Preview --}}
+        <template x-if="hasFileSelected">
+            <div class="relative group">
+                <img :src="localPreview" class="w-40 h-40 object-cover rounded-xl border border-gray-200 shadow-sm">
+                <button type="button" @click="clearSelection()" 
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm opacity-0 group-hover:opacity-100">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-green-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
+                    Upload Baru
+                </div>
+            </div>
+        </template>
     </div>
 
     {{-- Actions --}}
@@ -49,7 +64,7 @@ Props:
             <i class="fa-solid fa-upload text-gray-400"></i>
             Upload Baru
             <input type="file" name="{{ $name }}" accept="image/*" class="hidden" 
-                   @change="hasFileSelected = $event.target.files.length > 0; if(hasFileSelected) selectedUrl = '';">
+                   @change="handleFileChange($event)">
         </label>
 
         {{-- Pick from Gallery --}}
@@ -180,6 +195,7 @@ function galleryPicker_{{ Str::camel($name) }}() {
         galleryPage: 1,
         galleryLastPage: 1,
         tempSelected: null,
+        localPreview: '',
 
         openGallery() {
             this.isOpen = true;
@@ -231,7 +247,24 @@ function galleryPicker_{{ Str::camel($name) }}() {
 
         clearSelection() {
             this.selectedUrl = '';
+            this.hasFileSelected = false;
+            this.localPreview = '';
             this.tempSelected = null;
+            // Clear file input
+            const fileInput = this.$el.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+        },
+
+        handleFileChange(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                this.hasFileSelected = true;
+                this.selectedUrl = '';
+                this.localPreview = URL.createObjectURL(files[0]);
+            } else {
+                this.hasFileSelected = false;
+                this.localPreview = '';
+            }
         },
     }
 }

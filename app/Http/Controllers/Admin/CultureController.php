@@ -67,7 +67,6 @@ class CultureController extends Controller
         ]);
 
         $data = $request->only(['name','category','description','description_en','content','content_en','location','time','youtube_url']);
-        $data['slug'] = Str::slug($request->name);
 
         if ($request->filled('image_gallery_url')) {
             // Extract relative path if it's a full URL, assuming it's from the public disk
@@ -135,7 +134,6 @@ class CultureController extends Controller
         ]);
 
         $data = $request->only(['name','category','description','description_en','content','content_en','location','time','youtube_url']);
-        $data['slug'] = Str::slug($request->name);
 
         if ($request->filled('image_gallery_url')) {
             if ($culture->image && !Str::startsWith($culture->image, 'http')) { // Only delete if it's a local file, not an external URL

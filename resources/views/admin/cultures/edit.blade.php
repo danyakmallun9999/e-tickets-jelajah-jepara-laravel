@@ -122,7 +122,6 @@
                             <div class="space-y-6">
                                 <!-- Foto Utama -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Foto Utama</label>
                                     <x-admin.gallery-picker name="image" :value="$culture->image ? $culture->image_url : null" label="Foto Utama" />
                                     <x-input-error class="mt-2" :messages="$errors->get('image')" />
                                 </div>

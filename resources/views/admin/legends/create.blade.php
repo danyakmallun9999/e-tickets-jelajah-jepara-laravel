@@ -90,7 +90,6 @@
                             </div>
 
                             <div>
-                                <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Foto Tokoh</label>
                                 <x-admin.gallery-picker name="image" label="Foto Tokoh" />
                                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>

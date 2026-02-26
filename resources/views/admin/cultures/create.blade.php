@@ -121,7 +121,6 @@
                             <div class="space-y-6">
                                 <!-- Image Utama -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Foto Utama</label>
                                     <p class="text-[11px] text-gray-500 mb-2">Ditampilkan sebagai gambar rincian dan thumbnail daftar budaya.</p>
                                     <x-admin.gallery-picker name="image" label="Foto Utama" />
                                     <x-input-error class="mt-2" :messages="$errors->get('image')" />
