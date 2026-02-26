@@ -42,6 +42,11 @@
             // Route Info
             routeDistance: null,
             routeTime: null,
+            
+            // Custom Route State
+            routeOrigin: null,
+            routeDestination: null,
+            routeMode: 'user_to_b', // 'user_to_b' or 'a_to_b'
 
             // Map Settings
             defaultCenter: [-6.59, 110.68],
@@ -57,15 +62,22 @@
             // Computed: Visible Places
             get visiblePlaces() {
                 const ids = this.selectedCategories.length > 0 ? this.selectedCategories : this.categories.map(c => c.id);
-                let places = this.allPlaces.filter(p => ids.includes(p.properties.category?.id))
-                     .map(p => ({
-                         ...p.properties,
-                         image_url: p.properties.image_url || (p.properties.image_path ? '{{ url('/') }}/' + p.properties.image_path : null),
-                         category: p.properties.category,
-                         latitude: p.geometry.coordinates[1],
-                         longitude: p.geometry.coordinates[0],
-                         distance: this.calculateDistance(p.geometry.coordinates[1], p.geometry.coordinates[0])
-                     }));
+                let places = this.allPlaces.filter(p => {
+                     // Check if category exists and is in selected list
+                     if (p.properties.category && p.properties.category.id) {
+                         return ids.includes(p.properties.category.id);
+                     }
+                     // If place doesn't strictly have a category object, include it only if "All" is selected (safeguard)
+                     return this.selectedCategories.length === this.categories.length;
+                })
+                .map(p => ({
+                    ...p.properties,
+                    image_url: p.properties.image_url || (p.properties.image_path ? '{{ url('/') }}/' + p.properties.image_path : null),
+                    category: p.properties.category,
+                    latitude: p.geometry.coordinates[1],
+                    longitude: p.geometry.coordinates[0],
+                    distance: this.calculateDistance(p.geometry.coordinates[1], p.geometry.coordinates[0])
+                }));
                 
                 if (this.sortByDistance) {
                     places.sort((a, b) => (parseFloat(a.distance) || Infinity) - (parseFloat(b.distance) || Infinity));
@@ -210,6 +222,8 @@
                     }
                     this.map.setZoom(15);
                     this.hasActiveRoute = false;
+                    this.routeOrigin = null;
+                    this.routeDestination = null;
                     if (this.routingControl) {
                         this.map.removeControl(this.routingControl);
                         this.routingControl = null;
@@ -288,13 +302,39 @@
             async fetchAllData() {
                 try {
                     this.loading = true;
-                    const [places, boundaries] = await Promise.all([
+                    const [places, boundaries, culinaries] = await Promise.all([
                         fetch('{{ route('places.geojson') }}').then(r => r.json()),
-                        fetch('{{ route('boundaries.geojson') }}').then(r => r.json())
+                        fetch('{{ route('boundaries.geojson') }}').then(r => r.json()),
+                        fetch('{{ route('culinaries.geojson') }}').then(r => r.json())
                     ]);
 
-                    this.geoFeatures = places.features || [];
-                    this.allPlaces = places.features || [];
+                    // Merge places and culinaries for map display
+                    let allFeatures = [...(places.features || [])];
+                    let currentCategories = [...this.categories];
+                    let currentSelected = [...this.selectedCategories];
+                    
+                    if (culinaries.features && culinaries.features.length > 0) {
+                        const culinaryCategory = { id: 9999, name: 'Kuliner', icon_class: 'fa-solid fa-utensils', color: '#f97316' }; // orange-500
+                        
+                        // Check if culinary category exists in this.categories, if not add it
+                        if (!currentCategories.find(c => c.name === 'Kuliner')) {
+                            currentCategories.push(culinaryCategory);
+                            currentSelected.push(culinaryCategory.id);
+                        }
+
+                        const culinaryFeatures = culinaries.features.map(f => {
+                            f.properties.category = culinaryCategory;
+                            f.properties.type = 'Kuliner';
+                            f.properties.slug = f.properties.culture_slug; // map slug
+                            return f;
+                        });
+                        allFeatures = [...allFeatures, ...culinaryFeatures];
+                    }
+
+                    this.geoFeatures = allFeatures;
+                    this.allPlaces = allFeatures;
+                    this.categories = currentCategories;
+                    this.selectedCategories = currentSelected;
                     
                     this.boundariesFeatures = boundaries.features || [];
                     this.loadBoundaries();
@@ -451,38 +491,63 @@
             // ============================================
             
             startRouting(destination) {
+                this.routeMode = 'user_to_b';
                 this.navigationDestination = destination;
                 if (!this.userLocation) {
-                    this.locateUser(() => this.calculateRoute(destination));
+                    this.locateUser(() => this.calculateRoute(this.userLocation, destination));
                 } else {
-                    this.calculateRoute(destination);
+                    this.calculateRoute(this.userLocation, destination);
                 }
             },
             
-            calculateRoute(destination) {
+            setRouteOrigin(origin) {
+                this.routeOrigin = origin;
+                this.routeMode = 'a_to_b';
+                this.showToast('{{ __('Map.JS.OriginSet') ?? 'Titik Awal (A) Tersimpan' }}');
+            },
+            
+            setRouteDestination(destination) {
+                this.routeDestination = destination;
+                this.routeMode = 'a_to_b';
+                this.navigationDestination = destination;
+                this.showToast('{{ __('Map.JS.DestinationSet') ?? 'Titik Tujuan (B) Tersimpan' }}');
+                
+                if (this.routeOrigin) {
+                    this.calculateRoute(this.routeOrigin, this.routeDestination);
+                } else {
+                    this.showToast('{{ __('Map.JS.PleaseSetOrigin') ?? 'Silakan tentukan Titik Awal (A) terlebih dahulu' }}');
+                }
+            },
+            
+            calculateRoute(origin, destination) {
+                if (!origin || !destination) return;
+                
                 if (this.routingControl) {
                     this.map.removeControl(this.routingControl);
                 }
                 
+                let startPoint = L.latLng(origin.lat || origin.latitude, origin.lng || origin.longitude);
+                let endPoint = L.latLng(destination.lat || destination.latitude, destination.lng || destination.longitude);
+                
                 this.routingControl = L.Routing.control({
                     waypoints: [
-                        L.latLng(this.userLocation.lat, this.userLocation.lng),
-                        L.latLng(destination.latitude, destination.longitude)
+                        startPoint,
+                        endPoint
                     ],
                     // NOTE: This uses the default OSRM demo server which may show usage warnings.
                     // For production, set up your own OSRM server or use a paid service (e.g. Mapbox)
                     // and configure the 'serviceUrl' option here.
                     // serviceUrl: 'https://YOUR_OSRM_SERVER/route/v1',
-                    routeWhileDragging: false,
+                    routeWhileDragging: true,
                     lineOptions: {
                         styles: [{color: '#0ea5e9', opacity: 0.8, weight: 6}]
                     },
                     show: true,
-                    addWaypoints: false,
-                    draggableWaypoints: false,
-                    fitSelectedRoutes: false,
-                    createMarker: function() { return null; },
-                    containerClassName: 'routing-container custom-scrollbar'
+                    collapsible: true,
+                    addWaypoints: true,
+                    draggableWaypoints: true,
+                    fitSelectedRoutes: true,
+                    containerClassName: 'routing-container custom-scrollbar bg-white dark:bg-slate-800 p-2 rounded-xl shadow-lg mt-4 ml-4 pointer-events-auto z-[1000]'
                 }).addTo(this.map);
                 
                 this.routingControl.on('routesfound', (e) => {
@@ -502,9 +567,11 @@
                 });
                 
                 setTimeout(() => {
-                    const container = this.routingControl.getContainer();
-                    if (container) container.style.display = 'none';
                     this.hasActiveRoute = true;
+                    // close panels after routing started
+                    this.bottomSheetState = 'collapsed';
+                    this.selectedFeature = null;
+                    if(window.innerWidth >= 1024) this.sidebarOpen = false;
                 }, 100);
             },
 
@@ -574,6 +641,8 @@
                 
                 // Reset route state
                 this.hasActiveRoute = false;
+                this.routeOrigin = null;
+                this.routeDestination = null;
                 this.navigationDestination = null;
                 this.routeDistance = null;
                 this.routeTime = null;
@@ -626,7 +695,8 @@
                     (err) => { 
                         this.loading = false; 
                         console.error('Geolocation error:', err);
-                        alert('{{ __('Map.JS.GeoError') }}');
+                        // Don't show alert, let user pick route manually
+                        if (callback) callback();
                     },
                     { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
                 );

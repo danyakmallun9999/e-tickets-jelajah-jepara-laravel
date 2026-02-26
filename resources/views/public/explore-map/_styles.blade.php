@@ -153,7 +153,6 @@
     /* ============================================ */
     .place-card {
         animation: fadeSlideUp 0.4s ease-out forwards;
-        opacity: 0;
     }
     
     @keyframes fadeSlideUp {

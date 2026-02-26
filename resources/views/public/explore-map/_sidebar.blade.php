@@ -62,7 +62,7 @@
     </div>
 
     {{-- Scrollable Content Area --}}
-    <div class="flex-1 overflow-y-auto custom-scrollbar px-6 py-4 sidebar-content" style="opacity: 0;">
+    <div class="flex-1 overflow-y-auto custom-scrollbar px-6 py-4 sidebar-content">
         
         {{-- Category Filter --}}
         <div class="mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 sidebar-categories relative z-[50]" style="opacity: 0; transform: translateY(10px);">
@@ -111,7 +111,7 @@
                 <div @click="selectPlace(place)" 
                      :class="selectedFeature && selectedFeature.id === place.id ? 'ring-2 ring-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700'"
                      class="flex gap-4 p-4 rounded-2xl cursor-pointer transition-all group place-card"
-                     :style="'animation-delay: ' + (index * 50) + 'ms'">
+                     :style="`animation-delay: ${index * 50}ms`" x-show="true">
                     
                     {{-- Image --}}
                     <div class="w-20 h-20 rounded-xl bg-slate-200 dark:bg-slate-700 shrink-0 overflow-hidden">
