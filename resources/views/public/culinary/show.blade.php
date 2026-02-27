@@ -308,7 +308,7 @@
         @endphp
 
         <section class="bg-slate-50 dark:bg-slate-900/50 py-16 lg:py-24 border-t border-slate-200 dark:border-slate-800 relative z-0">
-            <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
+            <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12" x-data="culinaryMap('{{ htmlspecialchars($mapLocations->toJson(), ENT_QUOTES, 'UTF-8') }}')">
                     <!-- Section Header -->
                     <div class="max-w-3xl mx-auto text-center mb-12 animate-fade-in-up">
                         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 dark:bg-blue-900/30 text-primary dark:text-blue-400 mb-6 relative group overflow-hidden">
@@ -334,7 +334,7 @@
                         </div>
                     </div>
 
-                <div class="flex flex-col lg:flex-row gap-8" x-data="culinaryMap('{{ htmlspecialchars($mapLocations->toJson(), ENT_QUOTES, 'UTF-8') }}')">
+                <div class="flex flex-col lg:flex-row gap-8">
                     
                     <!-- Fullscreen Teleport Modal Container -->
                     <template x-teleport="body">
@@ -642,7 +642,17 @@
                                 });
                                 
                                 if (this.locations.length > 0) {
-                                    setTimeout(() => this.initMap(), 100);
+                                    const checkMap = setInterval(() => {
+                                        if (typeof L !== 'undefined' && typeof L.markerClusterGroup !== 'undefined') {
+                                            clearInterval(checkMap);
+                                            this.initMap();
+                                        }
+                                    }, 100);
+                                    
+                                    setTimeout(() => {
+                                        clearInterval(checkMap);
+                                        if (!this.map) this.loading = false;
+                                    }, 5000);
                                 } else {
                                     this.loading = false;
                                 }
@@ -762,7 +772,9 @@
                                         
                                         // Reset map visualizer to sort order changes
                                         this.activeLocation = null;
-                                        this.refreshMarkers();
+                                        if(typeof L !== 'undefined' && this.map) {
+                                            this.refreshMarkers();
+                                        }
                                     } catch (e) {
                                         console.error("Error calculating distances:", e);
                                     } finally {
@@ -823,12 +835,15 @@
                         
                         // Re-initialize markers when sorting changes
                         refreshMarkers() {
-                            if(this.markerCluster) {
+                            if(this.map && this.markerCluster) {
                                 this.map.removeLayer(this.markerCluster);
                             }
-                            // Call init map process directly bypassing map instantiation
                             this.loading = true;
-                            this.buildMarkers();
+                            if (typeof L !== 'undefined' && this.map) {
+                                this.buildMarkers();
+                            } else {
+                                this.loading = false;
+                            }
                         },
                         
                         initMap() {
