@@ -82,7 +82,7 @@
                     {{-- Basic Info --}}
                     <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="col-span-2">
+                            <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Tokoh</label>
                                 <input id="name" name="name" type="text" value="{{ old('name') }}" required
                                        class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all" />

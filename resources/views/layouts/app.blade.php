@@ -32,18 +32,20 @@
                 html.sidebar-minimized .toggle-minimize { display: none !important; }
             }
             
-            /* Ensure sidebar width is consistent */
-            aside {
-                width: var(--sidebar-width) !important;
-                min-width: var(--sidebar-width) !important;
-                max-width: var(--sidebar-width) !important;
-            }
-            
-            /* Prevent layout shift during navigation */
-            html.sidebar-minimized aside {
-                width: 5rem !important;
-                min-width: 5rem !important;
-                max-width: 5rem !important;
+            /* Ensure sidebar width is consistent on desktop */
+            @media (min-width: 768px) {
+                aside {
+                    width: var(--sidebar-width) !important;
+                    min-width: var(--sidebar-width) !important;
+                    max-width: var(--sidebar-width) !important;
+                }
+                
+                /* Prevent layout shift during navigation */
+                html.sidebar-minimized aside {
+                    width: 5rem !important;
+                    min-width: 5rem !important;
+                    max-width: 5rem !important;
+                }
             }
         </style>
         <script>
