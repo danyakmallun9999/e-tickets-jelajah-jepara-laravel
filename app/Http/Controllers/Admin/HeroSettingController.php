@@ -91,10 +91,21 @@ class HeroSettingController extends Controller
         // Handle media removal
         if ($request->boolean('remove_media') || $setting->isDirty('type')) {
              if (is_array($mediaPaths)) foreach($mediaPaths as $path) Storage::disk('public')->delete($path);
-             if (is_array($mobileMediaPaths)) foreach($mobileMediaPaths as $path) Storage::disk('public')->delete($path);
              $mediaPaths = [];
+             
+             // If type changes, we also clear mobile
+             if ($setting->isDirty('type') || $request->boolean('remove_media')) {
+                 if (is_array($mobileMediaPaths)) foreach($mobileMediaPaths as $path) Storage::disk('public')->delete($path);
+                 $mobileMediaPaths = [];
+             }
+        }
+
+        if ($request->boolean('remove_mobile_media')) {
+             if (is_array($mobileMediaPaths)) foreach($mobileMediaPaths as $path) Storage::disk('public')->delete($path);
              $mobileMediaPaths = [];
-        } else {
+        }
+
+        if (!$request->boolean('remove_media') && !$setting->isDirty('type')) {
              if ($validated['type'] === 'image') {
                  foreach($mediaPaths as $oldPath) if (!in_array($oldPath, $newGalleryPaths)) Storage::disk('public')->delete($oldPath);
                  $mediaPaths = $newGalleryPaths;

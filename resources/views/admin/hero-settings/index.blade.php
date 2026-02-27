@@ -237,9 +237,15 @@
                                             </p>
 
                                             @if($setting->type === 'video' && !empty($setting->mobile_media_paths))
-                                                <div class="mt-6 pt-6 border-t border-gray-200 flex flex-col items-center">
-                                                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 w-[50%] aspect-[9/16] ring-1 ring-gray-900/5 shadow-inner">
-                                                        <video src="{{ Storage::url($setting->mobile_media_paths[0]) }}" controls class="w-full h-full object-cover"></video>
+                                                <div class="mt-6 pt-6 border-t border-gray-200">
+                                                    <div class="flex flex-col items-center gap-4">
+                                                        <div class="relative rounded-2xl overflow-hidden bg-slate-900 w-[50%] aspect-[9/16] ring-1 ring-gray-900/5 shadow-inner">
+                                                            <video src="{{ Storage::url($setting->mobile_media_paths[0]) }}" controls class="w-full h-full object-cover"></video>
+                                                        </div>
+                                                        <label class="inline-flex items-center gap-2 cursor-pointer group/del">
+                                                            <input type="checkbox" name="remove_mobile_media" value="1" class="text-red-500 focus:ring-red-500 border-gray-300 rounded transition-colors group-hover/del:border-red-400">
+                                                            <span class="text-[11px] text-red-600 font-bold group-hover/del:text-red-700">Hapus Video Mobile Ini</span>
+                                                        </label>
                                                     </div>
                                                 </div>
                                             @endif
@@ -266,7 +272,7 @@
                                             <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-widest">Wajib</span>
                                         </div>
                                         <div class="p-6 flex-1 flex flex-col">
-                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/10 transition-all flex flex-col cursor-pointer">
+                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/10 transition-all flex flex-col">
                                                 <x-admin.gallery-picker-multiple 
                                                     name="image_files" 
                                                     :values="isset($setting->media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->media_paths) : []" 
@@ -290,12 +296,22 @@
                                             <span class="px-3 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-full uppercase tracking-widest">Opsional</span>
                                         </div>
                                         <div class="p-6 flex-1 flex flex-col">
-                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/10 transition-all flex flex-col cursor-pointer">
+                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/10 transition-all flex flex-col">
                                                 <x-admin.gallery-picker-multiple 
                                                     name="mobile_image_files" 
                                                     :values="isset($setting->mobile_media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->mobile_media_paths) : []" 
                                                     label="Pilih Galeri Potret" />
                                             </div>
+
+                                            @if($setting->type === 'image' && !empty($setting->mobile_media_paths))
+                                                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-center">
+                                                    <label class="inline-flex items-center gap-2 cursor-pointer group/del">
+                                                        <input type="checkbox" name="remove_mobile_media" value="1" class="text-red-500 focus:ring-red-500 border-gray-300 rounded transition-colors group-hover/del:border-red-400">
+                                                        <span class="text-[11px] text-red-600 font-bold group-hover/del:text-red-700">Kosongkan Slider Mobile (Gunakan Desktop)</span>
+                                                    </label>
+                                                </div>
+                                            @endif
+
                                             <p class="text-[11px] text-gray-400 mt-4 leading-relaxed flex items-start gap-2">
                                                 <i class="fa-solid fa-circle-info mt-0.5 text-indigo-400"></i>
                                                 Jumlah gambar potret di atas *harus sama* dengan jumlah gambar lanskap di sebelahnya.

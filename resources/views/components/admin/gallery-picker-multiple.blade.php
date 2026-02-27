@@ -34,8 +34,8 @@ Props:
         <template x-for="(url, index) in selectedUrls" :key="'gallery-'+index">
             <div class="relative group">
                 <img :src="url" class="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow-sm">
-                <button type="button" @click="removeSelection(index)" 
-                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm opacity-0 group-hover:opacity-100">
+                <button type="button" @click.stop.prevent="removeSelection(index)" 
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm z-10">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-blue-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
@@ -48,6 +48,10 @@ Props:
         <template x-for="(url, index) in filePreviews" :key="'file-'+index">
             <div class="relative group">
                 <img :src="url" class="w-24 h-24 object-cover rounded-xl border border-blue-200 shadow-sm ring-2 ring-blue-100">
+                <button type="button" @click.stop.prevent="removeFile(index)" 
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition shadow-sm z-10">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
                 <div class="absolute bottom-1 left-1 px-2 py-0.5 bg-green-600/80 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">
                     Baru
                 </div>
@@ -61,7 +65,7 @@ Props:
         <label class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 cursor-pointer transition">
             <i class="fa-solid fa-upload text-gray-400"></i>
             Upload Baru
-            <input type="file" :name="`${name}[]`" multiple accept="image/*" class="hidden" 
+            <input type="file" :name="`${name}[]`" multiple accept="image/*" class="hidden" x-ref="fileInput"
                    @change="handleFileChange($event)">
         </label>
 
@@ -291,6 +295,23 @@ function galleryPicker_{{ Str::camel($name) }}() {
                 urls: this.selectedUrls,
                 filePreviews: this.filePreviews
             });
+        },
+
+        removeFile(index) {
+            const dt = new DataTransfer();
+            const fileInput = this.$refs.fileInput;
+            const files = fileInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) {
+                    dt.items.add(files[i]);
+                }
+            }
+
+            fileInput.files = dt.files;
+            
+            // Re-render previews
+            this.handleFileChange({ target: fileInput });
         },
 
         clearSelection() {
