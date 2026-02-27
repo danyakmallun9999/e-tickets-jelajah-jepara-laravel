@@ -175,7 +175,7 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             @if($user->id !== auth('admin')->id())
-                                                <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin ini?');">
+                                                <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus admin ini?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" 
@@ -227,7 +227,7 @@
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         @if($user->id !== auth('admin')->id())
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Hapus user?');">
+                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="delete-form" data-confirm-title="Hapus User?" data-confirm-message="Apakah Anda yakin ingin menghapus admin ini?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-600">

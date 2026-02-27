@@ -137,8 +137,8 @@
                                             <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
                                             <!-- Note: Destroy form here should ideally be an ajax call or separate, but maintaining existing code behavior -->
                                             <form action="{{ route('admin.cultures.images.destroy', $img) }}" method="POST"
-                                                  class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/50 transition-colors backdrop-blur-[1px] group-hover:backdrop-blur-sm"
-                                                  onsubmit="return confirm('Hapus foto ini dari galeri?')">
+                                                  class="delete-form absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/50 transition-colors backdrop-blur-[1px] group-hover:backdrop-blur-sm"
+                                                  data-confirm-message="Hapus foto ini dari galeri?">
                                                 @csrf @method('DELETE')
                                                 <button type="submit"
                                                         class="w-8 h-8 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center shadow-lg hover:bg-red-600 hover:scale-110">

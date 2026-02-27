@@ -79,7 +79,7 @@
                                                    title="Edit" wire:navigate>
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
-                                                <form action="{{ route('admin.legends.destroy', $legend) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus tokoh ini?')">
+                                                <form action="{{ route('admin.legends.destroy', $legend) }}" method="POST" class="inline-block delete-form" data-confirm-message="Yakin ingin menghapus tokoh ini?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"

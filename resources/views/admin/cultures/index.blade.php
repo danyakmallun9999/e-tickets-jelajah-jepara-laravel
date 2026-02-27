@@ -167,7 +167,7 @@
                                                    title="Edit" wire:navigate>
                                                     <i class="fa-solid fa-pen-to-square text-sm"></i>
                                                 </a>
-                                                <form action="{{ route('admin.cultures.destroy', $culture) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus budaya ini?');">
+                                                <form action="{{ route('admin.cultures.destroy', $culture) }}" method="POST" class="inline-block delete-form" data-confirm-message="Hapus budaya ini?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" 
@@ -242,7 +242,7 @@
                                     <a href="{{ route('admin.cultures.edit', $culture) }}" class="px-3 py-1.5 text-[11px] font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors" wire:navigate>
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.cultures.destroy', $culture) }}" method="POST" onsubmit="return confirm('Hapus budaya ini?');">
+                                    <form action="{{ route('admin.cultures.destroy', $culture) }}" method="POST" class="delete-form" data-confirm-message="Hapus budaya ini?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="px-3 py-1.5 text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">

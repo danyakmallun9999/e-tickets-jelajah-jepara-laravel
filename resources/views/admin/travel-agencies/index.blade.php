@@ -135,7 +135,7 @@
                                                    title="Edit" wire:navigate>
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
-                                                <form action="{{ route('admin.travel-agencies.destroy', $agency) }}" method="POST" class="inline-block delete-form" onsubmit="return confirm('Apakah Anda yakin ingin menghapus biro ini? Semua paket wisata yang terhubung akan ikut terhapus.')">
+                                                <form action="{{ route('admin.travel-agencies.destroy', $agency) }}" method="POST" class="inline-block delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus biro ini? Semua paket wisata yang terhubung akan ikut terhapus.">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" 

@@ -189,7 +189,7 @@
                                                title="Edit">
                                                 <i class="fa-solid fa-pen-to-square text-sm"></i>
                                             </a>
-                                            <form action="{{ route('admin.places.destroy', $place) }}" method="POST" class="inline-block delete-form">
+                                            <form action="{{ route('admin.places.destroy', $place) }}" method="POST" class="inline-block delete-form" data-confirm-title="Hapus Destinasi?" data-confirm-message="Data wisata yang dihapus tidak dapat dikembalikan. Apakah Anda yakin ingin melanjutkan?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" 
@@ -271,7 +271,7 @@
                                     <a href="{{ route('admin.places.edit', $place) }}" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg">
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.places.destroy', $place) }}" method="POST" class="delete-form">
+                                    <form action="{{ route('admin.places.destroy', $place) }}" method="POST" class="delete-form" data-confirm-title="Hapus Destinasi?" data-confirm-message="Data wisata yang dihapus tidak dapat dikembalikan. Apakah Anda yakin ingin melanjutkan?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="px-3 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg">

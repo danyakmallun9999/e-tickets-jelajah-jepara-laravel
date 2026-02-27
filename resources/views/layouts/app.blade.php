@@ -285,20 +285,31 @@
         </div>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Intercept Delete Forms
-                document.body.addEventListener('submit', function(e) {
-                    if (e.target.classList.contains('delete-form')) {
+            // Persistent Event Listener for Delete Forms (Survives Livewire Navigations)
+            if (!window.deleteFormListenerAdded) {
+                window.deleteFormListenerAdded = true;
+                document.addEventListener('submit', function(e) {
+                    if (e.target && e.target.classList && e.target.classList.contains('delete-form')) {
                         e.preventDefault();
                         const form = e.target;
-                        window.confirmAction(
-                            'Hapus Data?', 
-                            'Data yang dihapus tidak dapat dikembalikan. Apakah Anda yakin ingin melanjutkan?', 
-                            () => form.submit()
-                        );
+                        
+                        // Custom messages per form can be set via data attributes if needed
+                        const title = form.dataset.confirmTitle || 'Hapus Data?';
+                        const msg = form.dataset.confirmMessage || 'Data yang dihapus tidak dapat dikembalikan. Apakah Anda yakin ingin melanjutkan?';
+
+                        if (typeof window.confirmAction === 'function') {
+                            window.confirmAction(
+                                title, 
+                                msg, 
+                                () => form.submit()
+                            );
+                        } else {
+                            // Fallback if modal isn't ready
+                            if (confirm(msg)) form.submit();
+                        }
                     }
                 });
-            });
+            }
         </script>
     </body>
 </html>
