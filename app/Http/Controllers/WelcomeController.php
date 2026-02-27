@@ -229,8 +229,9 @@ class WelcomeController extends Controller
         ];
     }
 
-    public function showCultureCategory(string $slug): View
+    public function showCultureCategory(Request $request, string $slug): View
     {
+        $search = $request->query('search');
         $categoriesData = $this->getCultureCategories();
         $allCategories = $categoriesData['categoriesForAlpine'];
         
@@ -255,9 +256,13 @@ class WelcomeController extends Controller
             $query->orWhere('category', 'Kemahiran & Kerajinan Tradisional');
         }
         
-        $cultures = $query->paginate(9);
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+        
+        $cultures = $query->paginate(9)->withQueryString();
 
-        return view('public.culture.category', compact('matchedCategory', 'cultures'));
+        return view('public.culture.category', compact('matchedCategory', 'cultures', 'search'));
     }
 
     public function culture(): View
@@ -308,11 +313,14 @@ class WelcomeController extends Controller
         ]);
     }
 
-    public function culinariesGeoJson(): JsonResponse
+    public function culturesGeoJson(): JsonResponse
     {
         $locations = \App\Models\CultureLocation::whereHas('culture', function ($q) {
-            $q->where('category', 'Kuliner Khas');
-        })->with('culture')->get();
+            $q->whereIn('category', [
+                'Kuliner Khas', 
+                'Kemahiran & Kerajinan Tradisional (Kriya)'
+            ]);
+        })->with(['culture', 'category'])->get();
 
         $features = $locations->map(function ($location) {
             return [
@@ -321,10 +329,17 @@ class WelcomeController extends Controller
                     'id' => $location->id,
                     'name' => $location->name ?? $location->culture->name,
                     'culture_slug' => $location->culture->slug,
+                    'culture_category' => $location->culture->category,
                     'address' => $location->address,
                     'open_time' => $location->open_time,
                     'close_time' => $location->close_time,
                     'image_url' => $location->culture->image_url,
+                    'category' => $location->category ? [
+                        'id' => $location->category->id,
+                        'name' => $location->category->name,
+                        'color' => $location->category->color,
+                        'icon_class' => $location->category->icon_class,
+                    ] : null,
                 ],
                 'geometry' => [
                     'type' => 'Point',

@@ -248,10 +248,10 @@
             </div>
             @endif
 
-            @if(auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations', 'manage categories']))
-            <div x-data="{ placesOpen: {{ request()->routeIs('admin.places.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.travel-agencies.*') ? 'true' : 'false' }} }" class="relative group">
+            @if(auth('admin')->user()->hasAnyPermission(['view all destinations', 'view own destinations']))
+            <div x-data="{ placesOpen: {{ request()->routeIs('admin.places.*') || request()->routeIs('admin.travel-agencies.*') ? 'true' : 'false' }} }" class="relative group">
                 <button @click="if(!isSidebarMini) placesOpen = !placesOpen" 
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition relative {{ request()->routeIs('admin.places.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.travel-agencies.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition relative {{ request()->routeIs('admin.places.*') || request()->routeIs('admin.travel-agencies.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
                         :class="isSidebarMini ? 'justify-center' : ''">
                     <div class="flex items-center gap-3">
                         <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
@@ -275,11 +275,7 @@
                         Daftar Destinasi
                     </a>
                     @endif
-                    @can('manage categories')
-                    <a href="{{ route('admin.categories.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
-                        Kategori
-                    </a>
-                    @endcan
+
                     @if(auth('admin')->user()->hasAnyPermission(['view all destinations']))
                     <a href="{{ route('admin.travel-agencies.index') }}" class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors" wire:navigate>
                         Biro Wisata
@@ -298,13 +294,7 @@
                        <span class="{{ request()->routeIs('admin.places.index') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Daftar Destinasi</span>
                     </a>
                     @endif
-                    @can('manage categories')
-                    <a href="{{ route('admin.categories.index') }}" 
-                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.categories.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
-                       wire:navigate>
-                       <span class="{{ request()->routeIs('admin.categories.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Kategori</span>
-                    </a>
-                    @endcan
+
                     @if(auth('admin')->user()->hasAnyPermission(['view all destinations']))
                     <a href="{{ route('admin.travel-agencies.index') }}" 
                        class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.travel-agencies.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
@@ -315,6 +305,25 @@
                 </div>
             </div>
             @endif
+
+            @can('manage categories')
+            <a href="{{ route('admin.categories.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition group relative {{ request()->routeIs('admin.categories.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} sidebar-nav-item"
+               :class="isSidebarMini ? 'justify-center' : ''"
+               wire:navigate>
+                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-layer-group text-lg"></i>
+                </div>
+                <span x-show="!isSidebarMini" class="whitespace-nowrap transition-opacity duration-300 sidebar-nav-text">Kategori</span>
+                 <!-- Tooltip -->
+                <div x-init="$el.parentElement.addEventListener('mouseenter', () => { $el.style.top = ($el.parentElement.getBoundingClientRect().top + 10) + 'px' })"
+                     x-show="isSidebarMini" 
+                     class="fixed left-[4.7rem] px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[9999] whitespace-nowrap"
+                     style="display: none;">
+                    Kategori
+                </div>
+            </a>
+            @endcan
 
             @role('super_admin')
             <a href="{{ route('admin.legends.index') }}" 

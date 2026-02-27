@@ -7,25 +7,25 @@
         $btnLink = $heroSetting->button_link;
     @endphp
 
-    <div class="relative w-full @if($heroSetting->type === 'map' || empty($heroSetting->type)) h-[calc(100dvh-6rem)] @else min-h-0 md:h-[calc(100dvh-6rem)] flex flex-col md:block @endif pt-8 pb-4 md:pb-6 items-center justify-center bg-white dark:bg-slate-950 overflow-hidden">
-        <div class="relative w-full h-full mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12 flex flex-col md:block">
-            <div class="relative w-full @if($heroSetting->type === 'map' || empty($heroSetting->type)) h-full @else h-auto md:h-full flex flex-col md:block @endif rounded-[2.5rem] overflow-hidden ring-1 ring-slate-900/5 dark:ring-white/10 group bg-slate-100 dark:bg-slate-900">
+    <div class="relative w-full h-[calc(100dvh-6rem)] pt-8 pb-4 md:pb-6 items-center justify-center bg-white dark:bg-slate-950 overflow-hidden">
+        <div class="relative w-full h-full mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
+            <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden ring-1 ring-slate-900/5 dark:ring-white/10 group bg-slate-100 dark:bg-slate-900">
                 
                 @if($heroSetting->type === 'map' || empty($heroSetting->type))
                     <!-- 3D Map Container -->
                     <div id="hero-map" class="absolute inset-0 z-0 opacity-0 transition-opacity duration-700"></div>
                 @elseif($heroSetting->type === 'video' && !empty($heroSetting->media_paths))
                     <!-- Video Background -->
-                    <div class="relative w-full aspect-video md:absolute md:inset-0 md:h-full z-0 bg-slate-900">
-                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-contain md:object-cover border-b border-slate-200 dark:border-slate-800 md:border-none">
+                    <div class="absolute inset-0 w-full h-full z-0 bg-slate-900">
+                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
                             <source src="{{ Storage::url($heroSetting->media_paths[0]) }}" type="video/mp4">
                         </video>
                     </div>
                 @elseif($heroSetting->type === 'image' && !empty($heroSetting->media_paths))
                     @if(count($heroSetting->media_paths) === 1)
                         <!-- Single Image Background -->
-                        <div class="relative w-full aspect-video md:absolute md:inset-0 md:h-full z-0 bg-slate-900">
-                            <img src="{{ Storage::url(is_array($heroSetting->media_paths) ? array_values($heroSetting->media_paths)[0] : $heroSetting->media_paths[0]) }}" class="absolute inset-0 w-full h-full object-contain md:object-cover border-b border-slate-200 dark:border-slate-800 md:border-none" alt="Hero Background">
+                        <div class="absolute inset-0 w-full h-full z-0 bg-slate-900">
+                            <img src="{{ Storage::url(is_array($heroSetting->media_paths) ? array_values($heroSetting->media_paths)[0] : $heroSetting->media_paths[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Background">
                         </div>
                     @else
                         <!-- Image Carousel Background -->
@@ -40,10 +40,10 @@
                                     }
                                 }
                             }" 
-                            class="relative w-full aspect-video md:absolute md:inset-0 md:h-full z-0 bg-slate-900 border-b border-slate-200 dark:border-slate-800 md:border-none">
+                            class="absolute inset-0 w-full h-full z-0 bg-slate-900">
                             
                             <!-- Static Base Image to prevent FOUC on load -->
-                            <img src="{{ Storage::url(array_values($heroSetting->media_paths)[0]) }}" class="absolute inset-0 w-full h-full object-contain md:object-cover" alt="Hero Background Base">
+                            <img src="{{ Storage::url(array_values($heroSetting->media_paths)[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Background Base">
 
                             <template x-for="(slide, index) in slides" :key="index">
                                 <div x-show="currentSlide === index" 
@@ -55,7 +55,7 @@
                                      x-transition:leave-end="opacity-0"
                                      class="absolute inset-0 w-full h-full bg-slate-900"
                                      x-cloak>
-                                     <img :src="slide" class="w-full h-full object-contain md:object-cover" alt="Hero Background Slide">
+                                     <img :src="slide" class="w-full h-full object-cover" alt="Hero Background Slide">
                                 </div>
                             </template>
                         </div>
@@ -64,28 +64,28 @@
 
                 <!-- Overlay Gradient for Readability (Only if texts exist or map helps to darken it slightly) -->
                 @if($badge || $title || $subtitle || $heroSetting->type === 'map')
-                    <!-- Gradient only visible on desktop or if it's a map -->
-                    <div class="absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/20 pointer-events-none @if($heroSetting->type !== 'map') hidden md:block @endif"></div>
+                    <!-- Gradient always visible for readability over image/video/map -->
+                    <div class="absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/20 pointer-events-none"></div>
                 @endif
 
                 @if($badge || $title || $subtitle || $btnText)
                 <!-- Content -->
-                <div class="@if($heroSetting->type === 'map') absolute inset-0 @else relative w-full bg-white dark:bg-slate-950 px-6 py-10 md:bg-transparent md:dark:bg-transparent md:p-0 md:absolute md:inset-0 @endif z-20 flex flex-col items-center justify-center text-center @if($heroSetting->type === 'map' || empty($heroSetting->type)) pointer-events-none @else md:pointer-events-none @endif">
+                <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center pointer-events-none">
                     <div class="w-full max-w-4xl mx-auto space-y-6 md:space-y-8 pointer-events-auto flex flex-col items-center">
                         @if($badge)
-                        <span class="hero-badge inline-block px-4 py-1.5 md:px-5 md:py-2 rounded-full @if($heroSetting->type === 'map') bg-white/10 text-white border-white/20 @else bg-primary/10 text-primary border-primary/20 md:bg-white/10 md:text-white md:border-white/20 @endif backdrop-blur-xl border text-xs font-bold uppercase tracking-widest opacity-0 transform translate-y-4 @if($heroSetting->type === 'map') hover:bg-white/20 @else md:hover:bg-white/20 hover:bg-primary/20 @endif transition-colors cursor-default">
+                        <span class="hero-badge inline-block px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 text-white border-white/20 backdrop-blur-xl border text-xs font-bold uppercase tracking-widest opacity-0 transform translate-y-4 hover:bg-white/20 transition-colors cursor-default">
                             {{ $badge }}
                         </span>
                         @endif
                         
                         @if($title)
-                        <h1 class="hero-title @if($heroSetting->type === 'map') text-white @else text-slate-900 dark:text-white md:text-white @endif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight opacity-0 transform translate-y-8 selection:bg-primary/30 text-center">
+                        <h1 class="hero-title text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight opacity-0 transform translate-y-8 selection:bg-primary/30 text-center">
                             {!! nl2br(e($title)) !!}
                         </h1>
                         @endif
                         
                         @if($subtitle)
-                        <p class="hero-subtitle @if($heroSetting->type === 'map') text-slate-200 @else text-slate-600 dark:text-slate-300 md:text-slate-200 @endif text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed opacity-0 transform translate-y-8 text-center">
+                        <p class="hero-subtitle text-slate-200 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed opacity-0 transform translate-y-8 text-center">
                             {!! nl2br(e($subtitle)) !!}
                         </p>
                         @endif

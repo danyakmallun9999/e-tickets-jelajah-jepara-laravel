@@ -26,20 +26,102 @@
 
     {{-- Search Section --}}
     <div class="px-6 py-4 sidebar-search relative z-[60]" style="opacity: 0; transform: translateY(10px);">
-        <div class="flex items-center w-full h-12 rounded-xl bg-slate-100 dark:bg-slate-800 focus-within:ring-2 focus-within:ring-sky-500/50 transition-all border border-transparent focus-within:border-sky-500/30">
-            <div class="grid place-items-center h-full w-12 text-slate-400 dark:text-slate-500">
-                <span class="material-symbols-outlined">search</span>
+        
+        {{-- Normal Search Bar (Hidden when routingUIMode is true) --}}
+        <div x-show="!routingUIMode" class="flex gap-2" x-transition>
+            <div class="flex-1 flex items-center h-12 rounded-xl bg-slate-100 dark:bg-slate-800 focus-within:ring-2 focus-within:ring-sky-500/50 transition-all border border-transparent focus-within:border-sky-500/30">
+                <div class="grid place-items-center h-full w-12 text-slate-400 dark:text-slate-500">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input class="peer h-full w-full bg-transparent border-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 text-sm" 
+                       placeholder="{{ __('Map.SearchPlaceholder') }}" type="text"
+                       x-model="searchQuery" @input.debounce.300ms="performSearch()">
             </div>
-            <input class="peer h-full w-full bg-transparent border-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 text-sm" 
-                   placeholder="{{ __('Map.SearchPlaceholder') }}" type="text"
-                   x-model="searchQuery" @input.debounce.300ms="performSearch()">
+            <button @click="routingUIMode = true" 
+                    title="Cari Rute (A ke B)"
+                    class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-100 dark:border-sky-800 transition-colors flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined">directions</span>
+            </button>
         </div>
         
-        {{-- Search Dropdown - Positioned relative to search section --}}
-        <div x-show="searchResults.length > 0" @click.outside="searchResults = []"
+        {{-- Routing Planner UI (Shown when routingUIMode is true) --}}
+        <div x-show="routingUIMode" class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200 dark:border-slate-700 relative" x-cloak x-transition>
+            <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center mt-3">
+                    <div class="w-3 h-3 rounded-full border-2 border-sky-500"></div>
+                    <div class="w-0.5 h-8 bg-slate-300 dark:bg-slate-600 my-1"></div>
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                </div>
+                <div class="flex-1 space-y-2 relative">
+                    {{-- Origin Input --}}
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Pilih Titik Awal (A)" 
+                               x-model="routeSearchQuery"
+                               @focus="routingFocus = 'origin'; routeSearchQuery = ''"
+                               @input.debounce.300ms="performRouteSearch()"
+                               :value="routingFocus === 'origin' ? routeSearchQuery : (routeOrigin ? routeOrigin.name : '')"
+                               class="w-full h-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm pl-3 pr-8 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 placeholder:text-slate-400 transition-colors">
+                        <button x-show="routeOrigin && routingFocus !== 'origin'" 
+                                @click="routeOrigin = null; clearRoute()" 
+                                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                title="Hapus Titik Awal">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
+                        </button>
+                    </div>
+                    
+                    {{-- Destination Input --}}
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Pilih Tujuan (B)" 
+                               x-model="routeSearchQuery"
+                               @focus="routingFocus = 'destination'; routeSearchQuery = ''"
+                               @input.debounce.300ms="performRouteSearch()"
+                               :value="routingFocus === 'destination' ? routeSearchQuery : (routeDestination ? routeDestination.name : '')"
+                               class="w-full h-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm pl-3 pr-8 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 placeholder:text-slate-400 transition-colors">
+                        <button x-show="routeDestination && routingFocus !== 'destination'" 
+                                @click="routeDestination = null; clearRoute()" 
+                                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                title="Hapus Tujuan">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button @click="routingUIMode = false; routeSearchQuery = ''; routeSearchResults = []; routingFocus = null;" 
+                            class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                    <button @click="swapRoutePoints()" 
+                            class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-colors mt-1">
+                        <span class="material-symbols-outlined text-[18px]">swap_vert</span>
+                    </button>
+                </div>
+            </div>
+            
+            {{-- Search Dropdown for Routing --}}
+            <div x-show="routeSearchResults.length > 0 && routingFocus" @click.outside="routeSearchResults = [];"
+                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl max-h-60 overflow-y-auto z-[100] p-1.5" 
+                 x-cloak x-transition>
+                <template x-for="result in routeSearchResults" :key="result.unique_id">
+                    <button @click="selectRouteLocation(result)" class="w-full text-left px-3 py-2 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-lg transition flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-sm text-slate-500" x-text="result.isUserLocation ? 'my_location' : 'place'"></span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-[13px] text-slate-800 dark:text-white truncate" x-text="result.name"></p>
+                            <p class="text-[11px] text-slate-400 truncate" x-text="result.category?.name || 'Lokasi'"></p>
+                        </div>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        {{-- Normal Search Dropdown - Positioned relative to search section --}}
+        <div x-show="searchResults.length > 0 && !routingUIMode" @click.outside="searchResults = []"
              class="absolute top-full left-6 right-6 mt-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto z-[100] p-2" 
              x-cloak x-transition>
-            <template x-for="result in searchResults" :key="result.id">
+            <template x-for="result in searchResults" :key="result.unique_id">
                 <button @click="selectFeature(result); searchResults = []" class="w-full text-left px-3 py-2.5 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-lg transition flex items-center gap-3">
                     {{-- Image / Icon --}}
                     <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 overflow-hidden flex-shrink-0 flex items-center justify-center">
@@ -107,9 +189,9 @@
                  </div>
              </template>
 
-             <template x-for="(place, index) in visiblePlaces" :key="place.id">
+             <template x-for="(place, index) in visiblePlaces" :key="place.unique_id">
                 <div @click="selectPlace(place)" 
-                     :class="selectedFeature && selectedFeature.id === place.id ? 'ring-2 ring-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                     :class="selectedFeature && selectedFeature.unique_id === place.unique_id ? 'ring-2 ring-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700'"
                      class="flex gap-4 p-4 rounded-2xl cursor-pointer transition-all group place-card"
                      :style="`animation-delay: ${index * 50}ms`" x-show="true">
                     

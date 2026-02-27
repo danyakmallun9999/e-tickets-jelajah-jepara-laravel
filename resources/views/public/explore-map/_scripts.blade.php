@@ -47,6 +47,12 @@
             routeOrigin: null,
             routeDestination: null,
             routeMode: 'user_to_b', // 'user_to_b' or 'a_to_b'
+            
+            // Routing UI Config
+            routingUIMode: false,
+            routeSearchQuery: '',
+            routeSearchResults: [],
+            routingFocus: null, // 'origin' or 'destination'
 
             // Map Settings
             defaultCenter: [-6.59, 110.68],
@@ -63,15 +69,19 @@
             get visiblePlaces() {
                 const ids = this.selectedCategories.length > 0 ? this.selectedCategories : this.categories.map(c => c.id);
                 let places = this.allPlaces.filter(p => {
+                     // If 'All' is selected (lengths match), just return true
+                     if (this.selectedCategories.length === this.categories.length) return true;
+                     
                      // Check if category exists and is in selected list
                      if (p.properties.category && p.properties.category.id) {
                          return ids.includes(p.properties.category.id);
                      }
-                     // If place doesn't strictly have a category object, include it only if "All" is selected (safeguard)
-                     return this.selectedCategories.length === this.categories.length;
+                     
+                     return false;
                 })
                 .map(p => ({
                     ...p.properties,
+                    unique_id: (p.properties.culture_slug ? 'culture-' : 'place-') + p.properties.id,
                     image_url: p.properties.image_url || (p.properties.image_path ? '{{ url('/') }}/' + p.properties.image_path : null),
                     category: p.properties.category,
                     latitude: p.geometry.coordinates[1],
@@ -302,33 +312,45 @@
             async fetchAllData() {
                 try {
                     this.loading = true;
-                    const [places, boundaries, culinaries] = await Promise.all([
+                    const [places, boundaries, cultures] = await Promise.all([
                         fetch('{{ route('places.geojson') }}').then(r => r.json()),
                         fetch('{{ route('boundaries.geojson') }}').then(r => r.json()),
-                        fetch('{{ route('culinaries.geojson') }}').then(r => r.json())
+                        fetch('{{ route('cultures.geojson') }}').then(r => r.json())
                     ]);
 
-                    // Merge places and culinaries for map display
+                    // Merge places and cultures for map display
                     let allFeatures = [...(places.features || [])];
                     let currentCategories = [...this.categories];
                     let currentSelected = [...this.selectedCategories];
                     
-                    if (culinaries.features && culinaries.features.length > 0) {
-                        const culinaryCategory = { id: 9999, name: 'Kuliner', icon_class: 'fa-solid fa-utensils', color: '#f97316' }; // orange-500
-                        
-                        // Check if culinary category exists in this.categories, if not add it
-                        if (!currentCategories.find(c => c.name === 'Kuliner')) {
-                            currentCategories.push(culinaryCategory);
-                            currentSelected.push(culinaryCategory.id);
-                        }
+                    if (cultures.features && cultures.features.length > 0) {
+                        const cultureFeatures = cultures.features.map(f => {
+                            // Automatically extract the matched category from the backend GeoJson properties
+                            let matchedCategory = f.properties.category;
+                            
+                            // Prevent JS errors if somehow the user skipped the backend validation
+                            if (!matchedCategory) {
+                                let fallbackName = f.properties.culture_category === 'Kuliner Khas' ? 'Kuliner' : 'Kerajinan';
+                                let fallbackIcon = f.properties.culture_category === 'Kuliner Khas' ? 'fa-solid fa-utensils' : 'fa-solid fa-palette';
+                                let fallbackColor= f.properties.culture_category === 'Kuliner Khas' ? '#f97316' : '#8b5cf6';
+                                matchedCategory = currentCategories.find(c => c.name.toLowerCase().includes(fallbackName.toLowerCase()));
+                                if (!matchedCategory) {
+                                    matchedCategory = { id: fallbackName === 'Kuliner' ? 9999 : 9998, name: fallbackName, icon_class: fallbackIcon, color: fallbackColor };
+                                    currentCategories.push(matchedCategory);
+                                }
+                            }
+                            
+                            // Ensure the category ID is selected so it shows up by default if 'All' was selected or if it's new
+                            if (this.selectedCategories.length === this.categories.length && !currentSelected.includes(matchedCategory.id)) {
+                                currentSelected.push(matchedCategory.id);
+                            }
 
-                        const culinaryFeatures = culinaries.features.map(f => {
-                            f.properties.category = culinaryCategory;
-                            f.properties.type = 'Kuliner';
+                            f.properties.category = matchedCategory;
+                            f.properties.type = matchedCategory.name;
                             f.properties.slug = f.properties.culture_slug; // map slug
                             return f;
                         });
-                        allFeatures = [...allFeatures, ...culinaryFeatures];
+                        allFeatures = [...allFeatures, ...cultureFeatures];
                     }
 
                     this.geoFeatures = allFeatures;
@@ -445,6 +467,7 @@
                 this.searchResults = this.allPlaces.filter(p => p.properties.name.toLowerCase().includes(q))
                     .map(p => ({ 
                         ...p.properties, 
+                        unique_id: (p.properties.culture_slug ? 'culture-' : 'place-') + p.properties.id,
                         image_url: p.properties.image_url,
                         type: '{{ __('Map.JS.Location') }}', 
                         category: p.properties.category,
@@ -452,6 +475,70 @@
                         longitude: p.geometry.coordinates[0] 
                     }))
                     .slice(0, 5);
+            },
+
+            performRouteSearch() {
+                if (this.routeSearchQuery.length < 2) { 
+                    this.routeSearchResults = []; 
+                    return; 
+                }
+                const term = this.routeSearchQuery.toLowerCase();
+                
+                let results = [];
+                // Allow selecting "Current Location" if we know it
+                if (this.routingFocus === 'origin' && this.userLocation) {
+                    if ("lokasi saat ini (gps)".includes(term) || "my location".includes(term) || "lokasi anda".includes(term)) {
+                        results.push({
+                            unique_id: 'user_location',
+                            name: 'Lokasi Anda Saat Ini (GPS)',
+                            category: { name: 'GPS', icon_class: 'fa-solid fa-location-crosshairs' },
+                            latitude: this.userLocation.lat,
+                            longitude: this.userLocation.lng,
+                            isUserLocation: true
+                        });
+                    }
+                }
+                
+                // Search through visible/all places
+                const queryResults = this.allPlaces.filter(p => p.properties.name.toLowerCase().includes(term))
+                    .map(p => ({ 
+                        ...p.properties, 
+                        unique_id: (p.properties.culture_slug ? 'culture-' : 'place-') + p.properties.id,
+                        image_url: p.properties.image_url,
+                        type: '{{ __('Map.JS.Location') }}', 
+                        category: p.properties.category,
+                        latitude: p.geometry.coordinates[1], 
+                        longitude: p.geometry.coordinates[0] 
+                    }))
+                    .slice(0, 5);
+                
+                this.routeSearchResults = [...results, ...queryResults];
+            },
+
+            selectRouteLocation(place) {
+                if (this.routingFocus === 'origin') {
+                    this.routeOrigin = place;
+                } else if (this.routingFocus === 'destination') {
+                    this.routeDestination = place;
+                }
+                
+                this.routeSearchQuery = '';
+                this.routeSearchResults = [];
+                this.routingFocus = null;
+                
+                if (this.routeOrigin && this.routeDestination) {
+                    this.calculateRoute(this.routeOrigin, this.routeDestination);
+                }
+            },
+            
+            swapRoutePoints() {
+                const temp = this.routeOrigin;
+                this.routeOrigin = this.routeDestination;
+                this.routeDestination = temp;
+                
+                if (this.routeOrigin && this.routeDestination) {
+                    this.calculateRoute(this.routeOrigin, this.routeDestination);
+                }
             },
 
             // ============================================
@@ -503,12 +590,14 @@
             setRouteOrigin(origin) {
                 this.routeOrigin = origin;
                 this.routeMode = 'a_to_b';
+                this.routingUIMode = true;
                 this.showToast('{{ __('Map.JS.OriginSet') ?? 'Titik Awal (A) Tersimpan' }}');
             },
             
             setRouteDestination(destination) {
                 this.routeDestination = destination;
                 this.routeMode = 'a_to_b';
+                this.routingUIMode = true;
                 this.navigationDestination = destination;
                 this.showToast('{{ __('Map.JS.DestinationSet') ?? 'Titik Tujuan (B) Tersimpan' }}');
                 
@@ -573,6 +662,33 @@
                     this.selectedFeature = null;
                     if(window.innerWidth >= 1024) this.sidebarOpen = false;
                 }, 100);
+            },
+            
+            clearRoute() {
+                if (this.routingControl) {
+                    this.map.removeControl(this.routingControl);
+                    this.routingControl = null;
+                }
+                
+                this.routeDistance = null;
+                this.routeTime = null;
+                this.hasActiveRoute = false;
+                
+                // If neither origin nor destination is set, reset fully
+                if (!this.routeOrigin && !this.routeDestination) {
+                    this.map.setView(this.defaultCenter, this.defaultZoom);
+                } else if (this.routeOrigin && this.routeDestination) {
+                    // This means one was changed, so recalculate
+                     this.calculateRoute(this.routeOrigin, this.routeDestination);
+                } else if (this.routeOrigin || this.routeDestination) {
+                    // Only one point is present, zoom to it
+                    const p = this.routeOrigin || this.routeDestination;
+                    const lat = p.lat || p.latitude;
+                    const lng = p.lng || p.longitude;
+                    if(lat && lng) {
+                        this.map.setView([lat, lng], 15);
+                    }
+                }
             },
 
             openGoogleMaps(destination) {

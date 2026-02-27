@@ -299,11 +299,12 @@
                             </div>
                         </div>
 
-                        <!-- Lokasi Rekomendasi (Khusus Kuliner) -->
-                        <div x-show="selectedCategory === 'Kuliner Khas'" x-transition x-cloak
+                        <!-- Lokasi Rekomendasi (Khusus Kuliner & Kerajinan) -->
+                        <div x-show="['Kuliner Khas', 'Kemahiran & Kerajinan Tradisional (Kriya)'].includes(selectedCategory)" x-transition x-cloak
                              x-data="{ 
                                 locations: @js(old('locations', $culture->locations->map(fn($l) => [
                                     'name' => $l->name, 
+                                    'category_id' => $l->category_id,
                                     'address' => $l->address, 
                                     'google_maps_url' => $l->google_maps_url,
                                     'latitude' => $l->latitude,
@@ -311,13 +312,13 @@
                                     'open_time' => $l->open_time ? substr($l->open_time, 0, 5) : '',
                                     'close_time' => $l->close_time ? substr($l->close_time, 0, 5) : ''
                                 ]))) 
-                             }" x-init="if(locations.length === 0) locations.push({name: '', address: '', google_maps_url: '', latitude: '', longitude: '', open_time: '', close_time: ''})">
+                             }" x-init="if(locations.length === 0) locations.push({name: '', category_id: '', address: '', google_maps_url: '', latitude: '', longitude: '', open_time: '', close_time: ''})">
                             <hr class="border-gray-100 my-8">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                                     <i class="fa-solid fa-map-location-dot text-red-500"></i> Titik Lokasi Rekomendasi
                                 </h3>
-                                <button type="button" @click="locations.push({name: '', address: '', google_maps_url: '', latitude: '', longitude: '', open_time: '', close_time: ''})" 
+                                <button type="button" @click="locations.push({name: '', category_id: '', address: '', google_maps_url: '', latitude: '', longitude: '', open_time: '', close_time: ''})" 
                                         class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors border border-blue-200">
                                     <i class="fa-solid fa-plus"></i> Tambah Lokasi
                                 </button>
@@ -333,11 +334,25 @@
                                         </button>
                                         
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                            <div class="md:col-span-2">
-                                                <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Nama Tempat <span class="text-red-500">*</span></label>
-                                                <input type="text" :name="`locations[${index}][name]`" x-model="loc.name" 
-                                                       class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm"
-                                                       placeholder="Cth: Warung Makan Bu Sum" required>
+                                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
+                                                <div>
+                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Nama Tempat <span class="text-red-500">*</span></label>
+                                                    <input type="text" :name="`locations[${index}][name]`" x-model="loc.name" 
+                                                           class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm"
+                                                           placeholder="Cth: Warung Makan Bu Sum" required>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Kategori Destinasi MAP <span class="text-red-500">*</span></label>
+                                                    <div class="flex items-center gap-2">
+                                                        <select :name="`locations[${index}][category_id]`" x-model="loc.category_id" required 
+                                                                class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm bg-white">
+                                                            <option value="" disabled>-- Pilih Kategori Peta --</option>
+                                                            @foreach($categories as $cat)
+                                                                <option value="{{ $cat->id }}" :selected="loc.category_id == {{ $cat->id }}">{{ $cat->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div>
                                                 <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Alamat Singkat</label>
@@ -380,7 +395,7 @@
                                 </template>
                             </div>
                             <p class="mt-3 text-[11px] text-gray-400 italic">
-                                * Berikan titik lokasi yang direkomendasikan untuk menikmati kuliner ini.
+                                * Berikan titik lokasi yang direkomendasikan untuk karya / kuliner ini.
                             </p>
                         </div>
 

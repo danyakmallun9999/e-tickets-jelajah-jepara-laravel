@@ -11,6 +11,7 @@ class CultureLocation extends Model
 
     protected $fillable = [
         'culture_id',
+        'category_id',
         'name',
         'address',
         'google_maps_url',
@@ -24,5 +25,10 @@ class CultureLocation extends Model
     public function culture()
     {
         return $this->belongsTo(Culture::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

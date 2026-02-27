@@ -40,7 +40,8 @@ class CultureController extends Controller
     public function create()
     {
         $this->authorizeSuperAdmin();
-        return view('admin.cultures.create');
+        $categories = \App\Models\Category::all();
+        return view('admin.cultures.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -60,6 +61,7 @@ class CultureController extends Controller
             'time'        => 'nullable|string|max:255',
             'youtube_url' => 'nullable|url|max:500',
             'locations.*.name' => 'required|string|max:255',
+            'locations.*.category_id' => 'required|exists:categories,id',
             'locations.*.address' => 'nullable|string|max:255',
             'locations.*.google_maps_url' => 'nullable|url|max:1000',
             'locations.*.open_time' => 'nullable|date_format:H:i',
@@ -106,8 +108,9 @@ class CultureController extends Controller
     public function edit(Culture $culture)
     {
         $this->authorizeSuperAdmin();
-        $culture->load('images');
-        return view('admin.cultures.edit', compact('culture'));
+        $culture->load(['images', 'locations']);
+        $categories = \App\Models\Category::all();
+        return view('admin.cultures.edit', compact('culture', 'categories'));
     }
 
     public function update(Request $request, Culture $culture)
@@ -127,6 +130,7 @@ class CultureController extends Controller
             'time'        => 'nullable|string|max:255',
             'youtube_url' => 'nullable|url|max:500',
             'locations.*.name' => 'required|string|max:255',
+            'locations.*.category_id' => 'required|exists:categories,id',
             'locations.*.address' => 'nullable|string|max:255',
             'locations.*.google_maps_url' => 'nullable|url|max:1000',
             'locations.*.open_time' => 'nullable|date_format:H:i',

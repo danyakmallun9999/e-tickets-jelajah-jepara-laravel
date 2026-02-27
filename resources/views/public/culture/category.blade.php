@@ -47,6 +47,28 @@
                 </div>
             </section>
 
+            <!-- Search and Filter Bar -->
+            <section class="mb-8">
+                <form action="{{ url()->current() }}" method="GET" class="flex items-center gap-3 w-full md:w-2/3 lg:w-1/2">
+                    <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
+                        </div>
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-800 border {{ request('search') ? 'border-sky-500 ring-1 ring-sky-500' : 'border-slate-200 dark:border-slate-700' }} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all shadow-sm font-sans" 
+                               placeholder="Cari {{ $matchedCategory['subtitle'] }}...">
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 dark:bg-sky-600 dark:hover:bg-sky-500 text-white rounded-xl text-sm font-bold tracking-wide shadow-sm transition-colors whitespace-nowrap">
+                        Cari
+                    </button>
+                    @if(request('search'))
+                        <a href="{{ url()->current() }}" class="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-sm font-bold tracking-wide transition-colors whitespace-nowrap flex items-center">
+                           Reset
+                        </a>
+                    @endif
+                </form>
+            </section>
+
             <!-- Detail Grid -->
             <section class="min-h-[600px] mb-16">
                 <div class="space-y-16">

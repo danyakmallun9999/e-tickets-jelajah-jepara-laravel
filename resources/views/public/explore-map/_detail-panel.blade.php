@@ -151,19 +151,7 @@
             {{-- Minimalist Action Bar --}}
             <div class="flex-shrink-0 p-5 pt-3 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 safe-bottom">
                 
-                {{-- A->B Route Actions (New) --}}
-                <div class="grid grid-cols-2 gap-2 mb-3 detail-actions opacity-0 translate-y-4">
-                    <button @click="setRouteOrigin(selectedFeature)" 
-                            class="h-10 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-medium text-xs flex items-center justify-center gap-1.5 transition-all">
-                        <span class="material-symbols-outlined text-sm">my_location</span>
-                        <span>Jadikan Titik A</span>
-                    </button>
-                    <button @click="setRouteDestination(selectedFeature)" 
-                            class="h-10 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-medium text-xs flex items-center justify-center gap-1.5 transition-all">
-                        <span class="material-symbols-outlined text-sm">place</span>
-                        <span>Jadikan Titik B</span>
-                    </button>
-                </div>
+                {{-- A->B Route Actions (New) removed --}}
 
                 <div class="grid grid-cols-[1fr,auto,auto,auto] gap-2 detail-actions opacity-0 translate-y-4">
                     {{-- Primary Route Button --}}
