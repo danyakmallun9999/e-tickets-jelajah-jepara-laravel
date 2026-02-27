@@ -17,20 +17,29 @@
                 @elseif($heroSetting->type === 'video' && !empty($heroSetting->media_paths))
                     <!-- Video Background -->
                     <div class="absolute inset-0 w-full h-full z-0 bg-slate-900">
-                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+                        <video autoplay loop muted playsinline class="{{ !empty($heroSetting->mobile_media_paths) ? 'hidden md:block' : '' }} absolute inset-0 w-full h-full object-cover">
                             <source src="{{ Storage::url($heroSetting->media_paths[0]) }}" type="video/mp4">
                         </video>
+                        @if(!empty($heroSetting->mobile_media_paths))
+                        <video autoplay loop muted playsinline class="block md:hidden absolute inset-0 w-full h-full object-cover">
+                            <source src="{{ Storage::url($heroSetting->mobile_media_paths[0]) }}" type="video/mp4">
+                        </video>
+                        @endif
                     </div>
                 @elseif($heroSetting->type === 'image' && !empty($heroSetting->media_paths))
                     @if(count($heroSetting->media_paths) === 1)
                         <!-- Single Image Background -->
                         <div class="absolute inset-0 w-full h-full z-0 bg-slate-900">
-                            <img src="{{ Storage::url(is_array($heroSetting->media_paths) ? array_values($heroSetting->media_paths)[0] : $heroSetting->media_paths[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Background">
+                            <img src="{{ Storage::url(is_array($heroSetting->media_paths) ? array_values($heroSetting->media_paths)[0] : $heroSetting->media_paths[0]) }}" class="{{ !empty($heroSetting->mobile_media_paths) ? 'hidden md:block' : '' }} absolute inset-0 w-full h-full object-cover" alt="Hero Desktop Background">
+                            @if(!empty($heroSetting->mobile_media_paths))
+                            <img src="{{ Storage::url(is_array($heroSetting->mobile_media_paths) ? array_values($heroSetting->mobile_media_paths)[0] : $heroSetting->mobile_media_paths[0]) }}" class="block md:hidden absolute inset-0 w-full h-full object-cover" alt="Hero Mobile Background">
+                            @endif
                         </div>
                     @else
                         <!-- Image Carousel Background -->
                         <div x-data="{ 
                                 slides: {{ json_encode(array_values(array_map(fn($path) => Storage::url($path), $heroSetting->media_paths))) }},
+                                mobileSlides: {{ json_encode(!empty($heroSetting->mobile_media_paths) ? array_values(array_map(fn($path) => Storage::url($path), $heroSetting->mobile_media_paths)) : []) }},
                                 currentSlide: 0,
                                 init() {
                                     if (this.slides.length > 1) {
@@ -42,22 +51,43 @@
                             }" 
                             class="absolute inset-0 w-full h-full z-0 bg-slate-900">
                             
-                            <!-- Static Base Image to prevent FOUC on load -->
-                            <img src="{{ Storage::url(array_values($heroSetting->media_paths)[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Background Base">
+                            <!-- DESKTOP CAROUSEL -->
+                            <div class="{{ !empty($heroSetting->mobile_media_paths) ? 'hidden md:block' : '' }} absolute inset-0 w-full h-full">
+                                <img src="{{ Storage::url(array_values($heroSetting->media_paths)[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Base Desktop">
+                                <template x-for="(slide, index) in slides" :key="'desktop-'+index">
+                                    <div x-show="currentSlide === index" 
+                                         x-transition:enter="transition-opacity ease-in-out duration-1000"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition-opacity ease-in-out duration-1000"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0"
+                                         class="absolute inset-0 w-full h-full bg-slate-900"
+                                         x-cloak>
+                                         <img :src="slide" class="w-full h-full object-cover" alt="Hero Slide Desktop">
+                                    </div>
+                                </template>
+                            </div>
 
-                            <template x-for="(slide, index) in slides" :key="index">
-                                <div x-show="currentSlide === index" 
-                                     x-transition:enter="transition-opacity ease-in-out duration-1000"
-                                     x-transition:enter-start="opacity-0"
-                                     x-transition:enter-end="opacity-100"
-                                     x-transition:leave="transition-opacity ease-in-out duration-1000"
-                                     x-transition:leave-start="opacity-100"
-                                     x-transition:leave-end="opacity-0"
-                                     class="absolute inset-0 w-full h-full bg-slate-900"
-                                     x-cloak>
-                                     <img :src="slide" class="w-full h-full object-cover" alt="Hero Background Slide">
-                                </div>
-                            </template>
+                            <!-- MOBILE CAROUSEL -->
+                            @if(!empty($heroSetting->mobile_media_paths))
+                            <div class="block md:hidden absolute inset-0 w-full h-full">
+                                <img src="{{ Storage::url(array_values($heroSetting->mobile_media_paths)[0]) }}" class="absolute inset-0 w-full h-full object-cover" alt="Hero Base Mobile">
+                                <template x-for="(slide, index) in mobileSlides" :key="'mobile-'+index">
+                                    <div x-show="currentSlide === index" 
+                                         x-transition:enter="transition-opacity ease-in-out duration-1000"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition-opacity ease-in-out duration-1000"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0"
+                                         class="absolute inset-0 w-full h-full bg-slate-900"
+                                         x-cloak>
+                                         <img :src="slide" class="w-full h-full object-cover" alt="Hero Slide Mobile">
+                                    </div>
+                                </template>
+                            </div>
+                            @endif
                         </div>
                     @endif
                 @endif

@@ -71,10 +71,6 @@ Props:
             <i class="fa-solid fa-photo-film"></i>
             Pilih dari Galeri
         </button>
-        
-        <button x-show="selectedUrls.length > 0 || filePreviews.length > 0" type="button" @click="clearSelection()" class="text-xs text-red-600 font-semibold hover:underline">
-            Bersihkan Semua
-        </button>
     </div>
 
     {{-- Gallery Modal --}}

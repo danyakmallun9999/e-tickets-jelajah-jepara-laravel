@@ -9,6 +9,7 @@ class HeroSetting extends Model
     protected $fillable = [
         'type',
         'media_paths',
+        'mobile_media_paths',
         'title_id',
         'title_en',
         'subtitle_id',
@@ -22,5 +23,6 @@ class HeroSetting extends Model
 
     protected $casts = [
         'media_paths' => 'array',
+        'mobile_media_paths' => 'array',
     ];
 }

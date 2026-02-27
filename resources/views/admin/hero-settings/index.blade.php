@@ -125,178 +125,280 @@
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="max-w-5xl mx-auto space-y-8">
                     
-                    <!-- Left Column: Background Media -->
-                    <div class="lg:col-span-1 space-y-6">
+                    <!-- 1. Background Media Type -->
+                    <div class="space-y-6">
                         <!-- Type Selection -->
                         <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
                             <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <i class="fa-solid fa-layer-group text-blue-500"></i>
                                 Tipe Latar Belakang
                             </h3>
-                            <div class="space-y-4">
-                                <label class="flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all"
-                                    :class="type === 'map' ? 'border-blue-500 bg-blue-50/50 ring-1 ring-blue-500' : 'border-gray-200 bg-gray-50 hover:bg-white content-center'">
-                                    <input type="radio" name="type" value="map" x-model="type" class="mt-1 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="relative flex flex-col items-center gap-3 p-6 rounded-3xl border-2 cursor-pointer transition-all text-center"
+                                    :class="type === 'map' ? 'border-blue-500 bg-blue-50/50 text-blue-900 shadow-md transform -translate-y-1' : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-500'">
+                                    <input type="radio" name="type" value="map" x-model="type" class="sr-only">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" :class="type === 'map' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400'">
+                                        <i class="fa-solid fa-map-location-dot text-xl"></i>
+                                    </div>
                                     <div>
-                                        <span class="block text-sm font-bold text-gray-900">Animasi Peta 3D (Default)</span>
-                                        <span class="block text-xs text-gray-500 mt-1">Menggunakan integrasi MapLibre yang interaktif sebagai latar belakang.</span>
+                                        <span class="block text-sm font-bold mb-1" :class="type === 'map' ? 'text-blue-900' : 'text-gray-900'">Peta 3D (Default)</span>
+                                        <span class="block text-[11px] leading-relaxed opacity-80">Integrasi MapLibre interaktif.</span>
                                     </div>
                                 </label>
                                 
-                                <label class="flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all"
-                                    :class="type === 'video' ? 'border-blue-500 bg-blue-50/50 ring-1 ring-blue-500' : 'border-gray-200 bg-gray-50 hover:bg-white'">
-                                    <input type="radio" name="type" value="video" x-model="type" class="mt-1 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <label class="relative flex flex-col items-center gap-3 p-6 rounded-3xl border-2 cursor-pointer transition-all text-center"
+                                    :class="type === 'video' ? 'border-blue-500 bg-blue-50/50 text-blue-900 shadow-md transform -translate-y-1' : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-500'">
+                                    <input type="radio" name="type" value="video" x-model="type" class="sr-only">
+                                     <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" :class="type === 'video' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400'">
+                                        <i class="fa-solid fa-film text-xl"></i>
+                                    </div>
                                     <div>
-                                        <span class="block text-sm font-bold text-gray-900">Video Latar (Auto Play)</span>
-                                        <span class="block text-xs text-gray-500 mt-1">Satu buah video yang berputar secara dinamis berulang tanpa suara. (Maks 50MB)</span>
+                                        <span class="block text-sm font-bold mb-1" :class="type === 'video' ? 'text-blue-900' : 'text-gray-900'">Video Latar</span>
+                                        <span class="block text-[11px] leading-relaxed opacity-80">Berputar otomatis (Maks 50MB).</span>
                                     </div>
                                 </label>
                                 
-                                <label class="flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all"
-                                    :class="type === 'image' ? 'border-blue-500 bg-blue-50/50 ring-1 ring-blue-500' : 'border-gray-200 bg-gray-50 hover:bg-white'">
-                                    <input type="radio" name="type" value="image" x-model="type" class="mt-1 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <label class="relative flex flex-col items-center gap-3 p-6 rounded-3xl border-2 cursor-pointer transition-all text-center"
+                                    :class="type === 'image' ? 'border-blue-500 bg-blue-50/50 text-blue-900 shadow-md transform -translate-y-1' : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-500'">
+                                    <input type="radio" name="type" value="image" x-model="type" class="sr-only">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" :class="type === 'image' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400'">
+                                        <i class="fa-solid fa-images text-xl"></i>
+                                    </div>
                                     <div>
-                                        <span class="block text-sm font-bold text-gray-900">Gambar Slider (Carousel)</span>
-                                        <span class="block text-xs text-gray-500 mt-1">Beberapa gambar yang dapat bergeser otomatis secara pudar (fade).</span>
+                                        <span class="block text-sm font-bold mb-1" :class="type === 'image' ? 'text-blue-900' : 'text-gray-900'">Gambar Slider</span>
+                                        <span class="block text-[11px] leading-relaxed opacity-80">Carousel dinamis memudar.</span>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Media Uploads -->
+                        <!-- 2. Media Uploads -->
                         <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm" x-show="type !== 'map'">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                                 <i class="fa-solid fa-photo-film text-blue-500"></i>
                                 Berkas Media
                             </h3>
-                            <div class="space-y-5">
-                                <!-- Video Target -->
-                                <div x-show="type === 'video'">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Unggah Video Baru</label>
-                                    <input type="file" name="video_file" @change="handleVideoUpload" accept="video/mp4,video/webm,video/ogg" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                    <p class="text-xs text-gray-400 mt-2">Format yang disarankan: MP4. Maks: 50MB.</p>
-
-                                    @if($setting->type === 'video' && !empty($setting->media_paths))
-                                        <div class="mt-4 p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                                            <span class="text-xs font-bold text-gray-700 block mb-2">Video Aktif:</span>
-                                            <video src="{{ Storage::url($setting->media_paths[0]) }}" controls class="w-full h-auto rounded-xl aspect-video object-cover"></video>
-                                            <label class="flex items-center gap-2 mt-3 cursor-pointer">
-                                                <input type="checkbox" name="remove_media" value="1" class="text-red-500 focus:ring-red-500 border-gray-300 rounded">
-                                                <span class="text-xs text-red-600 font-semibold">Hapus Video Ini</span>
-                                            </label>
+                            
+                            <!-- Video Target -->
+                            <div x-show="type === 'video'" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Desktop Video -->
+                                    <div class="relative group rounded-[2rem] border border-gray-100 bg-gray-50 shadow-sm overflow-hidden flex flex-col hover:border-blue-200 transition-colors">
+                                        <div class="px-6 py-5 border-b border-gray-100 bg-white flex flex-wrap items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                                    <i class="fa-solid fa-tv"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-gray-900">Layar Lebar</h4>
+                                                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-widest mt-0.5">Lanskap 16:9</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-widest">Wajib</span>
                                         </div>
-                                    @endif
-                                </div>
+                                        <div class="p-6 flex-1 flex flex-col justify-center">
+                                            <input type="file" name="video_file" @change="handleVideoUpload" accept="video/mp4,video/webm,video/ogg" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border file:border-gray-200 file:text-xs file:font-bold file:bg-white file:text-gray-700 hover:file:bg-gray-50 transition-colors cursor-pointer bg-white rounded-xl border border-dashed border-gray-200 hover:border-blue-300 focus:outline-none">
+                                            
+                                            @if($setting->type === 'video' && !empty($setting->media_paths))
+                                                <div class="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                                                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 aspect-video ring-1 ring-gray-900/5 shadow-inner">
+                                                        <video src="{{ Storage::url($setting->media_paths[0]) }}" controls class="w-full h-full object-cover"></video>
+                                                    </div>
+                                                    <label class="inline-flex items-center gap-2 cursor-pointer mt-2 group/del">
+                                                        <input type="checkbox" name="remove_media" value="1" class="text-red-500 focus:ring-red-500 border-gray-300 rounded transition-colors group-hover/del:border-red-400">
+                                                        <span class="text-[11px] text-red-600 font-bold group-hover/del:text-red-700">Hapus Video Ini</span>
+                                                    </label>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
 
-                                <!-- Image Target -->
-                                <div x-show="type === 'image'">
-                                    <x-admin.gallery-picker-multiple 
-                                        name="image_files" 
-                                        :values="isset($setting->media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->media_paths) : []" 
-                                        label="Gambar Slider" />
-                                    <p class="text-xs text-gray-400 mt-2">Anda dapat memilih lebih dari satu gambar dari galeri. Urutan gambar akan mengikuti urutan pemilihan.</p>
+                                    <!-- Mobile Video -->
+                                    <div class="relative group rounded-[2rem] border border-gray-100 bg-gray-50 shadow-sm overflow-hidden flex flex-col hover:border-indigo-200 transition-colors">
+                                        <div class="px-6 py-5 border-b border-gray-100 bg-white flex flex-wrap items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                    <i class="fa-solid fa-mobile-screen"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-gray-900">Layar Genggam</h4>
+                                                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-widest mt-0.5">Potret 9:16</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-3 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-full uppercase tracking-widest">Opsional</span>
+                                        </div>
+                                        <div class="p-6 flex-1 flex flex-col justify-center">
+                                            <input type="file" name="mobile_video_file" accept="video/mp4,video/webm,video/ogg" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border file:border-gray-200 file:text-xs file:font-bold file:bg-white file:text-gray-700 hover:file:bg-gray-50 transition-colors cursor-pointer bg-white rounded-xl border border-dashed border-gray-200 hover:border-indigo-300 focus:outline-none">
+                                            <p class="text-[11px] text-gray-400 mt-4 leading-relaxed flex items-start gap-2">
+                                                <i class="fa-solid fa-circle-info mt-0.5 text-indigo-400"></i>
+                                                Disarankan agar area pinggir video utama (Layar Lebar) tidak terpotong di HP.
+                                            </p>
+
+                                            @if($setting->type === 'video' && !empty($setting->mobile_media_paths))
+                                                <div class="mt-6 pt-6 border-t border-gray-200 flex flex-col items-center">
+                                                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 w-[50%] aspect-[9/16] ring-1 ring-gray-900/5 shadow-inner">
+                                                        <video src="{{ Storage::url($setting->mobile_media_paths[0]) }}" controls class="w-full h-full object-cover"></video>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Image Target -->
+                            <div x-show="type === 'image'" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Desktop Images -->
+                                    <div class="relative group rounded-[2rem] border border-gray-100 bg-gray-50 shadow-sm overflow-hidden flex flex-col hover:border-blue-200 transition-colors">
+                                        <div class="px-6 py-5 border-b border-gray-100 bg-white flex flex-wrap items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                                    <i class="fa-solid fa-tv"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-gray-900">Slider Layar Lebar</h4>
+                                                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-widest mt-0.5">Lanskap 16:9</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-widest">Wajib</span>
+                                        </div>
+                                        <div class="p-6 flex-1 flex flex-col">
+                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/10 transition-all flex flex-col cursor-pointer">
+                                                <x-admin.gallery-picker-multiple 
+                                                    name="image_files" 
+                                                    :values="isset($setting->media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->media_paths) : []" 
+                                                    label="Pilih Galeri Lanskap" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile Images -->
+                                    <div class="relative group rounded-[2rem] border border-gray-100 bg-gray-50 shadow-sm overflow-hidden flex flex-col hover:border-indigo-200 transition-colors">
+                                         <div class="px-6 py-5 border-b border-gray-100 bg-white flex flex-wrap items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                    <i class="fa-solid fa-mobile-screen"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-gray-900">Slider Layar Genggam</h4>
+                                                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-widest mt-0.5">Potret 9:16</p>
+                                                </div>
+                                            </div>
+                                            <span class="px-3 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-full uppercase tracking-widest">Opsional</span>
+                                        </div>
+                                        <div class="p-6 flex-1 flex flex-col">
+                                            <div class="bg-white p-5 rounded-2xl border border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/10 transition-all flex flex-col cursor-pointer">
+                                                <x-admin.gallery-picker-multiple 
+                                                    name="mobile_image_files" 
+                                                    :values="isset($setting->mobile_media_paths) && $setting->type === 'image' ? array_map(fn($p) => Storage::url($p), $setting->mobile_media_paths) : []" 
+                                                    label="Pilih Galeri Potret" />
+                                            </div>
+                                            <p class="text-[11px] text-gray-400 mt-4 leading-relaxed flex items-start gap-2">
+                                                <i class="fa-solid fa-circle-info mt-0.5 text-indigo-400"></i>
+                                                Jumlah gambar potret di atas *harus sama* dengan jumlah gambar lanskap di sebelahnya.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Column: Content Texts -->
-                    <div class="lg:col-span-2 space-y-6">
-                        <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                    <i class="fa-solid fa-font text-blue-500"></i>
-                                    Konten Teks (Opsional)
-                                </h3>
-                                <button type="button" 
-                                        @click="autoTranslate()"
-                                        :disabled="isTranslating"
-                                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0">
-                                    <template x-if="!isTranslating">
-                                        <div class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Terjemahkan Otomatis</div>
-                                    </template>
-                                     <template x-if="isTranslating">
-                                        <div class="flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Translating...</div>
-                                    </template>
-                                </button>
+                    <!-- 3. Text Content -->
+                    <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                            <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                <i class="fa-solid fa-font text-blue-500"></i>
+                                Konten Teks
+                            </h3>
+                            <button type="button" 
+                                    @click="autoTranslate()"
+                                    :disabled="isTranslating"
+                                    class="px-4 py-2 bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50">
+                                <template x-if="!isTranslating">
+                                    <div class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Terjemahkan ke English</div>
+                                </template>
+                                 <template x-if="isTranslating">
+                                    <div class="flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Sedang Menerjemahkan...</div>
+                                </template>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-gray-50/50 text-gray-500 text-xs p-4 rounded-2xl flex gap-3 border border-gray-100">
+                                 <i class="fa-solid fa-circle-info mt-0.5"></i>
+                                 <p class="font-medium leading-relaxed">Seluruh teks opsional. Jika dikosongkan, Hero hanya akan menampilkan gambar/video tanpa tulisan.</p>
                             </div>
-                            <div class="space-y-6">
-                                <div class="bg-blue-50 text-blue-800 text-xs p-4 rounded-2xl flex gap-3 border border-blue-100">
-                                     <i class="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
-                                     <p class="font-medium leading-relaxed">Seluruh teks bersifat *opsional*. Jika Anda membiarkan formulir di bawah ini kosong, bagian *Hero* hanya akan menampilkan visual media layar penuh (tanpa tulisan apapun).</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                <!-- Badge -->
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Badge <span class="text-gray-400 font-normal ml-1">Indonesia</span></label>
+                                    <input type="text" name="badge_id" value="{{ old('badge_id', $setting->badge_id) }}" x-model="badge_id" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium" placeholder="Contoh: Jelajahi Jepara">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Badge <span class="text-gray-400 font-normal ml-1">English</span></label>
+                                    <input type="text" name="badge_en" value="{{ old('badge_en', $setting->badge_en) }}" x-model="badge_en" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium" placeholder="Ex: Explore Jepara">
+                                </div>
+
+                                <!-- Title -->
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Judul Utama <span class="text-gray-400 font-normal ml-1">Indonesia</span></label>
+                                    <textarea name="title_id" rows="2" x-model="title_id" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium" placeholder="Temukan Keajaiban">{{ old('title_id', $setting->title_id) }}</textarea>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Judul Utama <span class="text-gray-400 font-normal ml-1">English</span></label>
+                                    <textarea name="title_en" rows="2" x-model="title_en" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium" placeholder="Discover Wonders">{{ old('title_en', $setting->title_en) }}</textarea>
+                                </div>
+
+                                <!-- Subtitle -->
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Subjudul <span class="text-gray-400 font-normal ml-1">Indonesia</span></label>
+                                    <textarea name="subtitle_id" rows="3" x-model="subtitle_id" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium" placeholder="Deskripsi pendek...">{{ old('subtitle_id', $setting->subtitle_id) }}</textarea>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Subjudul <span class="text-gray-400 font-normal ml-1">English</span></label>
+                                    <textarea name="subtitle_en" rows="3" x-model="subtitle_en" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium" placeholder="Short description...">{{ old('subtitle_en', $setting->subtitle_en) }}</textarea>
                                 </div>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Badge (ID)</label>
-                                        <input type="text" name="badge_id" value="{{ old('badge_id', $setting->badge_id) }}" x-model="badge_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Contoh: Jelajahi Jepara">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Badge (EN)</label>
-                                        <input type="text" name="badge_en" value="{{ old('badge_en', $setting->badge_en) }}" x-model="badge_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Explore Jepara">
-                                    </div>
+                                <!-- Button Link -->
+                                <div class="md:col-span-2 space-y-2 pt-4 border-t border-gray-100">
+                                    <label class="block text-sm font-semibold text-gray-700">URL / Link Tombol</label>
+                                    <input type="text" name="button_link" value="{{ old('button_link', $setting->button_link) }}" class="block w-full md:w-1/2 px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium" placeholder="Misal: #jelajah">
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Utama (ID)</label>
-                                        <textarea name="title_id" rows="2" x-model="title_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Contoh: Temukan Keajaiban">{{ old('title_id', $setting->title_id) }}</textarea>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Utama (EN)</label>
-                                        <textarea name="title_en" rows="2" x-model="title_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Ex: Discover Wonders">{{ old('title_en', $setting->title_en) }}</textarea>
-                                    </div>
+                                <!-- Button Texts -->
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Teks Tombol <span class="text-gray-400 font-normal ml-1">Indonesia</span></label>
+                                    <input type="text" name="button_text_id" value="{{ old('button_text_id', $setting->button_text_id) }}" x-model="btn_id" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium" placeholder="Mulai Petualangan">
                                 </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Subjudul (ID)</label>
-                                        <textarea name="subtitle_id" rows="3" x-model="subtitle_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Deskripsi pendek...">{{ old('subtitle_id', $setting->subtitle_id) }}</textarea>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Subjudul (EN)</label>
-                                        <textarea name="subtitle_en" rows="3" x-model="subtitle_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Short description...">{{ old('subtitle_en', $setting->subtitle_en) }}</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Teks Tombol (ID)</label>
-                                        <input type="text" name="button_text_id" value="{{ old('button_text_id', $setting->button_text_id) }}" x-model="btn_id" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Mulai Petualangan">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Teks Tombol (EN)</label>
-                                        <input type="text" name="button_text_en" value="{{ old('button_text_en', $setting->button_text_en) }}" x-model="btn_en" class="block w-full px-4 py-3 bg-indigo-50/30 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="Start Adventure">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">URL / Link Tombol</label>
-                                        <input type="text" name="button_link" value="{{ old('button_link', $setting->button_link) }}" class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:bg-white focus:ring-0 focus:border-blue-500 transition-all shadow-sm" placeholder="#jelajah">
-                                    </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700">Teks Tombol <span class="text-gray-400 font-normal ml-1">English</span></label>
+                                    <input type="text" name="button_text_en" value="{{ old('button_text_en', $setting->button_text_en) }}" x-model="btn_en" class="block w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-900 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium" placeholder="Start Adventure">
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Bottom Full Row: Realtime Preview -->
-                    <div class="lg:col-span-3 mt-4">
-                        <div class="bg-white p-6 rounded-[2.5rem] border border-gray-200 shadow-sm space-y-6">
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-1">
-                                        <i class="fa-solid fa-eye text-blue-500"></i>
-                                        Pratinjau Langsung (Preview)
+                    <!-- 4. Realtime Preview -->
+                    <div class="mt-8 pt-6 border-t border-gray-200 relative">
+                        <div class="bg-gray-100 rounded-[2.5rem] border border-gray-200 shadow-sm overflow-hidden relative">
+                            <!-- Preview Settings Bar (Floating at Top) -->
+                            <div class="absolute top-4 left-4 right-4 z-50 flex items-center justify-between pointer-events-none">
+                                <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border border-white/20 pointer-events-auto">
+                                    <h3 class="text-xs font-bold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                                        <i class="fa-solid fa-eye text-blue-500"></i> PREVIEW
                                     </h3>
-                                    <p class="text-xs text-gray-500">Lihat perkiraan tampilan Hero Section secara langsung berdasarkan data tulisan dan tipe media Anda.</p>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button type="button" @click="previewLang = 'id'" :class="previewLang === 'id' ? 'bg-blue-600 text-white ring-2 ring-blue-500/30' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-5 py-2 text-xs font-bold rounded-xl transition-all">Preview ID</button>
-                                    <button type="button" @click="previewLang = 'en'" :class="previewLang === 'en' ? 'bg-blue-600 text-white ring-2 ring-blue-500/30' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-5 py-2 text-xs font-bold rounded-xl transition-all">Preview EN</button>
+                                <div class="flex gap-2 pointer-events-auto">
+                                    <button type="button" @click="previewLang = 'id'" :class="previewLang === 'id' ? 'bg-white shadow-sm font-bold text-gray-900' : 'text-gray-500 hover:bg-white/50'" class="px-4 py-2 text-xs font-medium rounded-xl transition-all border border-transparent" :class="previewLang === 'id' && 'border-gray-200'">ID</button>
+                                    <button type="button" @click="previewLang = 'en'" :class="previewLang === 'en' ? 'bg-white shadow-sm font-bold text-gray-900' : 'text-gray-500 hover:bg-white/50'" class="px-4 py-2 text-xs font-medium rounded-xl transition-all border border-transparent" :class="previewLang === 'en' && 'border-gray-200'">EN</button>
                                 </div>
                             </div>
-                            
-                            <div class="relative w-full h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden bg-slate-900 ring-1 ring-slate-900/10 shadow-lg flex flex-col items-center justify-center transition-all duration-500">
+                            <div class="relative w-full h-[350px] md:h-[450px] rounded-[2rem] overflow-hidden bg-slate-900 ring-1 ring-slate-900/10 shadow-lg flex flex-col items-center justify-center transition-all duration-500">
                                 <!-- Dynamic Simulated Background based on current Type selection -->
                                 <div class="absolute inset-0 z-0 flex items-center justify-center transition-opacity duration-300"
                                      :class="type === 'map' ? 'bg-[#1e293b]' : (type === 'video' ? 'bg-[#0f172a]' : 'bg-[#334155]')">
@@ -398,9 +500,10 @@
                     </div>
 
                     <!-- Submit Action -->
-                    <div class="lg:col-span-3 flex justify-end gap-3 mt-4">
-                        <button type="submit" class="inline-flex items-center px-8 py-3.5 bg-blue-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
-                            <i class="fa-solid fa-save mr-2"></i> Simpan Pengaturan
+                    <div class="flex justify-between items-center mt-8 pt-8 border-t border-gray-200">
+                        <p class="text-xs text-gray-500">Selalu pastikan hasil <strong>Preview</strong> sudah sesuai ekspektasi sebelum menyimpan.</p>
+                        <button type="submit" class="inline-flex items-center px-8 py-4 bg-gray-900 rounded-2xl font-bold text-sm text-white hover:bg-gray-800 active:bg-black focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                            Simpan Pengaturan
                         </button>
                     </div>
                 </div>
