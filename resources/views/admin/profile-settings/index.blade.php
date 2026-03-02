@@ -217,23 +217,17 @@
                                 Media Gambar
                             </h3>
                             <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Utama (Lanskap)</label>
-                                    <input type="file" name="image_main" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer">
-                                    @if($setting->image_main)
-                                        <div class="mt-2 rounded-xl overflow-hidden h-20 w-32 shadow-sm border border-gray-100">
-                                            <img src="{{ Storage::url($setting->image_main) }}" class="w-full h-full object-cover">
-                                        </div>
-                                    @endif
+                                <div class="bg-gray-50 border border-gray-100 p-4 rounded-xl">
+                                    <x-admin.gallery-picker name="image_main" 
+                                        :value="$setting->image_main ? Storage::url($setting->image_main) : null" 
+                                        label="Gambar Utama (Portrait)" />
+                                    <x-input-error :messages="$errors->get('image_main')" class="mt-2" />
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Sekunder (Kecil)</label>
-                                    <input type="file" name="image_secondary" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer">
-                                     @if($setting->image_secondary)
-                                        <div class="mt-2 rounded-xl overflow-hidden h-20 w-20 shadow-sm border border-gray-100">
-                                            <img src="{{ Storage::url($setting->image_secondary) }}" class="w-full h-full object-cover">
-                                        </div>
-                                    @endif
+                                <div class="bg-gray-50 border border-gray-100 p-4 rounded-xl">
+                                    <x-admin.gallery-picker name="image_secondary" 
+                                        :value="$setting->image_secondary ? Storage::url($setting->image_secondary) : null" 
+                                        label="Gambar Sekunder (Kecil)" />
+                                    <x-input-error :messages="$errors->get('image_secondary')" class="mt-2" />
                                 </div>
                             </div>
                         </div>

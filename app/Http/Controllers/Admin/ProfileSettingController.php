@@ -76,6 +76,13 @@ class ProfileSettingController extends Controller
                 Storage::disk('public')->delete($setting->image_main);
             }
             $setting->image_main = $request->file('image_main')->store('profile', 'public');
+        } elseif ($request->filled('image_main_gallery_url')) {
+            $url = $request->input('image_main_gallery_url');
+            $baseUrl = rtrim(Storage::url(''), '/');
+            $path = ltrim(str_replace($baseUrl, '', $url), '/');
+            if (!empty($path)) {
+                $setting->image_main = $path;
+            }
         }
 
         if ($request->hasFile('image_secondary')) {
@@ -83,6 +90,13 @@ class ProfileSettingController extends Controller
                 Storage::disk('public')->delete($setting->image_secondary);
             }
             $setting->image_secondary = $request->file('image_secondary')->store('profile', 'public');
+        } elseif ($request->filled('image_secondary_gallery_url')) {
+            $url = $request->input('image_secondary_gallery_url');
+            $baseUrl = rtrim(Storage::url(''), '/');
+            $path = ltrim(str_replace($baseUrl, '', $url), '/');
+            if (!empty($path)) {
+                $setting->image_secondary = $path;
+            }
         }
 
         $setting->save();
