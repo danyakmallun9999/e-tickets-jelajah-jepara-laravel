@@ -100,6 +100,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'edit'])->name('hero-settings.edit');
     Route::put('hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
 
+    // Profile Settings (Pearl of Peninsula) routes
+    Route::get('profile-settings', [\App\Http\Controllers\Admin\ProfileSettingController::class, 'edit'])->name('profile-settings.edit');
+    Route::put('profile-settings', [\App\Http\Controllers\Admin\ProfileSettingController::class, 'update'])->name('profile-settings.update');
+
     // Media Gallery routes
     Route::get('media/api', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])->name('media.api');
     Route::get('media', [\App\Http\Controllers\Admin\MediaController::class, 'index'])->name('media.index');

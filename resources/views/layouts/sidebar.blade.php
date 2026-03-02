@@ -153,6 +153,9 @@
                     <a href="{{ route('admin.hero-settings.edit') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.hero-settings.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
                         Pengaturan Hero
                     </a>
+                    <a href="{{ route('admin.profile-settings.edit') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.profile-settings.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
+                        Pengaturan Profil
+                    </a>
                     <a href="{{ route('admin.footer-settings.edit') }}" class="block px-4 py-2.5 text-sm {{ request()->routeIs('admin.footer-settings.*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }} transition-colors" wire:navigate>
                         Pengaturan Footer
                     </a>
@@ -174,6 +177,11 @@
                        class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.hero-settings.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
                        wire:navigate>
                        <span class="{{ request()->routeIs('admin.hero-settings.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pengaturan Hero</span>
+                    </a>
+                    <a href="{{ route('admin.profile-settings.edit') }}" 
+                       class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.profile-settings.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"
+                       wire:navigate>
+                       <span class="{{ request()->routeIs('admin.profile-settings.*') ? 'translate-x-1' : '' }} inline-block transition-transform duration-200">Pengaturan Profil</span>
                     </a>
                     <a href="{{ route('admin.footer-settings.edit') }}" 
                        class="block px-3 py-2 rounded-lg text-sm transition-all relative {{ request()->routeIs('admin.footer-settings.*') ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}"

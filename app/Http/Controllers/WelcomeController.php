@@ -109,6 +109,33 @@ class WelcomeController extends Controller
             ]);
         }
 
+        $profileSetting = \App\Models\ProfileSetting::first();
+        if (!$profileSetting) {
+            $profileSetting = new \App\Models\ProfileSetting([
+                'label_id' => 'Profil Wilayah',
+                'label_en' => 'Regional Profile',
+                'title_id' => 'Mutiara Semenanjung.',
+                'title_en' => 'The Pearl of The Peninsula.',
+                'description_id' => 'Kabupaten Jepara, permata di ujung utara Jawa Tengah. Garis pantai membentang 83 km, menyatukan budaya ukir kelas dunia dengan keindahan alam tropis.',
+                'description_en' => 'Jepara Regency, the jewel of Central Java\'s northern tip. An 83 km coastline uniting world-class carving culture with tropical natural beauty.',
+                'stat_count' => '150',
+                'stat_label_id' => 'Destinasi',
+                'stat_label_en' => 'Destinations',
+                'pillar_nature_title_id' => 'Alam',
+                'pillar_nature_title_en' => 'Nature',
+                'pillar_nature_desc_id' => 'Surga Tropis',
+                'pillar_nature_desc_en' => 'Tropical Paradise',
+                'pillar_heritage_title_id' => 'Sejarah',
+                'pillar_heritage_title_en' => 'Heritage',
+                'pillar_heritage_desc_id' => 'Bumi Kartini',
+                'pillar_heritage_desc_en' => 'Land of Kartini',
+                'pillar_arts_title_id' => 'Seni',
+                'pillar_arts_title_en' => 'Arts',
+                'pillar_arts_desc_id' => 'Ukir Dunia',
+                'pillar_arts_desc_en' => 'World Carving',
+            ]);
+        }
+
         // Active Announcements untuk popup welcome (maks 4)
         $announcements = Announcement::active()->latest()->take(4)->get();
 
@@ -133,6 +160,7 @@ class WelcomeController extends Controller
             'upcomingEvent',
             'nextEvents',
             'heroSetting',
+            'profileSetting',
             'announcements',
             'legends'
         ));
