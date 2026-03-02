@@ -69,6 +69,18 @@ class Culture extends Model
     public function getImageUrlAttribute()
     {
         if (!$this->image) {
+            if (Str::contains($this->category, 'Adat Istiadat')) {
+                return asset('images/culture/kategori/adat.png');
+            }
+            if (Str::contains($this->category, 'Kemahiran') || Str::contains($this->category, 'Kerajinan')) {
+                return asset('images/culture/kategori/kerajinan.png');
+            }
+            if (Str::contains($this->category, 'Seni Pertunjukan')) {
+                return asset('images/culture/kategori/pertunjukan.png');
+            }
+            if (Str::contains($this->category, 'Kuliner')) {
+                return asset('images/culture/kategori/kuliner.png');
+            }
             return null;
         }
 

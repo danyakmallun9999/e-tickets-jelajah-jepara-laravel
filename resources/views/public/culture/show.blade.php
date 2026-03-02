@@ -32,12 +32,9 @@
                 ═══════════════════════════════════════ --}}
                 @php
                     $galleryImages = collect([]);
-                    if ($culture->image) {
-                        $galleryImages->push(
-                            file_exists(public_path('storage/' . $culture->image))
-                                ? asset('storage/' . $culture->image)
-                                : asset($culture->image)
-                        );
+                    $mainImage = $culture->image_url;
+                    if ($mainImage) {
+                        $galleryImages->push($mainImage);
                     }
                     foreach($culture->images as $img) {
                         $galleryImages->push(asset('storage/' . $img->image_path));

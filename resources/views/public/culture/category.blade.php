@@ -79,22 +79,23 @@
                                  class="culture-card w-full block relative group overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800 cursor-pointer aspect-[3/4] md:aspect-[4/5]">
                                 
                                 <!-- Background Image -->
-                                @if($culture->image)
-                                    <div class="card-bg absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $culture->image_url }}');"></div>
-                                @else
-                                    <div class="card-bg absolute inset-0 bg-slate-300 dark:bg-slate-700 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-6xl text-slate-400">theater_comedy</span>
-                                    </div>
-                                @endif
+                                <div class="card-bg absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-125" style="background-image: url('{{ $culture->image_url }}');">
+                                    @if(!$culture->image_url)
+                                        <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400">
+                                            <span class="material-symbols-outlined text-6xl">theater_comedy</span>
+                                        </div>
+                                    @endif
+                                </div>
 
-                                <!-- Gradient Overlay -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                                <!-- Gradient Overlay (Dynamic on Hover/Active) -->
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 group-active:bg-black/60 transition-all duration-700"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-700"></div>
 
                                 <!-- Content -->
-                                <div class="absolute inset-0 p-8 flex flex-col justify-end">
-                                    <h3 class="text-white text-3xl font-bold mb-3 leading-tight font-display">{{ $culture->name }}</h3>
+                                <div class="absolute inset-0 p-8 flex flex-col justify-end transform transition-all duration-500">
+                                    <h3 class="text-white text-3xl font-bold mb-3 leading-tight font-display drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ $culture->name }}</h3>
                                     
-                                    <p class="card-description text-slate-200 text-base leading-relaxed font-sans mb-6 line-clamp-3">
+                                    <p class="card-description text-slate-200 text-base leading-relaxed font-sans mb-6 line-clamp-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 group-active:opacity-100 group-active:translate-y-0 transition-all duration-500">
                                         {{Str::limit($culture->description, 100)}}
                                     </p>
                                     

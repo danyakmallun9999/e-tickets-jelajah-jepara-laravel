@@ -33,8 +33,8 @@
                     <div class="absolute inset-0 bg-gray-800 -z-10"></div>
 
                     <!-- Overlay Gradient -->
-                    <div class="absolute inset-0 transition-opacity duration-500"
-                         :class="active === {{ $index }} ? 'bg-gradient-to-t from-black/90 via-black/40 to-transparent' : 'bg-black/60 group-hover:bg-black/40'"></div>
+                    <div class="absolute inset-0 transition-all duration-500"
+                         :class="active === {{ $index }} ? 'bg-gradient-to-t from-black/90 via-black/40 to-transparent' : 'bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/85 group-hover:via-black/50 group-active:from-black/95 group-active:via-black/70'"></div>
 
                     <!-- Inactive State Content (Horizontal Text) -->
                     <div class="absolute inset-0 flex items-end justify-center pb-8 transition-opacity duration-500"

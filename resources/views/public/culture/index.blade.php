@@ -51,7 +51,7 @@
                            class="culture-card w-full block relative group overflow-hidden rounded-xl bg-slate-200 cursor-pointer aspect-video md:aspect-[4/3]"
                            wire:navigate>
                             
-                            <div class="card-bg absolute inset-0 bg-cover bg-center" style="{{ $category['image'] ? "background-image: url('{$category['image']}');" : 'background-color: #cbd5e1;' }}">
+                            <div class="card-bg absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="{{ $category['image'] ? "background-image: url('{$category['image']}');" : 'background-color: #cbd5e1;' }}">
                                 @if(!$category['image'])
                                 <div class="w-full h-full flex items-center justify-center opacity-30">
                                     <span class="material-symbols-outlined text-6xl">collections</span>
@@ -59,7 +59,8 @@
                                 @endif
                             </div>
                             
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 group-active:bg-black/60 transition-all duration-500"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-500"></div>
                             <div class="absolute inset-0 p-4 md:p-6 lg:p-8 flex flex-col justify-end">
                                 <h3 class="text-white text-lg md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2 lg:mb-3 leading-tight">{{ $category['title'] }}</h3>
                                 <div class="flex items-center text-primary font-bold gap-2 text-[10px] md:text-xs lg:text-sm uppercase tracking-wider group/link">

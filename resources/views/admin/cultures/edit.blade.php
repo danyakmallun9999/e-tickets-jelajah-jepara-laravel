@@ -336,15 +336,15 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                             <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
                                                 <div>
-                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Nama Tempat <span class="text-red-500">*</span></label>
+                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Nama Tempat</label>
                                                     <input type="text" :name="`locations[${index}][name]`" x-model="loc.name" 
                                                            class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm"
-                                                           placeholder="Cth: Warung Makan Bu Sum" required>
+                                                           placeholder="Cth: Warung Makan Bu Sum">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Kategori Destinasi MAP <span class="text-red-500">*</span></label>
+                                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1.5 ml-1">Kategori Destinasi MAP</label>
                                                     <div class="flex items-center gap-2">
-                                                        <select :name="`locations[${index}][category_id]`" x-model="loc.category_id" required 
+                                                        <select :name="`locations[${index}][category_id]`" x-model="loc.category_id" 
                                                                 class="block w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm bg-white">
                                                             <option value="" disabled>-- Pilih Kategori Peta --</option>
                                                             @foreach($categories as $cat)

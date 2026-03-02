@@ -171,28 +171,42 @@ class WelcomeController extends Controller
                 'id' => 'Kemahiran & Kerajinan Tradisional (Kriya)',
                 'title' => 'Kemahiran & Kerajinan Tradisional (Kriya)', 
                 'subtitle' => 'Kriya',
-                'description' => 'Jepara is known as the World Carving Center, featuring exquisite wood carving, Troso weaving, and batik.',
+                'description' => 'Jepara dikenal sebagai Pusat Ukir Dunia, menampilkan seni ukir kayu yang indah, tenun Troso, dan batik.',
                 'image' => asset('images/culture/kategori/kerajinan.png')
             ],
             'Adat Istiadat, Ritus, & Perayaan Tradisional' => [
                 'id' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
                 'title' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
                 'subtitle' => 'Tradisi',
-                'description' => 'Sacred traditions like Perang Obor and Pesta Lomban that celebrate the gratitude and history of Jepara.',
+                'description' => 'Tradisi sakral seperti Perang Obor dan Pesta Lomban yang merayakan rasa syukur dan sejarah Jepara.',
+                'image' => asset('images/culture/kategori/adat.png')
+            ],
+            'Adat Istiadat, Ritus, dan Perayaan Tradisional' => [
+                'id' => 'Adat Istiadat, Ritus, dan Perayaan Tradisional',
+                'title' => 'Adat Istiadat, Ritus, dan Perayaan Tradisional',
+                'subtitle' => 'Tradisi',
+                'description' => 'Tradisi sakral seperti Perang Obor dan Pesta Lomban yang merayakan rasa syukur dan sejarah Jepara.',
                 'image' => asset('images/culture/kategori/adat.png')
             ],
             'Seni Pertunjukan' => [
                 'id' => 'Seni Pertunjukan',
                 'title' => 'Seni Pertunjukan',
                 'subtitle' => 'Seni',
-                'description' => 'Experience the rhythm of Wayang Kulit, Kridhajati Dance, and the graceful movements of local arts.',
+                'description' => 'Nikmati irama Wayang Kulit, Tari Kridhajati, dan gerakan anggun kesenian lokal Jepara.',
+                'image' => asset('images/culture/kategori/pertunjukan.png')
+            ],
+            'Seni Pertunjukan & Tarian' => [
+                'id' => 'Seni Pertunjukan & Tarian',
+                'title' => 'Seni Pertunjukan & Tarian',
+                'subtitle' => 'Seni',
+                'description' => 'Nikmati irama Wayang Kulit, Tari Kridhajati, dan gerakan anggun kesenian lokal Jepara.',
                 'image' => asset('images/culture/kategori/pertunjukan.png')
             ],
             'Kuliner Khas' => [
                 'id' => 'Kuliner Khas',
                 'title' => 'Kuliner Khas Jepara',
                 'subtitle' => 'Kuliner',
-                'description' => 'A journey through spice and tradition, exploring the diverse flavors of Jepara\'s legendary food.',
+                'description' => 'Perjalanan melalui rempah dan tradisi, menjelajahi beragam rasa makanan legendaris Jepara.',
                 'image' => asset('images/culture/kategori/kuliner.png')
             ]
         ];
@@ -211,12 +225,18 @@ class WelcomeController extends Controller
         // Then, add remaining categories from DB
         foreach ($databaseCategories as $categoryName) {
             if (!in_array($categoryName, $categoryOrder)) {
+                $image = null;
+                if (Str::contains($categoryName, 'Adat Istiadat')) $image = asset('images/culture/kategori/adat.png');
+                elseif (Str::contains($categoryName, 'Kemahiran') || Str::contains($categoryName, 'Kerajinan')) $image = asset('images/culture/kategori/kerajinan.png');
+                elseif (Str::contains($categoryName, 'Seni Pertunjukan')) $image = asset('images/culture/kategori/pertunjukan.png');
+                elseif (Str::contains($categoryName, 'Kuliner')) $image = asset('images/culture/kategori/kuliner.png');
+
                 $categoriesForAlpine[] = [
                     'id' => $categoryName,
                     'title' => $categoryName,
                     'subtitle' => 'Koleksi',
-                    'description' => 'Discover more of Jepara\'s rich cultural diversity in this collection.',
-                    'image' => null // Will have fallback in view
+                    'description' => 'Temukan lebih banyak kekayaan budaya Jepara dalam koleksi ini.',
+                    'image' => $image
                 ];
                 $categoryOrder[] = $categoryName;
             }
