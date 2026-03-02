@@ -262,13 +262,23 @@
                     @endauth
                 </div>
 
-                <!-- Mobile Menu Button (Hamburger to Close) -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen; menuUsed = true"
-                    class="lg:hidden p-2 relative z-50 w-10 h-10 flex items-center justify-center text-slate-800 dark:text-white rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                    <div class="w-6 flex flex-col items-end gap-[5px] transition-all duration-300" :class="{ 'gap-0': mobileMenuOpen }">
-                        <span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 origin-right" :class="{ '-rotate-45 -translate-x-[2px] w-6': mobileMenuOpen }"></span>
-                        <span class="w-4 h-0.5 bg-current rounded-full transition-all duration-300" :class="{ 'opacity-0 scale-0': mobileMenuOpen }"></span>
-                        <span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 origin-right" :class="{ 'rotate-45 -translate-x-[2px] w-6': mobileMenuOpen }"></span>
+                <!-- Mobile Menu Button (Ultra Premium Converging X) -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                    class="lg:hidden p-2 relative z-50 w-12 h-12 flex items-center justify-center rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group overflow-hidden"
+                    :class="mobileMenuOpen ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-110' : 'text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50'">
+                    
+                    <div class="relative w-6 h-6 flex flex-col justify-center items-center">
+                        <!-- Top Bar -->
+                        <span class="absolute w-full h-0.5 bg-current rounded-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" 
+                            :class="mobileMenuOpen ? 'rotate-45 scale-110' : '-translate-y-2'"></span>
+                        
+                        <!-- Middle Bar (Implode) -->
+                        <span class="absolute w-full h-0.5 bg-current rounded-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" 
+                            :class="mobileMenuOpen ? 'scale-x-0 opacity-0' : 'scale-x-100 opacity-100'"></span>
+                        
+                        <!-- Bottom Bar -->
+                        <span class="absolute w-full h-0.5 bg-current rounded-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" 
+                            :class="mobileMenuOpen ? '-rotate-45 scale-110' : 'translate-y-2'"></span>
                     </div>
                 </button>
             </div>
