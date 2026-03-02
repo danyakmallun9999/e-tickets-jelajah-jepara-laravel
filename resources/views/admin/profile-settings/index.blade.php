@@ -353,8 +353,17 @@
                             <div class="space-y-6 md:space-y-7">
                                 <div class="space-y-1 md:space-y-2">
                                     <span class="block text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-blue-400" x-text="currentData.label"></span>
-                                    <h2 class="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold text-white leading-[1.2] md:leading-[1.1] transition-all duration-300 max-w-xl whitespace-pre-line"
-                                        x-text="currentData.title">
+                                    <h2 class="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold leading-[1.2] md:leading-[1.1] transition-all duration-300 max-w-xl">
+                                        <template x-if="currentData.title">
+                                            <div>
+                                                <span class="text-white" x-text="currentData.title.split('\n')[0]"></span>
+                                                <template x-if="currentData.title.split('\n').length > 1">
+                                                    <div>
+                                                        <span class="text-gray-500 text-3xl md:text-5xl lg:text-6xl" x-text="currentData.title.split('\n').slice(1).join('\n')"></span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
                                     </h2>
                                 </div>
                                 <p class="text-base md:text-lg text-gray-400 leading-relaxed font-light max-w-md whitespace-pre-line opacity-80" x-text="currentData.description"></p>

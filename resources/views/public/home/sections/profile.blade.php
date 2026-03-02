@@ -19,8 +19,17 @@
                             </span>
                             
                             <!-- Typography -->
-                            <h2 class="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold leading-[1.2] md:leading-[1.1] text-gray-900 dark:text-white max-w-xl whitespace-pre-line">
-                                {{ $profileSetting->getTranslatedAttribute('title') }}
+                            <h2 class="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold leading-[1.2] md:leading-[1.1] max-w-xl">
+                                @php
+                                    $titleLines = explode("\n", $profileSetting->getTranslatedAttribute('title'));
+                                @endphp
+                                <span class="text-gray-900 dark:text-white">{{ $titleLines[0] }}</span>
+                                @if(count($titleLines) > 1)
+                                    <br>
+                                    <span class="text-gray-400 dark:text-gray-500">
+                                        {{ implode("\n", array_slice($titleLines, 1)) }}
+                                    </span>
+                                @endif
                             </h2>
                         </div>
 
