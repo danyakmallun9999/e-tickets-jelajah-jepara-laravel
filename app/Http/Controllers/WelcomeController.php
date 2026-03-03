@@ -277,7 +277,7 @@ class WelcomeController extends Controller
         ];
     }
 
-    public function showCultureCategory(Request $request, string $slug): View
+    public function showCultureCategory(Request $request, string $categorySlug): View
     {
         $search = $request->query('search');
         $categoriesData = $this->getCultureCategories();
@@ -286,7 +286,7 @@ class WelcomeController extends Controller
         $matchedCategory = null;
         
         foreach ($allCategories as $category) {
-            if (Str::slug($category['title']) === $slug) {
+            if (Str::slug($category['title']) === $categorySlug) {
                 $matchedCategory = $category;
                 break;
             }
