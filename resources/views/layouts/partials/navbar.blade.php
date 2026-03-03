@@ -18,12 +18,18 @@
                 return;
             }
             this.isLoading = true;
-            fetch(`/search/places?q=${encodeURIComponent(this.searchQuery)}`)
-                .then(res => res.json())
+            fetch(`/search?q=${encodeURIComponent(this.searchQuery)}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Search failed');
+                    return res.json();
+                })
                 .then(data => {
                     this.searchResults = data;
                 })
-                .catch(err => console.error('Search error:', err))
+                .catch(err => {
+                    console.error('Search error:', err);
+                    this.searchResults = [];
+                })
                 .finally(() => this.isLoading = false);
         },
         selectResult(result) {

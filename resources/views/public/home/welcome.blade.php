@@ -28,7 +28,7 @@
             boundaries: '{{ route('boundaries.geojson') }}',
             infrastructures: '{{ route('infrastructures.geojson') }}',
             landUses: '{{ route('land_uses.geojson') }}',
-            search: '/search/places'
+            search: '/search'
         },
         categories: {{ Js::from($categories) }}
     })">

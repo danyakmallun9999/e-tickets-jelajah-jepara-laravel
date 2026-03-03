@@ -538,14 +538,18 @@ class WelcomeController extends Controller
 
         // Search Posts (Berita)
         $posts = Post::where('is_published', true)
-            ->where('title', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('title_en', 'like', "%{$query}%")
+                  ->orWhere('content', 'like', "%{$query}%");
+            })
             ->take(3)
             ->get()
             ->map(function ($post) {
                 return [
                     'id' => $post->id,
-                    'name' => $post->title,
-                    'description' => Str::limit(strip_tags($post->content ?? ''), 50),
+                    'name' => $post->translated_title,
+                    'description' => Str::limit(strip_tags($post->translated_content ?? ''), 50),
                     'image_url' => $post->image_path ? asset($post->image_path) : null,
                     'type' => 'Berita',
                     'type_key' => 'news',
@@ -555,14 +559,19 @@ class WelcomeController extends Controller
 
         // Search Events (Agenda)
         $events = Event::where('is_published', true)
-            ->where('title', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('title_en', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%")
+                  ->orWhere('description_en', 'like', "%{$query}%");
+            })
             ->take(3)
             ->get()
             ->map(function ($event) {
                 return [
                     'id' => $event->id,
-                    'name' => $event->title,
-                    'description' => Str::limit($event->description, 50),
+                    'name' => $event->translated_title,
+                    'description' => Str::limit($event->translated_description, 50),
                     'image_url' => $event->image ? asset($event->image) : null,
                     'type' => 'Agenda',
                     'type_key' => 'event',
@@ -572,7 +581,11 @@ class WelcomeController extends Controller
 
         // Search Cultures (Budaya)
         $cultures = Culture::where('category', '!=', 'Kuliner Khas')
-            ->where('name', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%")
+                  ->orWhere('category', 'like', "%{$query}%");
+            })
             ->take(3)
             ->get()
             ->map(function ($item) {
@@ -589,7 +602,10 @@ class WelcomeController extends Controller
 
         // Search Culinaries (Kuliner)
         $culinaries = Culture::where('category', 'Kuliner Khas')
-            ->where('name', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%");
+            })
             ->take(3)
             ->get()
             ->map(function ($item) {
@@ -604,13 +620,14 @@ class WelcomeController extends Controller
                 ];
             });
 
-        // Merge all results
-        $results = $places->merge($posts)->merge($events)->merge($cultures)->merge($culinaries);
+        // Merge all results using base Collection (not Eloquent Collection)
+        $results = collect()
+            ->concat($places)
+            ->concat($posts)
+            ->concat($events)
+            ->concat($cultures)
+            ->concat($culinaries);
 
-        if ($results->isEmpty()) {
-            abort(404);
-        }
-
-        return response()->json($results);
+        return response()->json($results->values());
     }
 }

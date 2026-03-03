@@ -38,7 +38,7 @@ window.mapComponent = function (config = {}) {
             boundaries: config.routes?.boundaries || '/geojson/boundaries',
             infrastructures: config.routes?.infrastructures || '/geojson/infrastructures',
             landUses: config.routes?.landUses || '/geojson/land-uses',
-            search: config.routes?.search || '/search/places'
+            search: config.routes?.search || '/search'
         },
 
         init() {
@@ -274,12 +274,16 @@ window.mapComponent = function (config = {}) {
 
             // Server-side Search
             fetch(`${this.endpoints.search}?q=${encodeURIComponent(q)}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('Search failed');
+                    return res.json();
+                })
                 .then(data => {
                     this.searchResults = data;
                 })
                 .catch(err => {
                     console.error('Search Error:', err);
+                    this.searchResults = [];
                 });
         },
 
