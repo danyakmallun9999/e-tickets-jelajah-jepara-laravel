@@ -149,16 +149,38 @@
         {{-- Category Filter --}}
         <div class="mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 sidebar-categories relative z-[50]" style="opacity: 0; transform: translateY(10px);">
             <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">{{ __('Map.Category') }}</p>
-            <div class="flex gap-2 flex-wrap">
-                @foreach($categories as $index => $category)
-                <button @click="toggleCategory({{ $category->id }})" 
-                        :class="selectedCategories.includes({{ $category->id }}) ? 'bg-sky-500 text-white border-sky-500' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-sky-500'"
-                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs font-medium active:scale-95 category-btn"
-                        style="opacity: 0; transform: scale(0.8);">
-                    <i class="{{ $category->icon_class ?? 'fa-solid fa-map-marker-alt' }} text-sm"></i>
-                    <span>{{ $category->name }}</span>
-                </button>
-                @endforeach
+            <div class="relative category-btn w-full z-[60]" style="opacity: 0; transform: scale(0.8);">
+                <x-dropdown align="left" width="full" contentClasses="py-1 bg-white dark:bg-slate-800 max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-700 shadow-xl">
+                    <x-slot name="trigger">
+                        <button type="button" class="flex items-center justify-between w-full bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all shadow-sm hover:border-sky-500/30">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="material-symbols-outlined text-[18px] text-slate-400" x-show="selectedCategories.length === categories.length">map</span>
+                                <i x-show="selectedCategories.length !== categories.length" :class="(categories.find(c => c.id === selectedCategories[0])?.icon_class || 'fa-solid fa-map-marker-alt') + ' text-slate-400 text-sm'"></i>
+                                <span class="truncate" x-text="selectedCategories.length === categories.length ? 'Semua Kategori' : categories.find(c => c.id === selectedCategories[0])?.name || 'Semua Kategori'"></span>
+                            </div>
+                            <span class="material-symbols-outlined text-[20px] text-slate-500 ml-2 shrink-0">expand_more</span>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        <button type="button" 
+                                @click="selectedCategories = categories.map(c => c.id)" 
+                                class="w-full text-left px-4 py-2.5 text-sm hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors flex items-center gap-2"
+                                :class="selectedCategories.length === categories.length ? 'font-bold text-sky-600 dark:text-sky-400 bg-sky-50/50 dark:bg-sky-900/20' : 'text-slate-700 dark:text-slate-300'">
+                            <span class="material-symbols-outlined text-[18px]" :class="selectedCategories.length === categories.length ? 'text-sky-500' : 'text-slate-400'">map</span>
+                            Semua Kategori
+                        </button>
+                        <div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>
+                        @foreach($categories as $category)
+                            <button type="button" 
+                                    @click="selectedCategories = [{{ $category->id }}]" 
+                                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-sky-50 dark:hover:bg-sky-900/30 transition-colors flex items-center gap-2"
+                                    :class="selectedCategories.length === 1 && selectedCategories.includes({{ $category->id }}) ? 'font-bold text-sky-600 dark:text-sky-400 bg-sky-50/50 dark:bg-sky-900/20' : 'text-slate-700 dark:text-slate-300'">
+                                <i class="{{ $category->icon_class ?? 'fa-solid fa-map-marker-alt' }} w-5 text-center text-sm" :class="selectedCategories.length === 1 && selectedCategories.includes({{ $category->id }}) ? 'text-sky-500' : 'text-slate-400'"></i>
+                                {{ $category->name }}
+                            </button>
+                        @endforeach
+                    </x-slot>
+                </x-dropdown>
             </div>
         </div>
         
