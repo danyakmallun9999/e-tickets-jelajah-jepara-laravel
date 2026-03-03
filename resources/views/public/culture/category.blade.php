@@ -74,7 +74,7 @@
                 <div class="space-y-16">
                     <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
                         @forelse($cultures as $culture)
-                            <a href="{{ route(isset($culture->price) || $culture->category === 'Kuliner Khas' ? 'culinary.show' : 'culture.show', [$culture->category_slug, $culture->slug]) }}" 
+                            <a href="{{ route('culture.show', [$culture->category_slug, $culture->slug]) }}" 
                                  wire:navigate
                                  class="culture-card w-full block relative group overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800 cursor-pointer aspect-[3/4] md:aspect-[4/5]">
                                 

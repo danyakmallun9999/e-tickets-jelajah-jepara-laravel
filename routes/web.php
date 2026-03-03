@@ -29,7 +29,6 @@ Route::get('/calendar-of-events/{event:slug}', [App\Http\Controllers\Public\Even
 Route::get('/budaya/{categorySlug}/{slug}', [WelcomeController::class, 'showCulture'])->name('culture.show');
 Route::get('/budaya/{categorySlug}', [WelcomeController::class, 'showCultureCategory'])->name('culture.category');
 Route::get('/budaya', [WelcomeController::class, 'culture'])->name('culture.index');
-Route::get('/kuliner/{categorySlug}/{slug}', [WelcomeController::class, 'showCulinary'])->name('culinary.show');
 
 // Google OAuth routes (for public users)
 if (config('features.google_login_enabled')) {

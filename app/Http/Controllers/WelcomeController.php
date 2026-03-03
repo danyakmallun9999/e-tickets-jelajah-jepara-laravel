@@ -616,7 +616,7 @@ class WelcomeController extends Controller
                     'image_url' => $item->image_url,
                     'type' => 'Kuliner',
                     'type_key' => 'culinary',
-                    'url' => route('culinary.show', [$item->category_slug, $item->slug]),
+                    'url' => route('culture.show', [$item->category_slug, $item->slug]),
                 ];
             });
 

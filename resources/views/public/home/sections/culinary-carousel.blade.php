@@ -166,7 +166,7 @@
                         <div class="mx-auto" :class="currentIndex === {{ $index }} ? 'max-w-4xl px-4 md:px-0' : 'max-w-3xl'">
                             <div class="relative overflow-hidden rounded-3xl transition-shadow duration-700"
                                  :class="currentIndex === {{ $index }} ? 'shadow-2xl cursor-pointer' : 'shadow-lg pointer-events-none'"
-                                 @click="currentIndex === {{ $index }} && handleClick('{{ route('culinary.show', [$culinary->category_slug, $culinary->slug]) }}')">
+                                 @click="currentIndex === {{ $index }} && handleClick('{{ route('culture.show', [$culinary->category_slug, $culinary->slug]) }}')">
                                 <img src="{{ $culinary->image_url }}"
                                      alt="{{ $culinary->name }}"
                                      class="h-[280px] md:h-[420px] w-full object-cover rounded-3xl transition-transform duration-700"
@@ -185,9 +185,9 @@
                                     <p class="mt-2 max-w-xl text-white/90 text-sm md:text-base line-clamp-2 leading-relaxed">
                                         {{ $culinary->description }}
                                     </p>
-                                    <a href="{{ route('culinary.show', [$culinary->category_slug, $culinary->slug]) }}"
+                                    <a href="{{ route('culture.show', [$culinary->category_slug, $culinary->slug]) }}"
                                        class="mt-4 inline-flex items-center gap-2 rounded-full bg-sky-600 px-5 md:px-6 py-2 md:py-2.5 text-sm font-medium text-white hover:bg-sky-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
-                                       @click.stop.prevent="handleClick('{{ route('culinary.show', [$culinary->category_slug, $culinary->slug]) }}')">
+                                       @click.stop.prevent="handleClick('{{ route('culture.show', [$culinary->category_slug, $culinary->slug]) }}')">
                                         {{ __('Culinary.Button.More') }} →
                                     </a>
                                 </div>

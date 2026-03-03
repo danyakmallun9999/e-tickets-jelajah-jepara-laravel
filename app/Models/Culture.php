@@ -58,7 +58,19 @@ class Culture extends Model
 
     public function getCategorySlugAttribute(): string
     {
-        return Str::slug($this->category);
+        // Map raw category to curated display title for consistent URL slugs
+        $titleMap = [
+            'Kemahiran & Kerajinan Tradisional (Kriya)' => 'Kemahiran & Kerajinan Tradisional (Kriya)',
+            'Adat Istiadat, Ritus, & Perayaan Tradisional' => 'Adat Istiadat, Ritus, & Perayaan Tradisional',
+            'Adat Istiadat, Ritus, dan Perayaan Tradisional' => 'Adat Istiadat, Ritus, dan Perayaan Tradisional',
+            'Seni Pertunjukan' => 'Seni Pertunjukan',
+            'Seni Pertunjukan & Tarian' => 'Seni Pertunjukan & Tarian',
+            'Kuliner Khas' => 'Kuliner Khas Jepara',
+        ];
+
+        $title = $titleMap[$this->category] ?? $this->category;
+
+        return Str::slug($title);
     }
 
     public function images()
