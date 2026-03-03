@@ -80,7 +80,28 @@ class Event extends Model
     public function getTranslatedDescriptionAttribute()
     {
         $locale = app()->getLocale();
-        if ($locale === 'en' && !empty($this->description_en) && trim(strip_tags($this->description_en)) !== '') {
+        if ($locale === 'en' && !empty($this->description_en)) {
+            // Check if Editor.js content actually has meaningful text
+            if ($this->content_format === 'editorjs') {
+                $decoded = json_decode($this->description_en, true);
+                if ($decoded && isset($decoded['blocks'])) {
+                    $hasContent = false;
+                    foreach ($decoded['blocks'] as $block) {
+                        $text = trim(strip_tags($block['data']['text'] ?? $block['data']['code'] ?? ''));
+                        if (!empty($text)) {
+                            $hasContent = true;
+                            break;
+                        }
+                    }
+                    if (!$hasContent) {
+                        return $this->description;
+                    }
+                }
+            }
+            // For legacy HTML format, check if there's actual text
+            if (trim(strip_tags($this->description_en)) === '') {
+                return $this->description;
+            }
             return $this->description_en;
         }
         return $this->description;
