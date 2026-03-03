@@ -17,7 +17,7 @@ class SecurityHeaders
     {
         $response = $next($request);
 
-        // X-Frame-Options: Prevent clickjacking (allow same-origin for TinyMCE)
+        // X-Frame-Options: Prevent clickjacking (allow same-origin for iframes)
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
 
         // X-Content-Type-Options: Prevent MIME sniffing
@@ -30,11 +30,11 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
         // Content-Security-Policy: Prevent XSS, clickjacking, data injection
-        // Adjusted to allow TinyMCE editor and local Vite dev server to function properly
-        $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com";
-        $styleSrc = "'self' 'unsafe-inline' https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.googleapis.com";
-        $connectSrc = "'self' https://cdn.tiny.cloud https://api.mymemory.translated.net https://*.midtrans.com https://server.arcgisonline.com https://router.project-osrm.org";
-        $fontSrc = "'self' data: https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://fonts.gstatic.com";
+        // Adjusted to allow local Vite dev server to function properly
+        $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com";
+        $styleSrc = "'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com";
+        $connectSrc = "'self' https://api.mymemory.translated.net https://*.midtrans.com https://server.arcgisonline.com https://router.project-osrm.org";
+        $fontSrc = "'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com";
         $imgSrc = "'self' data: https: blob: https://server.arcgisonline.com https://tiles.stadiamaps.com https://*.google.com";
 
         if (app()->environment('local')) {
@@ -52,7 +52,7 @@ class SecurityHeaders
                "connect-src $connectSrc; " .
                "worker-src 'self' blob:; " . // Required for MapLibre GL
                "child-src 'self' blob:; " .  // Fallback for older browsers
-               "frame-src 'self' https://cdn.tiny.cloud https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; " .
+               "frame-src 'self' https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; " .
                "object-src 'none'; " .
                "base-uri 'self'; " .
                "form-action 'self'; " .

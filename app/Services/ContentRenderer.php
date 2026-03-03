@@ -5,7 +5,7 @@ namespace App\Services;
 /**
  * Content Renderer Service
  * 
- * Handles dual-format rendering: HTML (legacy TinyMCE) and JSON (Editor.js).
+ * Handles dual-format rendering: HTML (legacy) and JSON (Editor.js).
  * All text output is escaped except whitelisted inline HTML in paragraphs.
  */
 class ContentRenderer

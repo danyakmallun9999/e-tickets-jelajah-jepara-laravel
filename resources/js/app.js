@@ -29,7 +29,7 @@ import './charts/dashboard';
 // Admin Main Dashboard - ApexCharts
 import './charts/admin-dashboard';
 
-// Editor.js Lazy Loader (replaces TinyMCE)
+// Editor.js Lazy Loader
 window.loadEditorJs = () => import('./plugins/editorjs');
 
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
