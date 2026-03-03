@@ -28,7 +28,7 @@
 
             <!-- Header Section -->
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight font-serif">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight font-serif">
                     {{ $post->translated_title }}
                 </h1>
                 
@@ -346,7 +346,7 @@
 
                     <!-- CTA Section -->
                     <div class="rounded-2xl overflow-hidden relative aspect-square bg-gray-900 flex items-center justify-center text-center p-6 group">
-                         <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
+                         <img src="{{ asset('images/destinasi/karimun-jawa/4.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
                          <div class="relative z-10">
                              <h4 class="text-white font-serif text-2xl font-bold mb-2">{{ __('News.CTA.Title') }}</h4>
                              <p class="text-white/80 text-sm mb-4">{{ __('News.CTA.Subtitle') }}</p>
