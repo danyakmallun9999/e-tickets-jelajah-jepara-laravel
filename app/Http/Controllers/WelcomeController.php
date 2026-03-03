@@ -166,7 +166,7 @@ class WelcomeController extends Controller
         ));
     }
 
-    public function showCulture(string $slug): View
+    public function showCulture(string $categorySlug, string $slug): View
     {
         $culture = Culture::with(['images', 'locations'])->where('slug', $slug)->firstOrFail();
         
@@ -179,7 +179,7 @@ class WelcomeController extends Controller
     }
 
 
-    public function showCulinary(string $slug): View
+    public function showCulinary(string $categorySlug, string $slug): View
     {
         // Culinary is also in Culture table now
         $culinary = Culture::with(['images', 'locations'])->where('slug', $slug)->firstOrFail();
@@ -596,7 +596,7 @@ class WelcomeController extends Controller
                     'image_url' => $item->image_url,
                     'type' => 'Budaya',
                     'type_key' => 'culture',
-                    'url' => route('culture.show', $item->slug),
+                    'url' => route('culture.show', [$item->category_slug, $item->slug]),
                 ];
             });
 
@@ -616,7 +616,7 @@ class WelcomeController extends Controller
                     'image_url' => $item->image_url,
                     'type' => 'Kuliner',
                     'type_key' => 'culinary',
-                    'url' => route('culinary.show', $item->slug),
+                    'url' => route('culinary.show', [$item->category_slug, $item->slug]),
                 ];
             });
 

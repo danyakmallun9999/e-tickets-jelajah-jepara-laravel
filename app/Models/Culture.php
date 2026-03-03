@@ -56,6 +56,11 @@ class Culture extends Model
         return 'slug';
     }
 
+    public function getCategorySlugAttribute(): string
+    {
+        return Str::slug($this->category);
+    }
+
     public function images()
     {
         return $this->hasMany(CultureImage::class);

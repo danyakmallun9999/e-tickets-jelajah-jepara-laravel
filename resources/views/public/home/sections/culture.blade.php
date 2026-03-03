@@ -66,7 +66,7 @@
                             </div>
                             
                             <!-- Link to Detail Page -->
-                            <a href="{{ route('culture.show', $culture->slug) }}" class="mt-4 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white text-sm font-bold transition-all shadow-lg hover:translate-x-1 pointer-events-auto z-10">
+                            <a href="{{ route('culture.show', [$culture->category_slug, $culture->slug]) }}" class="mt-4 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white text-sm font-bold transition-all shadow-lg hover:translate-x-1 pointer-events-auto z-10">
                                 <span>{{ __('Culture.Button.More') }}</span>
                                 <span class="material-symbols-outlined text-lg">arrow_forward</span>
                             </a>

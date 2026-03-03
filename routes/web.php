@@ -27,9 +27,9 @@ Route::get('/biro-wisata/{agency}', [App\Http\Controllers\Public\TravelAgencyCon
 Route::get('/calendar-of-events', [App\Http\Controllers\Public\EventController::class, 'index'])->name('events.public.index');
 Route::get('/calendar-of-events/{event:slug}', [App\Http\Controllers\Public\EventController::class, 'show'])->name('events.public.show');
 Route::get('/budaya/kategori/{slug}', [WelcomeController::class, 'showCultureCategory'])->name('culture.category');
-Route::get('/budaya/{slug}', [WelcomeController::class, 'showCulture'])->name('culture.show');
+Route::get('/budaya/{categorySlug}/{slug}', [WelcomeController::class, 'showCulture'])->name('culture.show');
 Route::get('/budaya', [WelcomeController::class, 'culture'])->name('culture.index');
-Route::get('/kuliner/{slug}', [WelcomeController::class, 'showCulinary'])->name('culinary.show');
+Route::get('/kuliner/{categorySlug}/{slug}', [WelcomeController::class, 'showCulinary'])->name('culinary.show');
 
 // Google OAuth routes (for public users)
 if (config('features.google_login_enabled')) {
