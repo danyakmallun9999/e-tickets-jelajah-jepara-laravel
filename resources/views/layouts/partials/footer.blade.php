@@ -8,8 +8,8 @@
     $phone = $footerSetting->phone ?? '(0291) 591219';
     $email = $footerSetting->email ?? 'disparbud@jepara.go.id';
     
-    $fb = $footerSetting->facebook_link ?? 'https://www.facebook.com/disparbudjepara';
-    $ig = $footerSetting->instagram_link ?? 'https://www.instagram.com/disparbudjepara';
+    $fb = $footerSetting->facebook_link ?? 'https://www.facebook.com/jelajah_jeparaa';
+    $ig = $footerSetting->instagram_link ?? 'https://www.instagram.com/jelajah_jeparaa';
     $yt = $footerSetting->youtube_link ?? ''; // initially commented out in static, default to empty
     $tw = $footerSetting->twitter_link ?? ''; // initially commented out in static, default to empty
 @endphp

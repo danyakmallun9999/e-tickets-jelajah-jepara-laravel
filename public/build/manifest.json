@@ -1312,11 +1312,7 @@
     "src": "node_modules/material-symbols/material-symbols-sharp.woff2"
   },
   "resources/css/app.css": {
-<<<<<<< HEAD
-    "file": "assets/app-Bl6-HHP1.css",
-=======
-    "file": "assets/app-DJGxtNyY.css",
->>>>>>> 97a1f84 (mokel)
+    "file": "assets/app-BNEHW9t6.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
