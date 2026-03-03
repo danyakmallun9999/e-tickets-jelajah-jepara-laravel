@@ -46,6 +46,23 @@ class Post extends Model
     public function getTranslatedContentAttribute()
     {
         if (app()->getLocale() == 'en' && ! empty($this->content_en)) {
+            // Check if Editor.js content actually has meaningful text
+            if ($this->content_format === 'editorjs') {
+                $decoded = json_decode($this->content_en, true);
+                if ($decoded && isset($decoded['blocks'])) {
+                    $hasContent = false;
+                    foreach ($decoded['blocks'] as $block) {
+                        $text = trim(strip_tags($block['data']['text'] ?? $block['data']['code'] ?? ''));
+                        if (!empty($text)) {
+                            $hasContent = true;
+                            break;
+                        }
+                    }
+                    if (!$hasContent) {
+                        return $this->content;
+                    }
+                }
+            }
             return $this->content_en;
         }
 
