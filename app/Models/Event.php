@@ -52,6 +52,34 @@ class Event extends Model
         });
     }
 
+    public function getExcerptAttribute()
+    {
+        $content = $this->translated_description;
+        
+        if ($this->content_format === 'editorjs') {
+            $decoded = json_decode($content, true);
+            $text = '';
+            if ($decoded && isset($decoded['blocks'])) {
+                foreach ($decoded['blocks'] as $block) {
+                    if (isset($block['data']['text'])) {
+                        $text .= strip_tags($block['data']['text']) . ' ';
+                    } elseif (isset($block['data']['items'])) {
+                        foreach ($block['data']['items'] as $item) {
+                            if (is_string($item)) {
+                                $text .= strip_tags($item) . ' ';
+                            } elseif (is_array($item) && isset($item['content'])) {
+                                $text .= strip_tags($item['content']) . ' ';
+                            }
+                        }
+                    }
+                }
+            }
+            return trim($text);
+        }
+        
+        return strip_tags($content ?? '');
+    }
+
     /**
      * Get the user who created this event.
      */

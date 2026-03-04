@@ -549,7 +549,7 @@ class WelcomeController extends Controller
                 return [
                     'id' => $post->id,
                     'name' => $post->translated_title,
-                    'description' => Str::limit(strip_tags($post->translated_content ?? ''), 50),
+                    'description' => Str::limit($post->excerpt ?? '', 50),
                     'image_url' => $post->image_path ? asset($post->image_path) : null,
                     'type' => 'Berita',
                     'type_key' => 'news',
@@ -571,7 +571,7 @@ class WelcomeController extends Controller
                 return [
                     'id' => $event->id,
                     'name' => $event->translated_title,
-                    'description' => Str::limit($event->translated_description, 50),
+                    'description' => Str::limit($event->excerpt ?? '', 50),
                     'image_url' => $event->image ? asset($event->image) : null,
                     'type' => 'Agenda',
                     'type_key' => 'event',
