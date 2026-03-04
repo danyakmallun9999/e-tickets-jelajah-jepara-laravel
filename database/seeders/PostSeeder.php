@@ -56,7 +56,7 @@ class PostSeeder extends Seeder
                 'content_format' => 'editorjs',
                 'type' => 'news',
                 'author' => 'Admin Jelajah Jepara',
-                'image_path' => '/images/posts/mahasiswa-unisnu.jpg',
+                'image_path' => '/images/posts/mahasiswa-unisnu.png',
                 'published_at' => now()->subDays(1),
                 'is_published' => true,
             ],
