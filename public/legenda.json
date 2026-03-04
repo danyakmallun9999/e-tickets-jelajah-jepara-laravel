@@ -1,0 +1,27 @@
+[
+ 
+  {
+    "name": "Ratu Kalinyamat",
+    "title_id": "Ratu Kalinyamat",
+    "title_en": "Queen Kalinyamat",
+    "quote_id": "\"Sang Ratu Laut yang Gagah Berani\"",
+    "quote_en": "\"The Brave Queen of the Sea\"",
+    "description_id": "Penguasa maritim Nusantara yang disegani. Membangun Jepara menjadi pusat niaga dan kekuatan laut yang tak tertandingi.",
+    "description_en": "A respected maritime ruler of the archipelago. She built Jepara into a center of commerce and unmatched naval power.",
+    "image_path": "images/legenda/kalinyamat.jpg",
+    "order": 2,
+    "is_active": true
+  },
+  {
+    "name": "R.A. Kartini",
+    "title_id": "R.A. Kartini",
+    "title_en": "R.A. Kartini",
+    "quote_id": "\"Habis Gelap Terbitlah Terang\"",
+    "quote_en": "\"Out of Dark Comes Light\"",
+    "description_id": "Pahlawan emansipasi yang memperjuangkan hak pendidikan wanita. Sosoknya menginspirasi perubahan besar dari Jepara untuk Indonesia.",
+    "description_en": "An emancipation hero who fought for women's educational rights. Her figure inspired great change from Jepara for Indonesia.",
+    "image_path": "images/legenda/kartini.jpg",
+    "order": 3,
+    "is_active": true
+  }
+]
